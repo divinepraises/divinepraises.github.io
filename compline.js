@@ -229,7 +229,8 @@ async function selectTropar(dayOfWeek, hourData, glas){
 
     // Friday is special: using Saturday troparion and less of proper compline ones
     if (dayOfWeek === 6){
-        return `${daily_troparia["troparia"]["6"][0]}<br>
+        return `<div class=rubric>If compline is said in a church dedicated to Our Lord or Our Lady, a troparion of the church is said here.</div>
+        ${daily_troparia["troparia"]["6"][0]}<br>
         ${glory}<br>
         ${hourData["daily_troparia"][2]}<br>
         ${andNow}<br>
