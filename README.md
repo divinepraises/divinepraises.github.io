@@ -1,6 +1,6 @@
-﻿# divivepraises.github.io website
+﻿# divinepraises.github.io website
 
-To pray the office, please visit [the website](https://divinepraises.github.io/divivepraises/). This page is for contributing.
+To pray the office, please visit [the website](https://divinepraises.github.io/). This page is for contributing.
 
 The project is in the development stages, so there is much work to do. If you want to join, contact us (or create an issue here).
 
