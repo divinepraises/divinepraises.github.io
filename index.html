@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Divine Praises</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<script type="module" src="index.js"></script>
+<div class="container">
+	<div class="row">
+		<div class="column left">
+			<h4>Rubrics version</h4>
+				<label><input type="radio" name="full" value="0">Shortenings by Lviv synod 1891</label><br>
+				<label><input type="radio" name="full" value="1" checked>Full version</label><br><br>
+			<h4>Is a priest leading the prayer?</h4>
+				<label><input type="radio" name="priest" value="1">With clergy</label><br>
+				<label><input type="radio" name="priest" value="0" checked>Laymen only</label><br><br>
+		</div>	
+		<div class="column right">
+			<h4>Date</h4>
+			<div class="rubric">The date refers to the secular calendar date. E.g. Compline on a Saturday evening will be Sunday Compline.</div>
+			<input type="date" id="myDate">
+			<div id="date-container"></div><br>
+
+			<h4>Hour</h4>
+			<div class="rubric">By default, an hour roughly corresponding to the time of the day is selected.<br>
+				But not all hours are implemented yet.</div>
+
+			<label><input type="radio" id="vespers" name="hour" value="vespers">Vespers</label><br>
+			<label><input type="radio" id="compline" name="hour" value="compline">Compline</label><br>
+			<label><input type="radio" id="midnight" name="hour" value="midnight">Midnight Hour</label><br>
+			<label><input type="radio" id="matins" name="hour" value="matins">Matins</label><br>
+			<label><input type="radio" id="1hour" name="hour" value="1hour">First Hour</label><br>
+			<label><input type="radio" id="3hour" name="hour" value="3hour">Third Hour</label><br>
+			<label><input type="radio" id="6hour" name="hour" value="6hour">Sixth Hour</label><br>
+			<label><input type="radio" id="9hour" name="hour" value="9hour">Ninth Hour</label><br><br>
+		</div>
+	</div>
+    <div id="text-container"></div>
+	<button id="goButton">To the selected hour.</button><br><br><br>
+	<a href="about.html">About this project.</a>
+</div>
+</body>
+</html>

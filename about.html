@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a href="index.html">Go to the main Page</a>
+<h1>About the project</h1>
+<p>
+    This is an attempt at making a script that compiles divine praises.
+</p>
+<p>
+    It will be consistent with Western-Canadian use of
+    Galician/Catholic Kyivan version of Slavic-Byzantine rite.
+    The plan is to allow switching between different versions later,
+    but so far to focus on this one.
+</p>
+<h1>Plan</h1>
+<ol>
+  <li>
+      <b>POC stage</b>. Get the basic structure for every hour but matins in a priest-less mode.
+      At this stage the translations will be sources from different places
+      (which will be documented).
+      Over-reliance on the common menaion and is expected at this stage.
+  </li>
+  <li>
+      <b>Filling the gaps stage.</b>
+      At this point I expect to get my hands on a steady source of texts,
+      and have everything in a consistent translation.
+      And make the interface less awkward.
+  </li>
+  <li>
+      <b>Letting it go.</b> Allow to switch between translations, versions etc
+      and start accepting open-source contributions.
+  </li>
+</ol>
+<h1>Sources</h1>
+<h2>Texts</h2>
+This repository contains excerpts from works that may be protected by
+copyright. These excerpts are included solely
+noncommercial purposes. No copyright is claimed on
+these excerpts, and all rights remain with their respective copyright holders.
+<ul>
+  <li>
+      <b>Horologion</b> The general texts are found on internet and are selected to match "The Divine Liturgy: An Anthology for Worship", Ottawa 2004. (referred to as "the Anthology" in what follows)<br>
+      The compline troparia are taken from the "Divine Office", Stamford, CT, USA, 2014 (referred to as "English vasylianka" in what follows).<br>
+      The Sunday hypakoe are taken from Royal doors.<br>
+      The lenten troparia are taken from a brochure "Little hours for weekdays of Lent" by Cyrill Kennedy, that itself relies on "The Lenten Triodion" published by the Sisters of St. Basil in Uniontown, Pennsylvania.<br>
+      The lesser doxology is taken from Metropolitan Cantor Institute (MCI) version of Compline, as are the two longet prayers of the small compline.<br>
+      Curiously, MCI edition omits the two shorter compline prayers, so they are taken from the English vasylianka.<br>
+      The penitential prayer after compline without priest was taken from MCI Typica.<br>
+      The prayer after it was translated from <a href="https://drive.google.com/file/d/1RpNY3FDh73OHi1Cu1vXA3KzBCeLZ-U_U/view">a Lviv chasoslov of 1900</a> relying on some orthodox translations of similar prayers.<br>
+      The prayers after compline with a priest are a mix of English Vasylianka and MCI versions.<br>
+  </li>
+  <li>
+      <b>Psalms</b> are not aligned yet, as this is a POC.<br>
+      Texts of psalms in the Little hours are selected to match the Anthology.<br>
+      Psalms 69 and 142 is taken from Metropolitan Cantor Institute version of Compline,
+      which coincides with the English vasylianka.
+  </li>
+  <li>
+      <b>Octoechos.</b> Canons for Compline are taken from <a href="https://st-sergius.org/">a website of St. Sergius of Radonezh Russian Orthodox Cathedral, Parma, Ohio.</a>
+  </li>
+  <li>
+      <b>Proper texts.</b> Amazing <a href="https://liturgy.royaldoors.net/">Royal doors.</a>
+  </li>
+</ul>
+<h2>Rubrics</h2>
+<ul>
+  <li>
+      <a href="https://docs.google.com/file/d/0B4vzPDufLbhuMEstN1pSU2ZzVG8/edit?usp=sharing">Dolnytsky's Typicon</a>
+      with Устав Богослужінь (link to a text in Ukrainian).
+  </li>
+  <li>
+      There are (almost) no rubrics for a <b>laymen's/reader's office</b> in the actual old Byzantine rite books,
+      except those developed in old-believers' communities.
+      The most popular ones on the English Internet (by Daniel of Erie) seem to be adapted
+      from the (priest-less old-believer) Vyg Typicon, which is dogmatically dubious to use in a church with the Real Presence.
+      I opt for relying on (priest-accepting old-believer)
+      <a href="https://samstar-biblio.ucoz.ru/load/arsenij_uralskij_kratkij_ustav/153-1-0-935">Small Typicon by Arseny of Uralsk</a>
+      (link to download the pdf in Church Slavonic).
+  </li>
+  <li>
+      <b>Rubrics on shortening</b> of the office are taken from
+      <a href="http://dds.edu.ua/ua/component/abook/book/3-canon-law/11-sobor-lviv-1891-dodatok.html">The appendix to the decisions of Lviv synod of 1891</a>
+      (the document's language is Iazychie (i think?? why???!!!);
+      shortenings are described in Appendix XXX, at page 392 of the text/359 of the pdf).
+      Here is a brief summary:
+      <ul>
+        <li>
+            Vespers: one out of 8 priestly prayers can be said, according to the tone of the week.
+        </li>
+        <li>
+            Small Compline: on weekdays, one psalm is said, according to the day of the week, and the doxology (Glory to God in the highest) is omitted.
+            On Sundays (Saturday night) psalms are omitted and only the doxology is said.
+            If a canon is prescribed, only 2 odes are said:
+            one out the 7 first odes, according to the day of the week, and the 9th.
+        </li>
+        <li>
+            Midnight prayer: one out 3 stases of the kathisma is said, in order.
+            On Sundays, only one ode of the canon is said, according to the tone
+            (ode 1 if the week is of the 1st tone, ode <i>n+1</i> for any tone <i>n>1</i>).
+        </li>
+        <li>
+            Matins: one out of two psalms of the royal office is said, in turns.
+            One out of 6 psalms of The Six Psalms is said, according to the day of the week (the 6th one is said on both Saturday and Sunday).
+            One out of 11 priestly prayers can be said, according to the Sunday Matins Gospel of the week.
+            Canons are said as at compline.
+        </li>
+        <li>
+            Hours: one out 3 psalms is said, according to the day of the week (the 3rd one is said on both Saturday and Sunday).
+        </li>
+      </ul>
+      Note, that there are no provisions to shorten kathismata or omit canons. There is still an option to do that in this
+      project, as it is often done in practice.<br>
+      Устав богослужінь (the 1980 update to the Dolnytsky Typicon) includes recommended shortenings for Matins too.
+  </li>
+  <li>
+      A honorable mention goes to the Basilian Molytvoslov (Vasylianka).
+      It was a great tool to propagate the Divine Praises in pre-internet times,
+      but let's try to live our tradition as if Vasylianka never existed.
+  </li>
+</ul>
+<h2>Inspiration</h2>
+<ul>
+    <li>
+        Ukrainian app for the same (but it's manually compiled): <a href="https://prayer-service.pp.ua/">МОЛИТВА ЦЕРКВИ</a>
+    </li>
+    <li>
+        Latin app that contain lots of versions of the Office.  <a href="https://www.divinumofficium.com/cgi-bin/horas/officium.pl">Divinum Officium</a>
+    </li>
+</ul>
+<h2>Chant resources</h2>
+This is not planned as a chant resource. There is a very comprehensive
+<a href="https://ugccmusic.com/music-resources"> resources page</a> for Galician and Kyivan chant maintained by Singcon conference.
+For chant in the Ruthenian (in a sense of Transcarpathian, not pre-1839 UGCC) chant tradition, there is
+<a href="https://mci.archpitt.org/MCI/index.html">The Metropolitan Cantor Institute</a>.<br>
+In this project, however, the tones of troparia, sticheras etc are indicated. If a tone is not indicated, it can be a mistake,
+please report it in private communication.
+</body>
+</html>
