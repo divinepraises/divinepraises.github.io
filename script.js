@@ -73,19 +73,19 @@ export function parseDate(currentDate) {
 		season = "EasterWeek";
 		seasonToShow = "Easter Week";
 	} else if (diffFromEaster >= 7 & diffFromEaster <= 56) {
-		glas = Math.floor(diffFromEaster/7)%8;
+		glas = Math.floor((diffFromEaster + 1)/7)%8;
 		seasonToShow = `${glas} week after Easter`;
 		season = "Pentecost";
 	} else if (diffFromEaster > 56 & diffFromEaster < 365+34) {  
 		// TODO: account for post-Union feasts that are in Triodion but after 8 weeks
-		glas = Math.floor(diffFromEaster/7)%8;
+		glas = Math.floor((diffFromEaster + 1)/7)%8;
 		seasonToShow = `Week of tone ${glas}`;
 		season = "0";
 	} else {  // TODO: break into cases
 		[lastEasterMonth, lastEasterDay] = calculateEaster(currentYear-1);
 		const lastYearEaster = new Date(`${currentYear-1}-${lastEasterMonth}-${lastEasterDay}`);
 		const diffFromLastEaster = dateDiffInDays(currentDate, lastYearEaster);
-		glas = Math.floor(diffFromLastEaster/7)%8;
+		glas = Math.floor((diffFromEaster + 1)/7)%8;
 		if (diffFromEaster > -49) {
 			seasonToShow = `${7 + Math.floor(diffFromEaster/7)} week of Lent,`;
 		    season = "Lent";

@@ -10,6 +10,10 @@ export function compline(priest, full, date){
 	// it seems, days are shifted. now, Sunday is 7
 	// another + 1 is because we start the day in the evening
 	var dayOfWeek = (chosenDate.getDay() + 1)%7 + 1;
+	/// change glas on Saturday evening
+	if (dayOfWeek === 7){
+	    glas = glas % 8 + 1
+	}
 	const dd_mm = String(chosenDate.getDate()+1).padStart(2, "0") + String(chosenDate.getMonth() + 1).padStart(2, "0");
 
     const isIncarnationFeast = (dd_mm === "2412" || dd_mm === "0501" || dd_mm === "2403")
@@ -68,10 +72,6 @@ async function loadText(full, dayOfWeek, priest, glas) {
 	const psalmNums = jsonData["psalms"];
 	const psalmPaths = psalmNums.map(n => `${address}\\psalms\\${n}.txt`);
 
-	/// change glas on Saturday evening
-	if (dayOfWeek === 7){
-	    glas = glas % 8 + 1
-	}
 	var ekteniasData;
     if (priest === "1"){
          ekteniasData = await getData(`${address}\\horologion\\ektenias.json`);
@@ -124,20 +124,22 @@ async function loadText(full, dayOfWeek, priest, glas) {
 }
 
 async function constructCanon(dayOfWeek, glas, full, refrain){
-    // 1. try to find a correct canon (so far, in octoechos)
+    // 1. try to find a correct canon (so far, only in octoechos)
     // 2. use the default one otherwise (it's from tuesday of the tone 8)
     const canon_address = `${address}\\octoechos\\${glas}\\${dayOfWeek}_compline.json`
     try{
+        console.log(`Found a canon for ${dayOfWeek} day of tone ${glas}.`)
         var err = ""
         var canonData = await getData(canon_address);
     } catch (error) {
-        console.log("No canon! Using the default one")
+        console.log(`No canon for ${dayOfWeek} day of tone ${glas}. Using the default one`)
         var err = "<div class=rubric>The proper canon for today is not yet added, please use the default one:</div>"
         canonData = await getData(`${address}\\octoechos\\8\\2_compline.json`);
     }
     var allowedOdes;
     if (full === "1") {
-        allowedOdes = new Set(["1","3","4","5","6","7","8","9"]);
+        // the three-odes can have a 2nd ode
+        allowedOdes = new Set(["1","2", "3","4","5","6","7","8","9"]);
     } else {
         // Lviv council shortenings
         if (dayOfWeek === 1) {var i = 1} else {i = dayOfWeek + 1}
