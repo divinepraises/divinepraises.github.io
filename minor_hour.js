@@ -45,7 +45,6 @@ export function minorHour(hour, priest, full, date){
 	<div class=rubric>When this hour is followed by another one, switch to the next hour here. Otherwise, conclude with the dismissal:</div>
 	<hr>
 	${endingBlockMinor(priest)}
-	${amen}
 	`;
 }
 
