@@ -86,7 +86,7 @@ async function loadText(hour, full, dayOfWeek, glas, date) {
 
         document.getElementById("psalms").innerHTML = `<div class="subhead">Psalm ${n}</div>${ psalmData}`;
     }
-    selectTropar(dayOfWeek, psalmData, glas, dayData).then(tropar => {
+    selectTropar(hour, dayOfWeek, psalmData, glas, dayData).then(tropar => {
         document.getElementById("troparia").innerHTML = tropar;
     });
     selectKondak(hour, dayOfWeek, psalmData, glas, dayData).then(kondak => {
@@ -98,7 +98,7 @@ async function loadText(hour, full, dayOfWeek, glas, date) {
 
 }
 
-async function selectTropar(dayOfWeek, hourData, glas){
+async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
     //TODO make one function for tropar and kondak?
    /*
        1: weekday
@@ -187,33 +187,81 @@ async function selectTropar(dayOfWeek, hourData, glas){
     віддання в будень
     На всіх: тропар і кондак тільки свята, як у саме свято.
     */
+    // fallback for now
+    if (!dayData) {dayData = {"class": 0};  hour === "1hour";}
 
+    // TODO add pre- and post-feasts
+
+    // Sunday
     if (dayOfWeek === 7){
-        // Sunday first
-        const data = await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`);
-        return `${glory}<br>${data["troparia"][glas]}`;
+        const sundayTrop = await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`);
+
+        if (hour === "1hour" && dayData["class"] < 8){
+            return `${glory}<br>${sundayTrop["troparia"][glas]}`;
+        }
+
+        const dayTrop = dayData["troparia"];
+        if (dayData["class"] >= 8){
+            // Sunday and polyeleos
+            return `${sundayTrop["troparia"][glas]}<br>${glory}<br>${dayTrop[0]}`;
+        }
+
+        if (hour === "6hour"){
+            // There is no rubric outside the church in Dol.
+            // In footnotes he quotes Greek practice, but I disagree with him that it matters.
+            // In "Око Церковное" the order is different, but in its spirit,
+            // the day's saint seems like the best choice.
+            return `${sundayTrop["troparia"][glas]}<br>${glory}<div class="rubric">In a church, a troparion of the church. Otherwise:</div>${dayTrop[0]}`;
+        }
+        if (hour === "3hour"){
+            return `${sundayTrop["troparia"][glas]}<br>${glory}<br>${dayTrop[0]}`;
+        }
+        // 9th hour: check if two saints
+        if (dayTrop.length === 2) {
+            return `${sundayTrop["troparia"][glas]}<br>${glory}<br>${dayTrop[1]}`;
+        }
+        return `${sundayTrop["troparia"][glas]}<br>${glory}<br>${dayTrop[0]}`;
+    }
+
+    // polyeleos or higher: at any hour return day troparion
+    if (dayData["class"] >= 8){
+        return `${glory}<br>${dayData["troparia"][0]}`;
     }
 
     // Friday is the same as Wednesday
     if (dayOfWeek === 5){dayOfWeek = 3;}
-    // read the data
-    const data = await getData(`${address}\\horologion\\daily_troparia_kontakia.json`);
-    if (!data){
-        // fallback for now
-        return hourData["lenten_troparia"]
+
+    // 1st hour: troparion of the weekday
+    // this also functions as a fallback if there is no calendar day troparion
+    if (hour == "1hour"){
+        const data = await getData(`${address}\\horologion\\daily_troparia_kontakia.json`);
+        var thisWeekayTropars = data["troparia"][dayOfWeek];
+        const numWeekayTropars = thisWeekayTropars.length;
+        if (numWeekayTropars === 1){
+            return `${glory}<br>${thisWeekayTropars[0]}`;
+        }
+        else {
+            return `${thisWeekayTropars[0]}<br>${glory}<br>${thisWeekayTropars[1]}`;
+        }
     }
-    //TODO expand beyond the weekdays
-    var thisDayTropars = data["troparia"][dayOfWeek];
-    const numTropars = thisDayTropars.length;
-    if (numTropars === 1){
-        return `${glory}<br>${thisDayTropars[0]}`;
+
+    // weekday
+    const dayTrop = dayData["troparia"];
+    if (hour === "6hour"){
+        // see Sun for comment
+        return `${glory}<div class="rubric">In a church, a troparion of the church. Otherwise:</div>${dayTrop[0]}`;
     }
-    else {
-        return `${thisDayTropars[0]}<br>${glory}<br>${thisDayTropars[1]}`;
+    if (hour === "3hour"){
+        return `${glory}<br>${dayTrop[0]}`;
     }
+    // 9th hour: check if two saints
+    if (dayTrop.length === 2) {
+        return `${glory}<br>${dayTrop[1]}`;
+    }
+    return `${glory}<br>${dayTrop[0]}`;
 }
 
-async function selectKondak(hour, dayOfWeek, hourData, glas){
+async function selectKondak(hour, dayOfWeek, hourData, glas, dayData){
     /*
      Якщо ж в уставі буде подано більше, ніж два тропарі і більше, ніж один кондак,
     тоді вони беруться поперемінне, тобто:
@@ -229,32 +277,59 @@ async function selectKondak(hour, dayOfWeek, hourData, glas){
 
     Подібно і в перед- і посвяття господні і богородичні, як і для святих полієлейних,
     беруться їхні тропарі на кожнім часі, а тропар храму не береться.
+
+    For detailed rules, see the troparia function.
     */
+
+    // fallback for now
+    if (!dayData) {dayData = {"class": 0}; hour === "1hour";}
+           console.log(dayOfWeek, hour, dayData["class"])
+
+    // Sunday
     if (dayOfWeek === 7){
-        // Sunday first
-        const data = await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`);
-        return `${data["kontakia"][glas]}`;
+        const sundayKond = await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`);
+
+        if (hour === "1hour" || (hour === "6hour" && dayData["class"] >= 8)){
+            return `${sundayKond["kontakia"][glas]}`;
+        }
+
+        if (hour === "6hour"){
+            // There is no rubric outside the church in Dol.
+            // In footnotes he quotes Greek practice, but I disagree with him that it matters.
+            // In "Око Церковное" the order is completely different.
+            // So I am just balancing it out: as much Sunday as saints.
+            // For weekdays, taking the first saint, inspiring a bit from Oko.
+            // For polyeleos and higher that is actually the rubric.
+            return `<div class="rubric">In a church, a kontakion of the church. Otherwise:</div>${sundayKond["kontakia"][glas]}`;
+        }
+
+        const dayKond = dayData["kontakia"];
+        // 9th hour: check if two saints
+        if (hour === "9hour" && dayKond.length === 2) {
+            return `${dayKond[1]}`;
+        }
+        // 3rd or 9th with 1 saint
+        return `${dayKond[0]}`;
     }
 
-    // Friday is the same as Wednesday
-    if (dayOfWeek === 5){dayOfWeek = 3;}
-    const data = await getData(`${address}\\horologion\\daily_troparia_kontakia.json`);
-    if (!data){
-        // fallback for now
-        return hourData["lenten_kontakion"]
+    if (hour === "1hour" && dayData["class"] < 8){
+        const data = await getData(`${address}\\horologion\\daily_troparia_kontakia.json`);
+        return `${data["kontakia"][dayOfWeek][0]}`;
     }
-    var thisDayTropars = data["kontakia"][dayOfWeek];
-    const numTropars = thisDayTropars.length;
-    var numOfHour = hour.charAt(0);
-    if (numTropars === 1 || numOfHour === "1"){
-        // 1st hour always gets first k
-        return `${thisDayTropars[0]}`;
-    }
-    else if (numOfHour === "6"){
-              return `${thisDayTropars[0]}`;
+
+    const dayKond = dayData["kontakia"];
+    if (dayData["class"] >= 8){
+            return `${dayKond[0]}`;
         }
-    else
-    {
-        return `${thisDayTropars[1]}`;
+
+    if (hour === "6hour"){
+        return `<div class="rubric">In a church, a kontakion of the church. Otherwise:</div>${dayKond[0]}`;
     }
+
+    // 9th hour: check if two saints
+    if (hour === "9hour" && dayKond.length === 2) {
+        return `${dayKond[1]}`;
+    }
+    // 3rd or 9th with 1 saint
+    return `${dayKond[0]}`;
 }
