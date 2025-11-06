@@ -1,0 +1,70 @@
+{
+  "psalm140refrain": "* Hear me, O Lord! ",
+  "wisdom": "<FONT COLOR=\"RED\">Deacon:</FONT> <b>Wisdom!</b>",
+  "stand": "<b>Stand aright!</b>",
+  "hymn_of_light": "Tranquil Light, of the holy glory of the immortal heavenly, holy blessed Father, O Jesus Christ: as we come upon the sunset, as we see the evening light, we sing to God, the Father, the Son, and the Holy Spirit. At all times You are worthy of being hymned by joyful voices; O Son of God, You are the giver of life. For this the whole world glorifies You.",
+  "attentive": "<FONT COLOR=\"RED\">Deacon:</FONT> <b>Let us be attentive!</b>",
+  "peace": "<FONT COLOR=\"RED\">Priest:</FONT> <b>Peace be with all.</b>",
+  "andWith": "And with your spirit.",
+  "bow": "<FONT COLOR=\"RED\">Deacon:</FONT> <b>Bow your heads to the Lord.</b>",
+  "prokimenon": [
+    [
+      6,
+      "The Lord reigns,",
+      "He is clothed in majesty.",
+      "Robed is the Lord and girt about with strength.",
+      "For He has made the world firm, which shall not be moved.",
+      "Holiness befits Your house, O Lord, for length of days."
+    ],
+    [
+      8,
+      "And now bless the Lord,",
+      "all you servants of the Lord.",
+      "Who stand in the temple of the Lord, in the courtyards of the house of our God."
+    ],
+    [
+      4,
+      "The Lord hears me",
+      "when I cry out to Him.",
+      "Whenever I called, the God of my justice heard me."
+    ],
+    [
+      1,
+      "Your mercy, O Lord, shall follow me",
+      "all the days of my life.",
+      "The Lord is my shepherd, I shall not want. In green pastures He gives me repose."
+    ],
+    [
+      5,
+      "O Lord, save me by Your name,",
+      "and in Your power be a judge for me.",
+      "O God, hear my prayer; listen to the words of my mouth."
+    ],
+    [
+      6,
+      "My help is from the Lord,",
+      "Who made heaven and earth.",
+      "I lifted up my eyes to the mountains, from where my help shall come."
+    ],
+    [
+      7,
+      "O God, You are my defender",
+      "and Your mercy goes before me.",
+      "Deliver me from my enemies, O God; save me from those who rise up against me."
+    ]
+  ],
+  "aposticha": [
+    "I have lifted up my eyes to You enthroned in heaven. Behold, as the eyes of servants are on the hands of their masters, as the eyes of a maid are on the hands of her mistress,* so are our eyes on the Lord our God until He has mercy on us.",
+    "Have mercy on us, O Lord, have mercy on us; for we have been filled with shame; our soul is all too full of the mockery of the rich,* of the contempt of the proud."
+  ],
+  "aposticha_dead": [
+    "Blessed are they whom You have chosen* and taken to Yourself, О Lord.",
+    "Their souls shall dwell* among good things."
+  ],
+  "simeon": "Now, O Master, You have kept Your promise; let Your servant go in peace. With my own eyes I have seen the salvation which You have prepared in the sight of every people; a Light to reveal You to the Gentiles, and the glory of Your people, Israel!",
+  "haire": "Rejoice, Mother of God, Virgin Mary, full of grace!* The Lord is with you.* Blessed are you among women,* and blessed is the fruit of your womb.* For you have borne Christ, the Saviour and Redeemer of our souls.",
+  "blessing": "<FONT COLOR=\"RED\">Priest:</FONT> <b>Blessed is the One-Who-Is, Christ our God, always, now and for ever, and ever.</b>",
+  "strengthen": "O God, strengthen the Orthodox faith for ever and ever.",
+  "theotokos": "<FONT COLOR=\"RED\">Priest:</FONT> <b>O most holy Mother of God, save us.</b>",
+  "Christ": "<FONT COLOR=\"RED\">Priest:</FONT> <b>Glory be to You, O Christ our God, our hope, glory be to You.</b>"
+}

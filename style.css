@@ -19,16 +19,21 @@ body {
     font-style: italic;
 }
 .column {
-float: left;
+    float: left;
 }
 .left {
-width: 50%;
+    width: 50%;
 }
 .right {
-width: 50%;
+    width: 50%;
 }
 .row:after {
-content: "";
-display: table;
-clear: both;
+    content: "";
+    display: table;
+    clear: both;
+}
+button {
+    font-size: 20px;
+    font-weight: bold;
+    width:100%;
 }

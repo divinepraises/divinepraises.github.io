@@ -1,4 +1,5 @@
 import { getData, replaceCapsWords } from './script.js';
+const address = `Text\\English`
 
 const response = await fetch('./Text/English/horologion/general_texts.json');
 const data = await response.json();
@@ -12,27 +13,26 @@ export const andNow = `${data.andNow}`
 export const gloryAndNow = `${glory} ${andNow}`
 
 export const LHM = `${data.lhm}`
+export const GTL = `${data.gtl}`
+export const TYL = `${data.tyl}`
 
 export const moreHonorable = `${data.moreHonorable}`
 
 export const inTheName = `${data.inTheName}`
 
 export function trisagionToPater(priest){
-    return `${cross} ${data.trisagion} <FONT COLOR="RED">(3)</FONT><br>
-		${gloryAndNow}
-		${data.trinity}<br>
-		${data.lhm} <FONT COLOR="RED">(3)</FONT><br>
-		${glory}<br>
-		${andNow}<br>
-		${data.ourFather}<br>
-		${getOurFatherEnding(priest)}<br>
-		<FONT COLOR="RED">Choir:</FONT> ${data.amen} `;
+    return `${cross} ${data.trisagion} <FONT COLOR="RED">(3)</FONT><br><br>
+		${glory} ${andNow}<br><br>
+		${data.trinity}<br><br>
+		${data.lhm} <FONT COLOR="RED">(3)</FONT><br><br>
+		${glory} ${andNow}<br><br>
+		${data.ourFather}<br><br>
+		${getOurFatherEnding(priest)}<br><br>
+		<FONT COLOR="RED">Choir:</FONT> ${data.amen}<br><br>`;
 }
 
-export const tripleAlleluia = `${glory}<br>
-    ${andNow}<br>
-	${cross} ${data.tripleAlleluia} <FONT COLOR="RED">(3)</FONT><br>
-	${data.lhm} <FONT COLOR="RED">(3)</FONT> `;
+export const tripleAlleluia = `${glory} ${andNow}<br>
+	${cross} ${data.tripleAlleluia} <FONT COLOR="RED">(3)</FONT><br>`;
 
 export function usualBeginning(priest, season){
  var HK;
@@ -41,19 +41,19 @@ export function usualBeginning(priest, season){
  } else {
   HK = `${data.heavenlyKing}<br>`;
  }
- return `${getBeginning(priest)}<br>
-		<FONT COLOR="RED">Choir:</FONT> ${data.amen}<br>
-		${data.gloryBeToYou}<br>
-		${HK}
+ return `${getBeginning(priest)}<br><br>
+		<FONT COLOR="RED">Choir:</FONT> ${data.amen}<br><br>
+		${data.gloryBeToYou}<br><br>
+		${HK}<br>
 		${trisagionToPater(priest)}
-		${data.lhm} <FONT COLOR="RED">(12)</FONT><br>
-		${gloryAndNow}`;
+		${data.lhm} <FONT COLOR="RED">(12)</FONT><br><br>
+		${glory} ${andNow}`;
 }
-export const comeLetUs = `${cross} ${data.clw1}<br>
-		${cross} ${data.clw2}<br>
+export const comeLetUs = `${cross} ${data.clw1}<br><br>
+		${cross} ${data.clw2}<br><br>
 		${cross} ${data.clw3} `
 
-function getBeginning(withPriest) {
+export function getBeginning(withPriest) {
 	if (withPriest == "1") {
 		return `<FONT COLOR="RED">Priest:</FONT> <b>${data.blessedBeOurGod}</b> `;
 	} else {
@@ -65,7 +65,7 @@ function getOurFatherEnding(withPriest) {
 	if (withPriest == "1") {
 		return `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.forTheKingdom}</b> `;
 	} else {
-		return `<FONT COLOR="RED">Chariman:</FONT> ${data.JesusPrayer} `;
+		return `<FONT COLOR="RED">Chariman:</FONT> ${data.JesusPrayer}`;
 	};
 }
 
@@ -77,13 +77,43 @@ export function prayerBlessingMayGodBeGracious(withPriest) {
 	};
 }
 
-function giveTheBlessing(withPriest) {
+export function giveTheBlessing(withPriest) {
 	if (withPriest == "1") {
 		return `${data.giveTheBlessing}`;
 	} else {
 		return `${data.LordBless}`;
 	};
 }
+
+export function dismissalMajor(dayOfWeek, withPriest, isGreatVespers, saintNames) {
+    var text;
+    var replacements = {};
+	if (withPriest == "1") {
+		text = `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.priestDismissalMajor}</b> `;
+	} else {
+		text = `<FONT COLOR="RED">Chariman:</FONT> ${data.layDismissalMajor}`;
+	};
+	if (dayOfWeek === 0 && !isGreatVespers) replacements = {"SUNDAY": data.dismissalsWeekdays[0], "WEEKDAY": "", "THURSDAY": "", "CHURCH": data.dismissalChurch};
+	else if (dayOfWeek === 0 && isGreatVespers) replacements = {"SUNDAY": data.dismissalsWeekdays[0], "WEEKDAY": "", "THURSDAY": "", "CHURCH": ""};
+	else if (isGreatVespers) replacements = {"SUNDAY": "", "WEEKDAY": "", "THURSDAY": "", "CHURCH": ""};
+	else if (dayOfWeek === 4) replacements = {"SUNDAY": "", "WEEKDAY": "", "THURSDAY": data.dismissalsWeekdays[4], "CHURCH": data.dismissalChurch};
+	else if (dayOfWeek === 6) replacements = {
+	    "SUNDAY": "",
+	    "WEEKDAY": data.dismissalsWeekdays[6],
+	    "THURSDAY": data.dismissalsWeekdays[4] + data.dismissalsWeekdays[7],
+	    "CHURCH": data.dismissalChurch
+	    };
+	else replacements = {"SUNDAY": "", "WEEKDAY": data.dismissalsWeekdays[dayOfWeek], "THURSDAY": "", "CHURCH": data.dismissalChurch};
+
+	if (!isGreatVespers) {
+	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}`
+	} else {
+	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}${data.dismissalSaintsSolemn}`
+	}
+
+	return `${replaceCapsWords(text, replacements)}<br><br><FONT COLOR="RED">Choir:</FONT> ${amen}`
+}
+
 
 function dismissalMinor(withPriest) {
 	if (withPriest == "1") {
@@ -100,7 +130,6 @@ export function endingBlockMinor(withPriest){
 	        ${dismissalMinor(withPriest)}<br>
 	        <FONT COLOR="RED">Choir:</FONT> ${data.amen}<br>
 	        `
-
 }
 
 export const prayerOfTheHours = `${data.prayerOfTheHours}`
@@ -116,4 +145,16 @@ export async function lesserDoxology(hour){
         return `${head}${replaceCapsWords(dox["2"], replacementDict)}`
     }
     document.getElementById("lesserDoxology").innerHTML = `${head}${replaceCapsWords(dox["1"], replacementDict)}<br>${replaceCapsWords(dox["2"], replacementDict)}`
+}
+
+export async function getCommonText(textType, dayData){
+    if (Array.isArray(dayData["type"])) {
+        var texts = [];
+        for (let [i, name] of dayData["name"].entries()){
+                texts.push(getCommonText(textType, {"name":name, "type": dayData["type"][i]}))
+            }
+        return texts;
+    } else {
+        return [replaceCapsWords((await getData(`${address}\\menaion\\common\\${dayData["type"]}.json`))[textType], {"NAME": dayData["name"]})];
+    }
 }

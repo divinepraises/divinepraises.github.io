@@ -1,38 +1,45 @@
 import { usualBeginning, comeLetUs , lesserDoxology, itIsTrulyRight, trisagionToPater, glory, andNow, LHM, prayerOfTheHours, gloryAndNow, moreHonorable, inTheName,prayerBlessingMayGodBeGracious, amen, endingBlockMinor } from './text_generation.js';
-import { parseDate, getData, } from './script.js';
+import { getDayInfo, getData, readPsalmsFromNumbers } from './script.js';
 
 var address = `Text\\English`
 
-export function compline(priest, full, date){
-	var season, seasonToShow, glas;
-    var chosenDate = new Date(date);
-	[season, seasonToShow, glas] = parseDate(chosenDate);
-	// it seems, days are shifted. now, Sunday is 7
-	// another + 1 is because we start the day in the evening
-	var dayOfWeek = (chosenDate.getDay() + 1)%7 + 1;
-	/// change glas on Saturday evening
-	if (dayOfWeek === 7){
-	    glas = glas % 8 + 1
-	}
-	const dd_mm = String(chosenDate.getDate()+1).padStart(2, "0") + String(chosenDate.getMonth() + 1).padStart(2, "0");
+export async function compline(priest, full, date){
+	let [year, mm, dd, season, glas, dayOfWeek, dateAddress] = getDayInfo(date, true);
+
+	const dd_mm = String(dd).padStart(2, "0") + String(mm).padStart(2, "0");
 
     const isIncarnationFeast = (dd_mm === "2412" || dd_mm === "0501" || dd_mm === "2403")
 
-    if ((season === "Lent" && dayOfWeek < 6) || isIncarnationFeast){
-        return greatCompline(full, season, dayOfWeek, priest, glas);
+    var kontakion, dayData;
+
+    try{
+        dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
+    } catch (error) {
+        dayData = {"class" : 0};
+        `No data for this day! ${`${address}\\menaion\\${dateAddress}.json`}`
+    }
+    if (dayData["class"] >= 8) {
+        if ("kontakia" in dayData) kontakion = dayData["kontakia"][0];
+        else kontakion = (await getCommonText("kontakia", dayData));
+    } else {
+        kontakion = "";
     }
 
-    return smallCompline(full, season, dayOfWeek, priest, glas);
+    if ((season === "Lent" && dayOfWeek < 6) || isIncarnationFeast){
+        return greatCompline(full, season, dayOfWeek, priest, glas, kontakion);
+    }
+
+    return smallCompline(full, season, dayOfWeek, priest, glas, kontakion);
 }
 
-function greatCompline(full, season, dayOfWeek, priest, glas){
+function greatCompline(full, season, dayOfWeek, priest, glas, kontakion){
     // placeholder
-    return "<div class=\"rubric\">No great compline yet.</div><br>"+smallCompline(full, season, dayOfWeek, priest, glas);
+    return "<div class=\"rubric\">No great compline yet.</div><br>"+smallCompline(full, season, dayOfWeek, priest, glas, kontakion);
 }
 
 
-function smallCompline(full, season, dayOfWeek, priest, glas){
-    loadText(full, dayOfWeek, priest, glas);
+function smallCompline(full, season, dayOfWeek, priest, glas, kontakion){
+    loadText(full, dayOfWeek, priest, glas, kontakion);
 
 	return `<h2>Compline</h2>
 	${usualBeginning(priest, season)}<br><br>
@@ -50,14 +57,14 @@ function smallCompline(full, season, dayOfWeek, priest, glas){
     ${itIsTrulyRight}<br><br>
     ${trisagionToPater(priest)}
     <div id="troparia"></div><br>
-    ${LHM} <FONT COLOR="RED">(40)</FONT><br>
-	${prayerOfTheHours}<br>
-	${LHM} <FONT COLOR="RED">(3)</FONT><br>
-	${gloryAndNow}
+    ${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
+	${prayerOfTheHours}<br><br>
+	${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
+	${gloryAndNow}<br><br>
 	${moreHonorable}<br><br>
-	${inTheName}<br>
-	${prayerBlessingMayGodBeGracious(priest)}<br>
-	${amen}
+	${inTheName}<br><br>
+	${prayerBlessingMayGodBeGracious(priest)}<br><br>
+	${amen}<br><br>
     <div id="prayers"></div><br>
     <div id="penitential_troparia"></div><br>
 	${endingBlockMinor(priest)}<br>
@@ -65,7 +72,7 @@ function smallCompline(full, season, dayOfWeek, priest, glas){
 	`;
 }
 
-async function loadText(full, dayOfWeek, priest, glas) {
+async function loadText(full, dayOfWeek, priest, glas, kontakion) {
 	const filename = `${address}\\horologion\\small_compline.json`;
 	const jsonData = await getData(filename);
 
@@ -74,21 +81,11 @@ async function loadText(full, dayOfWeek, priest, glas) {
 
 	var ekteniasData;
     if (priest === "1"){
-         ekteniasData = await getData(`${address}\\horologion\\ektenias.json`);
+         ekteniasData = await getData(`${address}\\horologion\\night_ektenias.json`);
     }
     
     if (full === "1") {
-        const psalmData = await Promise.all(
-            psalmPaths.map(async path => {
-                const resp = await fetch(path);
-                return resp.text();
-            })
-        );
-
-        var formattedValues = ""
-        for (const [i, psalm] of  psalmData.entries()){
-            formattedValues += `<div class="subhead">Psalm ${psalmNums[i]}</div>${psalm}`
-        }
+        var formattedValues = (await readPsalmsFromNumbers(psalmNums)).join("");
         document.getElementById("psalms").innerHTML = `${formattedValues}<br><div id="lesserDoxology"></div>`;
 
         document.getElementById("full_canon").checked = true;
@@ -96,14 +93,14 @@ async function loadText(full, dayOfWeek, priest, glas) {
 
         document.getElementById("penitential_troparia").innerHTML = penitentialTroparia(priest, jsonData, ekteniasData);
     } else if (full === "0") {
-        if (dayOfWeek < 7) {
+        if (dayOfWeek > 0) {
             var i = dayOfWeek%4 - (dayOfWeek < 4)
             const n = psalmNums[i];
             const resp = await fetch(psalmPaths[i]);
             const psalmData = await resp.text();
 
             document.getElementById("psalms").innerHTML = `<div class="subhead">Psalm ${n}</div>${psalmData}`;
-        } else if (dayOfWeek === 7) {
+        } else if (dayOfWeek === 0) {
             document.getElementById("psalms").innerHTML = `<div id="lesserDoxology"></div>`;
             lesserDoxology("compline");
         } else {
@@ -112,7 +109,7 @@ async function loadText(full, dayOfWeek, priest, glas) {
         document.getElementById("shorten_canon").checked = true;
         document.getElementById("penitential_troparia").innerHTML = "";
     }
-    selectTropar(dayOfWeek, jsonData, glas).then(tropar => {
+    selectTropar(dayOfWeek, jsonData, glas, kontakion).then(tropar => {
         document.getElementById("troparia").innerHTML = tropar;
     });
     getData(`${address}\\horologion\\creed.json`).then(creed => {
@@ -128,9 +125,9 @@ async function constructCanon(dayOfWeek, glas, full, refrain){
     // 2. use the default one otherwise (it's from tuesday of the tone 8)
     const canon_address = `${address}\\octoechos\\${glas}\\${dayOfWeek}_compline.json`
     try{
-        console.log(`Found a canon for ${dayOfWeek} day of tone ${glas}.`)
         var err = ""
         var canonData = await getData(canon_address);
+        console.log(`Found a canon for ${dayOfWeek} day of tone ${glas}.`)
     } catch (error) {
         console.log(`No canon for ${dayOfWeek} day of tone ${glas}. Using the default one`)
         var err = "<div class=rubric>The proper canon for today is not yet added, please use the default one:</div>"
@@ -194,7 +191,7 @@ async function selectCanon(dayOfWeek, glas, full, refrain){
     });
 }
 
-async function selectTropar(dayOfWeek, hourData, glas){
+async function selectTropar(dayOfWeek, hourData, glas, kontakion){
    /*
         - В п’ять перших днів тижня беруться наступних шість тропарів,
         >тобто спочатку храму, якщо він господній або богородичний,
@@ -221,8 +218,12 @@ async function selectTropar(dayOfWeek, hourData, glas){
     */
     // TODO start with feasts and post-feasts
 
+    if (kontakion != "") {
+        return kontakion;
+    }
+
     // Sunday
-    if (dayOfWeek === 7){
+    if (dayOfWeek === 0){
         const data = await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`);
         return data["hypakoe"][glas];
     }
@@ -285,9 +286,9 @@ function  postComplinePrayers(withPriest, data, ekteniasData, dayOfWeek) {
     // if no, the penitential prayer from Typica is used (Dolnytsky prescribes it)
     // in some horologions, it is also followed by a private list of petitions
 	if (withPriest == "1") {
-	    const rub = `<br><br><div class="rubric">The following is said everywhere:</div>`
+	    const rub = `<div class="rubric">The following is said everywhere:</div>`
 	    var ektenia = ekteniasData["after_compline"].join("<br>")
-	    if (dayOfWeek !== 7){
+	    if (dayOfWeek > 0){
 	        ektenia +=`<br><div class="rubric">For the departed:</div>` + ekteniasData["after_compline_for_the_dead"].join("<br>")
 	    }
 		return data["after_prayers"]["with_priest"].join("") + rub + ektenia;

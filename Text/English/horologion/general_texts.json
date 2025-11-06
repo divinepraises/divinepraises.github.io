@@ -7,6 +7,8 @@
   "andNow":  "Now and for ever and ever. Amen.",
   "trinity": "Trinity most holy, have mercy on us. Cleanse us of our sins, O Lord; pardon our transgressions, O Master; look upon our weaknesses and heal them, O Holy One; for the sake of Your name.",
   "lhm": "Lord, have mercy.",
+  "gtl": "Grant this, O Lord.",
+  "tyl": "To You, O Lord.",
   "giveTheBlessing": "Give the blessing.",
   "LordBless": "Lord, bless.",
   "ourFather": "Our Father, Who art in heaven, hallowed be Thy Name. Thy kingdom come. Thy will be done, on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil.",
@@ -20,9 +22,26 @@
   "inTheName": "In the name of the Lord, father, give the blessing.",
   "JesusPrayer": "Lord, Jesus Christ, Son of God, have mercy on us.",
   "zamolytv": "Through the prayers of our holy fathers, Lord, Jesus Christ our God, have mercy on us.",
-  "layDismissalMinor": "Christ our true God, through the prayers of Your immaculate Mother, of our venerable and godly fathers; and of all the saints - have mercy on us and save us, for You are good and love mankind.",
+  "layDismissalMinor": "O Christ our true God, through the prayers of Your immaculate Mother, of our venerable and godly fathers; and of all the saints - have mercy on us and save us, for You are good and love mankind.",
   "forTheKingdom": "For the kingdom, the power and the glory are Yours, Father, Son, and Holy Spirit, now and for ever and ever.",
   "blessedBeOurGod": "Blessed be our God, always, now and for ever and ever.",
   "mayGodBeGracious": "O God be gracious to us and bless us; make Your face to shine upon us and have mercy on us.",
-  "priestDismissalMinor": "Christ our true God, through the prayers of His immaculate Mother, of our venerable and godly fathers; and of all the saints, will have mercy and save us, for He is good and loves mankind."
+  "priestDismissalMinor": "Christ our true God, through the prayers of His immaculate Mother, of our venerable and godly fathers; and of all the saints, will have mercy and save us, for He is good and loves mankind.",
+  "layDismissalMajor": "O Christ our true God,SUNDAY through the prayers of Your immaculate Mother;WEEKDAY the holy, glorious, and all-praiseworthy apostles;THURSDAY CHURCH SAINT and of all the saints, have mercy and save us, for You are good and love mankind.",
+  "priestDismissalMajor": "Christ our true God,SUNDAY through the prayers of His immaculate Mother;WEEKDAY the holy, glorious, and all-praiseworthy apostles;THURSDAY CHURCH SAINT and of all the saints, will have mercy and save us, for He is good and loves mankind.",
+  "dismissalsWeekdays": [
+    " risen from the dead,",
+    " the protection of honorable, heavenly incorporeal powers; of",
+    " of the honorable and glorious prophet, forerunner and baptizer, John; of",
+    " by the power of the precious and life-giving Cross; of",
+    " of our father among the saints, Nicholas, archbishop, wonderworker of Myra in Lycia; and",
+    " by the power of the precious and life-giving Cross; of",
+    " by the power of the precious and life-giving Cross; through the protection of the honorable, heavenly incorporeal powers; of the honorable and glorious prophet, forerunner and baptizer, John; of",
+    " of the holy, glorious and triumphant martyrs; of our venerable and God-bearing fathers; of the holy and righteous ancestors of God, Joachim and Anne; of"
+  ],
+  "dismissalChurch": " of Saint <FONT COLOR=\"RED\">(name, whose church it is)</FONT>,",
+  "dismissalSaints": " and of",
+  "dismissalSaintsSolemn": ", whose memorial we solemnly celebrate today; ",
+  "dismissalTheotokos": "the glorious feast of whose SAINT we solemnly celebrate today, and of",
+  "and": "and"
 }

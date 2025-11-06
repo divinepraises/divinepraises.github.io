@@ -1,51 +1,46 @@
 {
-  "at_compline": [
-    "<b>Have mercy on us, O God, in the greatness of Your compassion, we pray You, hear us and have mercy.</b>",
-    "Lord have mercy. <FONT COLOR=\"RED\">(3)</FONT>",
-    "(a couple more petitions)"
+  "peace": [
+    "In peace, let us pray to the Lord.",
+    "For the peace from on high and for the salvation of our souls, let us pray to the Lord.",
+    "For peace throughout the world, for the well-being of God’s holy churches and for the unity of all, let us pray to the Lord.",
+    "For this holy church and for all who enter it with faith, reverence, and fear of God, let us pray to the Lord.",
+    "For the most holy universal Pontiff, <FONT COLOR=\"RED\">N.</FONT>, the Pope of Rome, our most blessed Patriarch, <FONT COLOR=\"RED\">N.</FONT>, our most reverend Metropolitan, <FONT COLOR=\"RED\">N.</FONT>, our God-loving Bishop, <FONT COLOR=\"RED\">N.</FONT>, for the reverend priesthood, the diaconate in Christ, and all the clergy and the people, let us pray to the Lord.",
+    "For our nation under God, for our government, and for all the military, let us pray to the Lord.",
+    "For this city, for every city and country and for the faithful who live in them, let us pray to the Lord.",
+    "For favourable weather, for an abundance of the fruits of the earth, and for peaceful times, let us pray to the Lord.",
+    "For the seafarers and travellers, for the sick and the suffering, for those held captive, and for their salvation, let us pray to the Lord.",
+    "That we may be delivered from all tribulation, wrath, and misfortune, let us pray to the Lord.",
+    "Help and save, have mercy, and protect us, O God, by Your grace.",
+    "Remembering our most holy and immaculate, most blessed and glorious Lady, the Mother of God and ever-virgin Mary, together with all the saints, let us commend ourselves and one another and our whole life, to Christ our God.",
+    "For all glory, honour, and worship befit You, Father, Son, and Holy Spirit, now and for ever and ever."
   ],
-  "after_compline": [
-    "<b>Let us pray for our most holy universal Pontiff <FONT COLOR=\"RED\">N.</FONT>, Pope of Rome.</b>",
-    "May God save him and give him mercy.",
-    "<b>For our civil authorities.</b>",
-    "May God save them and give them mercy.",
-    "<b>For our most blessed Patriarch <FONT COLOR=\"RED\">N.</FONT>, for our most reverend Metropolitan <FONT COLOR=\"RED\">N.</FONT>; for our God-loving Bishop <FONT COLOR=\"RED\">N.</FONT>.</b>",
-    "May God save them and give them mercy.",
-    "<b>For all Catholic bishops.</b>",
-    "May God save them and give them mercy.",
-    "<b>For the noble benefactors of this holy church [monastery].</b>",
-    "May God save them and give them mercy.",
-    "<b>For our spiritual fathers, and for all our brothers and sisters in Christ.</b>",
-    "May God save them and give them mercy.",
-    "<b>For those who are absent and those who are travelling.</b>",
-    "May God protect them and have mercy on them.",
-    "<b>For those who are kind to us.</b>",
-    "May God reward them and have mercy on them.",
-    "<b>For those who serve and who have served in this holy church [monastery]. </b>",
-    "May God save them and give them mercy.",
-    "<b>For those who hate us and for those who love us.</b>",
-    "May God forgive them and give them mercy.",
-    "<b>For the release of captives.</b>",
-    "May God ransom them and have mercy on them.",
-    "<b>For the sick and suffering.</b>",
-    "May God cure them and have mercy on them.",
-    "<b>For those living in anxiety and poverty.</b>",
-    "May God visit them and have mercy on them.",
-    "<b>For all orthodox Christians.</b>",
-    "May God save them and give them mercy.",
-    "<b>For an abundance of the fruits of the earth.</b>",
-    "May God grant an increase of the friuts of the earth."
+  "small": [
+    "Again and again in peace let us pray to the Lord.",
+    "Help and save, have mercy, and protect us, O God, by Your grace.",
+    "Remembering our most holy and immaculate, most blessed and glorious Lady, the Mother of God and ever-virgin Mary, together with all the saints, let us commend ourselves and one another and our whole life, to Christ our God.",
+    "For Yours is the might and Yours are the kingdom, the power, and the glory, Father, Son, and Holy Spirit, now and for ever and ever."
   ],
-  "after_compline_for_the_dead": [
-    "<b>For the benefactors of this holy church [monastery].</b>",
-    "May God grant them remembrance and rest.",
-    "<b>For our parents and relatives.</b>",
-    "May God grant them remembrance and rest.",
-    "<b>For our departed fathers and brothers.</b>",
-    "May God grant them remembrance and rest.",
-    "<b>For those who have given up their lives for the Christian faith.</b>",
-    "May God grant them remembrance and rest.",
-    "<b>For those who lie buried here, those listed and all Christians who have departed from this life.</b>",
-    "Everlasting be their memory."
+  "supplication": [
+    "Let us complete our evening prayer to the Lord.",
+    "Help and save, have mercy, and protect us, O God, by Your grace.",
+    "That this whole evening may be perfect, holy, peaceful, and sinless, let us ask the Lord.",
+    "For an angel of peace, a faithful guide, a guardian of our souls and bodies, let us ask the Lord.",
+    "For the forgiveness and remission of our sins and offenses, let us ask the Lord.",
+    "For all that is good and beneficial for our souls and for peace for the world, let us ask the Lord.",
+    "That we may spend the rest of our lives in peace and repentance, let us ask the Lord.",
+    "For a Christian end to our lives, one that is painless, unashamed, and peaceful; and for a good defence at the awesome tribunal of Christ, let us ask.",
+    "Remembering our most holy and immaculate, most blessed and glorious Lady, the Mother of God and ever-virgin Mary, together with all the saints, let us commend ourselves and one another, and our whole life, to Christ our God.",
+    "For You, O God, are gracious and You love mankind, and we glorify You, Father, Son, and Holy Spirit, now and for ever and ever."
+  ],
+  "pre_augmented": [
+    "Let us all say with our whole soul and our whole mind, let us say:",
+    "Almighty Lord, God of our Fathers, we pray You, hear us and have mercy."
+  ],
+  "augmented": [
+    "Have mercy on us, O God, in the greatness of Your compassion, we pray You, hear us and have mercy.",
+    "We also pray the most holy universal Pontiff, <FONT COLOR=\"RED\">N.</FONT>, the Pope of Rome, our most blessed Patriarch, <FONT COLOR=\"RED\">N.</FONT>, our most reverend Metropolitan, <FONT COLOR=\"RED\">N.</FONT>, our God-loving Bishop, <FONT COLOR=\"RED\">N.</FONT>, for those who serve or have served in this holy church, for our spiritual fathers, and for all our brethren in Christ.",
+    "We also pray for our nation under God, for our government, and for all the military.",
+    "We also pray for the people here present who await Your great and bountiful mercies, for those who have been kind to us, and for all orthodox Christians.",
+    "For You are a merciful and loving God, and we give glory to You, Father, Son, and Holy Spirit, now and for ever and ever."
   ]
 }

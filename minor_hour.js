@@ -1,14 +1,9 @@
-import { usualBeginning, tripleAlleluia, glory, andNow, trisagionToPater, prayerOfTheHours, LHM, comeLetUs, gloryAndNow, moreHonorable, inTheName, prayerBlessingMayGodBeGracious, endingBlockMinor, amen } from './text_generation.js';
-import { parseDate, getData } from './script.js';
-var address = `Text\\English`
+import { usualBeginning, tripleAlleluia, glory, andNow, trisagionToPater, prayerOfTheHours, LHM, comeLetUs, gloryAndNow, moreHonorable, inTheName, prayerBlessingMayGodBeGracious, endingBlockMinor, amen, getCommonText } from './text_generation.js';
+import { getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords } from './script.js';
+const address = `Text\\English`
 
 export function minorHour(hour, priest, full, date){
-	var chosenDate = new Date(date);
-	// it seems, days are shifted. now, Sunday is 7
-	var dayOfWeek = chosenDate.getDay() + 1;
-	var season, seasonToShow, glas;
-	[season, seasonToShow, glas] = parseDate(chosenDate);
-	const dateAddress = `${String(chosenDate.getMonth() + 1).padStart(2, "0")}\\${String(chosenDate.getDate()+1).padStart(2, "0")}`
+	let [year, mm, dd, season, glas, dayOfWeek, dateAddress] = getDayInfo(date, false);
 
 	const numeral = {
 		1: "First",
@@ -27,6 +22,7 @@ export function minorHour(hour, priest, full, date){
 	${comeLetUs}<br><br>
 	<div id="psalms"></div><br>
 	${tripleAlleluia}<br>
+	${LHM} <FONT COLOR="RED">(3)</FONT><br>
 	<div id="troparia"></div>
 	${andNow}
 	<div id="theotokion"></div><br>
@@ -58,25 +54,14 @@ async function loadText(hour, full, dayOfWeek, glas, date) {
         dayData = await getData(`${address}\\menaion\\${date}.json`);
     } catch (error) {
         console.log("No data for the day! Using the weekday troparia.")
-        var err = "<div class=rubric>The proper canon for today is not yet added, please use the default one:</div>"
     }
 
     if (full === "1") {
-         const  psalmData = await Promise.all(
-            psalmPaths.map(async path => {
-                const resp = await fetch(path);
-                return resp.text();
-            })
-        );
-        var formattedValues = ""
-        for (const [i, psalm] of  psalmData.entries()){
-            formattedValues += `<div class="subhead">Psalm ${psalmNums[i]}</div>${psalm}`
-        }
-        document.getElementById("psalms").innerHTML = formattedValues;
+        document.getElementById("psalms").innerHTML = (await readPsalmsFromNumbers(psalmNums)).join("");
 
     } else if (full === "0") {
         var i = dayOfWeek%4 - (dayOfWeek < 4)
-        if (dayOfWeek === 7){
+        if (dayOfWeek === 0){
             i = 2
         }
         const n = psalmNums[i];
@@ -188,19 +173,22 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
     На всіх: тропар і кондак тільки свята, як у саме свято.
     */
     // fallback for now
-    if (!dayData) {dayData = {"class": 0};  hour === "1hour";}
+    if (!dayData) {dayData = {"class": 0};  hour = "1hour";}
+    var dayTrop;
 
     // TODO add pre- and post-feasts
 
     // Sunday
-    if (dayOfWeek === 7){
+    if (dayOfWeek === 0){
         const sundayTrop = await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`);
 
         if (hour === "1hour" && dayData["class"] < 8){
             return `${glory}<br>${sundayTrop["troparia"][glas]}`;
         }
 
-        const dayTrop = dayData["troparia"];
+        if ("troparia" in dayData) dayTrop = dayData["troparia"];
+        else dayTrop = await getCommonText("troparia", dayData);
+
         if (dayData["class"] >= 8){
             // Sunday and polyeleos
             return `${sundayTrop["troparia"][glas]}<br>${glory}<br>${dayTrop[0]}`;
@@ -246,7 +234,9 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
     }
 
     // weekday
-    const dayTrop = dayData["troparia"];
+    if ("troparia" in dayData) dayTrop = dayData["troparia"];
+    else dayTrop = await getCommonText("troparia", dayData);
+
     if (hour === "6hour"){
         // see Sun for comment
         return `${glory}<div class="rubric">In a church, a troparion of the church. Otherwise:</div>${dayTrop[0]}`;
@@ -282,11 +272,11 @@ async function selectKondak(hour, dayOfWeek, hourData, glas, dayData){
     */
 
     // fallback for now
-    if (!dayData) {dayData = {"class": 0}; hour === "1hour";}
-           console.log(dayOfWeek, hour, dayData["class"])
+    if (!dayData) {dayData = {"class": 0}; hour = "1hour";}
+    var dayKond;
 
     // Sunday
-    if (dayOfWeek === 7){
+    if (dayOfWeek === 0){
         const sundayKond = await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`);
 
         if (hour === "1hour" || (hour === "6hour" && dayData["class"] >= 8)){
@@ -303,7 +293,8 @@ async function selectKondak(hour, dayOfWeek, hourData, glas, dayData){
             return `<div class="rubric">In a church, a kontakion of the church. Otherwise:</div>${sundayKond["kontakia"][glas]}`;
         }
 
-        const dayKond = dayData["kontakia"];
+        if ("kontakia" in dayData) dayKond = dayData["kontakia"];
+        else dayKond = await getCommonText("kontakia", dayData);
         // 9th hour: check if two saints
         if (hour === "9hour" && dayKond.length === 2) {
             return `${dayKond[1]}`;
@@ -317,7 +308,8 @@ async function selectKondak(hour, dayOfWeek, hourData, glas, dayData){
         return `${data["kontakia"][dayOfWeek][0]}`;
     }
 
-    const dayKond = dayData["kontakia"];
+    if ("kontakia" in dayData) dayKond = dayData["kontakia"];
+    else dayKond = await getCommonText("kontakia", dayData);
     if (dayData["class"] >= 8){
             return `${dayKond[0]}`;
         }

@@ -1,15 +1,12 @@
-import { setDefaultHour, displayCurrentDay } from './script.js';
+import { setDefaultHour, displayCurrentDay, dateToStr } from './script.js';
 
 // select the date
 const dateInput = document.getElementById("myDate");
 const today = new Date();
-const yyyy = today.getFullYear();
-const mm = String(today.getMonth() + 1).padStart(2, "0");
-const dd = String(today.getDate()).padStart(2, "0");
-dateInput.value = `${yyyy}-${mm}-${dd}`;
+dateInput.value = dateToStr(today);
 
 dateInput.addEventListener("change", () => {
-	displayCurrentDay(new Date(dateInput.value));
+	displayCurrentDay(dateInput.value);
 });
 
 document.getElementById("midnight").disabled = true;

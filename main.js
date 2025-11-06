@@ -15,9 +15,9 @@ var selectedVersion = document.querySelector('input[name="option"]:checked');
 if (hour === "1hour" || hour === "3hour" || hour === "6hour" || hour === "9hour") {
     contentDiv.innerHTML = minorHour(hour, priest, full, date);
 } else if (hour === "compline"){
-    contentDiv.innerHTML = compline(priest, full, date);
+    contentDiv.innerHTML = await compline(priest, full, date);
 } else if (hour === "vespers"){
-    contentDiv.innerHTML = vespers(priest, full, date);
+    contentDiv.innerHTML = await vespers(priest, full, date);
 } else {
     contentDiv.innerHTML = matins();
 }

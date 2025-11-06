@@ -22,27 +22,31 @@
 		</div>	
 		<div class="column right">
 			<h4>Date</h4>
-			<div class="rubric">The date refers to the secular calendar date. E.g. Compline on a Saturday evening will be Sunday Compline.</div>
+			<div class="rubric">Date according to the secular calendar.
+			</div>
 			<input type="date" id="myDate">
 			<div id="date-container"></div><br>
 
 			<h4>Hour</h4>
 			<div class="rubric">By default, an hour roughly corresponding to the time of the day is selected.<br>
 				But not all hours are implemented yet.</div>
-
-			<label><input type="radio" id="vespers" name="hour" value="vespers">Vespers</label><br>
-			<label><input type="radio" id="compline" name="hour" value="compline">Compline</label><br>
+			<br>
+			<div id="date-name"></div><br>
 			<label><input type="radio" id="midnight" name="hour" value="midnight">Midnight Hour</label><br>
 			<label><input type="radio" id="matins" name="hour" value="matins">Matins</label><br>
 			<label><input type="radio" id="1hour" name="hour" value="1hour">First Hour</label><br>
 			<label><input type="radio" id="3hour" name="hour" value="3hour">Third Hour</label><br>
 			<label><input type="radio" id="6hour" name="hour" value="6hour">Sixth Hour</label><br>
 			<label><input type="radio" id="9hour" name="hour" value="9hour">Ninth Hour</label><br><br>
+
+			<div id="next-date-name"></div><br>
+			<label><input type="radio" id="vespers" name="hour" value="vespers">Vespers</label><br>
+			<label><input type="radio" id="compline" name="hour" value="compline">Compline</label><br><br>
 		</div>
 	</div>
     <div id="text-container"></div>
-	<button id="goButton">To the selected hour.</button><br><br><br>
-	<a href="about.html">About this project.</a>
 </div>
+<button id="goButton">To the selected hour.</button><br><br><br>
+<a href="about.html">About this project.</a>
 </body>
 </html>
