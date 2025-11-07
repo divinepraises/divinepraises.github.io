@@ -714,7 +714,7 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
         if (!isNaN(parseInt(stychera[0]))){
             // this is tone indication
             currentPsalm.splice(i, 0, `<div class="rubric">Tone ${stychera}</div>`);
-            lastTone = stychera;
+            lastTone = stychera[0];
             i += 1;
             continue
         }
