@@ -153,7 +153,7 @@ export async function getCommonText(textType, dayData){
         for (let [i, name] of dayData["name"].entries()){
                 texts.push(getCommonText(textType, {"name":name, "type": dayData["type"][i]}))
             }
-        return texts;
+        return (await Promise.all(texts)).flat();
     } else {
         return [replaceCapsWords((await getData(`${address}\\menaion\\common\\${dayData["type"]}.json`))[textType], {"NAME": dayData["name"]})];
     }

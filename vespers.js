@@ -741,6 +741,7 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
         var theotokiaData;
         if (dayOfWeek === 0 || dayOfWeek === 6 || isGreatVespers){
             theotokiaData = await getData(`${address}\\octoechos\\${glas}\\stychera_theotokia.json`);
+            currentPsalm.splice(currentPsalm.length-2, 0, `<div class="rubric">Tone ${glas}</div>`)
             currentPsalm.push(theotokiaData[0])
         } else if ((dayOfWeek === 3 || dayOfWeek === 5) && "stavrotheotokion" in vespersMenaionData) {
             currentPsalm.push(vespersMenaionData["stavrotheotokion"])
