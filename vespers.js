@@ -220,7 +220,9 @@ async function makePs33(priest, vigilVespersData){
 }
 
 async function makeLytia(lytiaData, priest, vespersData, vigilVespersData, saintNames){
-    var lytia = `<div class="subhead">Lytia</div><br>`
+    var lytia = `<div class="subhead">Lytia</div><br>
+    <div class="rubric">The first stichera is supposed to be from the lytia of the parish feast.
+    Then the following sticheras are sung:</div><br>`
 
     var tone;
     for (let stychera of lytiaData){
