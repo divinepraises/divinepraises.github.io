@@ -51,7 +51,7 @@ function dailyVespers(full, dayOfWeek, mm, dd, glas, dayData, dateAddress, pries
   <div id="lytia_stychera"></div>
   <div id="lytia_selector"></div>
   <div id="lytia_prayers"></div>
-  <div id="aposticha"></div><br>
+  <div id="aposticha"></div>
   <div id="simeon"></div><br>
   ${trisagionToPater(priest)}
   <div id="troparia"></div><br>
@@ -433,16 +433,16 @@ async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, vespersDa
             }
             if (!foundNow){
                 if ((dayOfWeek === 3 || dayOfWeek === 5) && "stavrotheotokion_aposticha" in vespersMenaionData){
-                    aposticha += `<i>${andNow}</i><br><br>${vespersMenaionData["stavrotheotokion_aposticha"]}`
+                    aposticha += `<i>${andNow}</i><br><br>${vespersMenaionData["stavrotheotokion_aposticha"]}<br><br>`
                 } else if ("theotokion_aposticha" in vespersMenaionData) {
-                    aposticha += `<i>${andNow}</i><br><br>${vespersMenaionData["theotokion_aposticha"]}`
+                    aposticha += `<i>${andNow}</i><br><br>${vespersMenaionData["theotokion_aposticha"]}<br><br>`
                 } else {
                     const theotokion = (await getData(`${address}\\octoechos\\${tone}\\${dayOfWeek}_vespers.json`))["aposticha"][5];
-                    aposticha += `<i>${andNow}</i><br><br>${theotokion}`
+                    aposticha += `<i>${andNow}</i><br><br>${theotokion}<br><br>`
                 }
             }
         } else {
-            aposticha += `<i>${gloryAndNow}</i><br><br>${apostOct[5]}`
+            aposticha += `<i>${gloryAndNow}</i><br><br>${apostOct[5]}<br><br>`
         }
     } else if (dayOfWeek === 0 && dayData["class"] < 12) {
         // Sunday
@@ -481,10 +481,10 @@ async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, vespersDa
             }
             if (!foundNow) {
                 const theotokion = (await getData(`${address}\\octoechos\\${tone}\\0_vespers.json`))["aposticha"][6];
-                aposticha += `<i>${andNow}</i><br><br>${theotokion}`
+                aposticha += `<i>${andNow}</i><br><br>${theotokion}<br><br>`
             }
         } else {
-            aposticha += `<i>${gloryAndNow}</i><br><br>${apostOct[6]}`
+            aposticha += `<i>${gloryAndNow}</i><br><br>${apostOct[6]}<br><br>`
         }
 
     }
@@ -514,11 +514,11 @@ async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, vespersDa
         if (!foundNow) {
             // assumption: can be only after Glory
             const theotokion = (await getData(`${address}\\octoechos\\${tone}\\0_vespers.json`))["aposticha"][6];
-            aposticha += `<i>${andNow}</i><br><br>${theotokion}`
+            aposticha += `<i>${andNow}</i><br><br>${theotokion}<br><br>`
         }
     }
 
-    return aposticha.slice(0, aposticha.length - 4)
+    return aposticha
 }
 
 
