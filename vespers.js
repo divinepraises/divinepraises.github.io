@@ -327,6 +327,7 @@ async function makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, haire){
     var dayTrop;
     if ("troparia" in dayData) dayTrop = dayData["troparia"];
     else dayTrop = await getCommonText("troparia", dayData);
+    if (!Array.isArray(dayTrop)) {dayTrop = [dayTrop]}
 
     if (dayOfWeek === 0){
         if (dayData["class"] < 10){
@@ -664,6 +665,7 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
         stycheraScheme =  Array(6).fill(1);
     } else {
          // great vespers not on Sunday
+         psalm140tone = psalm140menaionStycheras[0][0];
          stycheras = psalm140menaionStycheras;
          if (numStycheras === 2) stycheraScheme = Array(2).fill(4);
          else if (numStycheras === 3) stycheraScheme = [3, 3, 2];
@@ -742,7 +744,7 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
         else currentPsalm.push(`<br><i>${andNow}</i><br><br>`)
         var theotokiaData;
         if (dayOfWeek != 0 && dayOfWeek != 6 && isGreatVespers){
-            theotokiaData = await getData(`${address}\\octoechos\\${tone}\\stychera_theotokia.json`);
+            theotokiaData = await getData(`${address}\\octoechos\\${lastTone}\\stychera_theotokia.json`);
             currentPsalm.push(theotokiaData[0])
         } else if (dayOfWeek === 0 || dayOfWeek === 6){
             theotokiaData = await getData(`${address}\\octoechos\\${glas}\\stychera_theotokia.json`);
