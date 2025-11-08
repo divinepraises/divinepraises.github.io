@@ -2,15 +2,15 @@ body {
     font-family: Arial, sans-serif;
 }
 .container {
-    max-width: 600px;
+    max-width: 100%;
     margin: 0 auto;
-    padding: 20px;
+    padding: 1.5rem;
 }
 #text-container {
     display: none;
 }
 .subhead {
-    font-size: 16px;
+    font-size: 1.2rem;
     font-weight: bold;
     color: red;
 }
@@ -33,20 +33,14 @@ body {
     clear: both;
 }
 button {
-    font-size: 20px;
+    font-size: 1.5rem;
     font-weight: bold;
     width:100%;
 }
 html {
-  font-size: 22px;
+  font-size: 150%;
 }
-@media screen and (min-width: 320px) {
-  html {
-    font-size: calc(22px + 6 * ((100vw - 320px) / 680));
-  }
-}
-@media screen and (min-width: 1000px) {
-  html {
-    font-size: 28px;
-  }
+p, h1, h2, div {
+  white-space: normal;
+  overflow-wrap: break-word;
 }
