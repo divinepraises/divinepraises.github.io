@@ -52,6 +52,10 @@ async function showMenaionDate(mm, dd){
     try{
         const dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
         const symbolData = await getData(`${address}\\menaion\\feasts_symbols.json`);
+        if ("note" in dayData) {
+            return `${symbolData[dayData["class"]]} ${dd}/${mm}: ${constructDayName(dayData)}
+            <div class="rubric">${dayData["note"]}</div>`;
+        }
         return `${symbolData[dayData["class"]]} ${dd}/${mm}: ${constructDayName(dayData)}`;
     } catch (error) {
          return `No data for this day at ${address}\\menaion\\${dateAddress}.json`
