@@ -588,10 +588,17 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
     var numStycheras = 0;
     var numSetsMenaionStycheras = 0;
 
-    for (let element of psalm140menaionStycheras) {
-        if (element in gloriaDict) break;
+    var last_i = -1;
+    for (let [i, element] of psalm140menaionStycheras.entries()) {
+        if (element in gloriaDict) {
+            if (last_i === i-1){
+                // prev element was the tone for glory/ glory and now
+                numSetsMenaionStycheras -= 1;
+            }
+            break
+        };
         if (typeof element === "string" && isNaN(parseInt(element[0]))) numStycheras += 1;
-        if (!isNaN(parseInt(element[0]))) numSetsMenaionStycheras += 1;
+        if (!isNaN(parseInt(element[0]))) {numSetsMenaionStycheras += 1; last_i = i;}
     }
 
     var stycheraScheme;
@@ -644,10 +651,10 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
         psalm140tone = psalm140menaionStycheras[0][0];
         stycheras = psalm140menaionStycheras;
         if (numStycheras === 6) stycheraScheme =  Array(6).fill(1);
-        else if (numStycheras === 5) stycheraScheme =  [2, 1, 1, 1, 1];
+        else if (numStycheras === 5) stycheraScheme = [2, 1, 1, 1, 1];
         else if (numStycheras === 4){
-            if (numSetsMenaionStycheras === 2) stycheraScheme =  [2, 1, 2, 1];
-            else stycheraScheme =  [2, 2, 1, 1];
+            if (numSetsMenaionStycheras === 2) stycheraScheme = [2, 1, 2, 1];
+            else stycheraScheme = [2, 2, 1, 1];
         }
         else if (numStycheras === 3) stycheraScheme =  Array(3).fill(2);
         else if (numStycheras === 2) stycheraScheme =  Array(2).fill(3);
@@ -822,7 +829,7 @@ async function makeKathisma(dayOfWeek, isGreatVespers, mm, dd, season, priest, e
     // schedule
 
     if (dayOfWeek === 1) {
-      document.getElementById("kathisma").innerHTML = `<div class=\"rubric\">No kathisma on Sunday night</div>`;
+      document.getElementById("kathisma").innerHTML = `<div class=\"rubric\">No kathisma on Sunday night</div><br>`;
       return
     }
 
