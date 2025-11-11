@@ -4,6 +4,9 @@ const address = `Text\\English`
 const response = await fetch('./Text/English/horologion/general_texts.json');
 const data = await response.json();
 
+export const postfeast = `${data.postfeast}`;
+export const forefeast = `${data.forefeast}`;
+
 const cross = `<FONT COLOR="RED"><b>†</b></FONT>`
 
 export const glory = `${cross} ${data.glory}.`

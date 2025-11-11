@@ -2,7 +2,7 @@ import { vespers } from './vespers.js';
 import { compline } from './compline.js';
 import { matins } from './matins.js';
 import { minorHour } from './minor_hour.js';
-import { liturgy } from './liturgy.js';
+//import { liturgy } from './liturgy.js';
 
 const params = new URLSearchParams(window.location.search);
 const hour = params.get("hour");

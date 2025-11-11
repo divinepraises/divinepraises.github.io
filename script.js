@@ -1,3 +1,4 @@
+import {forefeast, postfeast} from './text_generation.js';
 var address = `Text\\English`
 
 export function dateToStr(currentDate){
@@ -49,16 +50,24 @@ async function showMenaionDate(mm, dd){
     mm = String(mm).padStart(2, "0")
     dd = String(dd).padStart(2, "0")
 	const dateAddress = `${mm}\\${dd}`
-    try{
+    {
         const dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
         const symbolData = await getData(`${address}\\menaion\\feasts_symbols.json`);
-        if ("note" in dayData) {
-            return `${symbolData[dayData["class"]]} ${dd}/${mm}: ${constructDayName(dayData)}
-            <div class="rubric">${dayData["note"]}</div>`;
+        var feastName = "";
+        var note = "";
+        if ("forefeast" in dayData) {
+            let feast = (await getData(`${address}\\menaion\\${dayData["forefeast"]}.json`))["name"];
+            feastName = `${forefeast} ${feast}, `;
         }
-        return `${symbolData[dayData["class"]]} ${dd}/${mm}: ${constructDayName(dayData)}`;
-    } catch (error) {
-         return `No data for this day at ${address}\\menaion\\${dateAddress}.json`
+        if ("postfeast" in dayData) {
+            feastName = `${postfeast} ${(await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["name"]}, `;
+        }
+        if ("note" in dayData) {
+            note = `<br><div class="rubric">${dayData["note"]}</div>`
+        }
+        return `${symbolData[dayData["class"]]} ${dd}/${mm}: ${feastName} ${constructDayName(dayData)}${note}`;
+//    } catch (error) {
+//         return `No data for this day at ${address}\\menaion\\${dateAddress}.json`
     }
 }
 
