@@ -139,7 +139,7 @@ export const itIsTrulyRight = `${data.itIsTruly} ${data.moreHonorable}`
 export async function lesserDoxology(hour){
     const dox = await getData(`Text\\English\\horologion\\lesser_doxology.json`)
     const replacementDict = {"DAYPART": dox[hour]}
-    const head = `<div class="subhead">Lesser Doxology</div>`
+    const head = `<div class="subhead">Lesser Doxology</div><br>`
     if (hour === "vespers"){
         // vespers uses only the 2nd part
         return `${head}${replaceCapsWords(dox["2"], replacementDict)}`
