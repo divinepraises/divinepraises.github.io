@@ -615,9 +615,14 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
             stycheras = stycheras.concat(psalm140menaionStycheras)
             if (numStycheras === 3){
                 stycheraScheme = Array(4).fill(1).concat([2, 2, 2])
+            } else if (numStycheras === 4){
+                stycheraScheme = Array(4).fill(1).concat([2, 2, 1, 1])
+            } else if (numStycheras === 5){
+                stycheraScheme = Array(4).fill(1).concat([2, 1, 1, 1, 1])
             } else if (numStycheras === 6){
                 stycheraScheme = Array(10).fill(1)
             }
+            numStycheras += 4;
         } else if (dayData["class"] === 6){
             if (numStycheras === 3){
                 // in the current data format, 0th stychera is tone
@@ -625,12 +630,14 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
                 // adding all the stycheas
                 stycheras = stycheras.concat(psalm140menaionStycheras)
                 stycheraScheme = Array(6).fill(1).concat([2, 1, 1])
+                numStycheras = 9;
             } else if (numStycheras === 6){
                 // in the current data format, 0th stychera is tone
                 stycheras = psalm140OctoechosStycheras.slice(0, 5);
                 // adding all the stycheas
                 stycheras = stycheras.concat(psalm140menaionStycheras)
                 stycheraScheme = Array(10).fill(1)
+                numStycheras = 10;
             }
         }
         else if (dayData["class"] === 5){
@@ -638,14 +645,15 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
             // adding all the stycheas
             stycheras = stycheras.concat(psalm140menaionStycheras)
             stycheraScheme = Array(10).fill(1)
+            numStycheras = 10;
         }
         else if (dayData["class"] === 4){
             stycheras = psalm140OctoechosStycheras.slice(0, 8);
             // adding all the stycheas
             stycheras = stycheras.concat(psalm140menaionStycheras)
             stycheraScheme = Array(10).fill(1)
+            numStycheras = 10;
         }
-        numStycheras = 10;
     } else if (!isGreatVespers && (numSetsMenaionStycheras === 2 || dayData["class"] === 6)){
         // 2 saints or a 6-saint
         psalm140tone = psalm140menaionStycheras[0][0];
