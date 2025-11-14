@@ -18,9 +18,19 @@ export async function compline(priest, full, date){
         dayData = {"class" : 0};
         `No data for this day! ${`${address}\\menaion\\${dateAddress}.json`}`
     }
-    if (dayData["class"] >= 8) {
-        if ("kontakia" in dayData) kontakion = dayData["kontakia"][0];
+
+    const dayClass = dayData["class"];
+    var prePostFeast = "";
+
+    if ("prefeast" in dayData) {prePostFeast = "prefeast";}
+    else if ("postfeast" in dayData) {prePostFeast = "postfeast";}
+    // prefeast has its own texts, feast uses ones from a fest
+    //
+
+    if (dayClass >= 8) {
+        if ("kontakia" in dayData) kontakion = dayData["kontakia"];
         else kontakion = (await getCommonText("kontakia", dayData));
+        kontakion = kontakion[0]
     } else {
         kontakion = "";
     }
