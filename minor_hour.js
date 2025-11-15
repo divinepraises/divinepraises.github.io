@@ -84,7 +84,6 @@ async function loadText(hour, full, dayOfWeek, glas, date) {
 }
 
 async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
-    //TODO make one function for tropar and kondak?
    /*
        1: weekday
        3: day of month
@@ -176,11 +175,40 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
     if (!dayData) {dayData = {"class": 0};  hour = "1hour";}
     var dayTrop;
 
-    // TODO add pre- and post-feasts
+    var prePostFeast = "";
+    var prePostFeastTroparion = "";
+    if ("forefeast" in dayData) {
+        prePostFeast = "forefeast";
+        prePostFeastTroparion = dayData["troparia"];
+    } else if ("postfeast" in dayData) {
+        prePostFeast = "postfeast";
+        prePostFeastTroparion = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["troparia"];
+    }
+    if (Array.isArray(prePostFeastTroparion)) {
+        // we assume that in a list, the kontakion of a pre-feast is the last one
+        // for the actual feast this handles the case if a kontakion is given in a 1-element list
+        prePostFeastTroparion = prePostFeastTroparion[prePostFeastTroparion.length-1]
+    }
 
     // Sunday
     if (dayOfWeek === 0){
         const sundayTrop = await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`);
+
+        if (prePostFeast != ""){
+            if (hour === "1hour" || hour === "6hour"){
+                return `${sundayTrop["troparia"][glas]}<br>${glory}<br>${prePostFeastTroparion}`;
+            }
+            if ("troparia" in dayData) dayTrop = dayData["troparia"];
+            else dayTrop = await getCommonText("troparia", dayData);
+            if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
+            if (hour === "3hour") return `${sundayTrop["troparia"][glas]}<br>${glory}<br>${dayTrop[0]}`;
+            // 9th
+            if (dayTrop.length === 1 && prePostFeast === "postfeast" || dayTrop.length === 2 && prePostFeast === "forefeast"){
+                return `${sundayTrop["troparia"][glas]}<br>${glory}<br>${dayTrop[0]}`;
+            } else {
+                return `${sundayTrop["troparia"][glas]}<br>${glory}<br>${dayTrop[1]}`;
+            }
+        }
 
         if (hour === "1hour" && dayData["class"] < 8){
             return `${glory}<br>${sundayTrop["troparia"][glas]}`;
@@ -188,6 +216,7 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
 
         if ("troparia" in dayData) dayTrop = dayData["troparia"];
         else dayTrop = await getCommonText("troparia", dayData);
+        if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
 
         if (dayData["class"] >= 8){
             // Sunday and polyeleos
@@ -212,8 +241,28 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
     }
 
     // polyeleos or higher: at any hour return day troparion
+    // in pre/post: feast-Glory-saint
     if (dayData["class"] >= 8){
-        return `${glory}<br>${dayData["troparia"][0]}`;
+        dayTrop = dayData["troparia"]
+        if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
+        if (prePostFeast === "") return `${glory}<br>${dayTrop[0]}`;
+        return `${prePostFeastTroparion}<br>${glory}<br>${dayTrop[0]}`;
+    }
+
+    if (prePostFeast != ""){
+        if (hour === "1hour" || hour === "6hour"){
+            return `${glory}<br>${prePostFeastTroparion}`;
+        }
+        if ("troparia" in dayData) dayTrop = dayData["troparia"];
+        else dayTrop = await getCommonText("troparia", dayData);
+        if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
+        if (hour === "3hour") return `${prePostFeastTroparion}<br>${glory}<br>${dayTrop[0]}`;
+        // 9th
+        if (dayTrop.length === 1 && prePostFeast === "postfeast" || dayTrop.length === 2 && prePostFeast === "forefeast"){
+            return `${prePostFeastTroparion}<br>${glory}<br>${dayTrop[0]}`;
+        } else {
+            return `${prePostFeastTroparion}<br>${glory}<br>${dayTrop[1]}`;
+        }
     }
 
     // Friday is the same as Wednesday
@@ -236,6 +285,7 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
     // weekday
     if ("troparia" in dayData) dayTrop = dayData["troparia"];
     else dayTrop = await getCommonText("troparia", dayData);
+    if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
 
     if (hour === "6hour"){
         // see Sun for comment
@@ -275,15 +325,41 @@ async function selectKondak(hour, dayOfWeek, hourData, glas, dayData){
     if (!dayData) {dayData = {"class": 0}; hour = "1hour";}
     var dayKond;
 
+    var prePostFeast = "";
+    var prePostFeastKontakion = "";
+    if ("forefeast" in dayData) {
+        prePostFeast = "forefeast";
+        prePostFeastKontakion = dayData["kontakia"];
+    } else if ("postfeast" in dayData) {
+        prePostFeast = "postfeast";
+        prePostFeastKontakion = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["kontakia"];
+    }
+    if (Array.isArray(prePostFeastKontakion)) {
+        // we assume that in a list, the kontakion of a pre-feast is the last one
+        // for the actual feast this handles the case if a kontakion is given in a 1-element list
+        prePostFeastKontakion = prePostFeastKontakion[prePostFeastKontakion.length-1]
+    }
+
     // Sunday
     if (dayOfWeek === 0){
         const sundayKond = await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`);
 
-        if (hour === "1hour" || (hour === "6hour" && dayData["class"] >= 8)){
+        if (
+            (prePostFeast === "" && hour === "1hour")
+            || (prePostFeast != "" && dayData["class"] >= 8 && (hour === "1hour" || hour === "9hour" ))
+            || (prePostFeast != "" && dayData["class"] < 8 && (hour === "3hour" || hour === "9hour" ))
+            || (prePostFeast === "" && hour === "6hour" && dayData["class"] >= 8)
+        ){
             return `${sundayKond["kontakia"][glas]}`;
         }
 
-        if (hour === "6hour"){
+        if (prePostFeast != "" && dayData["class"] >= 8 && hour === "3hour") {
+            return prePostFeastKontakion;
+        } else if (prePostFeast != "" && dayData["class"] < 8 && (hour === "1hour") || (hour === "6hour")) {
+            return prePostFeastKontakion;
+        }
+
+        if (prePostFeast === "" && hour === "6hour"){
             // There is no rubric outside the church in Dol.
             // In footnotes he quotes Greek practice, but I disagree with him that it matters.
             // In "Око Церковное" the order is completely different.
@@ -295,12 +371,24 @@ async function selectKondak(hour, dayOfWeek, hourData, glas, dayData){
 
         if ("kontakia" in dayData) dayKond = dayData["kontakia"];
         else dayKond = await getCommonText("kontakia", dayData);
+        if (!Array.isArray(dayKond)) dayKond = [dayKond];
+
+        if (prePostFeast != "" && dayData["class"] >= 8 && hour === "6hour") {
+            return dayKond[0];
+        }
+
         // 9th hour: check if two saints
         if (hour === "9hour" && dayKond.length === 2) {
             return `${dayKond[1]}`;
         }
         // 3rd or 9th with 1 saint
         return `${dayKond[0]}`;
+    }
+
+    if (prePostFeast != ""){
+        if (hour === "1hour" || hour === "6hour"){
+            return prePostFeastKontakion;
+        }
     }
 
     if (hour === "1hour" && dayData["class"] < 8){
@@ -310,9 +398,11 @@ async function selectKondak(hour, dayOfWeek, hourData, glas, dayData){
 
     if ("kontakia" in dayData) dayKond = dayData["kontakia"];
     else dayKond = await getCommonText("kontakia", dayData);
+    if (!Array.isArray(dayKond)) dayKond = [dayKond];
+
     if (dayData["class"] >= 8){
-            return `${dayKond[0]}`;
-        }
+        return `${dayKond[0]}`;
+    }
 
     if (hour === "6hour"){
         return `<div class="rubric">In a church, a kontakion of the church. Otherwise:</div>${dayKond[0]}`;

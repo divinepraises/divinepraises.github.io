@@ -10,7 +10,7 @@ export async function compline(priest, full, date){
 
     const isIncarnationFeast = (dd_mm === "2412" || dd_mm === "0501" || dd_mm === "2403")
 
-    var kontakion, dayData;
+    var dayData;
 
     try{
         dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
@@ -19,27 +19,11 @@ export async function compline(priest, full, date){
         `No data for this day! ${`${address}\\menaion\\${dateAddress}.json`}`
     }
 
-    const dayClass = dayData["class"];
-    var prePostFeast = "";
-
-    if ("prefeast" in dayData) {prePostFeast = "prefeast";}
-    else if ("postfeast" in dayData) {prePostFeast = "postfeast";}
-    // prefeast has its own texts, feast uses ones from a fest
-    //
-
-    if (dayClass >= 8) {
-        if ("kontakia" in dayData) kontakion = dayData["kontakia"];
-        else kontakion = (await getCommonText("kontakia", dayData));
-        kontakion = kontakion[0]
-    } else {
-        kontakion = "";
-    }
-
     if ((season === "Lent" && dayOfWeek < 6) || isIncarnationFeast){
         return greatCompline(full, season, dayOfWeek, priest, glas, kontakion);
     }
 
-    return smallCompline(full, season, dayOfWeek, priest, glas, kontakion);
+    return smallCompline(full, season, dayOfWeek, priest, glas, dayData);
 }
 
 function greatCompline(full, season, dayOfWeek, priest, glas, kontakion){
@@ -48,8 +32,8 @@ function greatCompline(full, season, dayOfWeek, priest, glas, kontakion){
 }
 
 
-function smallCompline(full, season, dayOfWeek, priest, glas, kontakion){
-    loadText(full, dayOfWeek, priest, glas, kontakion);
+function smallCompline(full, season, dayOfWeek, priest, glas, dayData){
+    loadText(full, dayOfWeek, priest, glas, dayData);
 
 	return `<h2>Compline</h2>
 	${usualBeginning(priest, season)}<br><br>
@@ -82,7 +66,7 @@ function smallCompline(full, season, dayOfWeek, priest, glas, kontakion){
 	`;
 }
 
-async function loadText(full, dayOfWeek, priest, glas, kontakion) {
+async function loadText(full, dayOfWeek, priest, glas, dayData) {
 	const filename = `${address}\\horologion\\small_compline.json`;
 	const jsonData = await getData(filename);
 
@@ -119,7 +103,7 @@ async function loadText(full, dayOfWeek, priest, glas, kontakion) {
         document.getElementById("shorten_canon").checked = true;
         document.getElementById("penitential_troparia").innerHTML = "";
     }
-    selectTropar(dayOfWeek, jsonData, glas, kontakion).then(tropar => {
+    selectTropar(dayOfWeek, jsonData, glas, dayData).then(tropar => {
         document.getElementById("troparia").innerHTML = tropar;
     });
     getData(`${address}\\horologion\\creed.json`).then(creed => {
@@ -201,7 +185,7 @@ async function selectCanon(dayOfWeek, glas, full, refrain){
     });
 }
 
-async function selectTropar(dayOfWeek, hourData, glas, kontakion){
+async function selectTropar(dayOfWeek, hourData, glas, dayData){
    /*
         - В п’ять перших днів тижня беруться наступних шість тропарів,
         >тобто спочатку храму, якщо він господній або богородичний,
@@ -226,17 +210,60 @@ async function selectTropar(dayOfWeek, hourData, glas, kontakion){
         - В випадку святкової служби (перед- і посвяття господнього чи богородичного),
         а також й у випадку святого полієлейного, відмовляється тільки кондак названої служби
     */
-    // TODO start with feasts and post-feasts
 
-    if (kontakion != "") {
+   const dayClass = dayData["class"];
+   var prePostFeast = "";
+   var prePostFeastKontakion = "";
+   var kontakion = "";
+
+    if ("forefeast" in dayData) {
+        prePostFeast = "forefeast";
+        prePostFeastKontakion = dayData["kontakia"];
+    } else if ("postfeast" in dayData) {
+        prePostFeast = "postfeast";
+        prePostFeastKontakion = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["kontakia"];
+    }
+    if (Array.isArray(prePostFeastKontakion)) {
+        // we assume that in a list, the kontakion of a pre-feast is the last one
+        // for the actual feast this handles the case if a kontakion is given in a 1-element list
+        prePostFeastKontakion = prePostFeastKontakion[prePostFeastKontakion.length-1]
+    }
+
+    if (dayClass >= 8) {
+        if ("kontakia" in dayData) kontakion = dayData["kontakia"];
+        else kontakion = (await getCommonText("kontakia", dayData));
+        if (Array.isArray(kontakion)) kontakion = kontakion[0];
+    }
+
+    // a polyeleos (and higher)
+    if (kontakion != "" && prePostFeast === "") {
+        // even on Sun
         return kontakion;
+    } else if (kontakion != "" && prePostFeast != "" && dayOfWeek != 0){
+        return prePostFeastKontakion;
+    } else if (kontakion != "" && prePostFeast === "forefeast" && dayOfWeek != 0){
+        return prePostFeastKontakion;
     }
 
     // Sunday
-    if (dayOfWeek === 0){
+    if (dayOfWeek === 0 && prePostFeast === ""){
         const data = await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`);
         return data["hypakoe"][glas];
+    } else if (dayOfWeek === 0 && prePostFeast === "forefeast") {
+        // The case with feast + pre-feast is not specified in Donlytsky,
+        // but now it happens with Bl. Josaphata. I infered it should be just the post-feast kontakion
+        // by analogy with Sundays.
+        return prePostFeastKontakion;
+    } else if (dayOfWeek === 0 && prePostFeast === "postfeast" && kontakion === "") {
+        const data = await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`);
+        return `${data["hypakoe"][glas]}<br><br>${gloryAndNow}<br><br>${prePostFeastKontakion}`;
+    } else if (dayOfWeek === 0 && prePostFeast === "postfeast" && kontakion != "") {
+        // yeah, it is inconsistent, but that's what we have in the menaions and hence typicon
+        return `${kontakion}<br><br>${gloryAndNow}<br><br>${prePostFeastKontakion}`;
     }
+
+    // not Sunday, not polyeleos
+    if (prePostFeast != "") return prePostFeastKontakion;
 
     const daily_troparia = await getData(`${address}\\horologion\\daily_troparia_kontakia.json`);
 
