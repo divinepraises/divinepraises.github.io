@@ -352,12 +352,15 @@ async function makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, haire){
     }
 
     var theotokion;
-    if (prePostFeast != ""){
+    if (prePostFeast === "forefeast"){
         theotokion = dayTrop[dayTrop.length-1];
         dayTrop.pop();
         // we end up here if it is not a vigil
         let tropGlas  = parseInt(dayTrop[dayTrop.length - 1].match(/\d+/)[0], 10);
         const theotokiaData = await getData(`${address}\\octoechos\\${tropGlas}\\troparia_theotokia.json`);
+    } else if (prePostFeast === "postfeast") {
+        theotokion = (await getData(`${address}\\menaion\\${dayData[prePostFeast]}.json`))["troparia"];
+        if (Array.isArray(theotokion)) theotokion = theotokion[0];
     } else {
         if (dayOfWeek === 6 || isGreatVespers){
             theotokion = theotokiaData[0];
@@ -380,33 +383,39 @@ async function makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, haire){
 
 
 async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, vespersData, vespersMenaionData, vespersOctoechosData){
-    // TODO postfeasts, triodion
-    var apostOct;
+    // TODO triodion
+    var apostMain;
     var apostVerses, aposticha;
 
-    if (dayOfWeek === 6) apostVerses = vespersData["aposticha_dead"];
-    else if (dayOfWeek === 0 && dayData["class"] < 12) {
+    var prePostFeast = "";
+
+    if ("forefeast" in dayData) prePostFeast = "forefeast";
+    else if ("postfeast" in dayData) prePostFeast = "postfeast";
+
+    if (dayOfWeek === 0 && dayData["class"] < 12) {
         const versesMaterial = vespersData["prokimenon"][0];
         apostVerses = [
             `${versesMaterial[1]} ${versesMaterial[2]} ${versesMaterial[3]}`,
             versesMaterial[4],
             versesMaterial[5]
         ]
-    }
-    else if (isGreatVespers) apostVerses = vespersMenaionData["aposticha_verses"];
+    } else if ("aposticha_verses" in vespersMenaionData) apostVerses = vespersMenaionData["aposticha_verses"];
+    else if (prePostFeast != "") {
+        apostVerses = (await getData(`${address}\\menaion\\${dayData[prePostFeast]}_vespers.json`))["aposticha_verses"];
+    } else if (dayOfWeek === 6) apostVerses = vespersData["aposticha_dead"];
     else apostVerses = vespersData["aposticha"];
 
     aposticha = `<div class="subhead">Aposticha</div><br>`;
-    if (!isGreatVespers){
+    if (!"aposticha_verses" in vespersMenaionData){
         // weekday
-        apostOct = vespersOctoechosData["aposticha"];
+        apostMain = vespersOctoechosData["aposticha"];
         aposticha += `
             <div class="rubric">Tone ${glas}</div>
-            ${apostOct[1]}<br><br>
+            ${apostMain[1]}<br><br>
             <i>${apostVerses[0]}</i><br><br>
-            ${apostOct[2]}<br><br>
+            ${apostMain[2]}<br><br>
             <i>${apostVerses[1]}</i><br><br>
-            ${apostOct[3]}<br><br>
+            ${apostMain[3]}<br><br>
             `
 
         if ("aposticha" in vespersMenaionData || "additional_aposticha" in vespersMenaionData){
@@ -448,20 +457,20 @@ async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, vespersDa
                 }
             }
         } else {
-            aposticha += `<i>${gloryAndNow}</i><br><br>${apostOct[5]}<br><br>`
+            aposticha += `<i>${gloryAndNow}</i><br><br>${apostMain[5]}<br><br>`
         }
     } else if (dayOfWeek === 0 && dayData["class"] < 12) {
         // Sunday
-        apostOct = vespersOctoechosData["aposticha"];
+        apostMain = vespersOctoechosData["aposticha"];
         aposticha += `
             <div class="rubric">Tone ${glas}</div>
-            ${apostOct[1]}<br><br>
+            ${apostMain[1]}<br><br>
             <i>${apostVerses[0]}</i><br><br>
-            ${apostOct[2]}<br><br>
+            ${apostMain[2]}<br><br>
             <i>${apostVerses[1]}</i><br><br>
-            ${apostOct[3]}<br><br>
+            ${apostMain[3]}<br><br>
             <i>${apostVerses[2]}</i><br><br>
-            ${apostOct[4]}<br><br>
+            ${apostMain[4]}<br><br>
             `
 
         if ("aposticha" in vespersMenaionData){
@@ -490,7 +499,7 @@ async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, vespersDa
                 aposticha += `<i>${andNow}</i><br><br>${theotokion}<br><br>`
             }
         } else {
-            aposticha += `<i>${gloryAndNow}</i><br><br>${apostOct[6]}<br><br>`
+            aposticha += `<i>${gloryAndNow}</i><br><br>${apostMain[6]}<br><br>`
         }
 
     }
