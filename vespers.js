@@ -323,11 +323,14 @@ function makeEndingBlockMajor(priest, dayOfWeek, isGreatVespers, vespersData, da
 
 async function makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, haire){
     // TODO Lent
-    // TODO postfeasts
     var dayTrop;
     if ("troparia" in dayData) dayTrop = dayData["troparia"];
     else dayTrop = await getCommonText("troparia", dayData);
     if (!Array.isArray(dayTrop)) {dayTrop = [dayTrop]}
+
+    var prePostFeast = "";
+    if ("forefeast" in dayData) prePostFeast = "forefeast";
+    else if ("postfeast" in dayData) prePostFeast = "postfeast";
 
     if (dayOfWeek === 0){
         if (dayData["class"] < 10){
@@ -348,16 +351,19 @@ async function makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, haire){
         return dayTrop[0] + `<i><FONT COLOR="RED">(3)</FONT></i><br><br>`
     }
 
-    // we end up here if it is not a vigil
-    let tropGlas  = parseInt(dayTrop[dayTrop.length - 1].match(/\d+/)[0], 10);
-    const theotokiaData = await getData(`${address}\\octoechos\\${tropGlas}\\troparia_theotokia.json`);
-
     var theotokion;
-
-    if (dayOfWeek === 6 || isGreatVespers){
-        theotokion = theotokiaData[0];
+    if (prePostFeast != ""){
+        theotokion = dayTrop[dayTrop.length-1];
+        dayTrop.pop();
+        // we end up here if it is not a vigil
+        let tropGlas  = parseInt(dayTrop[dayTrop.length - 1].match(/\d+/)[0], 10);
+        const theotokiaData = await getData(`${address}\\octoechos\\${tropGlas}\\troparia_theotokia.json`);
     } else {
-        theotokion = theotokiaData[dayOfWeek];
+        if (dayOfWeek === 6 || isGreatVespers){
+            theotokion = theotokiaData[0];
+        } else {
+            theotokion = theotokiaData[dayOfWeek];
+        }
     }
 
     if (dayTrop.length === 1){
@@ -564,6 +570,10 @@ function makeHymnOfLight(priest, isGreatVespers, priestPrayers, wisdom, vespersD
 async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vespersMenaionData, vespersOctoechosData, dayData){
     // TODO triodion
 
+    var prePostFeast = "";
+    if ("forefeast" in dayData) prePostFeast = "forefeast";
+    else if ("postfeast" in dayData) prePostFeast = "postfeast";
+
     const psalm140refrain = vespersData["psalm140refrain"];
     var psalm140tone = glas;
     var psalm140etc = await readPsalmsFromNumbers([140, 141, 129, 116]);
@@ -608,7 +618,16 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
         // Sunday without Lord's feast
         psalm140tone = glas;
         psalm140OctoechosStycheras = vespersOctoechosData["ps140"];
-        if (dayData["class"] > 6){
+        if (prePostFeast != "" && dayData["class"] > 6) {
+            // in the current data format, 0th stychera is tone
+            stycheras = psalm140OctoechosStycheras.slice(0, 4).concat(psalm140menaionStycheras)
+            if (numStycheras === 6){
+                // 3 + 3 + 4
+                stycheraScheme = Array(6).fill(1).concat([2, 1, 1])
+            } else {
+                stycheraScheme = Array(10).fill(1)
+            }
+        } else if (dayData["class"] > 6){
             // in the current data format, 0th stychera is tone
             stycheras = psalm140OctoechosStycheras.slice(0, 5);
             // adding all the stycheas
@@ -687,8 +706,14 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
          else if (numStycheras === 4) stycheraScheme = Array(4).fill(2);
          else if (numStycheras === 5) stycheraScheme = [2, 2, 2, 1, 1];
          else if (numStycheras === 6) {
-            if (numSetsMenaionStycheras === 2) stycheraScheme = [2, 1, 1, 2, 1, 1];
-            else stycheraScheme =  [2, 2, 1, 1, 1, 1];
+            if (numSetsMenaionStycheras === 2 && prePostFeast === "") {stycheraScheme = [2, 1, 1, 2, 1, 1];}
+            else if (numSetsMenaionStycheras === 2 && prePostFeast != "") {
+                // the following is a workaround to avoid the repeated stychera between two psalms
+                stycheras.splice(6, 0, stycheras[6]);
+                numStycheras = 7;
+                stycheraScheme = [1, 1, 1, 2, 1, 1, 1];
+            }
+            else {stycheraScheme = [2, 2, 1, 1, 1, 1];}
          }
          else if (numStycheras > 7) stycheraScheme = Array(8).fill(1);
     }
@@ -736,6 +761,17 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
             continue
         }
         if (stychera in gloriaDict) {
+            if (stychera === "n" && dayOfWeek === 0 && dayData["class"]<=10){
+                // do not add a festal theotokion if it is a Sunday
+                // and not Lord's/Theotokos' feast
+                continue
+            }
+            if (gloryWasAdded) {
+                // glory and now may have different tones.
+                // this allows inserting a tone indication before "and now"
+                i += 1
+                if (!currentPsalm[i]) currentPsalm[i]=""
+            }
             currentPsalm[i] += gloriaDict[stychera]+"<br><br>";
             if (stychera === "g" || stychera === "gn") gloryWasAdded = true;
             if (stychera === "n" || stychera === "gn") theotokionWasAdded = true;
@@ -751,7 +787,7 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
             ns += 1;
         } else {
             // glory, now
-            currentPsalm[i] += `${stychera}<br>`;
+            currentPsalm[i] += `${stychera}<br><br>`;
         }
     }
     if (!theotokionWasAdded) {
