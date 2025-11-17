@@ -71,15 +71,15 @@ async function showMenaionDate(mm, dd){
     }
 }
 
-export function constructDayName(dayData){
+export function constructDayName(dayData, saint="Saint"){
     if (!Array.isArray(dayData["type"])) {
         // one saint
-        return `Saint ${dayData["type"]} ${dayData["name"]}`
+        return `${saint} ${dayData["type"]} ${dayData["name"]}`
     } else {
         // list of saints
         var dateInfo = ``;
         for (let [i, name] of dayData["name"].entries()){
-            dateInfo += ` Saint ${dayData["type"][i]} ${name},`
+            dateInfo += ` ${saint} ${dayData["type"][i]} ${name},`
         }
         return dateInfo.slice(0, -1);
     }

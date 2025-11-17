@@ -200,7 +200,7 @@ async function loadTextDaily(full, dayOfWeek, mm, dd, season, glas, dateAddress,
         document.getElementById(augmentedName).innerHTML = `${LHM} <FONT COLOR="RED">(40)</FONT><br>${gloryAndNow}<br><br>`;
     }
 
-    document.getElementById("ending_block").innerHTML = makeEndingBlockMajor(priest, dayOfWeek, dayData["class"]>=8, vespersData, dayData);
+    document.getElementById("ending_block").innerHTML = await makeEndingBlockMajor(priest, dayOfWeek, dayData["class"]>=8, vespersData, dayData);
 }
 
 async function makePs33(priest, vigilVespersData){
@@ -292,9 +292,20 @@ async function makeLytiaPrayers(lytiaPrayers, vigilVespersData, vespersData, sai
         document.getElementById("lytia_prayers").innerHTML = lytia;
 }
 
-function makeEndingBlockMajor(priest, dayOfWeek, isGreatVespers, vespersData, dayData){
+async function makeEndingBlockMajor(priest, dayOfWeek, isGreatVespers, vespersData, dayData){
     var res = `<div class="subhead">Dismissal</div><br>`;
-    var saintNames = [constructDayName(dayData)]
+    var saintNames = [constructDayName(dayData)];
+
+    var TheotokosDismissal = "";
+    if ("TheotokosDismissal" in dayData) TheotokosDismissal = dayData["TheotokosDismissal"];
+
+    var prePostFeastData, prePostFeast;
+    if (dayOfWeek != 0 && "postfeast" in dayData) {
+        prePostFeast = "postfeast";
+        prePostFeastData = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`));
+    }
+    if (prePostFeastData && "TheotokosDismissal" in prePostFeastData) TheotokosDismissal = prePostFeastData["TheotokosDismissal"];
+
     if (priest === "1"){
         res += `${vespersData["wisdom"]}<br><br>`
         if (dayOfWeek === 6 || isGreatVespers) res += `
@@ -307,13 +318,13 @@ function makeEndingBlockMajor(priest, dayOfWeek, isGreatVespers, vespersData, da
         res += `${moreHonorable}<br><br>
             ${vespersData["Christ"]}<br><br>
             ${gloryAndNow} ${LHM} ${LHM} ${LHM} ${giveTheBlessing(priest)}<br><br>
-            ${dismissalMajor(dayOfWeek, priest, isGreatVespers, saintNames)}
+            ${dismissalMajor(dayOfWeek, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal)}
             `;
     } else {
         if (dayOfWeek === 6 || isGreatVespers) res += `${vespersData["strengthen"]}<br><br>`
         res +=`${moreHonorable}<br><br>
         ${gloryAndNow} ${LHM} ${LHM} ${LHM} ${giveTheBlessing(priest)}<br><br>
-        ${dismissalMajor(dayOfWeek, priest, isGreatVespers, saintNames)}
+        ${dismissalMajor(dayOfWeek, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal)}
         `;
     }
 
@@ -355,13 +366,13 @@ async function makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, haire){
     if (prePostFeast === "forefeast"){
         theotokion = dayTrop[dayTrop.length-1];
         dayTrop.pop();
-        // we end up here if it is not a vigil
-        let tropGlas  = parseInt(dayTrop[dayTrop.length - 1].match(/\d+/)[0], 10);
-        const theotokiaData = await getData(`${address}\\octoechos\\${tropGlas}\\troparia_theotokia.json`);
     } else if (prePostFeast === "postfeast") {
         theotokion = (await getData(`${address}\\menaion\\${dayData[prePostFeast]}.json`))["troparia"];
         if (Array.isArray(theotokion)) theotokion = theotokion[0];
     } else {
+        // we end up here if it is not a vigil
+        let tropGlas  = parseInt(dayTrop[dayTrop.length - 1].match(/\d+/)[0], 10);
+        const theotokiaData = await getData(`${address}\\octoechos\\${tropGlas}\\troparia_theotokia.json`);
         if (dayOfWeek === 6 || isGreatVespers){
             theotokion = theotokiaData[0];
         } else {
@@ -406,7 +417,7 @@ async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, vespersDa
     else apostVerses = vespersData["aposticha"];
 
     aposticha = `<div class="subhead">Aposticha</div><br>`;
-    if (!"aposticha_verses" in vespersMenaionData){
+    if (!isGreatVespers && prePostFeast === ""){
         // weekday
         apostMain = vespersOctoechosData["aposticha"];
         aposticha += `

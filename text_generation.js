@@ -88,7 +88,7 @@ export function giveTheBlessing(withPriest) {
 	};
 }
 
-export function dismissalMajor(dayOfWeek, withPriest, isGreatVespers, saintNames) {
+export function dismissalMajor(dayOfWeek, withPriest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal) {
     var text;
     var replacements = {};
 	if (withPriest == "1") {
@@ -96,22 +96,28 @@ export function dismissalMajor(dayOfWeek, withPriest, isGreatVespers, saintNames
 	} else {
 		text = `<FONT COLOR="RED">Chariman:</FONT> ${data.layDismissalMajor}`;
 	};
-	if (dayOfWeek === 0 && !isGreatVespers) replacements = {"SUNDAY": data.dismissalsWeekdays[0], "WEEKDAY": "", "THURSDAY": "", "CHURCH": data.dismissalChurch};
-	else if (dayOfWeek === 0 && isGreatVespers) replacements = {"SUNDAY": data.dismissalsWeekdays[0], "WEEKDAY": "", "THURSDAY": "", "CHURCH": ""};
-	else if (isGreatVespers) replacements = {"SUNDAY": "", "WEEKDAY": "", "THURSDAY": "", "CHURCH": ""};
-	else if (dayOfWeek === 4) replacements = {"SUNDAY": "", "WEEKDAY": "", "THURSDAY": data.dismissalsWeekdays[4], "CHURCH": data.dismissalChurch};
+	if (TheotokosDismissal != "") TheotokosDismissal = replaceCapsWords(data.dismissalTheotokos, {"SAINT":TheotokosDismissal});
+	else TheotokosDismissal = ";";
+
+	if (dayOfWeek === 0 && !isGreatVespers) replacements = {"SUNDAY": data.dismissalsWeekdays[0], "WEEKDAY": "", "THURSDAY": "", "CHURCH": data.dismissalChurch, "THEOTOKOS": TheotokosDismissal};
+	else if (dayOfWeek === 0 && isGreatVespers) replacements = {"SUNDAY": data.dismissalsWeekdays[0], "WEEKDAY": "", "THURSDAY": "", "CHURCH": "", "THEOTOKOS": TheotokosDismissal};
+	else if (isGreatVespers || prePostFeast === "postfeast") replacements = {"SUNDAY": "", "WEEKDAY": "", "THURSDAY": "", "CHURCH": "", "THEOTOKOS": TheotokosDismissal};
+	else if (dayOfWeek === 4) replacements = {"SUNDAY": "", "WEEKDAY": "", "THURSDAY": data.dismissalsWeekdays[4], "CHURCH": data.dismissalChurch, "THEOTOKOS": TheotokosDismissal};
 	else if (dayOfWeek === 6) replacements = {
 	    "SUNDAY": "",
 	    "WEEKDAY": data.dismissalsWeekdays[6],
 	    "THURSDAY": data.dismissalsWeekdays[4] + data.dismissalsWeekdays[7],
-	    "CHURCH": data.dismissalChurch
+	    "CHURCH": data.dismissalChurch,
+	    "THEOTOKOS": TheotokosDismissal
 	    };
-	else replacements = {"SUNDAY": "", "WEEKDAY": data.dismissalsWeekdays[dayOfWeek], "THURSDAY": "", "CHURCH": data.dismissalChurch};
+	else replacements = {"SUNDAY": "", "WEEKDAY": data.dismissalsWeekdays[dayOfWeek], "THURSDAY": "", "CHURCH": data.dismissalChurch, "THEOTOKOS": TheotokosDismissal};
 
 	if (!isGreatVespers) {
 	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}`
-	} else {
+	} else if (TheotokosDismissal===""){
 	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}${data.dismissalSaintsSolemn}`
+	} else {
+	    replacements["SAINT"] = "";
 	}
 
 	return `${replaceCapsWords(text, replacements)}<br><br><FONT COLOR="RED">Choir:</FONT> ${amen}`
