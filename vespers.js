@@ -818,8 +818,8 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
         }
     }
     if (!theotokionWasAdded) {
-        if (!gloryWasAdded) currentPsalm.push(`<br><i>${gloryAndNow}</i><br><br>`)
-        else currentPsalm.push(`<br><i>${andNow}</i><br><br>`)
+        if (!gloryWasAdded) currentPsalm.push(`<i>${gloryAndNow}</i><br><br>`)
+        else currentPsalm.push(`<i>${andNow}</i><br><br>`)
         var theotokiaData;
         if (dayOfWeek != 0 && dayOfWeek != 6 && isGreatVespers){
             theotokiaData = await getData(`${address}\\octoechos\\${lastTone}\\stychera_theotokia.json`);
