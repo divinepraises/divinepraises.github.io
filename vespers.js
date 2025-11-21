@@ -784,9 +784,10 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
             if (stychera === "n" && dayOfWeek === 0 && dayData["class"]<=10){
                 // do not add a festal theotokion if it is a Sunday
                 // and not Lord's/Theotokos' feast
-                const lastLine = currentPsalm[currentPsalm.length-2];
+                var lastLine = currentPsalm[currentPsalm.length-1];
+                if (lastLine==="") {lastLine = currentPsalm[currentPsalm.length-2]; currentPsalm.pop();}
                 // also remove tone indication if present
-                if (lastLine[lastLine.length-1] == ">") {currentPsalm.pop(); currentPsalm.pop();}
+                if (lastLine.endsWith("div>")) {currentPsalm.pop();}
                 break
             }
             if (prePostFeast != "" && stychera === "gn" && dayOfWeek === 0){
