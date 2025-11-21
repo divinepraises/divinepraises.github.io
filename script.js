@@ -65,7 +65,7 @@ async function showMenaionDate(mm, dd){
         if ("note" in dayData) {
             note = `<br><div class="rubric">${dayData["note"]}</div>`
         }
-        return `${symbolData[dayData["class"]]} ${dd}/${mm}: ${feastName} ${constructDayName(dayData)}${note}`;
+        return `${symbolData[dayData["class"]]} ${dd}/${mm}: ${feastName} ${constructDayName(dayData, "")}${note}`;
 //    } catch (error) {
 //         return `No data for this day at ${address}\\menaion\\${dateAddress}.json`
     }
