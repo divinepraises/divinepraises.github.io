@@ -875,7 +875,10 @@ async function makeKathisma(dayOfWeek, isGreatVespers, mm, dd, season, priest, e
     if (instruction === "verses"){
         var resp = await fetch(`${address}\\psalms\\1verses.txt`);
         var psalmData = await resp.text()
-        document.getElementById("kathisma").innerHTML = `<div class="subhead">Verses of the 1st kathisma</div>${psalmData}<br>`;
+        document.getElementById("kathisma").innerHTML = `
+        <div class="subhead">Verses of the 1st kathisma</div>
+        ${psalmData}<br>
+        ${tripleAlleluia.split("<br>")[1]}<br>`;
         makeSmallEktenia(priest, ekteniaData);
         return;
     }
