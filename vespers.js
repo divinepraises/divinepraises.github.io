@@ -84,7 +84,7 @@ async function loadTextDaily(full, dayOfWeek, mm, dd, season, glas, dateAddress,
       <hr>`
     }
 
-    const dayName = constructDayName(dayData)
+    const dayName = constructDayName(dayData, false)
     document.getElementById("day_name").innerHTML = dayName;
 
     if (isGreatVespers) {

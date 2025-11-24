@@ -4,20 +4,22 @@ const address = `Text\\English`
 const response = await fetch('./Text/English/horologion/general_texts.json');
 const data = await response.json();
 
-export const postfeast = `${data.postfeast}`;
-export const forefeast = `${data.forefeast}`;
+export const postfeast = data.postfeast;
+export const forefeast = data.forefeast;
 
 const cross = `<FONT COLOR="RED"><b>†</b></FONT>`
 
 export const glory = `${cross} ${data.glory}.`
 
-export const andNow = `${data.andNow}`
+export const andNow = data.andNow;
 
 export const gloryAndNow = `${glory} ${andNow}`
 
-export const LHM = `${data.lhm}`
-export const GTL = `${data.gtl}`
-export const TYL = `${data.tyl}`
+export const LHM = data.lhm;
+export const GTL = data.gtl;
+export const TYL = data.tyl;
+
+export const st = data.saint;
 
 export const moreHonorable = `${data.moreHonorable}`
 
@@ -114,7 +116,7 @@ export function dismissalMajor(dayOfWeek, withPriest, isGreatVespers, prePostFea
 
 	if (!isGreatVespers) {
 	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}`
-	} else if (TheotokosDismissal===""){
+	} else if (TheotokosDismissal===";"){
 	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}${data.dismissalSaintsSolemn}`
 	} else {
 	    replacements["SAINT"] = "";
@@ -160,6 +162,7 @@ export async function getCommonText(textType, dayData){
     if (Array.isArray(dayData["type"])) {
         var texts = [];
         for (let [i, name] of dayData["name"].entries()){
+                if (dayData["type"][i] === "") continue
                 texts.push(getCommonText(textType, {"name":name, "type": dayData["type"][i]}))
             }
         return (await Promise.all(texts)).flat();

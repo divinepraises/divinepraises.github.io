@@ -1,4 +1,4 @@
-import {forefeast, postfeast} from './text_generation.js';
+import {forefeast, postfeast, st} from './text_generation.js';
 var address = `Text\\English`
 
 export function dateToStr(currentDate){
@@ -50,7 +50,7 @@ async function showMenaionDate(mm, dd){
     mm = String(mm).padStart(2, "0")
     dd = String(dd).padStart(2, "0")
 	const dateAddress = `${mm}\\${dd}`
-    {
+    try {
         const dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
         const symbolData = await getData(`${address}\\menaion\\feasts_symbols.json`);
         var feastName = "";
@@ -65,21 +65,41 @@ async function showMenaionDate(mm, dd){
         if ("note" in dayData) {
             note = `<br><div class="rubric">${dayData["note"]}</div>`
         }
-        return `${symbolData[dayData["class"]]} ${dd}/${mm}: ${feastName} ${constructDayName(dayData, "")}${note}`;
-//    } catch (error) {
-//         return `No data for this day at ${address}\\menaion\\${dateAddress}.json`
+        return `${symbolData[dayData["class"]]} ${dd}/${mm}: ${feastName} ${constructDayName(dayData, false)}${note}`;
+    } catch (error) {
+         return `No data for this day at ${address}\\menaion\\${dateAddress}.json`
     }
 }
 
-export function constructDayName(dayData, saint="Saint"){
+export function constructDayName(dayData, forDismissal=true){
+    var saint;
+    if ("saint" in dayData) saint = dayData["saint"];
+    else saint = st;
+
+    if (!forDismissal && "day name" in dayData) {
+        var dayNames = dayData["day name"];
+        if (!Array.isArray(dayNames)) {
+            return dayNames;
+        } else {
+            var dateInfo = ``;
+            if (!Array.isArray(saint)) {saint = Array(dayNames.length).fill(saint)}
+            for (let [i, name] of dayNames.entries()){
+                if (name != "") {dateInfo += `${name}`; continue;}
+                dateInfo += `${saint[i]} ${dayData["type"][i]} ${dayData["name"][i]}`
+                if (i != dayNames.length-1) dateInfo += `, `
+            }
+            return dateInfo;
+        }
+    }
     if (!Array.isArray(dayData["type"])) {
         // one saint
         return `${saint} ${dayData["type"]} ${dayData["name"]}`
     } else {
         // list of saints
         var dateInfo = ``;
+        if (!Array.isArray(saint)) {saint = Array(dayData["name"].length).fill(saint)}
         for (let [i, name] of dayData["name"].entries()){
-            dateInfo += ` ${saint} ${dayData["type"][i]} ${name},`
+            dateInfo += ` ${saint[i]} ${dayData["type"][i]} ${name},`
         }
         return dateInfo.slice(0, -1);
     }
