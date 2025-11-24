@@ -30,7 +30,7 @@ function dailyVespers(full, dayOfWeek, mm, dd, glas, dayData, dateAddress, pries
   <h2>Vespers</h2>
   <h4><div id="day_name"></div></h4>
   <div id="beginning"></div>
-  ${comeLetUs}<br><br>
+  <a id="#come_let_us">${comeLetUs}<br><br></a>
   <div id="psalm103Selector"></div>
   <div id="psalm103"></div><br>
   <div id="psalm103add"></div>

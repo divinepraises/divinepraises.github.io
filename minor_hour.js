@@ -11,7 +11,14 @@ export function minorHour(hour, priest, full, date){
 		6: "Sixth",
 		9: "Ninth"
 	}
+	const nextHour = {
+		1: "3hour",
+		3: "6hour",
+		6: "9hour",
+		9: "vespers"
+	}
 	var numOhHour = hour.charAt(0);
+	const linkToNext = `https:\/\/divinepraises.github.io/main.html?hour=${nextHour[numOhHour]}&priest=${priest}&full=${full}&date=${date}#come_let_us`;
 
 	loadText(hour, full, dayOfWeek, glas, dateAddress);
 	return `<h2>The ${numeral[numOhHour]} hour</h2>
@@ -19,26 +26,31 @@ export function minorHour(hour, priest, full, date){
 	<hr>
 	${usualBeginning(priest, season)}
 	<hr>
-	${comeLetUs}<br><br>
+	<a id="#come_let_us">${comeLetUs}<br><br></a>
 	<div id="psalms"></div><br>
 	${tripleAlleluia}<br>
-	${LHM} <FONT COLOR="RED">(3)</FONT><br>
-	<div id="troparia"></div>
-	${andNow}
+	${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
+	<div class="subhead">Troparia</div>
+	<div id="troparia"></div><br>
+	${andNow}<br><br>
 	<div id="theotokion"></div><br>
 	<div id="chapter"></div><br>
-	${trisagionToPater(priest)}<br>
+	<div class="subhead">Trisagion</div>
+	${trisagionToPater(priest)}
+	<div class="subhead">Kontakion</div>
 	<div id="kontakia"></div><br>
-	${LHM} <FONT COLOR="RED">(40)</FONT><br>
-	${prayerOfTheHours}<br>
-	${LHM} <FONT COLOR="RED">(3)</FONT><br>
-	${gloryAndNow}
+	${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
+	<div class="subhead">Prayer of the hours</div>
+	${prayerOfTheHours}<br><br>
+	${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
+	${gloryAndNow}<br><br>
 	${moreHonorable}<br><br>
-	${inTheName}<br>
-	${prayerBlessingMayGodBeGracious(priest)}<br>
-	${amen}
+	${inTheName}<br><br>
+	${prayerBlessingMayGodBeGracious(priest)}<br><br>
+	${amen}<br><br>
+	<div class="subhead">Prayer of this hour</div>
 	<div id="prayer"></div><br>
-	<div class=rubric>When this hour is followed by another one, switch to the next hour here. Otherwise, conclude with the dismissal:</div>
+	<div class=rubric>When this hour is followed by another one, switch to the <a href="${linkToNext}">next hour</a>. Otherwise, conclude with the dismissal:</div>
 	<hr>
 	${endingBlockMinor(priest)}
 	`;
@@ -196,22 +208,22 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
 
         if (prePostFeast != ""){
             if (hour === "1hour" || hour === "6hour"){
-                return `${sundayTrop["troparia"][glas]}<br>${glory}<br>${prePostFeastTroparion}`;
+                return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${prePostFeastTroparion}`;
             }
             if ("troparia" in dayData) dayTrop = dayData["troparia"];
             else dayTrop = await getCommonText("troparia", dayData);
             if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
-            if (hour === "3hour") return `${sundayTrop["troparia"][glas]}<br>${glory}<br>${dayTrop[0]}`;
+            if (hour === "3hour") return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[0]}`;
             // 9th
             if (dayTrop.length === 1 && prePostFeast === "postfeast" || dayTrop.length === 2 && prePostFeast === "forefeast"){
-                return `${sundayTrop["troparia"][glas]}<br>${glory}<br>${dayTrop[0]}`;
+                return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[0]}`;
             } else {
-                return `${sundayTrop["troparia"][glas]}<br>${glory}<br>${dayTrop[1]}`;
+                return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[1]}`;
             }
         }
 
         if (hour === "1hour" && dayData["class"] < 8){
-            return `${glory}<br>${sundayTrop["troparia"][glas]}`;
+            return `${glory}<br><br>${sundayTrop["troparia"][glas]}`;
         }
 
         if ("troparia" in dayData) dayTrop = dayData["troparia"];
@@ -220,7 +232,7 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
 
         if (dayData["class"] >= 8){
             // Sunday and polyeleos
-            return `${sundayTrop["troparia"][glas]}<br>${glory}<br>${dayTrop[0]}`;
+            return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[0]}`;
         }
 
         if (hour === "6hour"){
@@ -228,16 +240,16 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
             // In footnotes he quotes Greek practice, but I disagree with him that it matters.
             // In "Око Церковное" the order is different, but in its spirit,
             // the day's saint seems like the best choice.
-            return `${sundayTrop["troparia"][glas]}<br>${glory}<div class="rubric">In a church, a troparion of the church. Otherwise:</div>${dayTrop[0]}`;
+            return `${sundayTrop["troparia"][glas]}<br><br>${glory}<div class="rubric">In a church, a troparion of the church. Otherwise:</div>${dayTrop[0]}`;
         }
         if (hour === "3hour"){
-            return `${sundayTrop["troparia"][glas]}<br>${glory}<br>${dayTrop[0]}`;
+            return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[0]}`;
         }
         // 9th hour: check if two saints
         if (dayTrop.length === 2) {
-            return `${sundayTrop["troparia"][glas]}<br>${glory}<br>${dayTrop[1]}`;
+            return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[1]}`;
         }
-        return `${sundayTrop["troparia"][glas]}<br>${glory}<br>${dayTrop[0]}`;
+        return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[0]}`;
     }
 
     // polyeleos or higher: at any hour return day troparion
@@ -245,23 +257,23 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
     if (dayData["class"] >= 8){
         dayTrop = dayData["troparia"]
         if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
-        if (prePostFeast === "") return `${glory}<br>${dayTrop[0]}`;
-        return `${prePostFeastTroparion}<br>${glory}<br>${dayTrop[0]}`;
+        if (prePostFeast === "") return `${glory}<br><br>${dayTrop[0]}`;
+        return `${prePostFeastTroparion}<br><br>${glory}<br><br>${dayTrop[0]}`;
     }
 
     if (prePostFeast != ""){
         if (hour === "1hour" || hour === "6hour"){
-            return `${glory}<br>${prePostFeastTroparion}`;
+            return `${glory}<br><br>${prePostFeastTroparion}`;
         }
         if ("troparia" in dayData) dayTrop = dayData["troparia"];
         else dayTrop = await getCommonText("troparia", dayData);
         if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
-        if (hour === "3hour") return `${prePostFeastTroparion}<br>${glory}<br>${dayTrop[0]}`;
+        if (hour === "3hour") return `${prePostFeastTroparion}<br><br>${glory}<br><br>${dayTrop[0]}`;
         // 9th
         if (dayTrop.length === 1 && prePostFeast === "postfeast" || dayTrop.length === 2 && prePostFeast === "forefeast"){
-            return `${prePostFeastTroparion}<br>${glory}<br>${dayTrop[0]}`;
+            return `${prePostFeastTroparion}<br><br>${glory}<br><br>${dayTrop[0]}`;
         } else {
-            return `${prePostFeastTroparion}<br>${glory}<br>${dayTrop[1]}`;
+            return `${prePostFeastTroparion}<br><br>${glory}<br><br>${dayTrop[1]}`;
         }
     }
 
@@ -275,10 +287,10 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
         var thisWeekayTropars = data["troparia"][dayOfWeek];
         const numWeekayTropars = thisWeekayTropars.length;
         if (numWeekayTropars === 1){
-            return `${glory}<br>${thisWeekayTropars[0]}`;
+            return `${glory}<br><br>${thisWeekayTropars[0]}`;
         }
         else {
-            return `${thisWeekayTropars[0]}<br>${glory}<br>${thisWeekayTropars[1]}`;
+            return `${thisWeekayTropars[0]}<br><br>${glory}<br><br>${thisWeekayTropars[1]}`;
         }
     }
 
@@ -292,13 +304,13 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
         return `${glory}<div class="rubric">In a church, a troparion of the church. Otherwise:</div>${dayTrop[0]}`;
     }
     if (hour === "3hour"){
-        return `${glory}<br>${dayTrop[0]}`;
+        return `${glory}<br><br>${dayTrop[0]}`;
     }
     // 9th hour: check if two saints
     if (dayTrop.length === 2) {
-        return `${glory}<br>${dayTrop[1]}`;
+        return `${glory}<br><br>${dayTrop[1]}`;
     }
-    return `${glory}<br>${dayTrop[0]}`;
+    return `${glory}<br><br>${dayTrop[0]}`;
 }
 
 async function selectKondak(hour, dayOfWeek, hourData, glas, dayData){
