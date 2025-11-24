@@ -26,7 +26,7 @@ export function minorHour(hour, priest, full, date){
 	<hr>
 	${usualBeginning(priest, season)}
 	<hr>
-	<a id="#come_let_us">${comeLetUs}<br><br></a>
+	<a id="come_let_us">${comeLetUs}<br><br></a>
 	<div id="psalms"></div><br>
 	${tripleAlleluia}<br>
 	${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
