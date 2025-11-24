@@ -563,10 +563,10 @@ async function makeProkimenon(dayOfWeek, vespersData, priest){
         <div class="rubric">Tone ${prokData[0]}</div>
         <FONT COLOR="RED">Choir:</FONT> ${prokData[1]}* ${prokData[2]}<br>`
     for (let verse of prokData.slice(3)){
-        prokimenon += `v. ${verse}<br><FONT COLOR="RED">Choir:</FONT> ${prokData[1]}* ${prokData[2]}<br>`
+        prokimenon += `<FONT COLOR="RED">v.</FONT> ${verse}<br><FONT COLOR="RED">Choir:</FONT> ${prokData[1]}* ${prokData[2]}<br>`
     }
     prokimenon += `
-        v. ${prokData[1]} <br><FONT COLOR="RED">Choir:</FONT> ${prokData[2]}<br>`
+        <FONT COLOR="RED">v.</FONT> ${prokData[1]} <br><FONT COLOR="RED">Choir:</FONT> ${prokData[2]}<br>`
     return prokimenon;
 }
 
