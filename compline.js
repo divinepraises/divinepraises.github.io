@@ -1,4 +1,4 @@
-import { usualBeginning, comeLetUs , lesserDoxology, itIsTrulyRight, trisagionToPater, tripleAlleluia, glory, andNow, LHM, prayerOfTheHours, gloryAndNow, moreHonorable, inTheName,prayerBlessingMayGodBeGracious, amen, endingBlockMinor, StEphremPrayer } from './text_generation.js';
+import { cross, usualBeginning, comeLetUs , lesserDoxology, itIsTrulyRight, trisagionToPater, tripleAlleluia, glory, andNow, LHM, prayerOfTheHours, gloryAndNow, moreHonorable, inTheName,prayerBlessingMayGodBeGracious, amen, endingBlockMinor, StEphremPrayer } from './text_generation.js';
 import { getDayInfo, getData, readPsalmsFromNumbers, isBetweenDates  } from './script.js';
 
 var address = `Text\\English`
@@ -252,16 +252,16 @@ function makeFirstSectionTroparia(tropariaDict, full, dayOfWeek, isIncarnationFe
 
 function makePetitions(petitions, full, isIncarnationFeast){
     if (full === "0"){
-        document.getElementById("petitions").innerHTML = petitions.join("<br><br>");
+        document.getElementById("petitions").innerHTML = petitions.join("<br>");
         return;
     }
     var res = `
-        ${petitions[0]} <FONT COLOR="RED">(3)</FONT> <br>`;
+        ${cross} ${petitions[0]} <FONT COLOR="RED">(3)</FONT> <br>`;
     for (let [i, petition] of petitions.slice(1, petitions.length).entries()){
-        res += `${petition} <FONT COLOR="RED">(2)</FONT><br>`
+        res += `${cross} ${petition} <FONT COLOR="RED">(2)</FONT><br>`
     }
     if (!isIncarnationFeast) {
-        res = `<div class="rubric">One choir chants a petition, while the other one makes a prostration.</div>` + res;
+        res = `<div class="rubric">One choir chants a petition, while the other one makes an inclination.</div>` + res;
     } else {
         res = `<div class="rubric">If there are two choirs, they chant in turns:</div>` + res;
     }

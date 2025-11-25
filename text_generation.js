@@ -7,7 +7,7 @@ const data = await response.json();
 export const postfeast = data.postfeast;
 export const forefeast = data.forefeast;
 
-const cross = `<FONT COLOR="RED"><b>†</b></FONT>`
+export const cross = `<FONT COLOR="RED"><b>†</b></FONT>`
 
 export const glory = `${cross} ${data.glory}.`
 
