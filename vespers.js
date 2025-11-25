@@ -65,7 +65,7 @@ async function loadTextDaily(full, dayOfWeek, mm, dd, season, glas, dateAddress,
 
     const vespersData = await getData(`${address}\\horologion\\general_vespers.json`)
     const vespersMenaionData = await getData(`${address}\\menaion\\${dateAddress}_vespers.json`)
-    const isLytia = ("lytia" in vespersMenaionData);
+    const isLytia = ("lytia" in vespersMenaionData && dayData["class"] >= 10);
 
     var vigilVespersData, haire;
     if (dayData["class"] >= 10) {

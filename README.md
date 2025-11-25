@@ -11,6 +11,7 @@ Some of the texts here might be copyrighted. We lay no claim on the texts, and i
 It must include following fields
 
 - class: a number representing the rank of the day in a custom system of this site:
+  - "Alleluia day": 3, 
   - "Saint of 4 stychera": 4,
   - "Two saints of 4": 5,
   - "Saint of 6 stychera": 6,
