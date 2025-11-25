@@ -14,24 +14,31 @@
       "<i>(Tone 4)</i> The truth of your deeds made you for your flock a rule of faith* and an image of meekness,* a teacher of continence.* And so you gained the heights through humility,* riches through poverty,* father and bishop Nicholas.* Intercede with Christ our God** for the salvation of our souls."
     ],
     "5": [
-      "If you see this, something is wrong"
+      "<i>(Tone 1)</i> Save Your people, O Lord, and bless Your inheritance.* Grant victory to Your faithful people [to our faithful King <FONT COLOR=\"RED\">N.</FONT>] against enemies** and protect Your community by Your cross."
     ],
     "6": [
       "<i>(Tone 2)</i> Apostles, prophets, martyrs,* bishops, venerable and righteous ones,* having finished the fight well and having kept the faith,* you now have free approach to the Savior.* For our sake, we beseech you, entreat Him in His goodness to save our souls."
     ]
   },
-  "kontakia":
-  {
-    "1": ["<i>(Tone 2)</i> Princes of God’s hosts, ministers of divine glory,* leaders of angels and guides of men,* pray for our welfare and for great mercy,* O princes of the incorporeal powers."],
-    "2": ["<i>(Tone 3)</i> She who once was barren gives birth today to the Forerunner of Christ,* who will fulfill every prophecy.* In the Jordan he placed his hand upon the One Whom the prophets foretold,* and thus was shown to be the prophet, the herald,** and the Forerunner of the Word of God."],
-    "3": ["<i>(Tone 4)</i> By Your own choice, O Christ our God,* You were lifted on the cross.* Grant Your mercies to Your new community* that bears Your Name.* By Your power gladden the faithful people,* and grant them victory against enemies.* May they have the help of Your instrument of peace,* the invincible sign of victory."],
+  "kontakia": {
+    "1": [
+      "<i>(Tone 2)</i> Princes of God’s hosts, ministers of divine glory,* leaders of angels and guides of men,* pray for our welfare and for great mercy,* O princes of the incorporeal powers."
+    ],
+    "2": [
+      "<i>(Tone 3)</i> She who once was barren gives birth today to the Forerunner of Christ,* who will fulfill every prophecy.* In the Jordan he placed his hand upon the One Whom the prophets foretold,* and thus was shown to be the prophet, the herald,** and the Forerunner of the Word of God."
+    ],
+    "3": [
+      "<i>(Tone 4)</i> By Your own choice, O Christ our God,* You were lifted on the cross.* Grant Your mercies to Your new community* that bears Your Name.* By Your power gladden the faithful people,* and grant them victory against enemies.* May they have the help of Your instrument of peace,* the invincible sign of victory."
+    ],
     "4": [
       "<i>(Tone 2)</i> You received Your inspired and steadfast preachers, Your chief disciples,* into the enjoyment of Your good things and into repose.* You, who alone know the heart, accepted their labors and death* more gladly than any holocaust.",
       "<i>(Tone 3)</i> In Myra, O holy one, you proved yourself a priest.* You fulfilled the Gospel of Christ, O venerable father.* You laid down your soul for your people* and saved the innocent from death.* And so you were sanctified as a great initiate of God’s grace."
     ],
     "5": [
-      "If you see this, something is wrong"
+      "<i>(Tone 4)</i> By Your own choice, O Christ our God,* You were lifted on the cross.* Grant Your mercies to Your new community* that bears Your Name.* By Your power gladden the faithful people,* and grant them victory against enemies.* May they have the help of Your instrument of peace,* the invincible sign of victory."
     ],
-    "6": ["<i>(Tone 8)</i> O Lord, Maker of nature,* the world offers You the godly martyrs as the first-fruits of nature.* By their supplications, through the Mother of God,* preserve Your Church and Your people in profound peace,** O most Merciful One."]
+    "6": [
+      "<i>(Tone 8)</i> O Lord, Maker of nature,* the world offers You the godly martyrs as the first-fruits of nature.* By their supplications, through the Mother of God,* preserve Your Church and Your people in profound peace,** O most Merciful One."
+    ]
   }
 }
