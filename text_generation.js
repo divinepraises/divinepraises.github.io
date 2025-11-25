@@ -135,9 +135,8 @@ function dismissalMinor(withPriest) {
 }
 
 export function endingBlockMinor(withPriest){
-    return `${gloryAndNow}<br><br>
-	        ${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
-	        ${giveTheBlessing(withPriest)}<br><br>
+    return `${gloryAndNow}
+	        ${LHM} <FONT COLOR="RED">(3)</FONT> ${giveTheBlessing(withPriest)}<br><br>
 	        ${dismissalMinor(withPriest)}<br><br>
 	        <FONT COLOR="RED">Choir:</FONT> ${data.amen}<br>
 	        `
