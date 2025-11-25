@@ -658,7 +658,7 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
                 stycheraScheme = Array(4).fill(1).concat([2, 2, 1, 1])
             } else if (numStycheras === 5){
                 stycheraScheme = Array(4).fill(1).concat([2, 1, 1, 1, 1])
-            } else if (numStycheras === 6){
+            } else if (numStycheras >= 6) {
                 stycheraScheme = Array(10).fill(1)
             }
             numStycheras += 4;
@@ -735,6 +735,7 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
             }
             else {stycheraScheme = [2, 2, 1, 1, 1, 1];}
          }
+         else if (numStycheras === 7) {stycheraScheme = [1, 1, 1, 1, 2, 1, 1];}
          else if (numStycheras > 7) stycheraScheme = Array(8).fill(1);
     }
 
