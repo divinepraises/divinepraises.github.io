@@ -21,6 +21,21 @@ export const TYL = data.tyl;
 
 export const st = data.saint;
 
+export function StEphremPrayer(short=false){
+    var res = `<div class=subhead>Prayer of st. Ephrem of Syria</div><br>`;
+    const stEphrem = data.st_ephrem
+    for (let verse of stEphrem.slice(0, 3)){
+        res += `${cross} ${verse} <div class="rubric">Prostration.</div>`
+    }
+    if (short) return res;
+    res += `<br> <div class="rubric">Then twelve inclinations, repeating these three verses for four times:</div>`;
+    for (let verse of stEphrem.slice(3, stEphrem.length)){
+        res += `${cross} ${verse} <br>`
+    }
+    res += `<br> ${cross} ${stEphrem.slice(0, 3).join(" ")} <div class="rubric">Prostration.</div>`
+    return res;
+}
+
 export const moreHonorable = `${data.moreHonorable}`
 
 export const inTheName = `${data.inTheName}`

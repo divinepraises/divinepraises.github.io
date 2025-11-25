@@ -1,5 +1,5 @@
-import { usualBeginning, comeLetUs , lesserDoxology, itIsTrulyRight, trisagionToPater, glory, andNow, LHM, prayerOfTheHours, gloryAndNow, moreHonorable, inTheName,prayerBlessingMayGodBeGracious, amen, endingBlockMinor } from './text_generation.js';
-import { getDayInfo, getData, readPsalmsFromNumbers } from './script.js';
+import { usualBeginning, comeLetUs , lesserDoxology, itIsTrulyRight, trisagionToPater, tripleAlleluia, glory, andNow, LHM, prayerOfTheHours, gloryAndNow, moreHonorable, inTheName,prayerBlessingMayGodBeGracious, amen, endingBlockMinor, StEphremPrayer } from './text_generation.js';
+import { getDayInfo, getData, readPsalmsFromNumbers, isBetweenDates  } from './script.js';
 
 var address = `Text\\English`
 
@@ -7,8 +7,6 @@ export async function compline(priest, full, date){
 	let [year, mm, dd, season, glas, dayOfWeek, dateAddress] = getDayInfo(date, true);
 
 	const dd_mm = String(dd).padStart(2, "0") + String(mm).padStart(2, "0");
-
-    const isIncarnationFeast = (dd_mm === "2412" || dd_mm === "0501" || dd_mm === "2403")
 
     var dayData;
 
@@ -18,24 +16,280 @@ export async function compline(priest, full, date){
         dayData = {"class" : 0};
         `No data for this day! ${`${address}\\menaion\\${dateAddress}.json`}`
     }
+    const isIncarnationFeast = (dd_mm === "2512" || dd_mm === "0601" || dd_mm === "2503");
+    const isAlleluiaDay = (
+        isBetweenDates(mm, dd, 11, 15, 12, 19) &&
+        dayData["class"] <= 4 &&
+        !("forefeast" in dayData) &&
+        !("postfeast" in dayData) &&
+        (dayOfWeek === 3 || dayOfWeek === 5)
+    )
 
     if ((season === "Lent" && dayOfWeek < 6) || isIncarnationFeast){
-        return greatCompline(full, season, dayOfWeek, priest, glas, kontakion);
+        return greatCompline(full, season, dayOfWeek, priest, glas, isIncarnationFeast, dayData);
     }
 
-    return smallCompline(full, season, dayOfWeek, priest, glas, dayData);
+    return smallCompline(full, season, dayOfWeek, priest, glas, dayData, isAlleluiaDay);
 }
 
-function greatCompline(full, season, dayOfWeek, priest, glas, kontakion){
-    // placeholder
-    return "<div class=\"rubric\">No great compline yet.</div><br>"+smallCompline(full, season, dayOfWeek, priest, glas, kontakion);
+function greatCompline(full, season, dayOfWeek, priest, glas, isIncarnationFeast, dayData){
+    loadTextGreat(full, dayOfWeek, priest, glas, isIncarnationFeast, dayData);
+
+    return `<h2>Great Compline</h2>
+	${usualBeginning(priest, season)}<br><br>
+	${comeLetUs}<br><br>
+	<div id="psalms_1"></div><br>
+	<div class=subhead>Canticle of Isaiah</div><br>
+	<div id="god_is_with_us"></div><br>
+	<div id="troparia_0"></div>
+	<div class=subhead>The Symbol of Faith</div><br>
+	<div id="creed"></div><br>
+	<div id="petitions"></div><br>
+	${trisagionToPater(priest)}
+	<div class=subhead>Troparia</div><br>
+	<div id="troparia_1"></div><br>
+	${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
+	${gloryAndNow}<br><br>
+	${moreHonorable}<br><br>
+	${inTheName}<br><br>
+	${prayerBlessingMayGodBeGracious(priest)}<br><br>
+	${amen}<br><br>
+	<div class=subhead>Prayer of saint Basil</div><br>
+	<div id="prayer_1"></div><br><br>
+	<div class=subhead>Section 2</div><br>
+	${comeLetUs}<br><br>
+	<div id="psalms_2"></div>
+	<div class=subhead>Prayer of king Manasses</div>
+	<div id="prayer_manasses"></div><br>
+	${trisagionToPater(priest)}
+	<div class=subhead>Troparia</div><br>
+	<div id="troparia_2"></div><br>
+	${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
+	${gloryAndNow}<br><br>
+	${moreHonorable}<br><br>
+	${inTheName}<br><br>
+	${prayerBlessingMayGodBeGracious(priest)}<br><br>
+	${amen}<br><br>
+	<div class=subhead>Prayer of saint Basil</div><br>
+	<div id="prayer_2"></div><br><br>
+	<div class=subhead>Section 3</div><br>
+	${comeLetUs}<br><br>
+	<div id="psalms_3"></div><br>
+	<div id="lesserDoxology"></div><br><br>
+	<div id="canonSelector">
+      <label><input type="radio" name="canonChoice" value="omit_canon"> Omit the canon</label><br>
+      <label><input type="radio" name="canonChoice" value="shorten_canon" id="shorten_canon"> Shorten the canon</label><br>
+      <label><input type="radio" name="canonChoice" value="full_canon" id="full_canon"> Full canon</label>
+    </div>
+    <div id="canon"></div><br>
+    ${itIsTrulyRight}<br><br>
+    ${trisagionToPater(priest)}
+	<div class=subhead>Troparia</div><br>
+    <div id="troparia_3"></div><br>
+    ${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
+	${prayerOfTheHours}<br><br>
+	${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
+	${gloryAndNow}<br><br>
+	${moreHonorable}<br><br>
+	${inTheName}<br><br>
+	${prayerBlessingMayGodBeGracious(priest)}<br><br>
+	${amen}<br><br>
+    <div id="st_ephrem"></div><br>
+    ${trisagionToPater(priest)}
+    ${LHM} <FONT COLOR="RED">(12)</FONT><br><br>
+	<div class=subhead>Compline Prayers</div><br>
+    <div id="prayers"></div><br>
+    <div id="penitential_troparia"></div><br>
+	${endingBlockMinor(priest)}<br>
+	<div id="after_prayers"></div><br>
+	`;
+}
+
+async function loadTextGreat(full, dayOfWeek, priest, glas, isIncarnationFeast, dayData){
+	const smallComplineData = await getData(`${address}\\horologion\\small_compline.json`);
+	const greatComplineData = await getData(`${address}\\horologion\\great_compline.json`);
+
+    const alleluiaUnit = `<br><br>${tripleAlleluia} ${LHM} <FONT COLOR="RED">(3)</FONT><br>${gloryAndNow}`
+
+	var ekteniasData;
+    if (priest === "1"){
+         ekteniasData = await getData(`${address}\\horologion\\night_ektenias.json`);
+    }
+
+    if (full === "1") {
+        const psalms_1 = (await readPsalmsFromNumbers(greatComplineData["psalms_1"]));
+        psalms_1.splice(6, 0, alleluiaUnit+"<br><br>");
+        psalms_1.push(alleluiaUnit);
+        document.getElementById("psalms_1").innerHTML = psalms_1.join("");
+
+        document.getElementById("psalms_3").innerHTML = (await readPsalmsFromNumbers(greatComplineData["psalms_3"])).join("");
+
+        lesserDoxology("compline");
+
+        document.getElementById("full_canon").checked = true;
+        document.getElementById("penitential_troparia").innerHTML = penitentialTroparia(priest,  smallComplineData, ekteniasData);
+    } else if (full === "0") {
+        // TODO
+        loadTextGreat("1", dayOfWeek, priest, glas, isIncarnationFeast, dayData);
+    }
+
+    makeNethimon(greatComplineData["god_is_with_us"], greatComplineData["troparia_0"]);
+    makePetitions(greatComplineData["petitions"], full, isIncarnationFeast);
+    makeFirstSectionTroparia(greatComplineData["troparia_1"], full, dayOfWeek, isIncarnationFeast, dayData);
+
+    getData(`${address}\\horologion\\creed.json`).then(creed => {
+        document.getElementById("creed").innerHTML = creed["0"];
+    });
+
+    document.getElementById("prayer_1").innerHTML = greatComplineData["prayer_1"]
+
+    // section 2
+    document.getElementById("psalms_2").innerHTML = (await readPsalmsFromNumbers(greatComplineData["psalms_2"])).join("");
+    document.getElementById("prayer_manasses").innerHTML = greatComplineData["manasses"]
+    makeSecondSectionTroparia(smallComplineData["penitential_troparia"], isIncarnationFeast, dayData);
+
+    getData(`${address}\\horologion\\3hour.json`).then(data => {
+        document.getElementById("prayer_2").innerHTML = data["prayer"];
+    });
+
+    selectCanon(dayOfWeek, glas, full, smallComplineData["canon_refrain"]);
+
+    // section 3
+    makeThirdSectionTroparia(greatComplineData["troparia_3"])
+    document.getElementById("st_ephrem").innerHTML = StEphremPrayer();
+    document.getElementById("prayers").innerHTML =  smallComplineData["prayers"].join("<br><br>");
+    document.getElementById("after_prayers").innerHTML =  postComplinePrayers(priest,  smallComplineData, ekteniasData, dayOfWeek);
+}
+
+async function makeThirdSectionTroparia(troparia){
+    const verses = (await readPsalmsFromNumbers([150]))[1].split("•");
+    var res = `<div class="rubric">Two choirs take turns in chanting<br>Tone 6</div>
+        <FONT COLOR="RED">1.</FONT> ${troparia[0]}<br>
+        <FONT COLOR="RED">2.</FONT> ${troparia[0]}<br>
+        `;
+    for (let [i, verse] of verses.slice(0, verses.length-1).entries()){
+        res += `<FONT COLOR="RED">${i%2+1}.</FONT> ${verse}* ${troparia[0]}<br>`
+    }
+    res += `<FONT COLOR="RED">1.+2.</FONT> ${verses[0]}* ${troparia[0]}<br><br>
+        <i>${glory}</i><br><br>
+        ${troparia[1]}<br><br>
+        <i>${andNow}</i><br><br>
+        ${troparia[2]}<br><br>
+        ${troparia[3]}<br><br>
+        ${troparia[4]}`;
+    document.getElementById("troparia_3").innerHTML = res;
+}
+
+function makeSecondSectionTroparia(troparia, isIncarnationFeast, dayData){
+    if (isIncarnationFeast){
+        document.getElementById("troparia_2").innerHTML = `
+            <div class="rubric">Penitential troparia are replaced by this festal kontakion:</div>
+            ${dayData["kontakia"]}`;
+        return
+    }
+    var indices = [1, 2];
+    if (troparia.length === 5) {indices = [2, 4]}
+    document.getElementById("troparia_2").innerHTML = `
+        ${troparia[0]}<br><br>
+        <i>${glory}</i><br><br>
+        ${troparia[indices[0]]}<br><br>
+        <i>${andNow}</i><br><br>
+        ${troparia[indices[1]]}
+        `
+}
+
+function makeFirstSectionTroparia(tropariaDict, full, dayOfWeek, isIncarnationFeast, dayData){
+    if (isIncarnationFeast){
+        document.getElementById("troparia_1").innerHTML = dayData["troparia"];
+        return
+    }
+    var troparia;
+    if (dayOfWeek === 1 || dayOfWeek === 3){
+        troparia = tropariaDict["1, 3"];
+        document.getElementById("troparia_1").innerHTML = `<div class="rubric">Tone 2</div>
+        ${troparia[0]}<br><br>
+        <i>${tropariaDict["verse"]}</i><br><br>
+        ${troparia[1]}<br><br>
+        <i>${glory}</i><br><br>
+        ${troparia[2]}<br><br>
+        <i>${andNow}</i><br><br>
+        ${troparia[3]}
+        `
+        return
+    }
+    troparia = tropariaDict["2, 4"];
+    var res = `<div class="rubric">Tone 2</div>
+        ${troparia[0]}<br><br>
+        <i>${tropariaDict["verse"]}</i><br><br>`;
+    if (full == "1"){
+        res += `
+            ${troparia[0]}<br><br>
+            <i>${glory}</i><br><br>
+            ${troparia[1]}<br><br>
+            <i>${andNow}</i><br><br>
+            ${troparia[2]}
+            `
+    } else {
+        res += `
+            ${troparia[1]}<br><br>
+            <i>${gloryAndNow}</i><br><br>
+            ${troparia[2]}
+            `
+    }
+    document.getElementById("troparia_1").innerHTML = res;
+
 }
 
 
-function smallCompline(full, season, dayOfWeek, priest, glas, dayData){
-    loadText(full, dayOfWeek, priest, glas, dayData);
+function makePetitions(petitions, full, isIncarnationFeast){
+    if (full === "0"){
+        document.getElementById("petitions").innerHTML = petitions.join("<br><br>");
+        return;
+    }
+    var res = `
+        ${petitions[0]} <FONT COLOR="RED">(3)</FONT> <br>`;
+    for (let [i, petition] of petitions.slice(1, petitions.length).entries()){
+        res += `${petition} <FONT COLOR="RED">(2)</FONT><br>`
+    }
+    if (!isIncarnationFeast) {
+        res = `<div class="rubric">One choir chants a petition, while the other one makes a prostration.</div>` + res;
+    } else {
+        res = `<div class="rubric">If there are two choirs, they chant in turns:</div>` + res;
+    }
+    document.getElementById("petitions").innerHTML =  res;
+}
 
-	return `<h2>Compline</h2>
+function makeNethimon(verses, troparia){
+    const refrain = verses[0];
+    var res = `<div class="rubric">Two choirs take turns in chanting, or one reader reads:</div>
+        <FONT COLOR="RED">1.</FONT> ${verses[1]} ${refrain}<br>`;
+    for (let [i, verse] of verses.slice(1, verses.length).entries()){
+        res += `<FONT COLOR="RED">${(i+1)%2+1}.</FONT> ${verse} ${refrain}<br>`
+    }
+    document.getElementById("god_is_with_us").innerHTML = res + `<FONT COLOR="RED">1.+2.</FONT> ${verses[1]} ${refrain}`;
+
+    document.getElementById("troparia_0").innerHTML = `
+        ${troparia[0]}<br><br>
+        ${glory}<br><br>
+        ${troparia[1]}<br><br>
+        ${andNow}<br><br>
+        ${troparia[2]}<br><br>
+        ${troparia[3]}<br><br>
+        ${troparia[4]}<br><br>`;
+}
+
+
+function smallCompline(full, season, dayOfWeek, priest, glas, dayData, isAlleluiaDay){
+    loadText(full, season, dayOfWeek, priest, glas, dayData, isAlleluiaDay);
+	return `<div id="compline"></div><br>`
+}
+
+async function loadText(full, season, dayOfWeek, priest, glas, dayData, isAlleluiaDay) {
+	const filename = `${address}\\horologion\\small_compline.json`;
+	const smallComplineData = await getData(filename);
+
+	document.getElementById("compline").innerHTML = `<h2>Compline</h2>
+	<div id="switch"></div><br>
 	${usualBeginning(priest, season)}<br><br>
 	${comeLetUs}<br><br>
 	<div id="psalms"></div><br>
@@ -64,14 +318,23 @@ function smallCompline(full, season, dayOfWeek, priest, glas, dayData){
 	${endingBlockMinor(priest)}<br>
 	<div id="after_prayers"></div><br>
 	`;
-}
 
-async function loadText(full, dayOfWeek, priest, glas, dayData) {
-	const filename = `${address}\\horologion\\small_compline.json`;
-	const jsonData = await getData(filename);
-
-	const psalmNums = jsonData["psalms"];
+	const psalmNums =  smallComplineData["psalms"];
 	const psalmPaths = psalmNums.map(n => `${address}\\psalms\\${n}.txt`);
+
+   if (isAlleluiaDay){
+        document.getElementById("switch").innerHTML =`
+          <div class=rubric>There is an option in Typicon for this day to be according to a penitential rite.
+          This means one can pray a much longer Great Compline
+          (other hours are also supposed to be changed, but this is not yet implemented).
+          If you want to undo it later, just reload the page.</div>
+          <label><input type="checkbox" name="greatCompline"> Use Great Compline instead.</label><br>
+            `;
+        document.getElementById("switch").addEventListener("change", () => document.getElementById("compline").innerHTML = greatCompline(full, "", dayOfWeek, priest, glas, false, dayData));
+    } else {
+        document.getElementById("switch").innerHTML = "";
+    }
+
 
 	var ekteniasData;
     if (priest === "1"){
@@ -85,7 +348,7 @@ async function loadText(full, dayOfWeek, priest, glas, dayData) {
         document.getElementById("full_canon").checked = true;
         lesserDoxology("compline");
 
-        document.getElementById("penitential_troparia").innerHTML = penitentialTroparia(priest, jsonData, ekteniasData);
+        document.getElementById("penitential_troparia").innerHTML = penitentialTroparia(priest,  smallComplineData, ekteniasData);
     } else if (full === "0") {
         if (dayOfWeek > 0) {
             var i = dayOfWeek%4 - (dayOfWeek < 4)
@@ -103,15 +366,15 @@ async function loadText(full, dayOfWeek, priest, glas, dayData) {
         document.getElementById("shorten_canon").checked = true;
         document.getElementById("penitential_troparia").innerHTML = "";
     }
-    selectTropar(dayOfWeek, jsonData, glas, dayData).then(tropar => {
+    selectTropar(dayOfWeek,  smallComplineData, glas, dayData).then(tropar => {
         document.getElementById("troparia").innerHTML = tropar;
     });
     getData(`${address}\\horologion\\creed.json`).then(creed => {
         document.getElementById("creed").innerHTML = creed["0"];
     });
-    selectCanon(dayOfWeek, glas, full, jsonData["canon_refrain"]);
-    document.getElementById("prayers").innerHTML = jsonData["prayers"].join("<br><br>");
-    document.getElementById("after_prayers").innerHTML =  postComplinePrayers(priest, jsonData, ekteniasData, dayOfWeek);
+    selectCanon(dayOfWeek, glas, full,  smallComplineData["canon_refrain"]);
+    document.getElementById("prayers").innerHTML = smallComplineData["prayers"].join("<br><br>");
+    document.getElementById("after_prayers").innerHTML = postComplinePrayers(priest,  smallComplineData, ekteniasData, dayOfWeek);
 }
 
 async function constructCanon(dayOfWeek, glas, full, refrain){
@@ -307,8 +570,8 @@ async function selectTropar(dayOfWeek, hourData, glas, dayData){
     return `${thisDayTropars.join("")}${complineTroparia.join("<br>")}`
 }
 
-function penitentialTroparia(withPriest, jsonData, ekteniasData){
-    var tropList = jsonData["penitential_troparia"]
+function penitentialTroparia(withPriest,  smallComplineData, ekteniasData){
+    var tropList =  smallComplineData["penitential_troparia"]
     tropList.splice(2,0, `${andNow}`);
     tropList.splice(1,0, `${glory}`);
     const trop = tropList.join("<br>");
