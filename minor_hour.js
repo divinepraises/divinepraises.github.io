@@ -46,7 +46,7 @@ export function minorHour(hour, priest, full, date){
 	${gloryAndNow}<br><br>
 	${moreHonorable}<br><br>
 	${inTheName}<br><br>
-	${prayerBlessingMayGodBeGracious(priest)}<br><br>
+	${prayerBlessingMayGodBeGracious(priest, hour)}<br><br>
 	${amen}<br><br>
 	<div class="subhead">Prayer of this hour</div>
 	<div id="prayer"></div><br>
