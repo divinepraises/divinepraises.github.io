@@ -121,16 +121,25 @@ async function loadTextGreat(full, dayOfWeek, priest, glas, isIncarnationFeast, 
         psalms_1.splice(6, 0, alleluiaUnit+"<br><br>");
         psalms_1.push(alleluiaUnit);
         document.getElementById("psalms_1").innerHTML = psalms_1.join("");
-
+        document.getElementById("psalms_2").innerHTML = (await readPsalmsFromNumbers(greatComplineData["psalms_2"])).join("");
         document.getElementById("psalms_3").innerHTML = (await readPsalmsFromNumbers(greatComplineData["psalms_3"])).join("");
-
-        lesserDoxology("compline");
 
         document.getElementById("full_canon").checked = true;
         document.getElementById("penitential_troparia").innerHTML = penitentialTroparia(priest,  smallComplineData, ekteniasData);
     } else if (full === "0") {
-        // TODO
-        loadTextGreat("1", dayOfWeek, priest, glas, isIncarnationFeast, dayData);
+        const dayToPsalm_1 = {1: [0, 3], 2: [1, 4], 3: [2, 5], 4:[2, 5]}[dayOfWeek];
+        const dayToPsalm_2_3 = (dayOfWeek + 1)  % 2;
+
+        const psalmNums_1 = dayToPsalm_1.map(i => greatComplineData["psalms_1"][i]);
+        const psalms_1 = (await readPsalmsFromNumbers(psalmNums_1));
+        psalms_1.splice(2, 0, alleluiaUnit+"<br><br>");
+        psalms_1.push(alleluiaUnit);
+        document.getElementById("psalms_1").innerHTML = psalms_1.join("");
+        document.getElementById("psalms_2").innerHTML = (await readPsalmsFromNumbers([greatComplineData["psalms_2"][dayToPsalm_2_3]])).join("");
+        document.getElementById("psalms_3").innerHTML = (await readPsalmsFromNumbers([greatComplineData["psalms_3"][dayToPsalm_2_3]])).join("");
+
+        document.getElementById("shorten_canon").checked = true;
+        document.getElementById("penitential_troparia").innerHTML = "";
     }
 
     makeNethimon(greatComplineData["god_is_with_us"], greatComplineData["troparia_0"]);
@@ -144,7 +153,6 @@ async function loadTextGreat(full, dayOfWeek, priest, glas, isIncarnationFeast, 
     document.getElementById("prayer_1").innerHTML = greatComplineData["prayer_1"]
 
     // section 2
-    document.getElementById("psalms_2").innerHTML = (await readPsalmsFromNumbers(greatComplineData["psalms_2"])).join("");
     document.getElementById("prayer_manasses").innerHTML = greatComplineData["manasses"]
     makeSecondSectionTroparia(smallComplineData["penitential_troparia"], isIncarnationFeast, dayData);
 
@@ -155,6 +163,7 @@ async function loadTextGreat(full, dayOfWeek, priest, glas, isIncarnationFeast, 
     selectCanon(dayOfWeek, glas, full, smallComplineData["canon_refrain"]);
 
     // section 3
+    lesserDoxology("compline");
     makeThirdSectionTroparia(greatComplineData["troparia_3"])
     document.getElementById("st_ephrem").innerHTML = StEphremPrayer();
     document.getElementById("prayers").innerHTML =  smallComplineData["prayers"].join("<br><br>");
