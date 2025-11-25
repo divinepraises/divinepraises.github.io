@@ -946,10 +946,10 @@ async function makeKathisma(dayOfWeek, isGreatVespers, mm, dd, season, priest, e
         kathPsalmsToText += `
         <div class="rubric">Psalms ${stasis} (in traditional/LXX numeration)</div>
         ${tripleAlleluia}`
-        if (isGreatVespers) break;
+        if (isGreatVespers && dayOfWeek != 0) break;
         if (i < 2) kathPsalmsToText += `${LHM} <FONT COLOR="RED">(3)</FONT><br>${gloryAndNow}`
     }
-    if (isGreatVespers){
+    if (isGreatVespers && dayOfWeek != 0){
       document.getElementById("kathisma").innerHTML = `<div class="subhead">First stasis of Kathisma ${k}</div>${kathPsalmsToText}<br>`
     } else {
       document.getElementById("kathisma").innerHTML = `<div class="subhead">Kathisma ${k}</div>${kathPsalmsToText}<br>`;
