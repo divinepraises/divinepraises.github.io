@@ -254,9 +254,10 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
 
     // polyeleos or higher: at any hour return day troparion
     // in pre/post: feast-Glory-saint
+    if ("troparia" in dayData) dayTrop = dayData["troparia"];
+    else dayTrop = await getCommonText("troparia", dayData);
+    if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
     if (dayData["class"] >= 8){
-        dayTrop = dayData["troparia"]
-        if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
         if (prePostFeast === "") return `${glory}<br><br>${dayTrop[0]}`;
         return `${prePostFeastTroparion}<br><br>${glory}<br><br>${dayTrop[0]}`;
     }
@@ -265,9 +266,6 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
         if (hour === "1hour" || hour === "6hour"){
             return `${glory}<br><br>${prePostFeastTroparion}`;
         }
-        if ("troparia" in dayData) dayTrop = dayData["troparia"];
-        else dayTrop = await getCommonText("troparia", dayData);
-        if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
         if (hour === "3hour") return `${prePostFeastTroparion}<br><br>${glory}<br><br>${dayTrop[0]}`;
         // 9th
         if (dayTrop.length === 1 && prePostFeast === "postfeast" || dayTrop.length === 2 && prePostFeast === "forefeast"){
@@ -295,10 +293,6 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
     }
 
     // weekday
-    if ("troparia" in dayData) dayTrop = dayData["troparia"];
-    else dayTrop = await getCommonText("troparia", dayData);
-    if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
-
     if (hour === "6hour"){
         // see Sun for comment
         return `${glory}<div class="rubric">In a church, a troparion of the church. Otherwise:</div>${dayTrop[0]}`;
