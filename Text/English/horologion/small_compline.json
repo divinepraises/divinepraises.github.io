@@ -22,8 +22,8 @@
   "after_prayers": {
     "with_priest":[
       "<div class=\"rubric\">Typicon prescribes the following rite of forgiveness to be said in monasteries.</div><hr>",
-      "<div class=\"rubric\">Priest, prostrating or bowing low before the faithful:</div><b>Bless me, reverend fathers and brothers, and forgive me, a sinner, whatever offenses I may have committed this day [this night] and all the days of my life by word, deed and thought as well as by all my senses.</b>",
-      "<div class=\"rubric\">Faithful:</div>May God forgive you, reverend Father.<div class=\"rubric\">(faithful also prostrate or bow)</div>Bless us also and forgive our offenses voluntary and involuntary.",
+      "<div class=\"rubric\">Priest, prostrating or bowing low before the faithful:</div><b>Bless me, reverend fathers and brothers, and forgive me, a sinner, whatever offenses I may have committed this day [this night] and all the days of my life by word, deed and thought as well as by all the senses of my soul and body.</b>",
+      "<div class=\"rubric\">Faithful:</div>May God forgive you, reverend Father.<div class=\"rubric\">(faithful also prostrate or bow)</div>Bless me, reverend father, and forgive me, a sinner, whatever offenses I may have committed this day [this night] and all the days of my life by word, deed and thought as well as by all the senses of my soul and body.",
       "<div class=\"rubric\">Priest:</div><b>May the Lord God by His grace forgive you all your sins and have mercy on you.</b><br><hr>"
     ],
     "without_priest":[
