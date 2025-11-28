@@ -3,6 +3,7 @@ import { getDayInfo, getData, isBetweenDates, readPsalmsFromNumbers, constructDa
 var address = `Text\\English`
 
 // TODO readings
+// TODO refactor vespers in the same way as compline so that there are two parts (vespers + presanctified/Basil or compline + ending of vespers)
 
 const gloriaDict = {
         "g": `<i>${glory}</i>`,
