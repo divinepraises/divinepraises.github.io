@@ -25,16 +25,27 @@ export async function compline(priest, full, date){
         (dayOfWeek === 3 || dayOfWeek === 5)
     )
 
-    if ((season === "Lent" && dayOfWeek < 6) || isIncarnationFeast){
-        return greatCompline(full, season, dayOfWeek, priest, glas, isIncarnationFeast, dayData);
+    var beginning, ending;
+    if (isIncarnationFeast) {
+        greatComplineBeginning(full, season, priest, dayOfWeek, dayData, isIncarnationFeast);
+        vespersEnding(priest, dayData, dateAddress);
+    } else if ((season === "Lent" && dayOfWeek < 6)){
+        greatComplineBeginning(full, season, priest, dayOfWeek, dayData, isIncarnationFeast);
+        complineEnding(full, dayOfWeek, priest, glas, dayData, true);
+    } else {
+        smallComplineBeginning(full, season, dayOfWeek, priest, isAlleluiaDay);
+        complineEnding(full, dayOfWeek, priest, glas, dayData, false);
     }
 
-    return smallCompline(full, season, dayOfWeek, priest, glas, dayData, isAlleluiaDay);
+    return `
+        <div id="beginning"></div><br>
+        <div id="ending"></div>`
 }
 
-async function loadEnding(full, dayOfWeek, priest, glas){
+async function complineEnding(full, dayOfWeek, priest, glas, dayData, isGreatCompline) {
 	const smallComplineData = await getData(`${address}\\horologion\\small_compline.json`);
-    document.getElementById("endingOfCompline").innerHTML = `<div id="canonSelector">
+	loadComplineEnding(smallComplineData, full, dayOfWeek, priest, glas, dayData, isGreatCompline);
+    document.getElementById("ending").innerHTML =  `<div id="canonSelector">
       <label><input type="radio" name="canonChoice" value="omit_canon"> Omit the canon</label><br>
       <label><input type="radio" name="canonChoice" value="shorten_canon" id="shorten_canon"> Shorten the canon</label><br>
       <label><input type="radio" name="canonChoice" value="full_canon" id="full_canon"> Full canon</label>
@@ -56,7 +67,7 @@ async function loadEnding(full, dayOfWeek, priest, glas){
     <div id="additional_pater"></div>
 	<div class=subhead>Compline Prayers</div><br>
     <div id="prayers"></div><br>
-    <div id="penitential_troparia"></div><br>
+    <div id="penitential_troparia"></div>
 	<div class=subhead>Dismissal</div><br>
 	${endingBlockMinor(priest)}<br>
 	<div class=subhead>Prayers after dismissal</div><br>
@@ -64,19 +75,97 @@ async function loadEnding(full, dayOfWeek, priest, glas){
 	`;
 }
 
-async function loadEndingIncarnation(full, dayOfWeek, priest, glas){
-    return "";
+async function loadComplineEnding(smallComplineData, full, dayOfWeek, priest, glas, dayData, isGreatCompline){
+	var ekteniasData = await getData(`${address}\\horologion\\night_ektenias.json`);
+
+    if (full === "1") {
+        document.getElementById("full_canon").checked = true;
+        document.getElementById("penitential_troparia").innerHTML = penitentialTroparia(priest,  smallComplineData, ekteniasData);
+    } else if (full === "0") {
+        document.getElementById("shorten_canon").checked = true;
+        document.getElementById("penitential_troparia").innerHTML = "";
+    }
+
+    selectCanon(dayOfWeek, glas, full, smallComplineData["canon_refrain"]);
+    document.getElementById("prayers").innerHTML = smallComplineData["prayers"].join("<br><br>");
+    document.getElementById("after_prayers").innerHTML =  postComplinePrayers(priest, smallComplineData, ekteniasData, dayOfWeek);
+
+    if (isGreatCompline){
+	    const greatComplineData = await getData(`${address}\\horologion\\great_compline.json`);
+        makeThirdSectionTroparia(greatComplineData["troparia_3"])
+        document.getElementById("st_ephrem").innerHTML = StEphremPrayer() + "<br>";
+        document.getElementById("additional_pater").innerHTML = `${trisagionToPater(priest)}
+            ${LHM} <FONT COLOR="RED">(12)</FONT><br><br>`
+    } else {
+        selectTropar(dayOfWeek,  smallComplineData, glas, dayData).then(tropar => {
+            document.getElementById("troparia").innerHTML = tropar;
+        });
+        document.getElementById("st_ephrem").innerHTML = "";
+        document.getElementById("additional_pater").innerHTML = "";
+    }
 }
 
-function greatCompline(full, season, dayOfWeek, priest, glas, isIncarnationFeast, dayData){
-    if (isIncarnationFeast) {
-        loadEndingIncarnation()
-    } else {
-        loadEnding(full, dayOfWeek, priest, glas)
-    }
-    loadTextGreat(full, dayOfWeek, priest, glas, isIncarnationFeast, dayData);
+async function smallComplineBeginning(full, season, dayOfWeek, priest, isAlleluiaDay, glas, dayData) {
+	const smallComplineData = await getData(`${address}\\horologion\\small_compline.json`);
 
-    return `<h2>Great Compline</h2>
+    loadSmallComplineBeginning(smallComplineData, full, season, dayOfWeek, isAlleluiaDay, priest, glas, dayData);
+	document.getElementById("beginning").innerHTML =  `<h2>Small Compline</h2>
+	<div id="switch"></div><br>
+	${usualBeginning(priest, season)}<br><br>
+	${comeLetUs}<br><br>
+	<div id="psalms"></div><br>
+	<div class=subhead>The Symbol of Faith</div><br>
+	<div id="creed"></div>
+	`;
+}
+
+async function loadSmallComplineBeginning(smallComplineData, full, season, dayOfWeek, isAlleluiaDay, priest, glas, dayData) {
+	const psalmNums =  smallComplineData["psalms"];
+	const psalmPaths = psalmNums.map(n => `${address}\\psalms\\${n}.txt`);
+
+    if (full === "1") {
+        var formattedValues = (await readPsalmsFromNumbers(psalmNums)).join("");
+        document.getElementById("psalms").innerHTML = `${formattedValues}<br><br><div id="lesserDoxology"></div>`;
+        document.getElementById("lesserDoxology").innerHTML = await lesserDoxology("compline");
+    } else if (full === "0") {
+        if (dayOfWeek > 0) {
+            var i = dayOfWeek%4 - (dayOfWeek < 4)
+            const n = psalmNums[i];
+            const resp = await fetch(psalmPaths[i]);
+            const psalmData = await resp.text();
+
+            document.getElementById("psalms").innerHTML = `<div class="subhead">Psalm ${n}</div>${psalmData}`;
+        } else if (dayOfWeek === 0) {
+            lesserDoxology("compline").then(dox => {
+                document.getElementById("psalms").innerHTML = dox;
+            });
+        }
+    }
+    getData(`${address}\\horologion\\creed.json`).then(creed => {
+        document.getElementById("creed").innerHTML = creed["0"];
+    });
+
+	if (isAlleluiaDay){
+        document.getElementById("switch").innerHTML =`
+          <div class=rubric>There is an option in Typicon for this day to be according to a penitential rite.
+          This means one can pray a much longer Great Compline
+          (other hours are also supposed to be changed, but this is not yet implemented).
+          If you want to undo it later, just reload the page.</div>
+          <label><input type="checkbox" name="greatCompline"> Use Great Compline instead.</label><br>
+            `;
+        document.getElementById("switch").addEventListener("change", () => {
+            greatComplineBeginning(full, season, priest, dayOfWeek, dayData, false);
+            complineEnding(full, dayOfWeek, priest, glas, dayData, true);
+            }
+        );
+    }
+}
+
+async function greatComplineBeginning(full, season, priest, dayOfWeek, dayData, isIncarnationFeast) {
+	const smallComplineData = await getData(`${address}\\horologion\\small_compline.json`);
+
+    loadGreatComplineBeginning(smallComplineData, full, dayOfWeek, dayData, isIncarnationFeast);
+	document.getElementById("beginning").innerHTML =  `<h2>Great Compline</h2>
 	${usualBeginning(priest, season)}<br><br>
 	${comeLetUs}<br><br>
 	<div id="psalms_1"></div><br>
@@ -116,20 +205,14 @@ function greatCompline(full, season, dayOfWeek, priest, glas, isIncarnationFeast
 	<div class=subhead>Section 3</div><br>
 	${comeLetUs}<br><br>
 	<div id="psalms_3"></div><br>
-	<div id="lesserDoxology"></div><br><br>
-	<div id="endingOfCompline"></div>`
+	<div id="lesserDoxology"></div>
+	`;
 }
 
-async function loadTextGreat(full, dayOfWeek, priest, glas, isIncarnationFeast, dayData){
-	const smallComplineData = await getData(`${address}\\horologion\\small_compline.json`);
-	const greatComplineData = await getData(`${address}\\horologion\\great_compline.json`);
+async function loadGreatComplineBeginning(smallComplineData, full, dayOfWeek, dayData, isIncarnationFeast) {
+    const greatComplineData = await getData(`${address}\\horologion\\great_compline.json`);
 
     const alleluiaUnit = `<br><br>${tripleAlleluia} ${LHM} <FONT COLOR="RED">(3)</FONT><br>${gloryAndNow}`
-
-	var ekteniasData;
-    if (priest === "1"){
-         ekteniasData = await getData(`${address}\\horologion\\night_ektenias.json`);
-    }
 
     if (full === "1") {
         const psalms_1 = (await readPsalmsFromNumbers(greatComplineData["psalms_1"]));
@@ -138,9 +221,6 @@ async function loadTextGreat(full, dayOfWeek, priest, glas, isIncarnationFeast, 
         document.getElementById("psalms_1").innerHTML = psalms_1.join("");
         document.getElementById("psalms_2").innerHTML = (await readPsalmsFromNumbers(greatComplineData["psalms_2"])).join("");
         document.getElementById("psalms_3").innerHTML = (await readPsalmsFromNumbers(greatComplineData["psalms_3"])).join("");
-
-        document.getElementById("full_canon").checked = true;
-        document.getElementById("penitential_troparia").innerHTML = penitentialTroparia(priest,  smallComplineData, ekteniasData);
     } else if (full === "0") {
         const dayToPsalm_1 = {1: [0, 3], 2: [1, 4], 3: [2, 5], 4:[2, 5]}[dayOfWeek];
         const dayToPsalm_2_3 = (dayOfWeek + 1)  % 2;
@@ -152,9 +232,6 @@ async function loadTextGreat(full, dayOfWeek, priest, glas, isIncarnationFeast, 
         document.getElementById("psalms_1").innerHTML = psalms_1.join("");
         document.getElementById("psalms_2").innerHTML = (await readPsalmsFromNumbers([greatComplineData["psalms_2"][dayToPsalm_2_3]])).join("");
         document.getElementById("psalms_3").innerHTML = (await readPsalmsFromNumbers([greatComplineData["psalms_3"][dayToPsalm_2_3]])).join("");
-
-        document.getElementById("shorten_canon").checked = true;
-        document.getElementById("penitential_troparia").innerHTML = "";
     }
 
     makeNethimon(greatComplineData["god_is_with_us"], greatComplineData["troparia_0"]);
@@ -175,16 +252,14 @@ async function loadTextGreat(full, dayOfWeek, priest, glas, isIncarnationFeast, 
         document.getElementById("prayer_2").innerHTML = data["prayer"];
     });
 
-    selectCanon(dayOfWeek, glas, full, smallComplineData["canon_refrain"]);
-
     // section 3
-    lesserDoxology("compline");
-    makeThirdSectionTroparia(greatComplineData["troparia_3"])
-    document.getElementById("st_ephrem").innerHTML = StEphremPrayer() + "<br>";
-    document.getElementById("additional_pater").innerHTML = `${trisagionToPater(priest)}
-        ${LHM} <FONT COLOR="RED">(12)</FONT><br><br>`
-    document.getElementById("prayers").innerHTML =  smallComplineData["prayers"].join("<br><br>");
-    document.getElementById("after_prayers").innerHTML =  postComplinePrayers(priest,  smallComplineData, ekteniasData, dayOfWeek);
+    lesserDoxology("compline").then(dox => {
+        document.getElementById("lesserDoxology").innerHTML = dox;
+    });
+}
+
+async function vespersEnding(){
+    return "";
 }
 
 async function makeThirdSectionTroparia(troparia){
@@ -263,7 +338,6 @@ function makeFirstSectionTroparia(tropariaDict, full, dayOfWeek, isIncarnationFe
             `
     }
     document.getElementById("troparia_1").innerHTML = res;
-
 }
 
 
@@ -302,88 +376,6 @@ function makeNethimon(verses, troparia){
         ${troparia[2]}<br><br>
         ${troparia[3]}<br><br>
         ${troparia[4]}<br><br>`;
-}
-
-
-function smallCompline(full, season, dayOfWeek, priest, glas, dayData, isAlleluiaDay){
-
-    loadText(full, season, dayOfWeek, priest, glas, dayData, isAlleluiaDay);
-	return `<div id="compline"></div><br>`
-}
-
-async function loadText(full, season, dayOfWeek, priest, glas, dayData, isAlleluiaDay) {
-	const filename = `${address}\\horologion\\small_compline.json`;
-	const smallComplineData = await getData(filename);
-    loadEnding(full, dayOfWeek, priest, glas);
-
-	document.getElementById("compline").innerHTML = `<h2>Compline</h2>
-	<div id="switch"></div><br>
-	${usualBeginning(priest, season)}<br><br>
-	${comeLetUs}<br><br>
-	<div id="psalms"></div><br>
-	<div class=subhead>The Symbol of Faith</div><br>
-	<div id="creed"></div><br>
-	<div id="endingOfCompline"></div>
-	`;
-
-	const psalmNums =  smallComplineData["psalms"];
-	const psalmPaths = psalmNums.map(n => `${address}\\psalms\\${n}.txt`);
-
-   if (isAlleluiaDay){
-        document.getElementById("switch").innerHTML =`
-          <div class=rubric>There is an option in Typicon for this day to be according to a penitential rite.
-          This means one can pray a much longer Great Compline
-          (other hours are also supposed to be changed, but this is not yet implemented).
-          If you want to undo it later, just reload the page.</div>
-          <label><input type="checkbox" name="greatCompline"> Use Great Compline instead.</label><br>
-            `;
-        document.getElementById("switch").addEventListener("change", () => document.getElementById("compline").innerHTML = greatCompline(full, "", dayOfWeek, priest, glas, false, dayData));
-    } else {
-        document.getElementById("switch").innerHTML = "";
-    }
-
-
-	var ekteniasData;
-    if (priest === "1"){
-         ekteniasData = await getData(`${address}\\horologion\\night_ektenias.json`);
-    }
-
-    if (full === "1") {
-        var formattedValues = (await readPsalmsFromNumbers(psalmNums)).join("");
-        document.getElementById("psalms").innerHTML = `${formattedValues}<br><br><div id="lesserDoxology"></div>`;
-
-        document.getElementById("full_canon").checked = true;
-        lesserDoxology("compline");
-
-        document.getElementById("penitential_troparia").innerHTML = penitentialTroparia(priest,  smallComplineData, ekteniasData);
-    } else if (full === "0") {
-        if (dayOfWeek > 0) {
-            var i = dayOfWeek%4 - (dayOfWeek < 4)
-            const n = psalmNums[i];
-            const resp = await fetch(psalmPaths[i]);
-            const psalmData = await resp.text();
-
-            document.getElementById("psalms").innerHTML = `<div class="subhead">Psalm ${n}</div>${psalmData}`;
-        } else if (dayOfWeek === 0) {
-            document.getElementById("psalms").innerHTML = `<div id="lesserDoxology"></div>`;
-            lesserDoxology("compline");
-        } else {
-            throw new Error("No data available for the selected day.");
-        }
-        document.getElementById("shorten_canon").checked = true;
-        document.getElementById("penitential_troparia").innerHTML = "";
-    }
-    selectTropar(dayOfWeek,  smallComplineData, glas, dayData).then(tropar => {
-        document.getElementById("troparia").innerHTML = tropar;
-    });
-    getData(`${address}\\horologion\\creed.json`).then(creed => {
-        document.getElementById("creed").innerHTML = creed["0"];
-    });
-    selectCanon(dayOfWeek, glas, full,  smallComplineData["canon_refrain"]);
-    document.getElementById("st_ephrem").innerHTML = "";
-    document.getElementById("additional_pater").innerHTML = "";
-    document.getElementById("prayers").innerHTML = smallComplineData["prayers"].join("<br><br>");
-    document.getElementById("after_prayers").innerHTML = postComplinePrayers(priest,  smallComplineData, ekteniasData, dayOfWeek);
 }
 
 async function constructCanon(dayOfWeek, glas, full, refrain){
@@ -588,7 +580,7 @@ function penitentialTroparia(withPriest,  smallComplineData, ekteniasData){
     if (withPriest == 1){
         return trop + "<br><br>" + ekteniasData["at_compline"].join("<br>");
     }
-    return trop;
+    return trop + "<br><br>";
 }
 
 function  postComplinePrayers(withPriest, data, ekteniasData, dayOfWeek) {

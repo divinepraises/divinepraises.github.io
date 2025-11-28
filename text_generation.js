@@ -171,7 +171,7 @@ export async function lesserDoxology(hour){
         // vespers uses only the 2nd part
         return `${head}${replaceCapsWords(dox["2"], replacementDict)}`
     }
-    document.getElementById("lesserDoxology").innerHTML = `${head}${replaceCapsWords(dox["1"], replacementDict)}<br>${replaceCapsWords(dox["2"], replacementDict)}`
+    return `${head}${replaceCapsWords(dox["1"], replacementDict)} ${replaceCapsWords(dox["2"], replacementDict)}`
 }
 
 export async function getCommonText(textType, dayData){
