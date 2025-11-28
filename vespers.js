@@ -203,7 +203,7 @@ async function loadTextDaily(full, dayOfWeek, mm, dd, season, glas, dateAddress,
     document.getElementById("ending_block").innerHTML = await makeEndingBlockMajor(priest, dayOfWeek, dayData["class"]>=8, vespersData, dayData);
 }
 
-async function makePs33(priest, vigilVespersData){
+export async function makePs33(priest, vigilVespersData){
     var text = `<div class="subhead">Blessing of the Loaves, Wine, and Oil</div><br>`;
     if (priest === "1"){
         text += vigilVespersData["blessing_of_food"].join("<br><br>") + "<br><br>"
@@ -219,7 +219,7 @@ async function makePs33(priest, vigilVespersData){
     document.getElementById("ektenia_augmented_or_ps33").innerHTML = text;
 }
 
-async function makeLytia(lytiaData, priest, vespersData, vigilVespersData, saintNames){
+export async function makeLytia(lytiaData, priest, vespersData, vigilVespersData, saintNames){
     var lytia = `<div class="subhead">Lytia</div><br>
     <div class="rubric">The first stichera is supposed to be from the lytia of the parish feast.
     Then the following sticheras are sung:</div><br>`
@@ -292,7 +292,7 @@ async function makeLytiaPrayers(lytiaPrayers, vigilVespersData, vespersData, sai
         document.getElementById("lytia_prayers").innerHTML = lytia;
 }
 
-async function makeEndingBlockMajor(priest, dayOfWeek, isGreatVespers, vespersData, dayData){
+export async function makeEndingBlockMajor(priest, dayOfWeek, isGreatVespers, vespersData, dayData){
     var res = `<div class="subhead">Dismissal</div><br>`;
     var saintNames = [constructDayName(dayData)];
 
@@ -332,7 +332,7 @@ async function makeEndingBlockMajor(priest, dayOfWeek, isGreatVespers, vespersDa
 }
 
 
-async function makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, haire){
+export async function makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, haire){
     // TODO Lent
     var dayTrop;
     if ("troparia" in dayData) dayTrop = dayData["troparia"];
@@ -343,7 +343,9 @@ async function makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, haire){
     if ("forefeast" in dayData) prePostFeast = "forefeast";
     else if ("postfeast" in dayData) prePostFeast = "postfeast";
 
-    if (dayOfWeek === 0){
+    if (dayData["class"] > 10){
+        return dayTrop[0] + `<i><FONT COLOR="RED">(3)</FONT></i>`;
+    } else if (dayOfWeek === 0){
         if (dayData["class"] < 10){
             // Sunday
             dayTrop.splice(0, 0, (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][glas]);
@@ -393,7 +395,7 @@ async function makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, haire){
 }
 
 
-async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, vespersData, vespersMenaionData, vespersOctoechosData){
+export async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, vespersData, vespersMenaionData, vespersOctoechosData){
     // TODO triodion
     var apostMain;
     var apostVerses, aposticha;
@@ -960,7 +962,7 @@ async function makeKathisma(dayOfWeek, isGreatVespers, mm, dd, season, priest, e
 
 }
 
-function makeEktenia(ekteniaData, key=false){
+export function makeEktenia(ekteniaData, key=false){
     var ektenia = "<FONT COLOR=\"RED\">Deacon: </FONT>";
     var num_petitions = ekteniaData.length - 2;
 

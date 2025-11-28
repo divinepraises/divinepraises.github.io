@@ -258,10 +258,6 @@ async function loadGreatComplineBeginning(smallComplineData, full, dayOfWeek, da
     });
 }
 
-async function vespersEnding(){
-    return "";
-}
-
 async function makeThirdSectionTroparia(troparia){
     const verses = (await readPsalmsFromNumbers([150]))[1].split("•");
     var res = `<div class="rubric">Two choirs take turns in chanting<br>Tone 6</div>
@@ -597,4 +593,38 @@ function  postComplinePrayers(withPriest, data, ekteniasData, dayOfWeek) {
 	} else {
 		return data["after_prayers"]["without_priest"].join("<br><br>");
 	}
+}
+
+async function vespersEnding(priest, dayData, dateAddress){
+    const menaionData = await getData(`${address}\\menaion\\${dateAddress}_compline.json`)
+    loadVespersEnding(priest, dayData, menaionData);
+    document.getElementById("ending").innerHTML =  `<div id="lytia_stychera"></div>
+        <div id="lytia_selector"></div>
+        <div id="lytia_prayers"></div>
+        <div id="aposticha"></div>
+        <div id="simeon"></div><br>
+        ${trisagionToPater(priest)}
+        <div id="troparia"></div><br>
+        <div id="ektenia_augmented_or_ps33"></div>
+        <div id="ending_block"></div><br>`;
+}
+
+import { makeAposticha,  makeTroparia, makeEktenia, makeLytia, makeEndingBlockMajor, makePs33 } from './vespers.js';
+import { constructDayName } from './script.js';
+async function loadVespersEnding(priest, dayData, menaionData){
+
+    const vigilVespersData = await getData(`${address}\\horologion\\vigil_vespers.json`);
+    const vespersData = await getData(`${address}\\horologion\\general_vespers.json`)
+    const dayName = constructDayName(dayData, false);
+
+    makeLytia(menaionData["lytia"], priest, vespersData, vigilVespersData, dayName);
+    makePs33(priest, vigilVespersData);
+
+    document.getElementById("aposticha").innerHTML = await makeAposticha(0, 0, true, dayData, vespersData, menaionData, {});
+
+    document.getElementById("simeon").innerHTML = `<div class="subhead">Song of Simeon</div><br>${vespersData["simeon"]}`;
+
+    document.getElementById("troparia").innerHTML = await makeTroparia(0, 0, true, dayData, "");
+
+    document.getElementById("ending_block").innerHTML = await makeEndingBlockMajor(priest, 8, true, vespersData, dayData);
 }
