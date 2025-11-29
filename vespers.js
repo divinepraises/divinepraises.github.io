@@ -694,16 +694,15 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
                 stycheraScheme = Array(10).fill(1)
             }
         } else if (dayData["class"] >= 8) {
+            // polyeleos/vigil on Sunday
             // in the current data format, 0th stychera is tone
             if (specialSundayName === "forefathers") {
-                stycheras = psalm140OctoechosStycheras.slice(0, 4);
-                numStycheras += 3;
+                psalm140OctoechosStycheras = psalm140OctoechosStycheras.slice(0, 4);
             } else {
-                stycheras = psalm140OctoechosStycheras.slice(0, 5);
-                numStycheras += 4;
+                psalm140OctoechosStycheras = psalm140OctoechosStycheras.slice(0, 5);
             }
             // adding all the stycheas
-            stycheras = stycheras.concat(psalm140menaionStycheras)
+            stycheras = psalm140OctoechosStycheras.concat(psalm140menaionStycheras)
             if (numStycheras === 3){
                 stycheraScheme = Array(4).fill(1).concat([2, 2, 2])
             } else if (numStycheras === 4){
@@ -713,6 +712,7 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
             } else if (numStycheras >= 6) {
                 stycheraScheme = Array(10).fill(1)
             }
+            numStycheras += (psalm140OctoechosStycheras.length - 1);
         } else if (specialSundayName === "forefathers") {
             if (numSetsMenaionStycheras === 3){
                 stycheras = psalm140OctoechosStycheras.slice(0, 4);
@@ -823,7 +823,7 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
     var theotokionWasAdded = false;
     var gloryWasAdded = false;
     for (let stychera of stycheras){
-        if (numVersesLeft === 2 && i > 1) {
+        if (numVersesLeft === 2 && i > -1) {
             psalm140etc[5] = currentPsalm.join("");
             currentPsalm = nextPsalmList.shift();
             i = 0;
