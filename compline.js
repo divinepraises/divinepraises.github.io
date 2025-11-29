@@ -1,5 +1,5 @@
 import { cross, usualBeginning, comeLetUs , lesserDoxology, itIsTrulyRight, trisagionToPater, tripleAlleluia, glory, andNow, LHM, prayerOfTheHours, gloryAndNow, moreHonorable, inTheName,prayerBlessingMayGodBeGracious, amen, endingBlockMinor, StEphremPrayer } from './text_generation.js';
-import { getDayInfo, getData, readPsalmsFromNumbers, isBetweenDates  } from './script.js';
+import { getDayInfo, getData, readPsalmsFromNumbers, isBetweenDates, specialSunday  } from './script.js';
 
 var address = `Text\\English`
 
@@ -25,16 +25,22 @@ export async function compline(priest, full, date){
         (dayOfWeek === 3 || dayOfWeek === 5)
     )
 
+    var specialDayData;
+    if (dayOfWeek === 0) {
+        const specialSundayName = await specialSunday(mm, dd);
+        if (specialSundayName != undefined) specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
+    }
+
     var beginning, ending;
     if (isIncarnationFeast) {
         greatComplineBeginning(full, season, priest, dayOfWeek, dayData, isIncarnationFeast);
         vespersEnding(priest, dayData, dateAddress);
     } else if ((season === "Lent" && dayOfWeek < 6)){
         greatComplineBeginning(full, season, priest, dayOfWeek, dayData, isIncarnationFeast);
-        complineEnding(full, dayOfWeek, priest, glas, dayData, true);
+        complineEnding(full, dayOfWeek, priest, glas, dayData, true, specialDayData);
     } else {
         smallComplineBeginning(full, season, dayOfWeek, priest, isAlleluiaDay);
-        complineEnding(full, dayOfWeek, priest, glas, dayData, false);
+        complineEnding(full, dayOfWeek, priest, glas, dayData, false, specialDayData);
     }
 
     return `
@@ -42,9 +48,9 @@ export async function compline(priest, full, date){
         <div id="ending"></div>`
 }
 
-async function complineEnding(full, dayOfWeek, priest, glas, dayData, isGreatCompline) {
+async function complineEnding(full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData) {
 	const smallComplineData = await getData(`${address}\\horologion\\small_compline.json`);
-	loadComplineEnding(smallComplineData, full, dayOfWeek, priest, glas, dayData, isGreatCompline);
+	loadComplineEnding(smallComplineData, full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData);
     document.getElementById("ending").innerHTML =  `<div id="canonSelector">
       <label><input type="radio" name="canonChoice" value="omit_canon"> Omit the canon</label><br>
       <label><input type="radio" name="canonChoice" value="shorten_canon" id="shorten_canon"> Shorten the canon</label><br>
@@ -75,7 +81,7 @@ async function complineEnding(full, dayOfWeek, priest, glas, dayData, isGreatCom
 	`;
 }
 
-async function loadComplineEnding(smallComplineData, full, dayOfWeek, priest, glas, dayData, isGreatCompline){
+async function loadComplineEnding(smallComplineData, full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData){
 	var ekteniasData = await getData(`${address}\\horologion\\night_ektenias.json`);
 
     if (full === "1") {
@@ -97,7 +103,7 @@ async function loadComplineEnding(smallComplineData, full, dayOfWeek, priest, gl
         document.getElementById("additional_pater").innerHTML = `${trisagionToPater(priest)}
             ${LHM} <FONT COLOR="RED">(12)</FONT><br><br>`
     } else {
-        selectTropar(dayOfWeek,  smallComplineData, glas, dayData).then(tropar => {
+        selectTropar(dayOfWeek,  smallComplineData, glas, dayData, specialDayData).then(tropar => {
             document.getElementById("troparia").innerHTML = tropar;
         });
         document.getElementById("st_ephrem").innerHTML = "";
@@ -445,7 +451,7 @@ async function selectCanon(dayOfWeek, glas, full, refrain){
     });
 }
 
-async function selectTropar(dayOfWeek, hourData, glas, dayData){
+async function selectTropar(dayOfWeek, hourData, glas, dayData, specialDayData){
    /*
         - В п’ять перших днів тижня беруться наступних шість тропарів,
         >тобто спочатку храму, якщо він господній або богородичний,
@@ -496,13 +502,20 @@ async function selectTropar(dayOfWeek, hourData, glas, dayData){
     }
 
     // a polyeleos (and higher)
-    if (kontakion != "" && prePostFeast === "") {
+    if (kontakion != "" && prePostFeast === "" && specialDayData == undefined) {
         // even on Sun
         return kontakion;
     } else if (kontakion != "" && prePostFeast != "" && dayOfWeek != 0){
         return prePostFeastKontakion;
     } else if (kontakion != "" && prePostFeast === "forefeast" && dayOfWeek != 0){
         return prePostFeastKontakion;
+    } else if (kontakion != "" && specialDayData != undefined) {
+        return `${kontakion}<br><br><i>${gloryAndNow}</i><br><br>${specialDayData["kontakia"]}`
+    }
+
+    if (specialDayData != undefined){
+        // sundays before Christmas
+        return specialDayData["kontakia"];
     }
 
     // Sunday
