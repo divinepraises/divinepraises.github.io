@@ -37,24 +37,45 @@ export async function displayCurrentDay(currentDate){
     let [year, month, day] = currentDate.split("-").map(Number);
 	[season, seasonToShow, glas] = parseDate(year, month, day);
 	document.getElementById("date-container").innerHTML = seasonToShow;
-    document.getElementById("date-name").innerHTML = await showMenaionDate(month, day);
+    document.getElementById("date-name").innerHTML = await showMenaionDate(year, month, day);
 
     let nextDate = new Date(year, month - 1, day);
     nextDate.setDate(nextDate.getDate() + 1);
     let [next_year, next_mm, next_dd] = nextDate.toISOString().slice(0, 10).split("-").map(Number);
-    document.getElementById("next-date-name").innerHTML = await showMenaionDate(next_mm, next_dd);
-
+    document.getElementById("next-date-name").innerHTML = await showMenaionDate(next_year, next_mm, next_dd);
 }
 
-async function showMenaionDate(mm, dd){
-    mm = String(mm).padStart(2, "0")
-    dd = String(dd).padStart(2, "0")
-	const dateAddress = `${mm}\\${dd}`
+export async function specialSunday(month, day){
+    const specialSundays = await getData(`${address}\\menaion\\special_sundays.json`);
+    if (!(month in specialSundays)) return;
+    for (let [sundayName, [first, last]] of Object.entries(specialSundays[month])){
+        if (isBetweenDates(month, day, month, first, month, last)){
+            return sundayName;
+        }
+    }
+}
+
+async function showMenaionDate(yyyy, mm, dd){
+    yyyy = String(yyyy);
+    mm = String(mm).padStart(2, "0");
+    dd = String(dd).padStart(2, "0");
+	const dateAddress = `${mm}\\${dd}`;
+
+    var sundayName = "";
+	if ((new Date(`${yyyy}-${mm}-${dd}`)).getUTCDay() === 0) {
+	    const specialSundayName = await specialSunday(mm, dd);
+	    if (specialSundayName != undefined) {
+	        const sundayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
+	        if ("day name" in sundayData) sundayName = sundayData["day name"];
+	        else sundayName = sundayData["name"];
+	    }
+	}
     try {
         const dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
         const symbolData = await getData(`${address}\\menaion\\feasts_symbols.json`);
         var feastName = "";
         var note = "";
+        var dayName;
         if ("forefeast" in dayData) {
             let feast = (await getData(`${address}\\menaion\\${dayData["forefeast"]}.json`))["name"];
             feastName = `${forefeast} ${feast}, `;
@@ -65,7 +86,10 @@ async function showMenaionDate(mm, dd){
         if ("note" in dayData) {
             note = `<br><div class="rubric">${dayData["note"]}</div>`
         }
-        return `${symbolData[dayData["class"]]} ${dd}/${mm}: ${feastName} ${constructDayName(dayData, false)}${note}`;
+        if (sundayName != "" && dayData["class"] < 6) dayName = "";
+        else dayName = constructDayName(dayData, false);
+
+        return `${symbolData[dayData["class"]]} ${dd}/${mm}: ${feastName} ${sundayName} ${dayName}${note}`;
     } catch (error) {
          return `No data for this day at ${address}\\menaion\\${dateAddress}.json`
     }

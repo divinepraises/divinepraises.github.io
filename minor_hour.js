@@ -1,10 +1,14 @@
 import { usualBeginning, tripleAlleluia, glory, andNow, trisagionToPater, prayerOfTheHours, LHM, comeLetUs, gloryAndNow, moreHonorable, inTheName, prayerBlessingMayGodBeGracious, endingBlockMinor, amen, getCommonText } from './text_generation.js';
-import { getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords } from './script.js';
+import { getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords, specialSunday } from './script.js';
 const address = `Text\\English`
 
-export function minorHour(hour, priest, full, date){
+export async function minorHour(hour, priest, full, date){
 	let [year, mm, dd, season, glas, dayOfWeek, dateAddress] = getDayInfo(date, false);
-
+    var specialDayData;
+    if (dayOfWeek === 0) {
+        const specialSundayName = await specialSunday(mm, dd);
+        if (specialSundayName != undefined) specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
+    }
 	const numeral = {
 		1: "First",
 		3: "Third",
@@ -20,7 +24,7 @@ export function minorHour(hour, priest, full, date){
 	var numOhHour = hour.charAt(0);
 	const linkToNext = `https:\/\/divinepraises.github.io/main.html?hour=${nextHour[numOhHour]}&priest=${priest}&full=${full}&date=${date}#come_let_us`;
 
-	loadText(hour, full, dayOfWeek, glas, dateAddress);
+	loadText(hour, full, dayOfWeek, glas, dateAddress, specialDayData);
 	return `<h2>The ${numeral[numOhHour]} hour</h2>
 	<div class=rubric>Should this hour be said immediately after the previous one, omit this beginning:</div>
 	<hr>
@@ -56,7 +60,7 @@ export function minorHour(hour, priest, full, date){
 	`;
 }
 
-async function loadText(hour, full, dayOfWeek, glas, date) {
+async function loadText(hour, full, dayOfWeek, glas, date, specialDayData) {
 	const psalmData = await getData(`${address}\\horologion\\${hour}.json`);
 	const psalmNums = psalmData["psalms"];
 	const psalmPaths = psalmNums.map(n => `${address}\\psalms\\${n}.txt`);
@@ -83,10 +87,10 @@ async function loadText(hour, full, dayOfWeek, glas, date) {
 
         document.getElementById("psalms").innerHTML = `<div class="subhead">Psalm ${n}</div>${ psalmData}`;
     }
-    selectTropar(hour, dayOfWeek, psalmData, glas, dayData).then(tropar => {
+    selectTropar(hour, dayOfWeek, psalmData, glas, dayData, specialDayData).then(tropar => {
         document.getElementById("troparia").innerHTML = tropar;
     });
-    selectKondak(hour, dayOfWeek, psalmData, glas, dayData).then(kondak => {
+    selectKondak(hour, dayOfWeek, psalmData, glas, dayData, specialDayData).then(kondak => {
         document.getElementById("kontakia").innerHTML = kondak;
     });
     document.getElementById("theotokion").innerHTML = psalmData["theotokion"]
@@ -95,7 +99,7 @@ async function loadText(hour, full, dayOfWeek, glas, date) {
 
 }
 
-async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
+async function selectTropar(hour, dayOfWeek, hourData, glas, dayData, specialDayData){
    /*
        1: weekday
        3: day of month
@@ -221,6 +225,11 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
                 return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[1]}`;
             }
         }
+        if (specialDayData != undefined) {
+            if (hour === "1hour" || hour === "6hour") {
+                return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${specialDayData["troparia"]}`
+            }
+        }
 
         if (hour === "1hour" && dayData["class"] < 8){
             return `${glory}<br><br>${sundayTrop["troparia"][glas]}`;
@@ -307,7 +316,7 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData){
     return `${glory}<br><br>${dayTrop[0]}`;
 }
 
-async function selectKondak(hour, dayOfWeek, hourData, glas, dayData){
+async function selectKondak(hour, dayOfWeek, hourData, glas, dayData, specialDayData){
     /*
      Якщо ж в уставі буде подано більше, ніж два тропарі і більше, ніж один кондак,
     тоді вони беруться поперемінне, тобто:
@@ -329,6 +338,11 @@ async function selectKondak(hour, dayOfWeek, hourData, glas, dayData){
 
     // fallback for now
     if (!dayData) {dayData = {"class": 0}; hour = "1hour";}
+    if (specialDayData != undefined) {
+        if (dayData["class"] < 8 || hour === "1hour" || hour === "6hour") return specialDayData["kontakia"];
+        return dayData["kontakia"];
+    }
+
     var dayKond;
 
     var prePostFeast = "";
