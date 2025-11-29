@@ -86,6 +86,8 @@ async function loadTextDaily(full, dayOfWeek, mm, dd, season, glas, dateAddress,
             dayData["troparia"] = (await getCommonText("troparia", dayData))
             dayData["troparia"].push(specialDayData["troparia"]);
             dayName = specialDayData["day name"] + " " + dayName;
+            dayData["name"] = specialDayData["name"].concat(dayData["name"]);
+            dayData["type"] = specialDayData["type"].concat(dayData["type"]);
         } else if (specialSundayName === "forefathers" && dd === 17) {
             // special case: Daniel and youths
             // 3 sun, 3 forefathers, 2 Daniel, 2 youths, g forefathers
@@ -99,10 +101,14 @@ async function loadTextDaily(full, dayOfWeek, mm, dd, season, glas, dateAddress,
             vespersMenaionData["aposticha"] = specialVespersData["aposticha"];
             dayData["troparia"].push(specialDayData["troparia"]);
             dayName = specialDayData["day name"] + " " + dayName;
+            dayData["name"] = specialDayData["name"].concat(dayData["name"]);
+            dayData["type"] = specialDayData["type"].concat(dayData["type"]);
         } else {
             vespersMenaionData = specialVespersData;
             dayData["troparia"] = [specialDayData["troparia"]];
             dayName = specialDayData["day name"];
+            dayData["name"] = specialDayData["name"];
+            dayData["type"] = specialDayData["type"];
         }
     }
 
