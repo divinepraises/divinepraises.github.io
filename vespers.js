@@ -172,8 +172,8 @@ async function loadTextDaily(full, dayOfWeek, mm, dd, season, glas, dateAddress,
         `
     }
 
-    makeKathisma(dayOfWeek, isGreatVespers, mm, dd, season, priest, ekteniaData);
-    document.getElementById("kathismaSelector").addEventListener("change",() => makeKathisma(dayOfWeek, isGreatVespers, mm, dd, season, priest, ekteniaData));
+    makeKathisma(dayOfWeek, dayData["class"], mm, dd, season, priest, ekteniaData);
+    document.getElementById("kathismaSelector").addEventListener("change",() => makeKathisma(dayOfWeek, dayData["class"], mm, dd, season, priest, ekteniaData));
 
     var vespersOctoechosData;
     if (dayOfWeek === 0 || !isGreatVespers){
@@ -924,7 +924,7 @@ function makeSmallEktenia(priest, ekteniaData){
     document.getElementById("ektenia_small").innerHTML += "<br><br>"
 }
 
-async function makeKathisma(dayOfWeek, isGreatVespers, mm, dd, season, priest, ekteniaData){
+async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, priest, ekteniaData){
     var instruction = document.querySelector('input[name="kathismaChoice"]:checked')?.value;
 
     if (instruction === "omit_kathisma"){
@@ -964,14 +964,20 @@ async function makeKathisma(dayOfWeek, isGreatVespers, mm, dd, season, priest, e
     // In Lent and Holy week, kathisma 18 is used too at vespers, except  5th week of Lent, when it's a different
     // schedule
 
+    if (dayClass === 12 && dayOfWeek >= 2) {
+      document.getElementById("kathisma").innerHTML = `<div class=\"rubric\">No kathisma on Lord's feasts</div><br>`;
+      document.getElementById("kathismaSelector").innerHTML = "";
+      return
+    }
+
     if (dayOfWeek === 1) {
       document.getElementById("kathisma").innerHTML = `<div class=\"rubric\">No kathisma on Sunday night</div><br>`;
+      document.getElementById("kathismaSelector").innerHTML = "";
       return
     }
 
     var k;
-
-
+    const isGreatVespers = (dayClass >= 8);
     const long_scheme = (
         (season === "Lent")
         || (season === "Forelent")
