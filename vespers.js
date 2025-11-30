@@ -970,7 +970,7 @@ async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, priest, ektenia
       return
     }
 
-    if (dayOfWeek === 1) {
+    if (dayOfWeek === 1 && dayClass < 12) {
       document.getElementById("kathisma").innerHTML = `<div class=\"rubric\">No kathisma on Sunday night</div><br>`;
       document.getElementById("kathismaSelector").innerHTML = "";
       return
