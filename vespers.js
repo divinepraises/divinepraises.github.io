@@ -61,20 +61,11 @@ function dailyVespers(full, dayOfWeek, mm, dd, glas, dayData, dateAddress, pries
   `
 }
 
-async function loadTextDaily(full, dayOfWeek, mm, dd, season, glas, dateAddress, dayData, priest){
-    var isGreatVespers = (dayData["class"] >= 8 || dayOfWeek === 0);
-
-    var vespersData = await getData(`${address}\\horologion\\general_vespers.json`)
-    var vespersMenaionData = await getData(`${address}\\menaion\\${dateAddress}_vespers.json`)
-    const isLytia = ("lytia" in vespersMenaionData && dayData["class"] >= 10);
-    var dayName = constructDayName(dayData, false);
-
-    var specialSundayName;
-    if (dayOfWeek === 0) specialSundayName = await specialSunday(mm, dd);
-    if (specialSundayName != undefined) {
-        const specialVespersData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}_vespers.json`)
-        const specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`)
-        if (specialSundayName === "forefathers" && dayData["class"] >= 8) {
+async function arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionData, dayData, dayName) {
+    const specialVespersData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}_vespers.json`);
+    const specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
+    if (specialSundayName === "forefathers") {
+        if (dayData["class"] >= 8) {
             // 3 sun, 4 forefathers, 3 saints, g forefathers
             const forefathers = specialVespersData["ps140"];
             vespersMenaionData["ps140"] = (
@@ -88,7 +79,7 @@ async function loadTextDaily(full, dayOfWeek, mm, dd, season, glas, dateAddress,
             dayName = specialDayData["day name"] + " " + dayName;
             dayData["name"] = specialDayData["name"].concat(dayData["name"]);
             dayData["type"] = specialDayData["type"].concat(dayData["type"]);
-        } else if (specialSundayName === "forefathers" && dd === 17) {
+        } else if (dd === 17) {
             // special case: Daniel and youths
             // 3 sun, 3 forefathers, 2 Daniel, 2 youths, g forefathers
             const forefathers = specialVespersData["ps140"];
@@ -110,6 +101,41 @@ async function loadTextDaily(full, dayOfWeek, mm, dd, season, glas, dateAddress,
             dayData["name"] = specialDayData["name"];
             dayData["type"] = specialDayData["type"];
         }
+    } else if (specialSundayName === "fathers") {
+        if (dd < 20) {
+            vespersMenaionData["ps140"] = specialVespersData["ps140"].slice(4, 11);
+            vespersMenaionData["aposticha"] = specialVespersData["aposticha"].slice(4, 7);
+            dayData["troparia"] = specialDayData["troparia"];
+            dayName = specialDayData["day name"];
+            dayData["name"] = specialDayData["name"];
+            dayData["type"] = specialDayData["type"];
+            vespersMenaionData["readings"] = specialVespersData["readings"];
+        } else if (dd < 24){
+            vespersMenaionData["ps140"] = specialVespersData["ps140"].slice(0, 11);
+            vespersMenaionData["aposticha"] = specialVespersData["aposticha"];
+            dayData["troparia"][0] = specialDayData["troparia"];
+            dayName = specialDayData["day name"];
+            dayData["name"] = specialDayData["name"];
+            dayData["type"] = specialDayData["type"];
+            vespersMenaionData["readings"] = specialVespersData["readings"];
+        }
+    }
+    return dayName;
+}
+
+async function loadTextDaily(full, dayOfWeek, mm, dd, season, glas, dateAddress, dayData, priest){
+    var isGreatVespers = (dayData["class"] >= 8 || dayOfWeek === 0);
+
+    var vespersData = await getData(`${address}\\horologion\\general_vespers.json`)
+    var vespersMenaionData = await getData(`${address}\\menaion\\${dateAddress}_vespers.json`)
+    const isLytia = ("lytia" in vespersMenaionData && dayData["class"] >= 10);
+    var dayName = constructDayName(dayData, false);
+
+    var specialSundayName;
+    if (dayOfWeek === 0) specialSundayName = await specialSunday(mm, dd);
+    if (specialSundayName != undefined) {
+        // rewrite day data
+        dayName = await arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionData, dayData, dayName);
     }
 
     var vigilVespersData, haire;
@@ -409,7 +435,7 @@ export async function makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, hai
     }
 
     var theotokion;
-    if (prePostFeast === "forefeast" || specialSundayName != undefined){
+    if (prePostFeast === "forefeast" || specialSundayName === "fatehrs"){
         theotokion = dayTrop[dayTrop.length-1];
         dayTrop.pop();
     } else if (prePostFeast === "postfeast") {
@@ -544,7 +570,9 @@ export async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, ve
 
                 if (stychera in gloriaDict) {
                     foundGloria = true;
-                    if (stychera === "gn") foundNow = true;
+                    if (stychera === "gn" || stychera === "n") {
+                        foundNow = true;
+                    }
                     aposticha += `<div class="rubric">Tone ${tone}</div>`;
                     aposticha += gloriaDict[stychera] + "<br><br>";
                     continue
@@ -722,6 +750,17 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
             stycheras = stycheras.concat(psalm140menaionStycheras);
             stycheraScheme = Array(10).fill(1);
             numStycheras = 10;
+        } else if (specialSundayName === "fathers") {
+            if (numSetsMenaionStycheras === 1){
+                stycheras = psalm140OctoechosStycheras.slice(0, 7);
+                stycheraScheme = Array(6).fill(1).concat([2, 1, 1]);
+                numStycheras = 9;
+            } else {
+                stycheras = psalm140OctoechosStycheras.slice(0, 5);
+                stycheraScheme = Array(10).fill(1);
+                numStycheras = 10;
+            }
+            stycheras = stycheras.concat(psalm140menaionStycheras);
         } else if (dayData["class"] === 6){
             if (numStycheras === 3){
                 // in the current data format, 0th stychera is tone
