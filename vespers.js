@@ -102,22 +102,18 @@ async function arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionDat
             dayData["type"] = specialDayData["type"];
         }
     } else if (specialSundayName === "fathers") {
+        dayName = specialDayData["day name"];
+        dayData["name"] = specialDayData["name"];
+        dayData["type"] = specialDayData["type"];
+        vespersMenaionData["readings"] = specialVespersData["readings"];
         if (dd < 20) {
             vespersMenaionData["ps140"] = specialVespersData["ps140"].slice(4, 11);
             vespersMenaionData["aposticha"] = specialVespersData["aposticha"].slice(4, 7);
             dayData["troparia"] = specialDayData["troparia"];
-            dayName = specialDayData["day name"];
-            dayData["name"] = specialDayData["name"];
-            dayData["type"] = specialDayData["type"];
-            vespersMenaionData["readings"] = specialVespersData["readings"];
         } else if (dd < 24){
             vespersMenaionData["ps140"] = specialVespersData["ps140"].slice(0, 11);
             vespersMenaionData["aposticha"] = specialVespersData["aposticha"];
             dayData["troparia"][0] = specialDayData["troparia"];
-            dayName = specialDayData["day name"];
-            dayData["name"] = specialDayData["name"];
-            dayData["type"] = specialDayData["type"];
-            vespersMenaionData["readings"] = specialVespersData["readings"];
         }
     }
     return dayName;
