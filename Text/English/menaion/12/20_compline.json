@@ -1,0 +1,50 @@
+{
+    "refrain": "Glory be to You, our God, glory be to You!",
+    "comment": "Three-ode in Tone 2.<br>It is modeled on Holy Monday and Holy Tuesday Three-odes and have acrostichs: \"To Monday\" and \"To Tuesday\".<br>(Shortening the canon will remove the repetitions while keeping all parts.)<br><br>",
+    "troparia_number": 6,
+    "repeat_hirmi": 2,
+    "matinslike": true,
+    "odes": [
+        {
+            "ode": "1",
+            "hirmos": "Let us sing to the Lord Who drained impassible and tumultuous sea by His divine order, and taught Israel to pass through it on foot, for gloriously has He been glorified.",
+            "troparia": [
+                [
+                    "The condescension of the Word of God is beyond words, for Christ is understood as a God-Man: He is God not by elevation, and is shown to us as an image of a servant - for gloriously has He been glorified",
+                    "Christ comes to serve voluntarily to impoverished Adam, whose image He, his Creator, now takes on, enriching him with Divinity, and granting him strange renovation and regeneration as the Compassionate One."
+                ]
+            ]
+        },
+        {
+            "ode": "8",
+            "hirmos": "The fire, raised in limitless kindling and never contested, was scared off by bodies of the pious Youths, as unblemished as their souls. Yet while the ever-living flame was extinguished, a never-ending canticle was proclaimed: O you works of the Lord, hymn the Lord and supremely exalt Him throughout all ages!",
+            "troparia": [
+                [
+                    "“All you shall be My relatives, if you keep My commandments”, says Christ to humanity, He Who went through the womb of the immaculate one. He now gives peace and offers to think humbly of themselves to men. And adds: “praise and supremely exalt Me, Whom you know as the Lord, throughout all ages.”",
+                    "O Word of God, it is Your Nativity in flesh, different from Your nature: it is not flesh and blood that formed Your holy Body, but coming of the Holy Spirit and overshadiwing of the Most High. Thus, acknowledging You as the Lord, we praise and supremely exalt You throughout all ages.”"
+                ],
+                [
+                    "Let us cast far from us slothfulness, and with vigilant souls meet Christ Who is born of the pure Virgin, crying: O all you works of the Lord, bless the Lord.",
+                    "May good deeds be a sufficient treasure of our souls, so that with radiant faces we sing: O all you works of the Lord, bless the Lord.",
+                    "Let us, having cultivated a talent of good works, bring it to Christ Who is going to be born of the Virgin Handmaiden of God."
+                ]
+            ],
+            "katavasia": "The three holy children were not obedient* to the decree of the tyrant;* and, cast into the furnace, they confessed God, singing:* O, all you works of the Lord, bless the Lord. <br><i><FONT COLOR=\"RED\">(inclination)</FONT></i>"
+        },
+        {
+            "ode": "9",
+            "hirmos": "You have magnified, O Christ, the Theotokos who bore You:* from her, O our Creator, You have taken a body of like passions to our own,* and released us from all our transgressions.* Wherefore with all generations we call her blessed and we magnify You.<br><i><FONT COLOR=\"RED\">(inclination)</FONT></i>",
+            "troparia": [
+                [
+                    "Having cast away all the impurity of the passions let us worthily accept Christ's coming with a wholesome minds, as He is blamelessly coming to bear flesh and to give all the divine renovation in the Spirit.",
+                    "Looking upon the Christ belittling Himself, let us rise above lowly passions. Think not highly but, having been taught the faith, let us be humble in spirit - so that we can exult with high deeds Him Who is going to be born."
+                ],
+                [
+                    "Christ orders to keep watch to those who have right minds and who await for His coming from the Virgin. Behold, the Lord is coming to be born!",
+                    "At Your second coming, O Christ, number with Your sheep me who is venerating Your coming in the flesh."
+                ]
+            ],
+            "katavasia": "You contained within your womb* the God whom nothing can contain,* and have brought forth joy to the world,* wherefore we sing your praises, O Virgin Theotokos.<br><i><FONT COLOR=\"RED\">(inclination)</FONT></i>"
+        }
+    ]
+}

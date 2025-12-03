@@ -163,6 +163,9 @@ export const prayerOfTheHours = `${data.prayerOfTheHours}`
 export const amen = `${data.amen}`
 export const itIsTrulyRight = `${data.itIsTruly} ${data.moreHonorable}`
 
+export const wePraise = data.wePraise;
+export const letUsBless = data.letUsBless;
+
 export async function lesserDoxology(hour){
     const dox = await getData(`Text\\English\\horologion\\lesser_doxology.json`)
     const replacementDict = {"DAYPART": dox[hour]}

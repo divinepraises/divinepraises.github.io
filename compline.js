@@ -1,4 +1,4 @@
-import { cross, usualBeginning, comeLetUs , lesserDoxology, itIsTrulyRight, trisagionToPater, tripleAlleluia, glory, andNow, LHM, prayerOfTheHours, gloryAndNow, moreHonorable, inTheName,prayerBlessingMayGodBeGracious, amen, endingBlockMinor, StEphremPrayer } from './text_generation.js';
+import { letUsBless, wePraise, cross, usualBeginning, comeLetUs , lesserDoxology, itIsTrulyRight, trisagionToPater, tripleAlleluia, glory, andNow, LHM, prayerOfTheHours, gloryAndNow, moreHonorable, inTheName,prayerBlessingMayGodBeGracious, amen, endingBlockMinor, StEphremPrayer } from './text_generation.js';
 import { getDayInfo, getData, readPsalmsFromNumbers, isBetweenDates, specialSunday  } from './script.js';
 
 var address = `Text\\English`
@@ -37,10 +37,10 @@ export async function compline(priest, full, date){
         vespersEnding(priest, dayData, dateAddress);
     } else if ((season === "Lent" && dayOfWeek < 6)){
         greatComplineBeginning(full, season, priest, dayOfWeek, dayData, isIncarnationFeast);
-        complineEnding(full, dayOfWeek, priest, glas, dayData, true, specialDayData);
+        complineEnding(full, dayOfWeek, priest, glas, dayData, true, specialDayData, dateAddress);
     } else {
         smallComplineBeginning(full, season, dayOfWeek, priest, isAlleluiaDay);
-        complineEnding(full, dayOfWeek, priest, glas, dayData, false, specialDayData);
+        complineEnding(full, dayOfWeek, priest, glas, dayData, false, specialDayData, dateAddress);
     }
 
     return `
@@ -48,16 +48,16 @@ export async function compline(priest, full, date){
         <div id="ending"></div>`
 }
 
-async function complineEnding(full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData) {
+async function complineEnding(full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dateAddress) {
 	const smallComplineData = await getData(`${address}\\horologion\\small_compline.json`);
-	loadComplineEnding(smallComplineData, full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData);
+	loadComplineEnding(smallComplineData, full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dateAddress);
     document.getElementById("ending").innerHTML =  `<div id="canonSelector">
       <label><input type="radio" name="canonChoice" value="omit_canon"> Omit the canon</label><br>
       <label><input type="radio" name="canonChoice" value="shorten_canon" id="shorten_canon"> Shorten the canon</label><br>
       <label><input type="radio" name="canonChoice" value="full_canon" id="full_canon"> Full canon</label>
     </div><br>
     <div id="canon"></div>
-    ${itIsTrulyRight}<br><br>
+    <div id="itIsTrulyRight"></div><br>
     ${trisagionToPater(priest)}
 	<div class=subhead>Troparia</div><br>
     <div id="troparia"></div><br>
@@ -81,7 +81,7 @@ async function complineEnding(full, dayOfWeek, priest, glas, dayData, isGreatCom
 	`;
 }
 
-async function loadComplineEnding(smallComplineData, full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData){
+async function loadComplineEnding(smallComplineData, full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dateAddress){
 	var ekteniasData = await getData(`${address}\\horologion\\night_ektenias.json`);
 
     if (full === "1") {
@@ -92,7 +92,10 @@ async function loadComplineEnding(smallComplineData, full, dayOfWeek, priest, gl
         document.getElementById("penitential_troparia").innerHTML = "";
     }
 
-    selectCanon(dayOfWeek, glas, full, smallComplineData["canon_refrain"]);
+    var matinslike = await selectCanon(dayOfWeek, glas, full, smallComplineData["canon_refrain"], dateAddress);
+    if (matinslike) document.getElementById("itIsTrulyRight").innerHTML = "";
+    else document.getElementById("itIsTrulyRight").innerHTML = itIsTrulyRight;
+
     document.getElementById("prayers").innerHTML = smallComplineData["prayers"].join("<br><br>");
     document.getElementById("after_prayers").innerHTML =  postComplinePrayers(priest, smallComplineData, ekteniasData, dayOfWeek);
 
@@ -161,7 +164,7 @@ async function loadSmallComplineBeginning(smallComplineData, full, season, dayOf
             `;
         document.getElementById("switch").addEventListener("change", () => {
             greatComplineBeginning(full, season, priest, dayOfWeek, dayData, false);
-            complineEnding(full, dayOfWeek, priest, glas, dayData, true);
+            complineEnding(full, dayOfWeek, priest, glas, dayData, true, dateAddress);
             }
         );
     }
@@ -380,18 +383,113 @@ function makeNethimon(verses, troparia){
         ${troparia[4]}<br><br>`;
 }
 
-async function constructCanon(dayOfWeek, glas, full, refrain){
-    // 1. try to find a correct canon (so far, only in octoechos)
-    // 2. use the default one otherwise (it's from tuesday of the tone 8)
-    const canon_address = `${address}\\octoechos\\${glas}\\${dayOfWeek}_compline.json`
-    try{
-        var err = ""
-        var canonData = await getData(canon_address);
-        console.log(`Found a canon for ${dayOfWeek} day of tone ${glas}.`)
+function constructMenaionCanon(canonData, full, dayOfWeek){
+    // TODO
+    // this should be the default function, but ut requires re-formatting octoechos canons
+    const refrain = canonData["refrain"];
+    const intro = canonData["comment"] ?? "";
+    const matinslike = canonData["matinslike"] ?? false;
+    var allowedOdes = new Set(["1","2", "3","4","5","6","7","8","9"]);
+    let tropNumOde, hirmRep;
+    if (full === "0") {
+        tropNumOde = 0;
+        hirmRep = 1;
+        if (canonData["odes"].length >= 8) {
+            // only shorten if it's a full canon
+            if (dayOfWeek === 1) {var i = 1} else {i = dayOfWeek + 1}
+            allowedOdes = new Set([i.toString(), "9"]);
+        }
+    } else {
+        tropNumOde = canonData["troparia_number"] ?? 0;
+        hirmRep = canonData["repeat_hirmi"] ?? 1;
+    }
+
+    var canon = `<div class=rubric>${intro}</div>`;
+    for (const ode of canonData["odes"]) {
+        var ode_n = ode["ode"]
+        if ((ode_n === "3a" && allowedOdes.has("3")) || (ode_n === "6a" && allowedOdes.has("6"))){
+            canon += `${LHM} <FONT COLOR="RED">(3)</FONT><br><br>${gloryAndNow}<br><br>${ode}<br><br>`;
+            continue;
+        }
+        if (!allowedOdes.has(ode_n)) continue;
+
+        canon += `<div class=rubric>Ode ${ode_n}</div>`;
+
+        var n_trop = ode["troparia"].map(element => element.length).reduce((a, b) => a + b, 0);
+        var repetition_min = Math.trunc(tropNumOde / n_trop);
+        var repetitionScheme = Array(n_trop).fill(repetition_min);
+        if (tropNumOde != 0) var trop_left = tropNumOde - repetition_min * n_trop;
+        else var trop_left = n_trop;
+        var i = 0;
+        while (trop_left > 0) {
+            repetitionScheme[i] += 1;
+            i += 1;
+            trop_left -= 1;
+        }
+        i = 0;
+        while (i < hirmRep) {
+            canon += `<b>${ode["hirmos"]}</b><br><br>`;
+            i+=1;
+        }
+        var index = 0;
+        var n_trop_added = 0;
+        var nTropWithReps = repetitionScheme.reduce((a, b) => a + b, 0)
+        var isNotShortOde = nTropWithReps > 2;
+        for (const canon_ode of ode["troparia"]){
+            if (index > 0) canon += `<div class=rubric>Another canon:</div>`;
+            for (const tropar of canon_ode){
+                var n_rep = repetitionScheme[index];
+                i = 0;
+                while (i < n_rep){
+                    if (matinslike && (ode_n === "8") && isNotShortOde && (n_trop_added === nTropWithReps - 2)) {
+                        // penultimate: letUsBless
+                        canon += `<i>${letUsBless}</i><br><br>` + tropar + "<br><br>"
+                    } else if (isNotShortOde && (n_trop_added === nTropWithReps - 2)) {  // penultimate: glory
+                        canon += `<i>${glory}</i><br><br>` + tropar + "<br><br>"
+                    } else if (isNotShortOde && (n_trop_added === nTropWithReps - 1)) {  // ultimate: and now
+                        canon += `<i>${andNow}</i><br><br>` + tropar + "<br><br>"
+                    } else if (matinslike && (ode_n === "8")  && !isNotShortOde && (n_trop_added === 1)) {
+                        // ultimate in a short canon: and now
+                        canon += `<i>${letUsBless} ${andNow}</i><br><br>` + tropar + "<br><br>"
+                    } else if (!isNotShortOde && (n_trop_added === 1)) {  // ultimate in a short canon: and now
+                        canon += `<i>${gloryAndNow}</i><br><br>` + tropar + "<br><br>"
+                    } else {  // in the middle: add refrain
+                        canon += `<i>${refrain}</i><br><br>${tropar}<br><br>`;
+                    }
+                    i += 1;
+                    n_trop_added += 1;
+                }
+                index += 1;
+            }
+        }
+        if (matinslike && (ode_n === "8")) canon += `<i>${wePraise}</i><br><br>`;
+        if (matinslike) canon += `<b>${(ode["katavasia"] ?? ode["hirmos"])}</b><br><br>`;
+    }
+    return [canon, matinslike];
+}
+
+async function constructCanon(dayOfWeek, glas, full, refrain, dateAddress){
+    // 1. try to find a canon in menaion
+    // 2. if absent, try octoechos
+    // 3. use the default one otherwise (it's from tuesday of the tone 8)
+
+    var intro = "";
+    var matinslike = false;
+    try {
+        var canonData = await getData(`${address}\\menaion\\${dateAddress}_compline.json`);
+        var canon;
+        [canon, matinslike] = constructMenaionCanon(canonData, full, dayOfWeek);
+        document.getElementById("canon").innerHTML = canon;
+        return matinslike;
     } catch (error) {
-        console.log(`No canon for ${dayOfWeek} day of tone ${glas}. Using the default one`)
-        var err = "<div class=rubric>The proper canon for today is not yet added, please use the default one:</div>"
-        canonData = await getData(`${address}\\octoechos\\8\\2_compline.json`);
+        try{
+            canonData = await getData(`${address}\\octoechos\\${glas}\\${dayOfWeek}_compline.json`);
+            console.log(`Found a canon for ${dayOfWeek} day of tone ${glas}.`)
+        } catch (error) {
+            console.log(`No canon for ${dayOfWeek} day of tone ${glas}. Using the default one`)
+            intro = "The proper canon for today is not yet added, please use the default one:"
+            canonData = await getData(`${address}\\octoechos\\8\\2_compline.json`);
+        }
     }
     var allowedOdes;
     if (full === "1") {
@@ -402,7 +500,7 @@ async function constructCanon(dayOfWeek, glas, full, refrain){
         if (dayOfWeek === 1) {var i = 1} else {i = dayOfWeek + 1}
         allowedOdes = new Set([i.toString(), "9"]);
     }
-    var canon = err
+    var canon = `<div class=rubric>${intro}</div>`;
     // Assumptions about the text file:
     // 1) the first element of each ode is the number.
     // We need the number, as there will be three-odes here, so we want a way to know what ode we're at.
@@ -435,20 +533,25 @@ async function constructCanon(dayOfWeek, glas, full, refrain){
         }
     }
     document.getElementById("canon").innerHTML = canon;
+    return matinslike;
 }
 
-async function selectCanon(dayOfWeek, glas, full, refrain){
-    constructCanon(dayOfWeek, glas, full, refrain);
-    document.getElementById("canonSelector").addEventListener("change", () => {
+async function selectCanon(dayOfWeek, glas, full, refrain, dateAddress){
+    var matinslike = await constructCanon(dayOfWeek, glas, full, refrain, dateAddress);
+    document.getElementById("canonSelector").addEventListener("change", async function () {
         var canonInstruction = document.querySelector('input[name="canonChoice"]:checked')?.value;
         if (canonInstruction === "omit_canon"){
             document.getElementById("canon").innerHTML = ""
+            matinslike = false;
         } else if (canonInstruction === "full_canon"){
-	        constructCanon(dayOfWeek, glas, "1", refrain);
+	        matinslike = await constructCanon(dayOfWeek, glas, "1", refrain, dateAddress);
 	    } else {
-            constructCanon(dayOfWeek, glas, "0", refrain);
+            matinslike = await constructCanon(dayOfWeek, glas, "0", refrain, dateAddress);
 	    }
+        if (!matinslike) document.getElementById("itIsTrulyRight").innerHTML = itIsTrulyRight;
+        else document.getElementById("itIsTrulyRight").innerHTML = "";
     });
+    return matinslike;
 }
 
 async function selectTropar(dayOfWeek, hourData, glas, dayData, specialDayData){
@@ -504,18 +607,19 @@ async function selectTropar(dayOfWeek, hourData, glas, dayData, specialDayData){
     // a polyeleos (and higher)
     if (kontakion != "" && prePostFeast === "" && specialDayData == undefined) {
         // even on Sun
-        return kontakion;
+        return `<div class="rubric">Festal kontakion:</div> ${kontakion}`;
     } else if (kontakion != "" && prePostFeast != "" && dayOfWeek != 0){
-        return prePostFeastKontakion;
+        return `<div class="rubric">Festal kontakion:</div> ${prePostFeastKontakion}`;
     } else if (kontakion != "" && prePostFeast === "forefeast" && dayOfWeek != 0){
-        return prePostFeastKontakion;
+        return `<div class="rubric">Festal kontakion:</div> ${prePostFeastKontakion}`;
     } else if (kontakion != "" && specialDayData != undefined) {
-        return `${kontakion}<br><br><i>${gloryAndNow}</i><br><br>${specialDayData["kontakia"]}`
+        return `<div class="rubric">Festal kontakia:</div>
+            ${kontakion}<br><br><i>${gloryAndNow}</i><br><br>${specialDayData["kontakia"]}`
     }
 
     if (specialDayData != undefined){
         // sundays before Christmas
-        return specialDayData["kontakia"];
+        return `<div class="rubric">Festal kontakion:</div> ${specialDayData["kontakia"]}`;
     }
 
     // Sunday
@@ -532,11 +636,12 @@ async function selectTropar(dayOfWeek, hourData, glas, dayData, specialDayData){
         return `${data["hypakoe"][glas]}<br><br>${gloryAndNow}<br><br>${prePostFeastKontakion}`;
     } else if (dayOfWeek === 0 && prePostFeast === "postfeast" && kontakion != "") {
         // yeah, it is inconsistent, but that's what we have in the menaions and hence typicon
-        return `${kontakion}<br><br>${gloryAndNow}<br><br>${prePostFeastKontakion}`;
+        return `<div class="rubric">Festal kontakia:</div>
+            ${kontakion}<br><br>${gloryAndNow}<br><br>${prePostFeastKontakion}`;
     }
 
     // not Sunday, not polyeleos
-    if (prePostFeast != "") return prePostFeastKontakion;
+    if (prePostFeast != "") return `<div class="rubric">Festal kontakion:</div> ${prePostFeastKontakion}`;
 
     const daily_troparia = await getData(`${address}\\horologion\\daily_troparia_kontakia.json`);
 
