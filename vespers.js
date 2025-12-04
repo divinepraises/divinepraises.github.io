@@ -114,6 +114,16 @@ async function arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionDat
             vespersMenaionData["ps140"] = specialVespersData["ps140"].slice(0, 11);
             vespersMenaionData["aposticha"] = specialVespersData["aposticha"];
             dayData["troparia"][0] = specialDayData["troparia"];
+        } else if (dd === 24) {
+            vespersMenaionData["ps140"] = (
+                specialVespersData["ps140"].slice(4, 8)
+                .concat(specialVespersData["ps140"].slice(0, 4))
+                .concat(specialVespersData["ps140"].slice(8, 13))
+            );
+            vespersMenaionData["aposticha"] = specialVespersData["aposticha"];
+            vespersMenaionData["aposticha_verses"] = specialVespersData["aposticha_verses"];
+            dayData["troparia"].splice(0,0, specialDayData["troparia"]);
+            dayData["label"] = "24";
         }
     }
     return dayName;
@@ -475,7 +485,8 @@ export async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, ve
     if ("forefeast" in dayData) prePostFeast = "forefeast";
     else if ("postfeast" in dayData) prePostFeast = "postfeast";
 
-    if (dayOfWeek === 0 && dayData["class"] < 12) {
+    const useSunday = (dayOfWeek === 0 && dayData["class"] < 12 && !("label" in dayData && dayData["label"] === "24"));
+    if (useSunday) {
         const versesMaterial = vespersData["prokimenon"][0];
         apostVerses = [
             `${versesMaterial[1]} ${versesMaterial[2]} ${versesMaterial[3]}`,
@@ -542,7 +553,7 @@ export async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, ve
         } else {
             aposticha += `<i>${gloryAndNow}</i><br><br>${apostMain[5]}<br><br>`
         }
-    } else if (dayOfWeek === 0 && dayData["class"] < 12) {
+    } else if (useSunday) {
         // Sunday
         apostMain = vespersOctoechosData["aposticha"];
         aposticha += `
@@ -755,6 +766,11 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
                 stycheras = psalm140OctoechosStycheras.slice(0, 7);
                 stycheraScheme = Array(6).fill(1).concat([2, 1, 1]);
                 numStycheras = 9;
+            } else if ("label" in dayData && dayData["label"] === "24") {
+                stycheras = [];
+                stycheraScheme = [2, 2, 2, 2, 1, 1];
+                numStycheras = 6;
+                psalm140tone = "6";
             } else {
                 stycheras = psalm140OctoechosStycheras.slice(0, 5);
                 stycheraScheme = Array(10).fill(1);
@@ -881,7 +897,7 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
             continue
         }
         if (stychera in gloriaDict) {
-            if (stychera === "n" && dayOfWeek === 0 && dayData["class"]<=10){
+            if (stychera === "n" && dayOfWeek === 0 && dayData["class"]<=10 && !(specialSundayName === "fathers" && prePostFeast != "")){
                 // do not add a festal theotokion if it is a Sunday
                 // and not Lord's/Theotokos' feast
                 var lastLine = currentPsalm[currentPsalm.length-1];
