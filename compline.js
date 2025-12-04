@@ -617,9 +617,11 @@ async function selectTropar(dayOfWeek, hourData, glas, dayData, specialDayData){
             ${kontakion}<br><br><i>${gloryAndNow}</i><br><br>${specialDayData["kontakia"]}`
     }
 
-    if (specialDayData != undefined){
-        // sundays before Christmas
+    // sundays before Christmas
+    if (specialDayData != undefined && prePostFeast === ""){
         return `<div class="rubric">Festal kontakion:</div> ${specialDayData["kontakia"]}`;
+    } else if (specialDayData != undefined && prePostFeast != ""){
+        return `<div class="rubric">Festal kontakia:</div> ${specialDayData["kontakia"]}<br><br><i>${gloryAndNow}</i><br><br>${prePostFeastKontakion}`;
     }
 
     // Sunday
