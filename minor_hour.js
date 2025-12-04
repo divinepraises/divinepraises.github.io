@@ -10,7 +10,10 @@ export async function minorHour(hour, priest, full, date){
     var additionalElements;
     if (dayOfWeek === 0) {
         const specialSundayName = await specialSunday(mm, dd);
-        if (specialSundayName != undefined) specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
+        if (specialSundayName != undefined) {
+            specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
+            specialDayData["label"] = specialSundayName;
+        }
     } else if (mm === 12 && ((dd === 24 && dayOfWeek <= 5)||(dayOfWeek === 5 && dd >= 22 && dd < 24))){
         additionalElements = await getData(`${address}\\menaion\\${mm}\\24_${numOhHour}hour.json`);
         dateAddress = `12\\24`; // to select correct troparion
@@ -49,7 +52,7 @@ export async function minorHour(hour, priest, full, date){
 	<div id="troparia"></div><br>
 	${andNow}<br><br>
 	<div id="theotokion"></div><br>
-	<div id="additionalElementsSelector"></div><br>
+	<div id="additionalElementsSelector"></div>
 	<div id="additional_elements"></div><br>
 	<div id="chapter"></div><br>
 	<div class="subhead">Trisagion</div>
@@ -230,7 +233,7 @@ async function arrangeAdditionalElements(additionalElements, hour, priest) {
         document.getElementById("additionalElementsSelector").innerHTML = `<div class="subhead">Stichera</div><br>
           <label><input type="radio" name="selectStychera" value="1" checked> Repeat stichera as prescribed.</label><br>
           <label><input type="radio" name="selectStychera" value="0"> No repetitions.</label>
-          <br>`
+          <br><br>`
         document.getElementById("additional_elements").innerHTML = await arrangeRoyalHours(additionalElements, hour, priest);
         document.getElementById("additionalElementsSelector").addEventListener("change", async function () {document.getElementById("additional_elements").innerHTML = await arrangeRoyalHours(additionalElements, hour, priest)});
         return
@@ -350,6 +353,11 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData, specialDay
     if (dayOfWeek === 0){
         const sundayTrop = await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`);
 
+        if (specialDayData != undefined) {
+            if (hour === "1hour" || hour === "6hour" || specialDayData["label"] === "fathers") {
+                return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${specialDayData["troparia"]}`
+            }
+        }
         if (prePostFeast != ""){
             if (hour === "1hour" || hour === "6hour"){
                 return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${prePostFeastTroparion}`;
@@ -363,11 +371,6 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData, specialDay
                 return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[0]}`;
             } else {
                 return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[1]}`;
-            }
-        }
-        if (specialDayData != undefined) {
-            if (hour === "1hour" || hour === "6hour") {
-                return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${specialDayData["troparia"]}`
             }
         }
 
@@ -483,10 +486,6 @@ async function selectKondak(hour, dayOfWeek, hourData, glas, dayData, specialDay
 
     // fallback for now
     if (!dayData) {dayData = {"class": 0}; hour = "1hour";}
-    if (specialDayData != undefined) {
-        if (dayData["class"] < 8 || hour === "1hour" || hour === "6hour") return specialDayData["kontakia"];
-        return dayData["kontakia"];
-    }
 
     var dayKond;
 
@@ -503,6 +502,14 @@ async function selectKondak(hour, dayOfWeek, hourData, glas, dayData, specialDay
         // we assume that in a list, the kontakion of a pre-feast is the last one
         // for the actual feast this handles the case if a kontakion is given in a 1-element list
         prePostFeastKontakion = prePostFeastKontakion[prePostFeastKontakion.length-1]
+    }
+
+    if (specialDayData != undefined && prePostFeast === "") {
+        if (dayData["class"] < 8 || hour === "1hour" || hour === "6hour") return specialDayData["kontakia"];
+        return dayData["kontakia"];
+    } else if (specialDayData != undefined) {
+        if (hour === "1hour" || hour === "6hour") return specialDayData["kontakia"];
+        return prePostFeastKontakion;
     }
 
     // Sunday
