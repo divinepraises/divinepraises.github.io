@@ -1,0 +1,15 @@
+{
+  "deacon": "<FONT COLOR=\"RED\">Deacon:</FONT>",
+  "priest": "<FONT COLOR=\"RED\">Priest:</FONT>",
+  "wisdom": "<FONT COLOR=\"RED\">Deacon:</FONT> <b>Wisdom!</b>",
+  "stand": "<b>Stand aright!</b>",
+  "attentive": "<FONT COLOR=\"RED\">Deacon:</FONT> <b>Let us be attentive!</b>",
+  "wisdomAttentive": "<FONT COLOR=\"RED\">Deacon:</FONT> <b>Wisdom! Let us be attentive!</b>",
+  "peace": "<FONT COLOR=\"RED\">Priest:</FONT> <b>Peace be with all.</b>",
+  "bow": "<FONT COLOR=\"RED\">Deacon:</FONT> <b>Bow your heads to the Lord.</b>",
+  "blessing": "<FONT COLOR=\"RED\">Priest:</FONT> <b>Blessed is the One-Who-Is, Christ our God, always, now and for ever, and ever.</b>",
+  "theotokos": "<FONT COLOR=\"RED\">Priest:</FONT> <b>O most holy Mother of God, save us.</b>",
+  "Christ": "<FONT COLOR=\"RED\">Priest:</FONT> <b>Glory be to You, O Christ our God, our hope, glory be to You.</b>",
+  "andWith": "And with your spirit.",
+  "letUsGospel": "<b>Let us listen to the Holy Gospel.</b>"
+}

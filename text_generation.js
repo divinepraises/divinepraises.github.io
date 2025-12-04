@@ -165,6 +165,7 @@ export const itIsTrulyRight = `${data.itIsTruly} ${data.moreHonorable}`
 
 export const wePraise = data.wePraise;
 export const letUsBless = data.letUsBless;
+export const gloryGospel = data.gloryGospel;
 
 export async function lesserDoxology(hour){
     const dox = await getData(`Text\\English\\horologion\\lesser_doxology.json`)

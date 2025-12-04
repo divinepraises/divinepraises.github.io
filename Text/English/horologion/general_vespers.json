@@ -1,12 +1,6 @@
 {
   "psalm140refrain": "* Hear me, O Lord! ",
-  "wisdom": "<FONT COLOR=\"RED\">Deacon:</FONT> <b>Wisdom!</b>",
-  "stand": "<b>Stand aright!</b>",
   "hymn_of_light": "Tranquil Light, of the holy glory of the immortal heavenly, holy blessed Father, O Jesus Christ: as we come upon the sunset, as we see the evening light, we sing to God, the Father, the Son, and the Holy Spirit. At all times You are worthy of being hymned by joyful voices; O Son of God, You are the giver of life. For this the whole world glorifies You.",
-  "attentive": "<FONT COLOR=\"RED\">Deacon:</FONT> <b>Let us be attentive!</b>",
-  "peace": "<FONT COLOR=\"RED\">Priest:</FONT> <b>Peace be with all.</b>",
-  "andWith": "And with your spirit.",
-  "bow": "<FONT COLOR=\"RED\">Deacon:</FONT> <b>Bow your heads to the Lord.</b>",
   "prokimenon": [
     [
       6,
@@ -63,8 +57,5 @@
   ],
   "simeon": "Now, O Master, You have kept Your promise; let Your servant go in peace. With my own eyes I have seen the salvation which You have prepared in the sight of every people; a Light to reveal You to the Gentiles, and the glory of Your people, Israel!",
   "haire": "Rejoice, Mother of God, Virgin Mary, full of grace!* The Lord is with you.* Blessed are you among women,* and blessed is the fruit of your womb.* For you have borne Christ, the Saviour and Redeemer of our souls.",
-  "blessing": "<FONT COLOR=\"RED\">Priest:</FONT> <b>Blessed is the One-Who-Is, Christ our God, always, now and for ever, and ever.</b>",
-  "strengthen": "O God, strengthen the Orthodox faith for ever and ever.",
-  "theotokos": "<FONT COLOR=\"RED\">Priest:</FONT> <b>O most holy Mother of God, save us.</b>",
-  "Christ": "<FONT COLOR=\"RED\">Priest:</FONT> <b>Glory be to You, O Christ our God, our hope, glory be to You.</b>"
+  "strengthen": "O God, strengthen the Orthodox faith for ever and ever."
 }

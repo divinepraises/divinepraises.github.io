@@ -1,14 +1,25 @@
-import { usualBeginning, tripleAlleluia, glory, andNow, trisagionToPater, prayerOfTheHours, LHM, comeLetUs, gloryAndNow, moreHonorable, inTheName, prayerBlessingMayGodBeGracious, endingBlockMinor, amen, getCommonText } from './text_generation.js';
+import { gloryGospel, usualBeginning, tripleAlleluia, glory, andNow, trisagionToPater, prayerOfTheHours, LHM, comeLetUs, gloryAndNow, moreHonorable, inTheName, prayerBlessingMayGodBeGracious, endingBlockMinor, amen, getCommonText } from './text_generation.js';
 import { getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords, specialSunday } from './script.js';
 const address = `Text\\English`
 
 export async function minorHour(hour, priest, full, date){
 	let [year, mm, dd, season, glas, dayOfWeek, dateAddress] = getDayInfo(date, false);
+	var numOhHour = hour.charAt(0);
+
     var specialDayData;
+    var additionalElements;
     if (dayOfWeek === 0) {
         const specialSundayName = await specialSunday(mm, dd);
         if (specialSundayName != undefined) specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
+    } else if (mm === 12 && ((dd === 24 && dayOfWeek <= 5)||(dayOfWeek === 5 && dd >= 22 && dd < 24))){
+        additionalElements = await getData(`${address}\\menaion\\${mm}\\24_${numOhHour}hour.json`);
+        dateAddress = `12\\24`; // to select correct troparion
+    } else if (mm === 1 && ((dd === 5 && dayOfWeek <= 5)||(dayOfWeek === 5 && dd >= 3 && dd < 5))){
+        additionalElements = await getData(`${address}\\menaion\\${mm}\\5_${numOhHour}hour.json`);
+        dateAddress = `01\\05`;
     }
+
+
 	const numeral = {
 		1: "First",
 		3: "Third",
@@ -21,10 +32,10 @@ export async function minorHour(hour, priest, full, date){
 		6: "9hour",
 		9: "vespers"
 	}
-	var numOhHour = hour.charAt(0);
+
 	const linkToNext = `https:\/\/divinepraises.github.io/main.html?hour=${nextHour[numOhHour]}&priest=${priest}&full=${full}&date=${date}#come_let_us`;
 
-	loadText(hour, full, dayOfWeek, glas, dateAddress, specialDayData);
+	loadText(hour, full, priest, dayOfWeek, glas, dateAddress, specialDayData, additionalElements);
 	return `<h2>The ${numeral[numOhHour]} hour</h2>
 	<div class=rubric>Should this hour be said immediately after the previous one, omit this beginning:</div>
 	<hr>
@@ -38,6 +49,8 @@ export async function minorHour(hour, priest, full, date){
 	<div id="troparia"></div><br>
 	${andNow}<br><br>
 	<div id="theotokion"></div><br>
+	<div id="additionalElementsSelector"></div><br>
+	<div id="additional_elements"></div><br>
 	<div id="chapter"></div><br>
 	<div class="subhead">Trisagion</div>
 	${trisagionToPater(priest)}
@@ -60,9 +73,11 @@ export async function minorHour(hour, priest, full, date){
 	`;
 }
 
-async function loadText(hour, full, dayOfWeek, glas, date, specialDayData) {
+async function loadText(hour, full, priest, dayOfWeek, glas, date, specialDayData, additionalElements) {
 	const psalmData = await getData(`${address}\\horologion\\${hour}.json`);
-	const psalmNums = psalmData["psalms"];
+	let psalmNums;
+	if (additionalElements != undefined) psalmNums = additionalElements["psalms"]
+	else psalmNums = psalmData["psalms"]
 	const psalmPaths = psalmNums.map(n => `${address}\\psalms\\${n}.txt`);
     var dayData;
 	try{
@@ -94,9 +109,134 @@ async function loadText(hour, full, dayOfWeek, glas, date, specialDayData) {
         document.getElementById("kontakia").innerHTML = kondak;
     });
     document.getElementById("theotokion").innerHTML = psalmData["theotokion"]
+    await arrangeAdditionalElements(additionalElements, hour, priest);
     document.getElementById("chapter").innerHTML = psalmData["chapter"]
     document.getElementById("prayer").innerHTML = psalmData["prayer"]
 
+}
+
+async function arrangeRoyalHours(additionalElements, hour, priest) {
+        var full = document.querySelector('input[name="selectStychera"]:checked')?.value;
+        var res = ``;
+        const sticheras = additionalElements["stichera"];
+        var verses = additionalElements["verses"];
+        verses.push(glory);
+        verses.push(andNow);
+        for (let [i, stichera] of sticheras.entries()){
+            if (!isNaN(parseInt(stichera[0]))){
+                // this is tone indication
+                res += `<div class="rubric">Tone ${stichera}</div>`;
+                continue
+            }
+            if (i === 1) {
+                // first troparion
+                res += stichera;
+                if (full === "1") res += `<FONT COLOR="RED"> (twice)</FONT>`;
+                res += `<br><br>`;
+                continue
+            } else if (!(hour === "9hour" && i === 5 && full === "1")) {
+                if (full === "1"){
+                // 3 > 0, 1 // 5 > 2 3
+                    res += `
+                        <i>${verses[i-3]}</i><br><br>
+                        ${stichera}<br><br>
+                        <i>${verses[i-2]}</i><br><br>
+                        ${stichera}<br><br>`
+                } else {
+                    res += `
+                        <i>${verses[i-3]}** ${verses[i-2]}</i><br><br>
+                        ${stichera}<br><br>`
+                }
+            } else {
+                    // last stychera of 9th hour
+                    res += `<div class="rubric">The first time this stichera is read by the lead cantor.</div>
+                        ${stichera}<br>
+                        <div class="rubric">Then, we sing it.</div>
+                        <i>${verses[i-3]}</i><br><br>
+                        ${stichera}<br>
+                        <i>${verses[i-2]}</i><br><br>
+                        ${stichera}<br>`
+            }
+        }
+
+        // prokimen
+        res += `<div class="subhead">Prokimenon</div><br>`;
+
+        var  priestlyExclamationsData;
+        if (priest === "1") {
+            priestlyExclamationsData = await getData(`${address}\\horologion\\priestly_exclamations.json`);
+            res += `
+            ${priestlyExclamationsData["attentive"]}<br><br>
+            ${priestlyExclamationsData["peace"]}<br><br>
+            ${priestlyExclamationsData["wisdomAttentive"]}<br><br>`
+            }
+
+        const prokData = additionalElements["prokimenon"];
+
+        res += `
+            <div class="rubric">Tone ${prokData[0]}</div>
+            <FONT COLOR="RED">Choir:</FONT> ${prokData[1]}* ${prokData[2]}<br>`;
+        for (let verse of prokData.slice(3)){
+            res += `<FONT COLOR="RED">v.</FONT> ${verse}<br><FONT COLOR="RED">Choir:</FONT> ${prokData[1]}* ${prokData[2]}<br>`
+        }
+        res += `
+            <FONT COLOR="RED">v.</FONT> ${prokData[1]} <br><FONT COLOR="RED">Choir:</FONT> ${prokData[2]}<br><br>`
+
+        // readings
+        res += `<div class="subhead">Readings</div><br>`;
+        const readingsData = additionalElements["readings"];
+        for (let i of [0, 2]){
+            if (priest === "1") {
+                res += `
+                ${priestlyExclamationsData["wisdom"]}<br><br>
+                 <FONT COLOR="RED">Reader:</FONT> ${readingsData[i]}<br><br>
+                ${ priestlyExclamationsData["attentive"]}<br><br>`
+            } else {
+                res += `<i>${readingsData[i]}</i><br><br>`;
+            }
+            res += readingsData[i+1] + "<br><br>";
+        }
+
+        if (priest === "1") {
+            res += `
+            ${priestlyExclamationsData["wisdomAttentive"]} ${priestlyExclamationsData["letUsGospel"]}<br><br>
+            ${priestlyExclamationsData["peace"]}<br><br>
+            ${priestlyExclamationsData["andWith"]}<br><br>
+            ${priestlyExclamationsData["deacon"]} ${readingsData[4]}<br><br>
+            ${gloryGospel}<br><br>
+            ${priestlyExclamationsData["priest"]}
+            <b>${readingsData[5]}</b><br><br>
+            ${gloryGospel}<br><br>`
+        } else {
+            res += `<i>${readingsData[4]}</i><br><br>
+                ${gloryGospel}<br><br>
+                <div class="rubric">Gospel is read by a layman without any chanting.</div>
+                ${readingsData[5]}<br><br>
+                ${gloryGospel}<br><br>`
+        }
+
+        return res;
+    }
+
+async function arrangeAdditionalElements(additionalElements, hour, priest) {
+
+    if (additionalElements === undefined) {
+        document.getElementById("additionalElementsSelector").innerHTML =  "";
+        document.getElementById("additional_elements").innerHTML =  "";
+        return
+    }
+    // Royal hours
+    if ("psalms" in additionalElements) {
+        document.getElementById("additionalElementsSelector").innerHTML = `<div class="subhead">Stichera</div><br>
+          <label><input type="radio" name="selectStychera" value="1" checked> Repeat stichera as prescribed.</label><br>
+          <label><input type="radio" name="selectStychera" value="0"> No repetitions.</label>
+          <br>`
+        document.getElementById("additional_elements").innerHTML = await arrangeRoyalHours(additionalElements, hour, priest);
+        document.getElementById("additionalElementsSelector").addEventListener("change", async function () {document.getElementById("additional_elements").innerHTML = await arrangeRoyalHours(additionalElements, hour, priest)});
+        return
+    }
+    // TODO Lent
+    return ""
 }
 
 async function selectTropar(hour, dayOfWeek, hourData, glas, dayData, specialDayData){
@@ -275,12 +415,17 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData, specialDay
         if (hour === "1hour" || hour === "6hour"){
             return `${glory}<br><br>${prePostFeastTroparion}`;
         }
-        if (hour === "3hour") return `${prePostFeastTroparion}<br><br>${glory}<br><br>${dayTrop[0]}`;
+        if (hour === "3hour") {
+            if (dayTrop.length > 1) return `${prePostFeastTroparion}<br><br>${glory}<br><br>${dayTrop[0]}`;
+            else return `${glory}<br><br>${prePostFeastTroparion}`;
+        }
         // 9th
         if (dayTrop.length === 1 && prePostFeast === "postfeast" || dayTrop.length === 2 && prePostFeast === "forefeast"){
             return `${prePostFeastTroparion}<br><br>${glory}<br><br>${dayTrop[0]}`;
-        } else {
+        } else if (dayTrop.length > 1) {
             return `${prePostFeastTroparion}<br><br>${glory}<br><br>${dayTrop[1]}`;
+        } else {
+            return `${glory}<br><br>${prePostFeastTroparion}`;
         }
     }
 

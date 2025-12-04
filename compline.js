@@ -732,10 +732,12 @@ import { constructDayName } from './script.js';
 async function loadVespersEnding(priest, dayData, menaionData){
 
     const vigilVespersData = await getData(`${address}\\horologion\\vigil_vespers.json`);
-    const vespersData = await getData(`${address}\\horologion\\general_vespers.json`)
+    const vespersData = await getData(`${address}\\horologion\\general_vespers.json`);
     const dayName = constructDayName(dayData, false);
+    var priestlyExclamationsData;
+    if (priest === "1") priestlyExclamationsData = await getData(`${address}\\horologion\\priestly_exclamations.json`);
 
-    makeLytia(menaionData["lytia"], priest, vespersData, vigilVespersData, dayName);
+    makeLytia(menaionData["lytia"], priest, vespersData, vigilVespersData, dayName, priestlyExclamationsData);
     makePs33(priest, vigilVespersData);
 
     document.getElementById("aposticha").innerHTML = await makeAposticha(0, 0, true, dayData, vespersData, menaionData, {});
@@ -744,5 +746,5 @@ async function loadVespersEnding(priest, dayData, menaionData){
 
     document.getElementById("troparia").innerHTML = await makeTroparia(0, 0, true, dayData, "");
 
-    document.getElementById("ending_block").innerHTML = await makeEndingBlockMajor(priest, 8, true, vespersData, dayData);
+    document.getElementById("ending_block").innerHTML = await makeEndingBlockMajor(priest, 8, true, vespersData, dayData, priestlyExclamationsData);
 }
