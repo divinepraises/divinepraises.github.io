@@ -213,7 +213,7 @@ async function arrangeRoyalHours(additionalElements, hour, priest) {
         } else {
             res += `<i>${readingsData[4]}</i><br><br>
                 ${gloryGospel}<br><br>
-                <div class="rubric">Gospel is read by a layman without any chanting.</div>
+                <div class="rubric">If Gospel is read by a layman, it is done without any chanting.</div>
                 ${readingsData[5]}<br><br>
                 ${gloryGospel}<br><br>`
         }
