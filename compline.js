@@ -1,5 +1,6 @@
 import { letUsBless, wePraise, cross, usualBeginning, comeLetUs , lesserDoxology, itIsTrulyRight, trisagionToPater, tripleAlleluia, glory, andNow, LHM, prayerOfTheHours, gloryAndNow, moreHonorable, inTheName,prayerBlessingMayGodBeGracious, amen, endingBlockMinor, StEphremPrayer } from './text_generation.js';
 import { getDayInfo, getData, readPsalmsFromNumbers, isBetweenDates, specialSunday  } from './script.js';
+import { vespersEnding  } from './vespers.js';
 
 var address = `Text\\English`
 
@@ -9,9 +10,10 @@ export async function compline(priest, full, date){
 	const dd_mm = String(dd).padStart(2, "0") + String(mm).padStart(2, "0");
 
     var dayData;
-
+    var vespersMenaionData;
     try{
         dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
+        vespersMenaionData = await getData(`${address}\\menaion\\${dateAddress}_compline.json`)
     } catch (error) {
         dayData = {"class" : 0};
         `No data for this day! ${`${address}\\menaion\\${dateAddress}.json`}`
@@ -31,10 +33,9 @@ export async function compline(priest, full, date){
         if (specialSundayName != undefined) specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
     }
 
-    var beginning, ending;
     if (isIncarnationFeast) {
         greatComplineBeginning(full, season, priest, dayOfWeek, dayData, isIncarnationFeast);
-        vespersEnding(priest, dayData, dateAddress);
+        vespersEnding(dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, season);
     } else if ((season === "Lent" && dayOfWeek < 6)){
         greatComplineBeginning(full, season, priest, dayOfWeek, dayData, isIncarnationFeast);
         complineEnding(full, dayOfWeek, priest, glas, dayData, true, specialDayData, dateAddress);
@@ -713,40 +714,4 @@ function  postComplinePrayers(withPriest, data, ekteniasData, dayOfWeek) {
 	} else {
 		return data["after_prayers"]["without_priest"].join("<br><br>");
 	}
-}
-
-async function vespersEnding(priest, dayData, dateAddress){
-    const menaionData = await getData(`${address}\\menaion\\${dateAddress}_compline.json`)
-    loadVespersEnding(priest, dayData, menaionData);
-    document.getElementById("ending").innerHTML =  `<div id="lytia_stychera"></div>
-        <div id="lytia_selector"></div>
-        <div id="lytia_prayers"></div>
-        <div id="aposticha"></div>
-        <div id="simeon"></div><br>
-        ${trisagionToPater(priest)}
-        <div id="troparia"></div><br>
-        <div id="ektenia_augmented_or_ps33"></div>
-        <div id="ending_block"></div><br>`;
-}
-
-import { makeAposticha,  makeTroparia, makeEktenia, makeLytia, makeEndingBlockMajor, makePs33 } from './vespers.js';
-import { constructDayName } from './script.js';
-async function loadVespersEnding(priest, dayData, menaionData){
-
-    const vigilVespersData = await getData(`${address}\\horologion\\vigil_vespers.json`);
-    const vespersData = await getData(`${address}\\horologion\\general_vespers.json`);
-    const dayName = constructDayName(dayData, false);
-    var priestlyExclamationsData;
-    if (priest === "1") priestlyExclamationsData = await getData(`${address}\\horologion\\priestly_exclamations.json`);
-
-    makeLytia(menaionData["lytia"], priest, vespersData, vigilVespersData, dayName, priestlyExclamationsData);
-    makePs33(priest, vigilVespersData);
-
-    document.getElementById("aposticha").innerHTML = await makeAposticha(0, 0, true, dayData, vespersData, menaionData, {});
-
-    document.getElementById("simeon").innerHTML = `<div class="subhead">Song of Simeon</div><br>${vespersData["simeon"]}`;
-
-    document.getElementById("troparia").innerHTML = await makeTroparia(0, 0, true, dayData, "");
-
-    document.getElementById("ending_block").innerHTML = await makeEndingBlockMajor(priest, 8, true, vespersData, dayData, priestlyExclamationsData);
 }
