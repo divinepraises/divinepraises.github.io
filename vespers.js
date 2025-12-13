@@ -129,7 +129,7 @@ async function arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionDat
             dayData["name"] = specialDayData["name"].concat(dayData["name"]);
             dayData["type"] = specialDayData["type"].concat(dayData["type"]);
         } else {
-            vespersMenaionData = specialVespersData;
+            Object.assign(vespersMenaionData, specialVespersData);
             dayData["troparia"] = [specialDayData["troparia"]];
             dayName = specialDayData["day name"];
             dayData["name"] = specialDayData["name"];
@@ -512,7 +512,10 @@ export async function makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, hai
     }
 
     var theotokion;
-    if (prePostFeast === "forefeast" || specialSundayName === "fatehrs"){
+    if (specialSundayName === "forefathers"){
+        theotokion = dayTrop[dayTrop.length-1];
+        dayTrop.pop();
+    } else if (prePostFeast === "forefeast" || specialSundayName === "fathers"){
         theotokion = dayTrop[dayTrop.length-1];
         dayTrop.pop();
     } else if (prePostFeast === "postfeast") {
@@ -836,7 +839,7 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
             if (numSetsMenaionStycheras === 3){
                 stycheras = psalm140OctoechosStycheras.slice(0, 4);
             } else {
-                stycheras = psalm140OctoechosStycheras.slice(0, 6);
+                stycheras = psalm140OctoechosStycheras.slice(0, 7);
             }
             stycheras = stycheras.concat(psalm140menaionStycheras);
             stycheraScheme = Array(10).fill(1);
@@ -958,7 +961,7 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
     var theotokionWasAdded = false;
     var gloryWasAdded = false;
     for (let stychera of stycheras){
-        if (numVersesLeft === 2 && i > -1) {
+        if (numVersesLeft === 2 && i > 1) {
             psalm140etc[5] = currentPsalm.join("");
             currentPsalm = nextPsalmList.shift();
             i = 0;
