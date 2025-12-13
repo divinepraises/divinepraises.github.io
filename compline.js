@@ -2,9 +2,18 @@ import { letUsBless, wePraise, cross, usualBeginning, comeLetUs , lesserDoxology
 import { getDayInfo, getData, readPsalmsFromNumbers, isBetweenDates, specialSunday  } from './script.js';
 import { vespersEnding  } from './vespers.js';
 
-var address = `Text\\English`
+var address = `Text\\English`;
 
-export async function compline(priest, full, date){
+export function renderComplineSkeleton() {
+    return `
+        <div id="beginning"></div>
+        <br>
+        <div id="ending"></div>
+    `;
+}
+
+
+export async function enhanceCompline(priest, full, date){
 	let [year, mm, dd, season, glas, dayOfWeek, dateAddress] = getDayInfo(date, true);
 
 	const dd_mm = String(dd).padStart(2, "0") + String(mm).padStart(2, "0");
@@ -35,18 +44,16 @@ export async function compline(priest, full, date){
 
     if (isIncarnationFeast) {
         greatComplineBeginning(full, season, priest, dayOfWeek, dayData, isIncarnationFeast);
-        vespersEnding(dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, season);
+        const vespersData = await getData(`${address}\\horologion\\general_vespers.json`);
+        vespersEnding(vespersData, dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, season);
     } else if ((season === "Lent" && dayOfWeek < 6)){
         greatComplineBeginning(full, season, priest, dayOfWeek, dayData, isIncarnationFeast);
         complineEnding(full, dayOfWeek, priest, glas, dayData, true, specialDayData, dateAddress);
     } else {
-        smallComplineBeginning(full, season, dayOfWeek, priest, isAlleluiaDay);
+        smallComplineBeginning(full, season, dayOfWeek, priest, isAlleluiaDay, glas, dayData, dateAddress);
         complineEnding(full, dayOfWeek, priest, glas, dayData, false, specialDayData, dateAddress);
     }
 
-    return `
-        <div id="beginning"></div><br>
-        <div id="ending"></div>`
 }
 
 async function complineEnding(full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dateAddress) {
@@ -115,10 +122,10 @@ async function loadComplineEnding(smallComplineData, full, dayOfWeek, priest, gl
     }
 }
 
-async function smallComplineBeginning(full, season, dayOfWeek, priest, isAlleluiaDay, glas, dayData) {
+async function smallComplineBeginning(full, season, dayOfWeek, priest, isAlleluiaDay, glas, dayData, dateAddress) {
 	const smallComplineData = await getData(`${address}\\horologion\\small_compline.json`);
 
-    loadSmallComplineBeginning(smallComplineData, full, season, dayOfWeek, isAlleluiaDay, priest, glas, dayData);
+    loadSmallComplineBeginning(smallComplineData, full, season, dayOfWeek, isAlleluiaDay, priest, glas, dayData, dateAddress);
 	document.getElementById("beginning").innerHTML =  `<h2>Small Compline</h2>
 	<div id="switch"></div><br>
 	${usualBeginning(priest, season)}<br><br>
@@ -129,7 +136,7 @@ async function smallComplineBeginning(full, season, dayOfWeek, priest, isAllelui
 	`;
 }
 
-async function loadSmallComplineBeginning(smallComplineData, full, season, dayOfWeek, isAlleluiaDay, priest, glas, dayData) {
+async function loadSmallComplineBeginning(smallComplineData, full, season, dayOfWeek, isAlleluiaDay, priest, glas, dayData, dateAddress) {
 	const psalmNums =  smallComplineData["psalms"];
 	const psalmPaths = psalmNums.map(n => `${address}\\psalms\\${n}.txt`);
 
@@ -165,7 +172,7 @@ async function loadSmallComplineBeginning(smallComplineData, full, season, dayOf
             `;
         document.getElementById("switch").addEventListener("change", () => {
             greatComplineBeginning(full, season, priest, dayOfWeek, dayData, false);
-            complineEnding(full, dayOfWeek, priest, glas, dayData, true, dateAddress);
+            complineEnding(full, dayOfWeek, priest, glas, dayData, true, {}, dateAddress);
             }
         );
     }

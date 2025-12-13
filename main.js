@@ -1,5 +1,5 @@
 import { renderVespersSkeleton, enhanceVespers } from './vespers.js';
-import { compline } from './compline.js';
+import { renderComplineSkeleton, enhanceCompline } from './compline.js';
 import { matins } from './matins.js';
 import { minorHour } from './minor_hour.js';
 //import { liturgy } from './liturgy.js';
@@ -16,7 +16,8 @@ var selectedVersion = document.querySelector('input[name="option"]:checked');
 if (hour === "1hour" || hour === "3hour" || hour === "6hour" || hour === "9hour") {
     contentDiv.innerHTML = await minorHour(hour, priest, full, date);
 } else if (hour === "compline"){
-    contentDiv.innerHTML = await compline(priest, full, date);
+    contentDiv.innerHTML = renderComplineSkeleton();
+    await enhanceCompline(priest, full, date);
 } else if (hour === "vespers"){
     contentDiv.innerHTML = renderVespersSkeleton();
     await enhanceVespers(priest, full, date);

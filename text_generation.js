@@ -107,7 +107,7 @@ export function giveTheBlessing(withPriest) {
 	};
 }
 
-export function dismissalMajor(dayOfWeek, withPriest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal) {
+export function dismissalMajor(dayOfWeek, withPriest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal) {
     var text;
     var replacements = {};
 	if (withPriest == "1") {
@@ -119,8 +119,9 @@ export function dismissalMajor(dayOfWeek, withPriest, isGreatVespers, prePostFea
 	else TheotokosDismissal = ";";
 
 	if (dayOfWeek === 0 && !isGreatVespers) replacements = {"SUNDAY": data.dismissalsWeekdays[0], "WEEKDAY": "", "THURSDAY": "", "CHURCH": data.dismissalChurch, "THEOTOKOS": TheotokosDismissal};
+	else if (specialDismissal != "") replacements = {"SUNDAY": specialDismissal, "WEEKDAY": "", "THURSDAY": "", "CHURCH": "", "THEOTOKOS": TheotokosDismissal};
 	else if (dayOfWeek === 0 && isGreatVespers) replacements = {"SUNDAY": data.dismissalsWeekdays[0], "WEEKDAY": "", "THURSDAY": "", "CHURCH": "", "THEOTOKOS": TheotokosDismissal};
-	else if (isGreatVespers || prePostFeast === "postfeast") replacements = {"SUNDAY": "", "WEEKDAY": "", "THURSDAY": "", "CHURCH": "", "THEOTOKOS": TheotokosDismissal};
+	else if (isGreatVespers || prePostFeast === "postfeast") replacements = {"SUNDAY": specialDismissal, "WEEKDAY": "", "THURSDAY": "", "CHURCH": "", "THEOTOKOS": TheotokosDismissal};
 	else if (dayOfWeek === 4) replacements = {"SUNDAY": "", "WEEKDAY": "", "THURSDAY": data.dismissalsWeekdays[4], "CHURCH": data.dismissalChurch, "THEOTOKOS": TheotokosDismissal};
 	else if (dayOfWeek === 6) replacements = {
 	    "SUNDAY": "",
@@ -133,10 +134,10 @@ export function dismissalMajor(dayOfWeek, withPriest, isGreatVespers, prePostFea
 
 	if (!isGreatVespers) {
 	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}`
-	} else if (TheotokosDismissal===";"){
-	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}${data.dismissalSaintsSolemn}`
-	} else {
+	} else if (TheotokosDismissal!==";" ||  specialDismissal != ""){
 	    replacements["SAINT"] = "";
+	} else {
+	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}${data.dismissalSaintsSolemn}`
 	}
 
 	return `${replaceCapsWords(text, replacements)}<br><br><FONT COLOR="RED">Choir:</FONT> ${amen}`
