@@ -11,33 +11,37 @@ const gloriaDict = {
         "n": `<i>${andNow}</i>`,
     }
 
-export async function vespers(priest, full, date){
-	let [year, mm, dd, season, glas, dayOfWeek, dateAddress] = getDayInfo(date, true);
+export function renderVespersSkeleton() {
+    return `
+        <div id="common_part"></div>
+        <br>
+        <div id="ending"></div>
+    `;
+}
 
-    var dayData, vespersMenaionData;
-	try{
-        dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
-        vespersMenaionData = await getData(`${address}\\menaion\\${dateAddress}_vespers.json`)
-    } catch (error) {
-        dayData = {"class" : 0};
-        return `No data for this day! ${`${address}\\menaion\\${dateAddress}.json`}`
-    }
+export async function enhanceVespers(priest, full, date) {
+    const [year, mm, dd, season, glas, dayOfWeek, dateAddress] =
+        getDayInfo(date, true);
+
+    const dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
+    const vespersData = await getData(`${address}\\horologion\\general_vespers.json`);
+    var vespersMenaionData = await getData(`${address}\\menaion\\${dateAddress}_vespers.json`)
+
+    await vespersBeginning(
+        vespersData, full, dayOfWeek, mm, dd, glas, dayData, dateAddress, priest, season
+        );
 
     const isStBasil = (dateAddress === "12\\25" || dateAddress === "01\\06" || dateAddress === "03\\25");
-
-    vespersBeginning(full, dayOfWeek, mm, dd, glas, dayData, dateAddress, priest, season);
-    if (isStBasil) {
+     if (isStBasil) {
         // this also includes a priestless case, ending like when the 24th is on weekend day
-        liturgyEnding(full, dayOfWeek, mm, dd, glas, dayData, dateAddress, priest, season);
+        await liturgyEnding(full, dayOfWeek, mm, dd, glas, dayData, dateAddress, priest, season);
     } else if (priest && (season === "Lent" || season === "Forelent") && (dayOfWeek === 3 || dayOfWeek === 5)){
         presanctifiedEnding(full, dayOfWeek, mm, dd, glas, dayData, dateAddress, priest, season);
     } else {
-        vespersEnding(dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, season);
+        await vespersEnding(
+            vespersData, dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, season
+        );
     }
-
-    return `
-        <div id="common_part"></div><br>
-        <div id="ending"></div>`
 }
 
 
@@ -48,13 +52,11 @@ async function loadTextBasil(dayOfWeek, dateAddress, dayData, priest) {
 async function liturgyEnding(dayOfWeek, mm, dd, glas, dayData, dateAddress, priest, season) {
   var vespersData = await getData(`${address}\\horologion\\general_vespers.json`)
   loadTextBasil(dayOfWeek, dateAddress, dayData, priest);
-  document.getElementById("ending").innerHTML =  `<div id="beginning"></div>`;
+  document.getElementById("ending").innerHTML =  ``;
 }
 
-async function vespersBeginning(full, dayOfWeek, mm, dd, glas, dayData, dateAddress, priest, season){
-  var vespersData = await getData(`${address}\\horologion\\general_vespers.json`)
-  loadTextBeginning(vespersData, full, dayOfWeek, mm, dd, season, glas, dateAddress, dayData, priest);
-  document.getElementById("common_part").innerHTML =  `
+async function vespersBeginning(vespersData, full, dayOfWeek, mm, dd, glas, dayData, dateAddress, priest, season){
+  const text = `
   <h2>Vespers</h2>
   <h4><div id="day_name"></div></h4>
   <div id="beginning"></div>
@@ -76,13 +78,13 @@ async function vespersBeginning(full, dayOfWeek, mm, dd, glas, dayData, dateAddr
   <div id="ektenia_augmented_great"></div>
   <div id="lesserDoxology"></div><br>
   <div id="ektenia_supplication"></div><br>
-  `
+  `;
+  setTimeout(() => loadTextBeginning(vespersData, full, dayOfWeek, mm, dd, season, glas, dateAddress, dayData, priest), 0);
+  document.getElementById("common_part").innerHTML = text;
 }
 
-export async function vespersEnding(dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, season){
-  var vespersData = await getData(`${address}\\horologion\\general_vespers.json`)
-  loadTextEnding(vespersData, dayOfWeek, mm, dd, season, glas, dayData, vespersMenaionData, priest);
-  document.getElementById("ending").innerHTML = `
+export async function vespersEnding(vespersData, dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, season){
+  const text = `
   <div id="lytia_stychera"></div>
   <div id="lytia_selector"></div>
   <div id="lytia_prayers"></div>
@@ -93,6 +95,9 @@ export async function vespersEnding(dayOfWeek, mm, dd, glas, dayData, vespersMen
   <div id="ektenia_augmented_or_ps33"></div>
   <div id="ending_block"></div><br>
   `
+  setTimeout(() => loadTextEnding(vespersData, dayOfWeek, mm, dd, season, glas, dayData, vespersMenaionData, priest), 0);
+
+  document.getElementById("ending").innerHTML = text;
 }
 
 async function arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionData, dayData, dayName) {
