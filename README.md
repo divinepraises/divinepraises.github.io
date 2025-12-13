@@ -19,14 +19,17 @@ It must include following fields
   - "Polyeleos": 8,
   - "Vigil": 10,
   - "Vigil of Our Lady": 11
-  - "Vigil of Our Lord or Our Lady": 12
+  - "Vigil of Our Lord": 12
 - name: name of the saint
 - type: type of the saint. Used for deducing common troparia. If an empty string, no troparion will be used (useful for feasts of the Lord or for compline-only saints) 
 
 It can also include fields:
 - troparia. If not provided, constructed from "type" and "name".
 - kontakia. If not provided, constructed from "type" and "name".
-- TheotokosDismissal: a part of a dismissal for a feast of Our Lady. Sould not be provided, unless required.
+- forefeast: a feast a forefeast of which we are celebrating.
+- postfeast: a feast a postfeast of which we are celebrating.
+- specialDismissal: a part of a dismissal for a feast of Our Lord. Should not be provided, unless required.
+- TheotokosDismissal: a part of a dismissal for a feast of Our Lady. Should not be provided, unless required.
 - saint: (so that we can include Blesseds). If not provided, a default value is used (Saint)
 - day name: a more elaborate name of the day (e.g. dedication of the church of st George). If not provided, constructed from "type" and "name"
 - fields for liturgy
