@@ -477,6 +477,7 @@ export async function makeEndingBlockMajor(priest, dayOfWeek, isGreatVespers, ve
         prePostFeastData = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`));
     }
     if (prePostFeastData && "TheotokosDismissal" in prePostFeastData) TheotokosDismissal = prePostFeastData["TheotokosDismissal"];
+    if (prePostFeastData && "specialDismissal" in prePostFeastData) specialDismissal = prePostFeastData["specialDismissal"];
 
     if (priest === "1"){
         res += `${priestlyExclamationsData["wisdom"]}<br><br>`
@@ -493,7 +494,7 @@ export async function makeEndingBlockMajor(priest, dayOfWeek, isGreatVespers, ve
             ${dismissalMajor(dayOfWeek, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal)}
             `;
     } else {
-        if (dayOfWeek === 6 || isGreatVespers) res += `${vespersData["strengthen"]}<br><br>`
+        if (dayOfWeek === 6 || dayOfWeek === 0 || isGreatVespers) res += `${vespersData["strengthen"]}<br><br>`
         res +=`${moreHonorable}<br><br>
         ${gloryAndNow} ${LHM} ${LHM} ${LHM} ${giveTheBlessing(priest)}<br><br>
         ${dismissalMajor(dayOfWeek, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal)}
