@@ -158,7 +158,7 @@ async function arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionDat
             vespersMenaionData["aposticha"] = specialVespersData["aposticha"].slice(4, 7);
             dayData["troparia"] = specialDayData["troparia"];
         } else if (dd < 24){
-            vespersMenaionData["ps140"] = specialVespersData["ps140"].slice(0, 11);
+            vespersMenaionData["ps140"] = specialVespersData["ps140"].slice(0, 13);
             vespersMenaionData["aposticha"] = specialVespersData["aposticha"];
             dayData["troparia"][0] = specialDayData["troparia"];
         } else if (dd === 24) {
@@ -172,6 +172,12 @@ async function arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionDat
             dayData["troparia"].splice(0,0, specialDayData["troparia"]);
             dayData["label"] = "24";
         }
+    } else if (specialSundayName === "after_nativity") {
+        dayName = specialDayData["day name"];
+        dayData["name"] = specialDayData["name"];
+        dayData["type"] = specialDayData["type"];
+        Object.assign(vespersMenaionData, specialVespersData);
+        dayData["troparia"] = [specialDayData["troparia"]];
     }
     return dayName;
 }
@@ -957,6 +963,10 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
                 numStycheras = 10;
             }
             stycheras = stycheras.concat(psalm140menaionStycheras);
+        } else if (specialSundayName === "after_nativity") {
+            stycheras = psalm140OctoechosStycheras.slice(0, 4).concat(psalm140menaionStycheras);
+            stycheraScheme = Array(10).fill(1);
+            numStycheras = 10;
         } else if (dayData["class"] === 6){
             if (numStycheras === 3){
                 // in the current data format, 0th stychera is tone
