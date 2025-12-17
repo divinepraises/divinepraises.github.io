@@ -419,7 +419,7 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData, specialDay
         if (prePostFeast === "") return `${glory}<br><br>${dayTrop[0]}`;
         return `${prePostFeastTroparion}<br><br>${glory}<br><br>${dayTrop[0]}`;
     }
-    if (specialDayData["label"] === "after_nativity") {
+    if (specialDayData!= undefined && specialDayData["label"] === "after_nativity") {
         // dec 26 is Monday, Sunday is transfered here
          return `${prePostFeastTroparion}<br><br>${glory}<br><br>${specialDayData["troparia"]}`;
     }
