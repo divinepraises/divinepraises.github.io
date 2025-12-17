@@ -173,14 +173,8 @@ async function arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionDat
             dayData["label"] = "24";
         }
     } else if (specialSundayName === "after_nativity") {
-        if (dayOfWeek === 0) {
-            dayName = specialDayData["day name"];
-            dayData["name"] = specialDayData["name"];
-            dayData["type"] = specialDayData["type"];
-            Object.assign(vespersMenaionData, specialVespersData);
-            dayData["troparia"] = [specialDayData["troparia"]];
-        } else {
-            // transfered to Monday
+        if (dayOfWeek === 1) {
+            // transferred to Monday
             const theotokion = vespersMenaionData["ps140"][vespersMenaionData["ps140"].length-1];
             specialVespersData["ps140"].splice(4, 1)  // we don't need the last festal one
             vespersMenaionData["ps140"] = specialVespersData["ps140"];
@@ -192,6 +186,25 @@ async function arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionDat
                 .concat(specialVespersData["aposticha"])
             )
             dayData["troparia"] = [specialDayData["troparia"]];
+        } else if (dd != 31) {
+            dayName = specialDayData["day name"];
+            dayData["name"] = specialDayData["name"];
+            dayData["type"] = specialDayData["type"];
+            Object.assign(vespersMenaionData, specialVespersData);
+            dayData["troparia"] = [specialDayData["troparia"]];
+        } else {
+            dayName = specialDayData["day name"];
+            dayData["name"] = specialDayData["name"];
+            dayData["type"] = specialDayData["type"];
+            vespersMenaionData["ps140"] = specialVespersData["ps140"].concat(
+                ["n", "2", vespersMenaionData["ps140"][vespersMenaionData["ps140"].length-1]]
+            );
+            vespersMenaionData["aposticha"] = (
+                specialVespersData["aposticha"].slice(0, 3)
+                .concat(["4", "n", vespersMenaionData["aposticha"][8]])
+            )
+            dayData["troparia"] = [specialDayData["troparia"]];
+            dayData["label"] = "31";
         }
     }
     return dayName;
@@ -275,8 +288,10 @@ async function loadTextBeginning(vespersData, full, dayOfWeek, mm, dd, season, g
         `
     }
 
-    makeKathisma(dayOfWeek, dayData["class"], mm, dd, season, priest, ekteniaData);
-    document.getElementById("kathismaSelector").addEventListener("change",() => makeKathisma(dayOfWeek, dayData["class"], mm, dd, season, priest, ekteniaData));
+    var omit_kathisma = false;
+    if ("no_kathisma" in dayData) omit_kathisma = true;
+    makeKathisma(dayOfWeek, dayData["class"], mm, dd, season, priest, ekteniaData, omit_kathisma);
+    document.getElementById("kathismaSelector").addEventListener("change",() => makeKathisma(dayOfWeek, dayData["class"], mm, dd, season, priest, ekteniaData, omit_kathisma));
 
     var vespersOctoechosData;
     if (dayOfWeek === 0 || !isGreatVespers){
@@ -1102,7 +1117,11 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
             continue
         }
         if (stychera in gloriaDict) {
-            if (stychera === "n" && dayOfWeek === 0 && dayData["class"]<=10 && !(specialSundayName === "fathers" && prePostFeast != "")){
+            if (
+                stychera === "n" && dayOfWeek === 0 && dayData["class"]<=10
+                && !(specialSundayName === "fathers" && prePostFeast != "")
+                && !(specialSundayName === "after_nativity" && "label" in dayData)
+            ){
                 // do not add a festal theotokion if it is a Sunday
                 // and not Lord's/Theotokos' feast
                 var lastLine = currentPsalm[currentPsalm.length-1];
@@ -1184,7 +1203,7 @@ function makeSmallEktenia(priest, ekteniaData){
     document.getElementById("ektenia_small").innerHTML += "<br><br>"
 }
 
-async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, priest, ekteniaData){
+async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, priest, ekteniaData, omit_kathisma){
     var instruction = document.querySelector('input[name="kathismaChoice"]:checked')?.value;
 
     if (instruction === "omit_kathisma"){
@@ -1230,8 +1249,8 @@ async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, priest, ektenia
       return
     }
 
-    if (dayOfWeek === 1 && dayClass < 12) {
-      document.getElementById("kathisma").innerHTML = `<div class=\"rubric\">No kathisma on Sunday night</div><br>`;
+    if ((dayOfWeek === 1 && dayClass < 12) || omit_kathisma) {
+      document.getElementById("kathisma").innerHTML = `<div class=\"rubric\">No kathisma on Sunday night and after vigil-ranked feasts.</div><br>`;
       document.getElementById("kathismaSelector").innerHTML = "";
       return
     }
