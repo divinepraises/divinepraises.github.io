@@ -598,7 +598,12 @@ async function selectTropar(dayOfWeek, hourData, glas, dayData, specialDayData){
         prePostFeastKontakion = dayData["kontakia"];
     } else if ("postfeast" in dayData) {
         prePostFeast = "postfeast";
-        prePostFeastKontakion = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["kontakia"];
+        if ("TheotokosDismissal" in dayData && dayData["postfeast"] === "12//25" && "troparia" in dayData && "kontakia" in dayData) {
+            // a case of Dec 26
+            prePostFeastKontakion = dayData["kontakia"][0];
+        } else {
+            prePostFeastKontakion = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["kontakia"];
+        }
     }
     if (Array.isArray(prePostFeastKontakion)) {
         // we assume that in a list, the kontakion of a pre-feast is the last one
