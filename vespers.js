@@ -108,7 +108,7 @@ export async function vespersEnding(vespersData, dayOfWeek, mm, dd, glas, dayDat
   document.getElementById("ending").innerHTML = text;
 }
 
-async function arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionData, dayData, dayName) {
+async function arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionData, dayData, dayName, dayOfWeek) {
     const specialVespersData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}_vespers.json`);
     const specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
     if (specialSundayName === "forefathers") {
@@ -173,11 +173,26 @@ async function arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionDat
             dayData["label"] = "24";
         }
     } else if (specialSundayName === "after_nativity") {
-        dayName = specialDayData["day name"];
-        dayData["name"] = specialDayData["name"];
-        dayData["type"] = specialDayData["type"];
-        Object.assign(vespersMenaionData, specialVespersData);
-        dayData["troparia"] = [specialDayData["troparia"]];
+        if (dayOfWeek === 0) {
+            dayName = specialDayData["day name"];
+            dayData["name"] = specialDayData["name"];
+            dayData["type"] = specialDayData["type"];
+            Object.assign(vespersMenaionData, specialVespersData);
+            dayData["troparia"] = [specialDayData["troparia"]];
+        } else {
+            // transfered to Monday
+            const theotokion = vespersMenaionData["ps140"][vespersMenaionData["ps140"].length-1];
+            specialVespersData["ps140"].splice(4, 1)  // we don't need the last festal one
+            vespersMenaionData["ps140"] = specialVespersData["ps140"];
+            vespersMenaionData["ps140"].push("n")
+            vespersMenaionData["ps140"].push(theotokion)
+
+            vespersMenaionData["aposticha"] = (
+                vespersMenaionData["aposticha"].slice(0, 4)
+                .concat(specialVespersData["aposticha"])
+            )
+            dayData["troparia"] = [specialDayData["troparia"]];
+        }
     }
     return dayName;
 }
@@ -194,10 +209,10 @@ async function loadTextBeginning(vespersData, full, dayOfWeek, mm, dd, season, g
     var dayName = constructDayName(dayData, false);
 
     var specialSundayName;
-    if (dayOfWeek === 0) specialSundayName = await specialSunday(mm, dd);
+    if (dayOfWeek === 0 || (mm === 12 && dd === 26 && dayOfWeek === 1)) specialSundayName = await specialSunday(mm, dd);
     if (specialSundayName != undefined) {
         // rewrite day data
-        dayName = await arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionData, dayData, dayName);
+        dayName = await arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionData, dayData, dayName, dayOfWeek);
     }
 
     var vigilVespersData, haire;
@@ -329,10 +344,10 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, glas, dayD
     var vespersOctoechosData = await getData(`${address}\\octoechos\\${glas}\\${dayOfWeek}_vespers.json`);
 
     var specialSundayName;
-    if (dayOfWeek === 0) specialSundayName = await specialSunday(mm, dd);
+    if (dayOfWeek === 0 || (mm === 12 && dd === 26 && dayOfWeek === 1)) specialSundayName = await specialSunday(mm, dd);
     if (specialSundayName != undefined) {
         // rewrite day data
-        dayName = await arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionData, dayData, dayName);
+        dayName = await arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionData, dayData, dayName, dayOfWeek);
     }
 
     var vigilVespersData, haire;
