@@ -8,7 +8,7 @@ export async function minorHour(hour, priest, full, date){
 
     var specialDayData;
     var additionalElements;
-    if (dayOfWeek === 0) {
+    if (dayOfWeek === 0  || (mm === 12 && dd === 26 && dayOfWeek === 1)) {
         const specialSundayName = await specialSunday(mm, dd);
         if (specialSundayName != undefined) {
             specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
@@ -419,6 +419,10 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData, specialDay
         if (prePostFeast === "") return `${glory}<br><br>${dayTrop[0]}`;
         return `${prePostFeastTroparion}<br><br>${glory}<br><br>${dayTrop[0]}`;
     }
+    if (specialDayData["label"] === "after_nativity") {
+        // dec 26 is Monday, Sunday is transfered here
+         return `${prePostFeastTroparion}<br><br>${glory}<br><br>${specialDayData["troparia"]}`;
+    }
 
     if (prePostFeast != ""){
         if (hour === "1hour" || hour === "6hour"){
@@ -515,7 +519,8 @@ async function selectKondak(hour, dayOfWeek, hourData, glas, dayData, specialDay
         return dayData["kontakia"];
     } else if (specialDayData != undefined && specialDayData["label"] === "after_nativity") {
         // different order
-        if (hour === "1hour" || hour === "6hour") return prePostFeastKontakion;
+        if ((hour === "1hour" || hour === "6hour") && dayOfWeek === 0) return prePostFeastKontakion;
+        else if ((hour === "1hour" || hour === "6hour") && dayOfWeek === 1) return dayData["kontakia"][0];
         return specialDayData["kontakia"];
     } else if (specialDayData != undefined) {
         if (hour === "1hour" || hour === "6hour") return specialDayData["kontakia"];

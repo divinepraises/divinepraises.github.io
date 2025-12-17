@@ -37,7 +37,7 @@ export async function enhanceCompline(priest, full, date){
     )
 
     var specialDayData;
-    if (dayOfWeek === 0) {
+    if (dayOfWeek === 0 || (mm === 12 && dd === 26 && dayOfWeek === 1)) {
         const specialSundayName = await specialSunday(mm, dd);
         if (specialSundayName != undefined) specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
     }
