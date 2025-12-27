@@ -564,14 +564,18 @@ export async function makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, hai
         if (dayData["class"] < 10){
             // Sunday
             dayTrop.splice(0, 0, (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][glas]);
-        } else if (dayData["class"] < 12){
+        } else if (dayData["class"] < 12 && !("specialDismissal" in dayData)) {
             // vigil on Sunday that does not replace it
             dayTrop.splice(0, 0, `${haire}<i><FONT COLOR="RED">(${3 - dayTrop.length})</FONT></i>`);
             return dayTrop.join("<br><br>")
+        } else {
+            // st Basil. Dol. prescribes replacing festal troparion with Haire here because that's what menaion says
+            return dayTrop[0] + `<i><FONT COLOR="RED">(2)</FONT></i><br><br>${haire}`;
         }
     } else if (dayData["class"] === 10){
         // vigil of a saint not on Sunday
         if (dayTrop.length === 1) return dayTrop[0] + `<i><FONT COLOR="RED">(2)</FONT></i><br><br>${haire}`
+        else if ("specialDismissal" in dayData) return dayTrop[0] + `<i><FONT COLOR="RED">(2)</FONT></i><br><br>${dayTrop[1]}`;
         dayTrop.push(haire);
         return dayTrop.join("<br><br>")
     } else if (dayData["class"] > 10) {
@@ -969,7 +973,12 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
             } else if (numStycheras === 4){
                 stycheraScheme = Array(4).fill(1).concat([2, 2, 1, 1])
             } else if (numStycheras === 5){
-                stycheraScheme = Array(4).fill(1).concat([2, 1, 1, 1, 1])
+                if ("specialDismissal" in dayData && numSetsMenaionStycheras === 2) {
+                    // Jan 1
+                    psalm140OctoechosStycheras.pop();  // to calculate total number
+                    stycheras.splice(4, 1); // remove last Sunday st.
+                    stycheraScheme = Array(3).fill(1).concat([2, 1, 2, 1, 1])
+                } else stycheraScheme = Array(4).fill(1).concat([2, 1, 1, 1, 1])
             } else if (numStycheras >= 6) {
                 stycheraScheme = Array(10).fill(1)
             }
