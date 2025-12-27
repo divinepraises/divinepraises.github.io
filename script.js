@@ -207,6 +207,8 @@ export function parseDate(currentYear, currentMonth, currentDay) {
 			seasonToShow = `${10 + Math.floor(diffFromEaster/7)} week of Forelent,`;
 			season = "Forelent";
 		} else {
+			glas = Math.floor((diffFromLastEaster)/7)%8;
+			if (glas === 0) glas = 8;
             seasonToShow = `Week of tone ${glas}`;
             season = "0";
 		}

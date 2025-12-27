@@ -614,7 +614,10 @@ async function selectTropar(dayOfWeek, hourData, glas, dayData, specialDayData){
     if (dayClass >= 8) {
         if ("kontakia" in dayData) kontakion = dayData["kontakia"];
         else kontakion = (await getCommonText("kontakia", dayData));
-        if (Array.isArray(kontakion)) kontakion = kontakion[0];
+        if (Array.isArray(kontakion)) {
+            if (kontakion.length === 1) kontakion = kontakion[0];
+            else kontakion = `${kontakion[0]}<br><br><i>${gloryAndNow}</i><br><br>${kontakion[1]}`;
+        }
     }
 
     // a polyeleos (and higher)

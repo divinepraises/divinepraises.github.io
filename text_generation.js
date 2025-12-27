@@ -135,7 +135,7 @@ export function dismissalMajor(dayOfWeek, withPriest, isGreatVespers, prePostFea
 	if (!isGreatVespers) {
 	    if (saintNames.length === 1 && saintNames[0] === "") replacements["SAINT"] = "";
 	    else replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}`
-	} else if (TheotokosDismissal!==";" || specialDismissal != ""){
+	} else if ((TheotokosDismissal!==";" || specialDismissal != "") && saintNames[0] ==="") {
 	    replacements["SAINT"] = "";
 	} else {
 	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}${data.dismissalSaintsSolemn}`

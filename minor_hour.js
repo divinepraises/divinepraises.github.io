@@ -390,7 +390,14 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData, specialDay
 
         if (dayData["class"] >= 8){
             // Sunday and polyeleos
-            return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[0]}`;
+            if (dayTrop.length === 1 || hour === "3hour" || hour === "9hour") {
+                // 2 troparia for st Basil
+                return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[0]}`;
+            }
+            else {
+                // 2 troparia for st Basil
+                return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[1]}`;
+            }
         }
 
         if (hour === "6hour"){
@@ -415,9 +422,14 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData, specialDay
     if ("troparia" in dayData) dayTrop = dayData["troparia"];
     else dayTrop = await getCommonText("troparia", dayData);
     if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
-    if (dayData["class"] >= 8){
-        if (prePostFeast === "") return `${glory}<br><br>${dayTrop[0]}`;
-        return `${prePostFeastTroparion}<br><br>${glory}<br><br>${dayTrop[0]}`;
+    if (dayData["class"] >= 8) {
+        if (prePostFeast === ""){
+            if (dayTrop.length === 1) return `${glory}<br><br>${dayTrop[0]}`;
+            else return `${dayTrop[1]}<br><br>${glory}<br><br>${dayTrop[0]}`;
+        } else {
+            // pre post feast
+            return `${prePostFeastTroparion}<br><br>${glory}<br><br>${dayTrop[0]}`;
+        }
     }
     if (specialDayData!= undefined && specialDayData["label"] === "after_nativity") {
         // dec 26 is Monday, Sunday is transfered here
@@ -525,6 +537,12 @@ async function selectKondak(hour, dayOfWeek, hourData, glas, dayData, specialDay
     } else if (specialDayData != undefined) {
         if (hour === "1hour" || hour === "6hour") return specialDayData["kontakia"];
         return prePostFeastKontakion;
+    }
+
+    if (dayData["class"] === 10 && dayData["kontakia"].length === 2 && prePostFeast === "") {
+        // st Basil
+        if (hour === "1hour" || hour === "6hour") return dayData["kontakia"][1];
+        else return dayData["kontakia"][0]
     }
 
     // Sunday
