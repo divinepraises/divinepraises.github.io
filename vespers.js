@@ -382,7 +382,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, glas, dayD
     }
 
     if (isLytia) {
-        makeLytia(vespersMenaionData["lytia"], priest, vespersData, vigilVespersData, dayName, priestlyExclamationsData);
+        makeLytia(vespersMenaionData["lytia"], priest, vespersData, vigilVespersData, dayData, priestlyExclamationsData);
         makePs33(priest, vigilVespersData);
     } else {
         document.getElementById("lytia_stychera").innerHTML = "";
@@ -424,7 +424,7 @@ export async function makePs33(priest, vigilVespersData){
     document.getElementById("ektenia_augmented_or_ps33").innerHTML = text;
 }
 
-export async function makeLytia(lytiaData, priest, vespersData, vigilVespersData, saintNames, priestlyExclamationsData){
+export async function makeLytia(lytiaData, priest, vespersData, vigilVespersData, dayData, priestlyExclamationsData){
     var lytia = `<div class="subhead">Lytia</div><br>
     <div class="rubric">The first stichera is supposed to be from the lytia of the parish feast.
     Then the following sticheras are sung:</div><br>`
@@ -461,13 +461,16 @@ export async function makeLytia(lytiaData, priest, vespersData, vigilVespersData
           <label><input type="radio" name="countryChoice" value="canada" checked> North America.</label><br>
           <label><input type="radio" name="countryChoice" value="other"> Elsewhere.</label>
           <br><br>`
-        document.getElementById("lytia_selector").addEventListener("change",() => makeLytiaPrayers(lytiaPrayers, vigilVespersData, vespersData, saintNames, priestlyExclamationsData));
-        makeLytiaPrayers(lytiaPrayers, vigilVespersData, vespersData, saintNames, priestlyExclamationsData)
+        document.getElementById("lytia_selector").addEventListener("change",() => makeLytiaPrayers(lytiaPrayers, vigilVespersData, vespersData, dayData, priestlyExclamationsData));
+        makeLytiaPrayers(lytiaPrayers, vigilVespersData, vespersData, dayData, priestlyExclamationsData)
     }
 }
 
-async function makeLytiaPrayers(lytiaPrayers, vigilVespersData, vespersData, saintNames, priestlyExclamationsData){
+async function makeLytiaPrayers(lytiaPrayers, vigilVespersData, vespersData, dayData, priestlyExclamationsData){
     var country = document.querySelector('input[name="countryChoice"]:checked')?.value;
+    var saintNames;
+    if ("TheotokosDismissal" in dayData || "specialDismissal" in dayData) saintNames = "";
+    else saintNames = constructDayName(dayData, false);
     var lytia = `
         ${lytiaPrayers[0]}<br><br>
         <FONT COLOR="RED">Choir:</FONT> ${LHM} <FONT COLOR="RED">(12)</FONT><br><br>
@@ -482,8 +485,11 @@ async function makeLytiaPrayers(lytiaPrayers, vigilVespersData, vespersData, sai
         ${lytiaPrayers[3]}<br><br>
         <FONT COLOR="RED">Choir:</FONT> ${amen}<br><br>
         `
-        lytia = replaceCapsWords(lytia, {"SAINT": vigilVespersData["saint"]});
-        lytia = replaceCapsWords(lytia, {"NAME": saintNames});
+        if (saintNames === "") lytia = replaceCapsWords(lytia, {"SAINT": ""});
+        else {
+            lytia = replaceCapsWords(lytia, {"SAINT": vigilVespersData["saint"]});
+            lytia = replaceCapsWords(lytia, {"NAME": saintNames});
+        }
         if (country === "other"){
             lytia = replaceCapsWords(lytia, {"LOCALVENERABLES": ""});
             lytia = replaceCapsWords(lytia, {"LOCALVENERABLEWOMEN": ""});
