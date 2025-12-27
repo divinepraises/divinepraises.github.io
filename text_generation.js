@@ -133,7 +133,8 @@ export function dismissalMajor(dayOfWeek, withPriest, isGreatVespers, prePostFea
 	else replacements = {"SUNDAY": "", "WEEKDAY": data.dismissalsWeekdays[dayOfWeek], "THURSDAY": "", "CHURCH": data.dismissalChurch, "THEOTOKOS": TheotokosDismissal};
 
 	if (!isGreatVespers) {
-	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}`
+	    if (saintNames.length === 1 && saintNames[0] === "") replacements["SAINT"] = "";
+	    else replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}`
 	} else if (TheotokosDismissal!==";" || specialDismissal != ""){
 	    replacements["SAINT"] = "";
 	} else {

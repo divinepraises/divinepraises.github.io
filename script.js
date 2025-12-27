@@ -116,6 +116,8 @@ export function constructDayName(dayData, forDismissal=true){
         }
     }
     if (!Array.isArray(dayData["type"])) {
+        // no saints
+        if (dayData["type"] === "" && dayData["name"] === "") return "";
         // one saint
         return `${saint} ${dayData["type"]} ${dayData["name"]}`
     } else {
