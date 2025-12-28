@@ -15,10 +15,10 @@ export async function minorHour(hour, priest, full, date){
             specialDayData["label"] = specialSundayName;
         }
     } else if (mm === 12 && ((dd === 24 && dayOfWeek <= 5)||(dayOfWeek === 5 && dd >= 22 && dd < 24))){
-        additionalElements = await getData(`${address}\\menaion\\${mm}\\24_${numOhHour}hour.json`);
+        additionalElements = await getData(`${address}\\menaion\\12\\24_${numOhHour}hour.json`);
         dateAddress = `12\\24`; // to select correct troparion
     } else if (mm === 1 && ((dd === 5 && dayOfWeek <= 5)||(dayOfWeek === 5 && dd >= 3 && dd < 5))){
-        additionalElements = await getData(`${address}\\menaion\\${mm}\\5_${numOhHour}hour.json`);
+        additionalElements = await getData(`${address}\\menaion\\01\\05_${numOhHour}hour.json`);
         dateAddress = `01\\05`;
     }
 
@@ -150,8 +150,8 @@ async function arrangeRoyalHours(additionalElements, hour, priest) {
                         <i>${verses[i-3]}** ${verses[i-2]}</i><br><br>
                         ${stichera}<br><br>`
                 }
-            } else {
-                    // last stychera of 9th hour
+            } else if (stichera[stichera.length-2] === "v") {
+                    // last stychera of 9th hour not on Epiphany
                     res += `<div class="rubric">The first time this stichera is read by the lead cantor.</div>
                         ${stichera}<br>
                         <div class="rubric">Then, we sing it.</div>
@@ -159,6 +159,12 @@ async function arrangeRoyalHours(additionalElements, hour, priest) {
                         ${stichera}<br>
                         <i>${verses[i-2]}</i><br><br>
                         ${stichera}<br>`
+            } else {
+                // last stychera of 9th hour on Epiphany.
+                // menaion has here "glory and now" and stychera once, so we do that
+                res += `<i>${verses[i-3]}* ${verses[i-2]}</i><br><br>
+                    ${stichera}<br>`
+
             }
         }
 
