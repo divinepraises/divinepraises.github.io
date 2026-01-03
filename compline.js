@@ -601,6 +601,13 @@ async function selectTropar(dayOfWeek, hourData, glas, dayData, specialDayData){
         if ("TheotokosDismissal" in dayData && dayData["postfeast"] === "12//25" && "troparia" in dayData && "kontakia" in dayData) {
             // a case of Dec 26
             prePostFeastKontakion = dayData["kontakia"][0];
+        } else if (dayData["postfeast"] === "01//06" && "troparia" in dayData && "no_kathisma" in dayData) {
+            // Jan 7.
+            // Menaion requires only the day kont, but Dol wants both here. He cites "our and Russian typicons" as a
+            // justification, so let's go with it.
+            // Also, in "if it falls on Sunday" section, menaion does prescribe this order.
+            prePostFeastKontakion = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["kontakia"];
+            kontakion = dayData["kontakia"][0];
         } else {
             prePostFeastKontakion = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["kontakia"];
         }

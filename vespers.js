@@ -952,12 +952,20 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
         if (prePostFeast != "" && dayData["class"] >= 8) {
             // in the current data format, 0th stychera is tone
             stycheras = psalm140OctoechosStycheras.slice(0, 4).concat(psalm140menaionStycheras)
-            if (numStycheras === 6){
+            if (numStycheras === 6) {
                 // 3 + 3 + 4
                 stycheraScheme = Array(6).fill(1).concat([2, 1, 1])
+                numStycheras = 9
             } else {
                 stycheraScheme = Array(10).fill(1)
+                numStycheras = 10
             }
+        } else if (prePostFeast === "postfeast" && dayData["postfeast"] == "01//06" && "no_kathisma" in dayData) {
+            // Jan 7
+            stycheras = psalm140OctoechosStycheras.slice(0, 4).concat(psalm140menaionStycheras)
+            // 3 + 4 + 3
+            stycheraScheme = Array(3).fill(1).concat([2]).concat(Array(6).fill(1))
+            numStycheras = 9
         } else if (dayData["class"] >= 8) {
             // polyeleos/vigil on Sunday
             // in the current data format, 0th stychera is tone
