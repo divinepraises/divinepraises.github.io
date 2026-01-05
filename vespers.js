@@ -950,13 +950,19 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
         psalm140tone = glas;
         psalm140OctoechosStycheras = vespersOctoechosData["ps140"];
         if (prePostFeast != "" && dayData["class"] >= 8) {
-            // in the current data format, 0th stychera is tone
-            stycheras = psalm140OctoechosStycheras.slice(0, 4).concat(psalm140menaionStycheras)
             if (numStycheras === 6) {
                 // 3 + 3 + 4
+                // in the current data format, 0th stychera is tone
+                stycheras = psalm140OctoechosStycheras.slice(0, 4).concat(psalm140menaionStycheras)
                 stycheraScheme = Array(6).fill(1).concat([2, 1, 1])
                 numStycheras = 9
+            } else if (numStycheras === 3) {
+                // 4 + 3*2 - case of Jan 11 that has no postfeast stychera
+                stycheras = psalm140OctoechosStycheras.slice(0, 5).concat(psalm140menaionStycheras)
+                stycheraScheme = Array(4).fill(1).concat([2, 2, 2])
+                numStycheras += 4
             } else {
+                stycheras = psalm140OctoechosStycheras.slice(0, 4).concat(psalm140menaionStycheras)
                 stycheraScheme = Array(10).fill(1)
                 numStycheras = 10
             }
