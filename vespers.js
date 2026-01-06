@@ -1034,6 +1034,13 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
                 stycheras = stycheras.concat(psalm140menaionStycheras)
                 stycheraScheme = Array(6).fill(1).concat([2, 1, 1])
                 numStycheras = 9;
+            } else if (numStycheras === 4){
+                // in the current data format, 0th stychera is tone
+                stycheras = psalm140OctoechosStycheras.slice(0, 5);
+                // adding all the stycheas
+                stycheras = stycheras.concat(psalm140menaionStycheras)
+                stycheraScheme = Array(4).fill(1).concat([2, 2, 1, 1])
+                numStycheras = 8;
             } else if (numStycheras === 6){
                 // in the current data format, 0th stychera is tone
                 stycheras = psalm140OctoechosStycheras.slice(0, 5);
