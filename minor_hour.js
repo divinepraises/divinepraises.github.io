@@ -447,11 +447,11 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData, specialDay
             return `${glory}<br><br>${prePostFeastTroparion}`;
         }
         if (hour === "3hour") {
-            if (dayTrop.length > 1) return `${prePostFeastTroparion}<br><br>${glory}<br><br>${dayTrop[0]}`;
+            if (dayTrop.length > 1 || prePostFeast === "postfeast") return `${prePostFeastTroparion}<br><br>${glory}<br><br>${dayTrop[0]}`;
             else return `${glory}<br><br>${prePostFeastTroparion}`;
         }
         // 9th
-        if (dayTrop.length === 1 && prePostFeast === "postfeast" || dayTrop.length === 2 && prePostFeast === "forefeast"){
+        if ((dayTrop.length === 1 && prePostFeast === "postfeast") || (dayTrop.length === 2 && prePostFeast === "forefeast")) {
             return `${prePostFeastTroparion}<br><br>${glory}<br><br>${dayTrop[0]}`;
         } else if (dayTrop.length > 1) {
             return `${prePostFeastTroparion}<br><br>${glory}<br><br>${dayTrop[1]}`;
