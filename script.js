@@ -185,11 +185,11 @@ export function parseDate(currentYear, currentMonth, currentDay) {
 	if (diffFromEaster == 0) {
 		glas = 1;
 		season = "EasterDay";
-		seasonToShow = "Easter Day";
+		seasonToShow = "<FONT COLOR=\"gold\">Easter Day</FONT>";
 	} else if (diffFromEaster > 0 & diffFromEaster < 7) {
 		glas = 1;  // TODO: should depend on the day
 		season = "EasterWeek";
-		seasonToShow = "Easter Week";
+		seasonToShow = "<FONT COLOR=\"gold\">Easter Week</FONT>";
 	} else if (diffFromEaster >= 7 & diffFromEaster <= 56) {
 		seasonToShow = `${glas} week after Easter`;
 		season = "Pentecost";
@@ -200,15 +200,25 @@ export function parseDate(currentYear, currentMonth, currentDay) {
 	} else {  // TODO: break into cases
 		[lastEasterMonth, lastEasterDay] = calculateEaster(currentYear-1);
 		const diffFromLastEaster = dateDiffInDays([currentYear, currentMonth, currentDay], [currentYear-1,lastEasterMonth,lastEasterDay]);
-		if (diffFromEaster > -49) {
+		var dd;
+		if (diffFromLastEaster % 7 === 0) dd = "Sunday"
+		else dd = "week"
+		if (diffFromEaster >= -7) {
 			glas = Math.floor((diffFromLastEaster)/7)%8;
 			if (glas === 0) glas = 8;
-			seasonToShow = `${7 + Math.floor(diffFromEaster/7)} week of Lent,`;
+			seasonToShow = `<FONT COLOR="DarkViolet">Holy Week</FONT>`;
+		    season = "HolyWeek";
+		} else if (diffFromEaster > -49) {
+			glas = Math.floor((diffFromLastEaster)/7)%8;
+			if (glas === 0) glas = 8;
+			var n = 7 + Math.floor(diffFromEaster/7);
+			if (dd === "week") n += 1;
+			seasonToShow = `<FONT COLOR="DarkViolet">${n} ${dd} of Lent</FONT>`;
 		    season = "Lent";
 		} else if (diffFromEaster >= -70) {
 			glas = Math.floor((diffFromLastEaster)/7)%8;
 			if (glas === 0) glas = 8;
-			seasonToShow = `${10 + Math.floor(diffFromEaster/7)} week of Forelent,`;
+			seasonToShow = `${10 + Math.floor(diffFromEaster/7) + 1} ${dd} of Forelent`;
 			season = "Forelent";
 		} else {
 			glas = Math.floor((diffFromLastEaster)/7)%8;
