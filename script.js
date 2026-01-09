@@ -201,9 +201,13 @@ export function parseDate(currentYear, currentMonth, currentDay) {
 		[lastEasterMonth, lastEasterDay] = calculateEaster(currentYear-1);
 		const diffFromLastEaster = dateDiffInDays([currentYear, currentMonth, currentDay], [currentYear-1,lastEasterMonth,lastEasterDay]);
 		if (diffFromEaster > -49) {
+			glas = Math.floor((diffFromLastEaster)/7)%8;
+			if (glas === 0) glas = 8;
 			seasonToShow = `${7 + Math.floor(diffFromEaster/7)} week of Lent,`;
 		    season = "Lent";
 		} else if (diffFromEaster >= -70) {
+			glas = Math.floor((diffFromLastEaster)/7)%8;
+			if (glas === 0) glas = 8;
 			seasonToShow = `${10 + Math.floor(diffFromEaster/7)} week of Forelent,`;
 			season = "Forelent";
 		} else {
