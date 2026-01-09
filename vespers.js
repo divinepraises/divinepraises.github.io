@@ -637,7 +637,7 @@ export async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, ve
             versesMaterial[4],
             versesMaterial[5]
         ]
-    } else if ("aposticha_verses" in vespersMenaionData) apostVerses = vespersMenaionData["aposticha_verses"];
+    } else if ("aposticha_verses" in vespersMenaionData && !("additional_aposticha" in vespersMenaionData)) apostVerses = vespersMenaionData["aposticha_verses"];
     else if (prePostFeast != "") {
         apostVerses = (await getData(`${address}\\menaion\\${dayData[prePostFeast]}_vespers.json`))["aposticha_verses"];
     } else if (dayOfWeek === 6) apostVerses = vespersData["aposticha_dead"];
