@@ -33,9 +33,9 @@ export function setDefaultHour(currentDate) {
 }
 
 export async function displayCurrentDay(currentDate){
-    var season, seasonToShow, glas;
+    var season, seasonWeek, seasonToShow, glas;
     let [year, month, day] = currentDate.split("-").map(Number);
-	[season, seasonToShow, glas] = parseDate(year, month, day);
+	[season, seasonWeek, seasonToShow, glas] = parseDate(year, month, day);
 	document.getElementById("date-container").innerHTML = seasonToShow;
     document.getElementById("date-name").innerHTML = await showMenaionDate(year, month, day);
 
@@ -167,35 +167,39 @@ export function getDayInfo(date, evening){
     if (evening) thisDay.setDate(thisDay.getDate() + 1);
     [year, mm, dd] = thisDay.toISOString().slice(0, 10).split("-").map(Number);
 
-	let [season, seasonToShow, glas] = parseDate(year, mm, dd);
+	let [season, seasonWeek, seasonToShow, glas] = parseDate(year, mm, dd);
 	var dayOfWeek = thisDay.getDay();
 
 	const dateAddress = `${String(mm).padStart(2, "0")}\\${String(dd).padStart(2, "0")}`
-	return [year, mm, dd, season, glas, dayOfWeek, dateAddress];
+	return [year, mm, dd, season, seasonWeek, glas, dayOfWeek, dateAddress];
 }
 
 export function parseDate(currentYear, currentMonth, currentDay) {
 	var thisEasterMonth, thisEasterDay, lastEasterMonth, lastEasterDay
 	[thisEasterMonth, thisEasterDay] = calculateEaster(currentYear);
 	const diffFromEaster = dateDiffInDays([currentYear, currentMonth, currentDay], [currentYear,thisEasterMonth,thisEasterDay]);
-	var glas, season, seasonToShow;
+	var glas, season, seasonToShow, seasonWeek;
 	glas = Math.floor((diffFromEaster)/7)%8;
 	if (glas === 0) glas = 8;
 
 	if (diffFromEaster == 0) {
 		glas = 1;
 		season = "EasterDay";
+		seasonWeek = 0;
 		seasonToShow = "<FONT COLOR=\"gold\">Easter Day</FONT>";
 	} else if (diffFromEaster > 0 & diffFromEaster < 7) {
 		glas = 1;  // TODO: should depend on the day
 		season = "EasterWeek";
+		seasonWeek = 0;
 		seasonToShow = "<FONT COLOR=\"gold\">Easter Week</FONT>";
 	} else if (diffFromEaster >= 7 & diffFromEaster <= 56) {
 		seasonToShow = `${glas} week after Easter`;
+		seasonWeek = glas;
 		season = "Pentecost";
 	} else if (diffFromEaster > 56 & diffFromEaster < 365+34) {  
 		// TODO: account for post-Union feasts that are in Triodion but after 8 weeks
 		seasonToShow = `Week of tone ${glas}`;
+		seasonWeek = glas;
 		season = "0";
 	} else {  // TODO: break into cases
 		[lastEasterMonth, lastEasterDay] = calculateEaster(currentYear-1);
@@ -208,26 +212,29 @@ export function parseDate(currentYear, currentMonth, currentDay) {
 			if (glas === 0) glas = 8;
 			seasonToShow = `<FONT COLOR="DarkViolet">Holy Week</FONT>`;
 		    season = "HolyWeek";
+		    seasonWeek = 0;
 		} else if (diffFromEaster > -49) {
 			glas = Math.floor((diffFromLastEaster)/7)%8;
 			if (glas === 0) glas = 8;
-			var n = 7 + Math.floor(diffFromEaster/7);
-			if (dd === "week") n += 1;
-			seasonToShow = `<FONT COLOR="DarkViolet">${n} ${dd} of Lent</FONT>`;
+			seasonWeek = 7 + Math.floor(diffFromEaster/7);
+			if (dd === "week") seasonWeek += 1;
+			seasonToShow = `<FONT COLOR="DarkViolet">${seasonWeek} ${dd} of Lent</FONT>`;
 		    season = "Lent";
 		} else if (diffFromEaster >= -70) {
 			glas = Math.floor((diffFromLastEaster)/7)%8;
 			if (glas === 0) glas = 8;
-			seasonToShow = `${10 + Math.floor(diffFromEaster/7) + 1} ${dd} of Forelent`;
-			season = "Forelent";
+			seasonWeek = 10 + Math.floor(diffFromEaster/7) + 1;
+			seasonToShow = `${seasonWeek} ${dd} of Forelent`;
+			season = `Forelent`;
 		} else {
 			glas = Math.floor((diffFromLastEaster)/7)%8;
 			if (glas === 0) glas = 8;
             seasonToShow = `Week of tone ${glas}`;
             season = "0";
+            seasonWeek = glas;
 		}
 	}
-	return [season, seasonToShow, glas];
+	return [season, seasonWeek, seasonToShow, glas];
 }
 
 export function isBetweenDates(month, day, startMonth, startDay, endMonth, endDay) {

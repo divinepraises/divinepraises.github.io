@@ -14,7 +14,7 @@ export function renderComplineSkeleton() {
 
 
 export async function enhanceCompline(priest, full, date){
-	let [year, mm, dd, season, glas, dayOfWeek, dateAddress] = getDayInfo(date, true);
+	let [year, mm, dd, season, seasonWeek, glas, dayOfWeek, dateAddress] = getDayInfo(date, true);
 
 	const dd_mm = String(dd).padStart(2, "0") + String(mm).padStart(2, "0");
 

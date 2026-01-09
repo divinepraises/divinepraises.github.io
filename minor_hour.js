@@ -3,7 +3,7 @@ import { getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords, specialSu
 const address = `Text\\English`
 
 export async function minorHour(hour, priest, full, date){
-	let [year, mm, dd, season, glas, dayOfWeek, dateAddress] = getDayInfo(date, false);
+	let [year, mm, dd, season, seasonWeek, glas, dayOfWeek, dateAddress] = getDayInfo(date, false);
 	var numOhHour = hour.charAt(0);
 
     var specialDayData;
