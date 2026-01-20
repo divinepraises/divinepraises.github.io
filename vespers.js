@@ -777,10 +777,30 @@ export async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, ve
 }
 
 function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData) {
+    var readings = vespersMenaionData["readings"];
+    var link;
+    if (Array.isArray(readings)) {
+        readings = readings.join(";")
+        link = `https://www.biblegateway.com/passage/?search=${readings}&version=RSV&interface=mobile`
+    } // now replace space by + and it should wirk
     var text = `
         <div class="subhead">Readings</div><br>
-        <i>${vespersMenaionData["readings"]}</i>
-        <br><br>`
+        <div class="rubric">
+            The readings today are <b>${readings}</b>.
+            The text from Bible Gateway given below might not fully correspond to the liturgical readings,
+            as the beginnings and ends in those are usually adapted to the context.<br>
+            Note also that if a single reading consists of several passages, below it will be represented as several readings.<br>
+            We also omit the dialogue with a priest here, to not add this insertion several times.
+        </div>
+        <br><br>
+        <iframe
+      src="https://www.biblegateway.com/passage/?search=${readings}&version=RSV&interface=mobile"
+      width="100%"
+      height="500"
+      style="border: none;">
+    </iframe>
+    `
+
     if ("troparia_and_readings" in vespersMenaionData) {
         const moreReadings = vespersMenaionData["troparia_and_readings"];
         const isWeekday = (dayOfWeek >= 1 && dayOfWeek <=5);
