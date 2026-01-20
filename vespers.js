@@ -82,6 +82,7 @@ async function vespersBeginning(vespersData, full, dayOfWeek, mm, dd, glas, dayD
   <div id="psalms"></div><br>
   <div id="hymn_of_light"></div><br>
   <div id="prokimenon"></div><br>
+  <div id="readings_selector"></div>
   <div id="readings"></div>
   <div id="ektenia_augmented_great"></div>
   <div id="lesserDoxology"></div><br>
@@ -311,6 +312,12 @@ async function loadTextBeginning(vespersData, full, dayOfWeek, mm, dd, season, g
     document.getElementById("prokimenon").innerHTML = await makeProkimenon(dayOfWeek, vespersData, priest, dayData, vespersMenaionData, priestlyExclamationsData);
 
     if ("readings" in vespersMenaionData){
+        document.getElementById("readings_selector").innerHTML = `<br>
+          <label><input type="radio" name="readingsChoice" value="show"> Show the insert with full readings.</label><br>
+          <label><input type="radio" name="readingsChoice" value="hide" checked> Hide the insert with full readings.</label>
+          <br><br>`
+        document.getElementById("readings_selector").addEventListener("change",() => document.getElementById("readings").innerHTML = makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData));
+
         document.getElementById("readings").innerHTML = makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData);
     }
 
@@ -776,30 +783,44 @@ export async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, ve
     return aposticha
 }
 
-function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData) {
-    var readings = vespersMenaionData["readings"];
-    var link;
-    if (Array.isArray(readings)) {
+function frameReadings(readings) {
+    var instruction = document.querySelector('input[name="readingsChoice"]:checked')?.value;
+    if (instruction == "show" && Array.isArray(readings)) {
         readings = readings.join(";")
-        link = `https://www.biblegateway.com/passage/?search=${readings}&version=RSV&interface=mobile`
-    } // now replace space by + and it should wirk
-    var text = `
-        <div class="subhead">Readings</div><br>
-        <div class="rubric">
-            The readings today are <b>${readings}</b>.
-            The text from Bible Gateway given below might not fully correspond to the liturgical readings,
-            as the beginnings and ends in those are usually adapted to the context.<br>
-            Note also that if a single reading consists of several passages, below it will be represented as several readings.<br>
-            We also omit the dialogue with a priest here, to not add this insertion several times.
-        </div>
-        <br><br>
-        <iframe
-      src="https://www.biblegateway.com/passage/?search=${readings}&version=RSV&interface=mobile"
-      width="100%"
-      height="500"
-      style="border: none;">
-    </iframe>
-    `
+        var text = `
+            <div class="subhead">Readings</div><br>
+            <div class="rubric">
+                The readings today are <b>${readings}</b>.
+                The text from Bible Gateway given below might not fully correspond to the liturgical readings,
+                as the beginnings and ends in those are usually adapted to the context.<br>
+                Note also that if a single reading consists of several passages, below it will be represented as several readings.<br>
+                We also omit the dialogue with a priest here, to not add this insertion several times.
+            </div>
+            <br><br>
+            <iframe
+          src="https://www.biblegateway.com/passage/?search=${readings}&version=RSV&interface=mobile"
+          width="100%"
+          height="500"
+          style="border: none;">
+        </iframe>
+        `
+    } else if (instruction === "hide" && Array.isArray(readings)) {
+        var text = `
+            <div class="subhead">Readings</div><br>
+            <i>${Array.from(readings.entries().map(i => `(${1+i[0]}) ${i[1]}`)).join(", ")}</i>
+            <br><br>`;
+    } else {
+        // just a str
+        var text = `
+            <div class="subhead">Readings</div><br>
+            <i>${readings}</i>
+            <br><br>`;
+    }
+    return text;
+}
+
+function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData) {
+    var text = frameReadings(vespersMenaionData["readings"]);
 
     if ("troparia_and_readings" in vespersMenaionData) {
         const moreReadings = vespersMenaionData["troparia_and_readings"];
@@ -807,8 +828,8 @@ function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData) {
         var i = 0;
         for (let trops of moreReadings.slice(0, 4)){
             i += 1;
-            if (!Array.isArray(trops)) {
-                text += `<div class="subhead">Readings</div><br><i>${trops}</i><br><br>`;
+            if (isNaN(parseInt(trops[0]))) { // not a tone indication-> readings
+                text += frameReadings(trops);
                 continue;
             }
             text += `<div class="rubric">Tone ${trops[0]}</div>`;
@@ -841,9 +862,9 @@ function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData) {
         text += `<div class="subhead">Epistle</div><br>`;
         i += 1;
         if (isWeekday) {
-            text += `<i>${moreReadings[i][0]}</i><br><br>`;
+            text += frameReadings(moreReadings[i][0]);
         } else {
-            text += `<i>${moreReadings[i][1]}</i><br><br>`;
+            text += frameReadings(moreReadings[i][1]);
         }
 
         text += `<div class="subhead">Alleluia</div><br>`;
@@ -859,9 +880,9 @@ function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData) {
         text += `<div class="subhead">Gospel</div><br>`;
         i += 1;
         if (isWeekday) {
-            text += `<i>${moreReadings[i][0]}</i>`;
+            text += frameReadings(moreReadings[i][0]);
         } else {
-            text += `<i>${moreReadings[i][1]}</i>`;
+            text += frameReadings(moreReadings[i][1]);
         }
         text += "<br><br>"
     }

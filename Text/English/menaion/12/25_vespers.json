@@ -10,7 +10,9 @@
   ],
   "special_prokimenon_index": 0,
   "readings": [
-    "(1) Genesis 1:1-13; (2) Numbers 24:2-3, 5-9, and 17-18; (3) Micah 4:6-7 and 5:2-4a"
+    "Genesis 1:1-13",
+    "Numbers 24:2-3,5-9;17-18",
+    "Micah 4:6-7;5:2-4a"
   ],
   "troparia_and_readings": [
     [
@@ -22,7 +24,11 @@
       "A person will say “Mother Sion,” and “Such a person was born in her,” and “The Most High Himself founded her.”",
       "The Lord will declare this in His record of the peoples and rulers who were born in her. How happy are all who have their dwelling in you."
     ],
-    "(4) Isaiah 11:1-10; (5) Baruch 3:36-38 and 4:1-4; (6) Daniel 2:31-36 and 44-45",
+    [
+      "Isaiah 11:1-10",
+      "Baruch 3:36-38,4:1-4",
+      "Daniel 2:31-36,44-45"
+    ],
     [
       "6",
       "You have shone forth from a Virgin, O Christ, rational Sun of righteousness. And a star showed You, Whom nothing can contain, contained in a cave. ",
@@ -32,20 +38,37 @@
       "The floods have lifted up, O Lord; the floods have lifted up their voices. The floods shall lift up their breakers with the noise of many waters.",
       "Wonderful are the surging waves of the sea; wonderful is the Lord on high. Your testimonies have become exceedingly credible; holiness befits Your house, O Lord, for length of days."
     ],
-    "(7) Isaiah 9:6-7; (8) Isaiah 7:10-16, 8:1-4, and 8-10",
+    [
+      "Isaiah 9:6-7",
+      "Isaiah 7:10-16,8:1-4,8-10"
+    ],
     [
       "1",
       "The Lord said to me: You are my Son;",
       "Today have I begotten You",
       "Ask of Me, and I will give You the nations as an inheritance."
     ],
-    ["Hebrews: 1:1-12", "Galatians 3:15-22"],
+    [
+      [
+        "Hebrews: 1:1-12"
+      ],
+      [
+        "Galatians 3:15-22"
+      ]
+    ],
     [
       "5",
       "The Lord said to my lord, “Sit at my right hand until I make your enemies the footstool of your feet.”",
       "The Lord will send you a sceptre of power out of Sion; reign in the midst of your enemies.",
       "Yours is the dominion on the day you are given power in the splendour of your holy ones."
     ],
-    ["Luke 2:1-10", "Matthew 13:31-36"]
+    [
+      [
+        "Luke 2:1-10"
+      ],
+      [
+        "Matthew 13:31-36"
+      ]
+    ]
   ]
 }

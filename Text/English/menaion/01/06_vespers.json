@@ -10,7 +10,9 @@
   ],
   "special_prokimenon_index": 1,
   "readings": [
-    "(1) Genesis 1:1-13; (2) Exodus 14: 15-18, 21-23, 27-29; (3) Exodus 15: 22- 16: 1"
+    "Genesis 1:1-13",
+    "Exodus 14:15-18,21-23,27-29",
+    "Exodus 15:22-16:1"
   ],
   "troparia_and_readings": [
     [
@@ -22,7 +24,11 @@
       "Let the peoples give praise to You, O God, may all the peoples give praise to You.",
       "The earth has yielded her fruit; may God, our God, bless us. May God bless us, and let all the ends of the earth fear Him."
     ],
-    "(4) Joshua the Son of Nun 3:7-8, 15-17 (5) The Fourth Book of Kings (2 Kings) 2:6-14 (6) The Fourth Book of Kings (2 Kings) 5:9-14",
+    [
+      "Joshua 3:7-8,15-17",
+      "2 Kings 2:6-14",
+      "2 Kings 5:9-14"
+    ],
     [
       "6",
       "In the greatness of Your compassion, You have revealed Yourself, O our Saviour, to sinners and publicans.",
@@ -32,7 +38,15 @@
       "The floods have lifted up, O Lord; the floods have lifted up their voices. The floods shall lift up their breakers with the noise of many waters.",
       "Wonderful are the surging waves of the sea; wonderful is the Lord on high. Your testimonies have become exceedingly credible; holiness befits Your house, O Lord, for length of days."
     ],
-    "(7) Isaiah 1:16-20 (8) Genesis 32:1-10 (9) Exodus 2:5-10 (10) Judges 6:36-40 (11) The Third Book of Kings (1 Kings) 18:30-39  (12) The Fourth Book of Kings (2 Kings) 2:19-22 (13) Isaiah 49:8-15",
+    [
+      "Isaiah 1:16-20",
+      "Genesis 32:1-10",
+      "Exodus 2:5-10",
+      "Judges 6:36-40",
+      "1 Kings 18:30-39",
+      "2 Kings 2:19-22",
+      "Isaiah 49:8-15"
+    ],
     [
       "3",
       "The Lord is my light and my Saviour",
@@ -40,8 +54,12 @@
       "The Lord is the protector of my life; of whom shall I be afraid."
     ],
     [
-      "1 Corinthians: 9:19 - 10:4",
-      "1 Corinthians: 10:1-4"
+      [
+        "1 Corinthians: 9:19 - 10:4"
+      ],
+      [
+        "1 Corinthians: 10:1-4"
+      ]
     ],
     [
       "4",
@@ -49,8 +67,12 @@
       "ou are the most splendidly beautiful of men."
     ],
     [
-      "Luke 3: 1-18",
-      "Luke 3: 1-18"
+      [
+        "Luke 3: 1-18"
+      ],
+      [
+        "Luke 3: 1-18"
+      ]
     ]
   ]
 }
