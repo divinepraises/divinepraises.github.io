@@ -1,5 +1,5 @@
-[
-  [
+{
+  "0": [
     "7",
     "Who is so great a God as our God?",
     "You are the God who do wonders!",
@@ -7,12 +7,20 @@
     "And I said: now have I made a beginning: this change has been wrought by the right hand of the Most High.",
     "I have remembered the works of the Lord, and called to mind Your wonders from of old."
   ],
-  [
+  "1": [
     "7",
     "Our God is in heaven and on earth;",
     "all things whatsoever He has willed, He has done.",
     "When Israel went out of Egypt, and the house of Jacob from among a barbarous people, Judea became His sanctuary, Israel His dominion.",
     "The sea beheld and fled, the Jordan turned back.",
     "What ails you, O sea, that you fled? And you, O Jordan, that you turned back?"
+  ],
+  "dead": [
+    "8",
+    "Alleluia,",
+    "alleluia, alleluia.",
+    "Blessed are they whom You have chosen and taken to Yourself, O Lord.",
+    "Their memorial is from generation and generation.",
+    "Their souls shall dwell among good things."
   ]
-]
+}

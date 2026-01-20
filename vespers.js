@@ -862,11 +862,11 @@ async function makeProkimenon(dayOfWeek, vespersData, priest, dayData, vespersMe
     // It should be added into menaion vespers files.
     // If the feast falls on a Saturday, the great prokimenon is moved to the feast. It should be duplicated
     // in the files for now.
-    if ("great_prokimenon_index" in vespersMenaionData && (
+    if ("special_prokimenon_index" in vespersMenaionData && (
         (dayOfWeek != 0 && dayData["class"] < 12)
          || (dayData["class"] === 12 && dayOfWeek === 6))
     ) {
-        prokData = (await getData(`${address}\\horologion\\great_prokimena.json`))[vespersMenaionData["great_prokimenon_index"]];
+        prokData = (await getData(`${address}\\horologion\\special_prokimena.json`))[vespersMenaionData["special_prokimenon_index"]];
     } else {
         prokData = vespersData["prokimenon"][dayOfWeek];
     }
