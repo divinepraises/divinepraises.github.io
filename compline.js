@@ -22,7 +22,6 @@ export async function enhanceCompline(priest, full, date){
     var vespersMenaionData;
     try{
         dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
-        vespersMenaionData = await getData(`${address}\\menaion\\${dateAddress}_compline.json`)
     } catch (error) {
         dayData = {"class" : 0};
         `No data for this day! ${`${address}\\menaion\\${dateAddress}.json`}`
@@ -41,24 +40,34 @@ export async function enhanceCompline(priest, full, date){
         const specialSundayName = await specialSunday(mm, dd);
         if (specialSundayName != undefined) specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
     }
+    var dayTriodionData;
+    if (season === "Lent" || season === "Forelent") {
+        try {
+            dayTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}.json`)
+        } catch {}
+    }
 
     if (isIncarnationFeast) {
+        vespersMenaionData = await getData(`${address}\\menaion\\${dateAddress}_compline.json`)
         greatComplineBeginning(full, season, priest, dayOfWeek, dayData, isIncarnationFeast);
         const vespersData = await getData(`${address}\\horologion\\general_vespers.json`);
-        vespersEnding(vespersData, dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, season);
-    } else if ((season === "Lent" && dayOfWeek < 6)){
+        vespersEnding(vespersData, dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, season, seasonWeek);
+    } else if (
+            (season === "Lent" && dayOfWeek < 6 && dayOfWeek > 0) 
+            || ((season === "Forelent" && seasonWeek === 3) && (dayOfWeek === 3 || dayOfWeek === 5))
+        ) {
         greatComplineBeginning(full, season, priest, dayOfWeek, dayData, isIncarnationFeast);
-        complineEnding(full, dayOfWeek, priest, glas, dayData, true, specialDayData, dateAddress);
+        complineEnding(full, dayOfWeek, priest, glas, dayData, true, specialDayData, dayTriodionData, dateAddress);
     } else {
         smallComplineBeginning(full, season, dayOfWeek, priest, isAlleluiaDay, glas, dayData, dateAddress);
-        complineEnding(full, dayOfWeek, priest, glas, dayData, false, specialDayData, dateAddress);
+        complineEnding(full, dayOfWeek, priest, glas, dayData, false, specialDayData, dayTriodionData, dateAddress);
     }
 
 }
 
-async function complineEnding(full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dateAddress) {
+async function complineEnding(full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dayTriodionData, dateAddress) {
 	const smallComplineData = await getData(`${address}\\horologion\\small_compline.json`);
-	loadComplineEnding(smallComplineData, full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dateAddress);
+	loadComplineEnding(smallComplineData, full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dayTriodionData, dateAddress);
     document.getElementById("ending").innerHTML =  `<div id="canonSelector">
       <label><input type="radio" name="canonChoice" value="omit_canon"> Omit the canon</label><br>
       <label><input type="radio" name="canonChoice" value="shorten_canon" id="shorten_canon"> Shorten the canon</label><br>
@@ -89,7 +98,7 @@ async function complineEnding(full, dayOfWeek, priest, glas, dayData, isGreatCom
 	`;
 }
 
-async function loadComplineEnding(smallComplineData, full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dateAddress){
+async function loadComplineEnding(smallComplineData, full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dayTriodionData, dateAddress){
 	var ekteniasData = await getData(`${address}\\horologion\\night_ektenias.json`);
 
     if (full === "1") {
@@ -114,7 +123,7 @@ async function loadComplineEnding(smallComplineData, full, dayOfWeek, priest, gl
         document.getElementById("additional_pater").innerHTML = `${trisagionToPater(priest)}
             ${LHM} <FONT COLOR="RED">(12)</FONT><br><br>`
     } else {
-        selectTropar(dayOfWeek,  smallComplineData, glas, dayData, specialDayData).then(tropar => {
+        selectTropar(dayOfWeek,  smallComplineData, glas, dayData, specialDayData, dayTriodionData).then(tropar => {
             document.getElementById("troparia").innerHTML = tropar;
         });
         document.getElementById("st_ephrem").innerHTML = "";
@@ -172,7 +181,7 @@ async function loadSmallComplineBeginning(smallComplineData, full, season, dayOf
             `;
         document.getElementById("switch").addEventListener("change", () => {
             greatComplineBeginning(full, season, priest, dayOfWeek, dayData, false);
-            complineEnding(full, dayOfWeek, priest, glas, dayData, true, {}, dateAddress);
+            complineEnding(full, dayOfWeek, priest, glas, dayData, true, {}, undefined, dateAddress);
             }
         );
     }
@@ -562,7 +571,7 @@ async function selectCanon(dayOfWeek, glas, full, refrain, dateAddress){
     return matinslike;
 }
 
-async function selectTropar(dayOfWeek, hourData, glas, dayData, specialDayData){
+async function selectTropar(dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData) {
    /*
         - В п’ять перших днів тижня беруться наступних шість тропарів,
         >тобто спочатку храму, якщо він господній або богородичний,
@@ -625,6 +634,16 @@ async function selectTropar(dayOfWeek, hourData, glas, dayData, specialDayData){
             if (kontakion.length === 1) kontakion = kontakion[0];
             else kontakion = `${kontakion[0]}<br><br><i>${gloryAndNow}</i><br><br>${kontakion[1]}`;
         }
+    }
+    if (dayTriodionData != undefined && "kontakia" in dayTriodionData) {
+        if (kontakion != "") {
+            return `<div class="rubric">Kontakia:</div>
+                ${kontakion}<br><br><i>${gloryAndNow}</i><br><br>${dayTriodionData["kontakia"]}`
+        } else {
+            return `<div class="rubric">Triodion kontakion:</div>
+                ${dayTriodionData["kontakia"]}`
+        }
+
     }
 
     // a polyeleos (and higher)
