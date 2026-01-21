@@ -385,6 +385,11 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
     if (season === "Lent" || season === "Forelent") {
         try {
             vespersTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}_vespers.json`);
+            if (dayOfWeek === 0 && dayData["class"] <= 6 && !("forefeast" in dayData) && !("postfeast" in dayData)) {
+                dayData["troparia"] = [];
+            } else if (dayOfWeek === 0 && "forefeast" in dayData) {
+                dayData["troparia"] = dayData["troparia"][dayData["troparia"].length-1];
+            }
         } catch {}
     }
 
@@ -776,8 +781,14 @@ export async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, ve
             const tone = vespersTriodionData["aposticha"][0]
             aposticha += `<div class="rubric">Tone ${tone}</div>`;
             aposticha += `<i>${glory}</i><br><br>${vespersTriodionData["aposticha"][2]}<br><br>`;
-            const theotokion = (await getData(`${address}\\octoechos\\${tone[0]}\\0_vespers.json`))["aposticha"][6];
-            aposticha += `<i>${andNow}</i><br><br>${theotokion}<br><br>`
+            if (prePostFeast === "") {
+                const theotokion = (await getData(`${address}\\octoechos\\${tone[0]}\\0_vespers.json`))["aposticha"][6];
+                aposticha += `<i>${andNow}</i><br><br>${theotokion}<br><br>`
+            } else {
+                const apostMen = vespersMenaionData["aposticha"];
+                aposticha += `<div class="rubric">Tone ${apostMen[apostMen.length-3]}</div>`;
+                aposticha += `<i>${andNow}</i><br><br>${apostMen[apostMen.length-1]}<br><br>`
+            }
         } else {
             aposticha += `<i>${gloryAndNow}</i><br><br>${apostMain[6]}<br><br>`
         }
@@ -1036,9 +1047,9 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
             if (numTriodionStycheras === 4) {
                 stycheras = (
                     psalm140OctoechosStycheras.slice(0, 4)
-                    .concat(vespersTriodionData["ps140"].slice(0, 4))
+                    .concat(vespersTriodionData["ps140"].slice(0, 5))
                     .concat(psalm140menaionStycheras.slice(0, 4))
-                    .concat(vespersTriodionData["ps140"].slice(4, 7))
+                    .concat(vespersTriodionData["ps140"].slice(5, 8))
                     )
                  stycheraScheme = Array(10).fill(1);
                  numStycheras = 10;
@@ -1059,12 +1070,35 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
                 } else {
                     stycheras = (
                         psalm140OctoechosStycheras.slice(0, 4)
-                        .concat(vespersTriodionData["ps140"].slice(0, 3))
+                        .concat(vespersTriodionData["ps140"].slice(0, 5))
                         .concat(psalm140menaionStycheras.slice(0, 4))
                         .concat(vespersTriodionData["ps140"].slice(3, 6))
                         )
                     stycheraScheme = stycheraScheme.concat([2, 1, 1]);
                 }
+            }
+        } else if (prePostFeast != "") {
+            // Feb 1 on Sun of Triodion
+            if (numTriodionStycheras === 2) {
+                stycheraScheme = Array(4).fill(1).concat([2, 1]).concat(Array(3).fill(1))
+                numStycheras = 4 + numTriodionStycheras + 3;
+                stycheras = (
+                    psalm140OctoechosStycheras.slice(0, 5)
+                    .concat(vespersTriodionData["ps140"].slice(0, 3))
+                    .concat(psalm140menaionStycheras.slice(0, 4))
+                    .concat(vespersTriodionData["ps140"].slice(3, 6))
+                    )
+                stycheraScheme = stycheraScheme.concat([2, 1]);
+            } else if (numTriodionStycheras === 4) {
+                stycheraScheme = Array(10).fill(1);
+                numStycheras = 3 + numTriodionStycheras + 3;
+                stycheras = (
+                    psalm140OctoechosStycheras.slice(0, 4)
+                    .concat(vespersTriodionData["ps140"].slice(0, 5))
+                    .concat(psalm140menaionStycheras.slice(0, 4))
+                    .concat(vespersTriodionData["ps140"].slice(5, 8))
+                    )
+                stycheraScheme = stycheraScheme.concat([2, 1]);
             }
         } else {
             stycheras = (
