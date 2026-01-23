@@ -125,7 +125,7 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
     document.getElementById("theotokion").innerHTML = psalmData["theotokion"]
     await arrangeAdditionalElements(additionalElements, hour, priest);
     if (isPenitential) {
-        const isLessPenitential = ("forefeast" in dayData || "postfeast" in dayData);
+        const isLessPenitential = ("forefeast" in dayData || "postfeast" in dayData || dayData["class"] >= 11);
         document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest, false, isLessPenitential);
     } else {
         document.getElementById("st_ephrem").innerHTML = "";
