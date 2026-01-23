@@ -87,7 +87,6 @@ async function complineEnding(full, dayOfWeek, priest, glas, dayData, isGreatCom
 	${prayerBlessingMayGodBeGracious(priest)}<br><br>
 	${amen}<br><br>
     <div id="st_ephrem"></div>
-    <div id="additional_pater"></div>
 	<div class=subhead>Compline Prayers</div><br>
     <div id="prayers"></div><br>
     <div id="penitential_troparia"></div>
@@ -116,18 +115,17 @@ async function loadComplineEnding(smallComplineData, full, dayOfWeek, priest, gl
     document.getElementById("prayers").innerHTML = smallComplineData["prayers"].join("<br><br>");
     document.getElementById("after_prayers").innerHTML =  postComplinePrayers(priest, smallComplineData, ekteniasData, dayOfWeek);
 
-    if (isGreatCompline){
+    if (isGreatCompline && !("forefeast" in dayData || "postfeast" in dayData)){
 	    const greatComplineData = await getData(`${address}\\horologion\\great_compline.json`);
         makeThirdSectionTroparia(greatComplineData["troparia_3"])
-        document.getElementById("st_ephrem").innerHTML = StEphremPrayer() + "<br>";
-        document.getElementById("additional_pater").innerHTML = `${trisagionToPater(priest)}
-            ${LHM} <FONT COLOR="RED">(12)</FONT><br><br>`
+        document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest);
     } else {
+        var prostrations = "";
+        if (isGreatCompline) prostrations = `<br><br> <div class="rubric">${cross} Three prostrations with no words are made here instead of the prayer of st. Ephrem later.</div>`
         selectTropar(dayOfWeek,  smallComplineData, glas, dayData, specialDayData, dayTriodionData).then(tropar => {
-            document.getElementById("troparia").innerHTML = tropar;
+            document.getElementById("troparia").innerHTML = tropar + prostrations;
         });
         document.getElementById("st_ephrem").innerHTML = "";
-        document.getElementById("additional_pater").innerHTML = "";
     }
 }
 
@@ -501,10 +499,9 @@ async function constructCanon(dayOfWeek, glas, full, refrain, dateAddress){
     } catch (error) {
         try{
             canonData = await getData(`${address}\\octoechos\\${glas}\\${dayOfWeek}_compline.json`);
-            console.log(`Found a canon for ${dayOfWeek} day of tone ${glas}.`)
         } catch (error) {
-            console.log(`No canon for ${dayOfWeek} day of tone ${glas}. Using the default one`)
-            intro = "The proper canon for today is not yet added, please use the default one:"
+            intro = `The proper canon for today is not yet added, using the default canon from the horologion.<br>
+             Besides, the Church grants full indulgence for reciting thius canon in a group or in a church (under normal conditions).<br><br>`
             canonData = await getData(`${address}\\octoechos\\8\\2_compline.json`);
         }
     }

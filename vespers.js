@@ -653,6 +653,46 @@ export async function makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, hai
     }
 }
 
+async function makeGloryAposticha(aposticha, vespersMenaionData, dayOfWeek) {
+    var apostMen, apostVerses;
+    var additionalVerses = false;
+    if ("aposticha" in vespersMenaionData) apostMen = vespersMenaionData["aposticha"];
+    else {
+        apostMen = vespersMenaionData["additional_aposticha"]
+        apostVerses = vespersMenaionData["aposticha_verses"]
+        additionalVerses = true;
+    }
+    var foundNow = false;
+    var tone;
+    var i = 0;
+    for (let stychera of apostMen){
+        if (!isNaN(parseInt(stychera[0]))){
+            // this is tone indication
+            aposticha += `<div class="rubric">Tone ${stychera}</div>`;
+            tone = stychera[0];
+            continue
+        }
+
+        if (stychera in gloriaDict) {
+            aposticha += gloriaDict[stychera] + "<br><br>";
+            if (stychera === "gn" || stychera === "n") foundNow = true;
+            continue
+        }
+        if (additionalVerses && i < apostVerses.length) {aposticha += `<i>${apostVerses[i]}</i><br><br>`; i+=1;}
+        aposticha += stychera + "<br><br>";
+    }
+    if (!foundNow){
+        if ((dayOfWeek === 3 || dayOfWeek === 5) && "stavrotheotokion_aposticha" in vespersMenaionData){
+            aposticha += `<i>${andNow}</i><br><br>${vespersMenaionData["stavrotheotokion_aposticha"]}<br><br>`
+        } else if ("theotokion_aposticha" in vespersMenaionData) {
+            aposticha += `<i>${andNow}</i><br><br>${vespersMenaionData["theotokion_aposticha"]}<br><br>`
+        } else {
+            const theotokion = (await getData(`${address}\\octoechos\\${tone}\\${dayOfWeek}_vespers.json`))["aposticha"][5];
+            aposticha += `<i>${andNow}</i><br><br>${theotokion}<br><br>`
+        }
+    }
+    return aposticha
+}
 
 export async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, vespersData, vespersMenaionData, vespersOctoechosData, vespersTriodionData){
     // TODO triodion
@@ -672,6 +712,9 @@ export async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, ve
             versesMaterial[4],
             versesMaterial[5]
         ]
+    } else if (vespersTriodionData != undefined && dayData["class"] < 8) {
+        // use weekday if triodion day
+        apostVerses = vespersData["aposticha"];
     } else if ("aposticha_verses" in vespersMenaionData && !("additional_aposticha" in vespersMenaionData)) apostVerses = vespersMenaionData["aposticha_verses"];
     else if (prePostFeast != "") {
         apostVerses = (await getData(`${address}\\menaion\\${dayData[prePostFeast]}_vespers.json`))["aposticha_verses"];
@@ -692,43 +735,7 @@ export async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, ve
             `
 
         if ("aposticha" in vespersMenaionData || "additional_aposticha" in vespersMenaionData){
-            var apostMen;
-            var additionalVerses = false;
-            if ("aposticha" in vespersMenaionData) apostMen = vespersMenaionData["aposticha"];
-            else {
-                apostMen = vespersMenaionData["additional_aposticha"]
-                apostVerses = vespersMenaionData["aposticha_verses"]
-                additionalVerses = true;
-            }
-            var foundNow = false;
-            var tone;
-            var i = 0;
-            for (let stychera of apostMen){
-                if (!isNaN(parseInt(stychera[0]))){
-                    // this is tone indication
-                    aposticha += `<div class="rubric">Tone ${stychera}</div>`;
-                    tone = stychera[0];
-                    continue
-                }
-
-                if (stychera in gloriaDict) {
-                    aposticha += gloriaDict[stychera] + "<br><br>";
-                    if (stychera === "gn" || stychera === "n") foundNow = true;
-                    continue
-                }
-                if (additionalVerses && i < apostVerses.length) {aposticha += `<i>${apostVerses[i]}</i><br><br>`; i+=1;}
-                aposticha += stychera + "<br><br>";
-            }
-            if (!foundNow){
-                if ((dayOfWeek === 3 || dayOfWeek === 5) && "stavrotheotokion_aposticha" in vespersMenaionData){
-                    aposticha += `<i>${andNow}</i><br><br>${vespersMenaionData["stavrotheotokion_aposticha"]}<br><br>`
-                } else if ("theotokion_aposticha" in vespersMenaionData) {
-                    aposticha += `<i>${andNow}</i><br><br>${vespersMenaionData["theotokion_aposticha"]}<br><br>`
-                } else {
-                    const theotokion = (await getData(`${address}\\octoechos\\${tone}\\${dayOfWeek}_vespers.json`))["aposticha"][5];
-                    aposticha += `<i>${andNow}</i><br><br>${theotokion}<br><br>`
-                }
-            }
+            aposticha = await makeGloryAposticha(aposticha, vespersMenaionData, dayOfWeek);
         } else {
             aposticha += `<i>${gloryAndNow}</i><br><br>${apostMain[5]}<br><br>`
         }
@@ -792,9 +799,46 @@ export async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, ve
         } else {
             aposticha += `<i>${gloryAndNow}</i><br><br>${apostMain[6]}<br><br>`
         }
-
-    }
-    else {
+    } else if (
+            dayData["class"] < 8
+            && vespersTriodionData != undefined
+            && !("special_prokimenon_index" in vespersTriodionData)
+        ) {
+        apostMain = vespersTriodionData["aposticha"];
+        aposticha += `
+            <div class="rubric">Tone ${apostMain[0]}</div>
+            ${apostMain[1]}<br><br>
+            <i>${apostVerses[0]}</i><br><br>
+            ${apostMain[1]}<br><br>
+            <i>${apostVerses[1]}</i><br><br>
+            ${apostMain[2]}<br><br>
+            `
+        if (prePostFeast != "") {
+            const apostMen = vespersMenaionData["aposticha"];
+            aposticha += `<div class="rubric">Tone ${apostMen[apostMen.length-3]}</div>`;
+            aposticha += `<i>${gloryAndNow}</i><br><br>${apostMen[apostMen.length-1]}<br><br>`
+        } else if ("aposticha" in vespersMenaionData || "additional_aposticha" in vespersMenaionData) {
+            aposticha = await makeGloryAposticha(aposticha, vespersMenaionData, dayOfWeek);
+        } else {
+            let i = apostMain.length - 1;
+            let separateGlory = false;
+            while (i > 0) {
+                if (!isNaN(parseInt(apostMain[i][0]))) break;
+                if (apostMain[i] === "n") separateGlory = true;
+                i -= 1;
+            }
+            if (apostMain[i] != apostMen[0]) aposticha += `<div class="rubric">Tone ${apostMen[i]}</div>`;
+            if (separateGlory) {
+                aposticha += `<i>${glory}</i>
+                     ${apostMain[4]}<br><br>
+                    <i>${andNow}</i><br><br>
+                    ${apostMain[5]}<br><br>`;
+            } else {
+                aposticha += `<i>${gloryAndNow}</i>
+                     ${apostMain[4]}<br><br>`;
+            }
+        }
+    } else {
         // great vespers outside Sunday
         const apostMen = vespersMenaionData["aposticha"];
         var verse_i = 0;

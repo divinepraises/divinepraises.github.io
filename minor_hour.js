@@ -1,4 +1,4 @@
-import { gloryGospel, usualBeginning, tripleAlleluia, glory, andNow, trisagionToPater, prayerOfTheHours, LHM, comeLetUs, gloryAndNow, moreHonorable, inTheName, prayerBlessingMayGodBeGracious, endingBlockMinor, amen, getCommonText } from './text_generation.js';
+import { StEphremPrayer, gloryGospel, usualBeginning, tripleAlleluia, glory, andNow, trisagionToPater, prayerOfTheHours, LHM, comeLetUs, gloryAndNow, moreHonorable, inTheName, prayerBlessingMayGodBeGracious, endingBlockMinor, amen, getCommonText } from './text_generation.js';
 import { getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords, specialSunday } from './script.js';
 const address = `Text\\English`
 
@@ -44,7 +44,7 @@ export async function minorHour(hour, priest, full, date){
 
 	const linkToNext = `https:\/\/divinepraises.github.io/main.html?hour=${nextHour[numOhHour]}&priest=${priest}&full=${full}&date=${date}#come_let_us`;
 
-	loadText(hour, full, priest, dayOfWeek, glas, dateAddress, specialDayData, dayTriodionData, additionalElements);
+	loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas, dateAddress, specialDayData, dayTriodionData, additionalElements);
 	return `<h2>The ${numeral[numOhHour]} hour</h2>
 	<div class=rubric>Should this hour be said immediately after the previous one, omit this beginning:</div>
 	<hr>
@@ -74,6 +74,7 @@ export async function minorHour(hour, priest, full, date){
 	${inTheName}<br><br>
 	${prayerBlessingMayGodBeGracious(priest, hour)}<br><br>
 	${amen}<br><br>
+    <div id="st_ephrem"></div>
 	<div class="subhead">Prayer of this hour</div>
 	<div id="prayer"></div><br>
 	<div class=rubric>When this hour is followed by another one, switch to the <a href="${linkToNext}">next hour</a>. Otherwise, conclude with the dismissal:</div>
@@ -82,7 +83,7 @@ export async function minorHour(hour, priest, full, date){
 	`;
 }
 
-async function loadText(hour, full, priest, dayOfWeek, glas, date, specialDayData, dayTriodionData, additionalElements) {
+async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas, date, specialDayData, dayTriodionData, additionalElements) {
 	const psalmData = await getData(`${address}\\horologion\\${hour}.json`);
 	let psalmNums;
 	if (additionalElements != undefined) psalmNums = additionalElements["psalms"]
@@ -95,6 +96,10 @@ async function loadText(hour, full, priest, dayOfWeek, glas, date, specialDayDat
     } catch (error) {
         console.log("No data for the day! Using the weekday troparia.")
     }
+    const isPenitential = (
+        (season === "Lent" && dayOfWeek < 6 && dayOfWeek > 0)
+        || ((season === "Forelent" && seasonWeek === 3) && (dayOfWeek === 3 || dayOfWeek === 5))
+    );
 
     if (full === "1") {
         document.getElementById("psalms").innerHTML = (await readPsalmsFromNumbers(psalmNums)).join("");
@@ -119,9 +124,15 @@ async function loadText(hour, full, priest, dayOfWeek, glas, date, specialDayDat
     });
     document.getElementById("theotokion").innerHTML = psalmData["theotokion"]
     await arrangeAdditionalElements(additionalElements, hour, priest);
+    if (isPenitential) {
+        const isLessPenitential = ("forefeast" in dayData || "postfeast" in dayData);
+        document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest, false, isLessPenitential);
+    } else {
+        document.getElementById("st_ephrem").innerHTML = "";
+    }
+
     document.getElementById("chapter").innerHTML = psalmData["chapter"]
     document.getElementById("prayer").innerHTML = psalmData["prayer"]
-
 }
 
 async function arrangeRoyalHours(additionalElements, hour, priest) {
