@@ -984,8 +984,8 @@ function makeHymnOfLight(priest, isGreatVespers, priestPrayers, wisdom, vespersD
 }
 
 function countStichera(sticheras) {
-    if (sticheras === undefined) return [0, 0];
-    if (!Array.isArray(sticheras)) sticheras = sticheras["ps140"];
+    if (sticheras === undefined || !("ps140" in sticheras)) return [0, 0];
+    sticheras = sticheras["ps140"];
 
     var numStycheras = 0;
     var numSetsStycheras = 0;
@@ -1033,7 +1033,7 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
     const psalm140menaionStycheras = vespersMenaionData["ps140"];
 
     // decide how to arrange stychera
-    var [numStycheras, numSetsMenaionStycheras] = countStichera(psalm140menaionStycheras);
+    var [numStycheras, numSetsMenaionStycheras] = countStichera(vespersMenaionData);
     var [numTriodionStycheras, numSetsTriodionStycheras] = countStichera(vespersTriodionData);
 
     var stycheraScheme;
