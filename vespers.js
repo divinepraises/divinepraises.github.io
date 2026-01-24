@@ -1114,7 +1114,7 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
                 } else {
                     stycheras = (
                         psalm140OctoechosStycheras.slice(0, 4)
-                        .concat(vespersTriodionData["ps140"].slice(0, 5))
+                        .concat(vespersTriodionData["ps140"].slice(0, 3))
                         .concat(psalm140menaionStycheras.slice(0, 4))
                         .concat(vespersTriodionData["ps140"].slice(3, 6))
                         )
