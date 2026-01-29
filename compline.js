@@ -501,7 +501,7 @@ async function constructCanon(dayOfWeek, glas, full, refrain, dateAddress){
             canonData = await getData(`${address}\\octoechos\\${glas}\\${dayOfWeek}_compline.json`);
         } catch (error) {
             intro = `The proper canon for today is not yet added, using the default canon from the horologion.<br>
-             Besides, the Church grants full indulgence for reciting thius canon in a group or in a church (under normal conditions).<br><br>`
+             Besides, the Church grants full indulgence for reciting this canon in a group or in a church (under normal conditions).<br><br>`
             canonData = await getData(`${address}\\octoechos\\8\\2_compline.json`);
         }
     }
