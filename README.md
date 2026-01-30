@@ -2,9 +2,30 @@
 
 To pray the office, please visit [the website](https://divinepraises.github.io/). This page is for contributing.
 
-The project is in the development stages, so there is much work to do. If you want to join, contact us (or create an issue here).
+##  Disclaimer
 
 Some of the texts here might be copyrighted. We lay no claim on the texts, and if you are the rights owner and want them removed, we'll gladly oblige. All the sources are indicated in the `about.html` file.
+
+## Contribution guidelines
+
+The project is in the development stages, so there is much work to do. If you want to join, contact us or check out [this Issue](https://github.com/divinepraises/divinepraises.github.io/issues/1) and choose a task to work on.
+
+You might need a GitHub account -- getting one can be handled in the top right corner of this web page. The contributiuons are to be done via [pull requests](https://docs.github.com/en/pull-requests).
+
+### Small changes
+
+For small changes like correcting typos you can find a relevant file in the navigator above and edit it from the browser. Then the system will guide you through creation of a pull request.
+
+### Launching a local version of the web-site at your computer
+
+You'd need Python installed on your computer. Then open command line and type
+```
+cd FOLDER_WHERE_THE_PROJECT_FILES_ARE
+python -m http.server 8000
+```
+Then open `http://localhost:8000/main.html` in your browser.
+
+To stop local server, just type `ctrl+C` in the command line window where you launched it.
 
 ## Formatting of a menaion day
 
