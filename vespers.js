@@ -385,7 +385,10 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
     if (season === "Lent" || season === "Forelent") {
         try {
             vespersTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}_vespers.json`);
-            if (dayOfWeek === 0 && dayData["class"] <= 6 && !("forefeast" in dayData) && !("postfeast" in dayData)) {
+            if (season === "Forelent" && seasonWeek === 2 && dayOfWeek === 6) {
+                dayData["troparia"] = ["try"]
+                dayData.delete("postfeast");
+            } else if (dayOfWeek === 0 && dayData["class"] <= 6 && !("forefeast" in dayData) && !("postfeast" in dayData)) {
                 dayData["troparia"] = [];
             } else if (dayOfWeek === 0 && "forefeast" in dayData) {
                 dayData["troparia"] = dayData["troparia"][dayData["troparia"].length-1];
