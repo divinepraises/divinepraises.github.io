@@ -77,11 +77,14 @@ async function showMenaionDate(yyyy, mm, dd){
         var note = "";
         var dayName;
         if ("forefeast" in dayData) {
-            let feast = (await getData(`${address}\\menaion\\${dayData["forefeast"]}.json`))["name"];
-            feastName = `${forefeast} ${feast}, `;
+            let feast = await getData(`${address}\\menaion\\${dayData["forefeast"]}.json`);
+            if ("day name" in feast) feastName = `${forefeast} ${feast["day name"]}, `;
+            else feastName = `${forefeast} ${feast["name"]}, `;
         }
         if ("postfeast" in dayData) {
-            feastName = `${postfeast} ${(await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["name"]}, `;
+            let feast = await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`);
+            if ("day name" in feast) feastName = `${postfeast} ${feast["day name"]}, `;
+            else feastName = `${postfeast} ${feast["name"]}, `;
         }
         if ("note" in dayData) {
             note = `<br><div class="rubric">${dayData["note"]}</div>`
