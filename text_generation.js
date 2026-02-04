@@ -112,10 +112,15 @@ export function giveTheBlessing(withPriest) {
 export function dismissalMajor(dayOfWeek, withPriest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal) {
     var text;
     var replacements = {};
-	if (withPriest == "1") {
+    const dismissalDeceased = (dayOfWeek === 6 && !isGreatVespers && !("name" in saintNames) && specialDismissal != "")
+	if (withPriest === "1" && !dismissalDeceased) {
 		text = `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.priestDismissalMajor}</b> `;
-	} else {
+	} else if (withPriest === "0" && !dismissalDeceased) {
 		text = `<FONT COLOR="RED">Chariman:</FONT> ${data.layDismissalMajor}`;
+	} else if (withPriest === "1" && dismissalDeceased) {
+	    text = `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.priestDismissalDeceased}</b> `;
+	} else {
+	    text = `<FONT COLOR="RED">Chariman:</FONT> ${data.layDismissalDeceased}`;
 	};
 	if (TheotokosDismissal != "") TheotokosDismissal = replaceCapsWords(data.dismissalTheotokos, {"SAINT":TheotokosDismissal});
 	else TheotokosDismissal = ";";

@@ -1,8 +1,10 @@
 {
   "day name": "Meatfare Saturday",
+  "class": 4,
   "troparia": [
     "<i>(Tone 8)</i> With profound wisdom and love for mankind, You arrange all things* and bestow beneficial things upon all, O only Creator and Lord.* Grant rest to the souls of your servants,* for they have placed their hope in You,* our God Who made and shaped us.",
     "<i>(Tone 8)</i> In you we have a rampart and a haven, and an intercessor* most acceptable to God,* whom you bore, O Virgin Mother of God,* salvation of the faithful."
   ],
-  "kontakia": "<i>(Tone 8)</i> With the Saints grant rest, O Christ,* to the souls of Your servants,* where there is neither* pain, nor sorrow, nor sighing,* but life everlasting."
+  "kontakia": "<i>(Tone 8)</i> With the Saints grant rest, O Christ,* to the souls of Your servants,* where there is neither* pain, nor sorrow, nor sighing,* but life everlasting.",
+  "specialDismissal": " Who has power over the living and the dead, "
 }
