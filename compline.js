@@ -108,7 +108,7 @@ async function loadComplineEnding(smallComplineData, full, dayOfWeek, priest, gl
         document.getElementById("penitential_troparia").innerHTML = "";
     }
 
-    var matinslike = await selectCanon(dayOfWeek, glas, full, smallComplineData["canon_refrain"], dateAddress);
+    var matinslike = await selectCanon(dayOfWeek, glas, full, smallComplineData["canon_refrain"], dateAddress, dayTriodionData);
     if (matinslike) document.getElementById("itIsTrulyRight").innerHTML = "";
     else document.getElementById("itIsTrulyRight").innerHTML = itIsTrulyRight;
 
@@ -550,7 +550,12 @@ async function constructCanon(dayOfWeek, glas, full, refrain, dateAddress){
     return matinslike;
 }
 
-async function selectCanon(dayOfWeek, glas, full, refrain, dateAddress){
+async function selectCanon(dayOfWeek, glas, full, refrain, dateAddress, dayTriodionData){
+    if (dayTriodionData != undefined && "omit compline canon" in dayTriodionData) {
+        document.getElementById("canon").innerHTML = `<div class=rubric>No canon today<br><br></div>`;
+        document.getElementById("canonSelector").innerHTML = "";
+        return false;
+    }
     var matinslike = await constructCanon(dayOfWeek, glas, full, refrain, dateAddress);
     document.getElementById("canonSelector").addEventListener("change", async function () {
         var canonInstruction = document.querySelector('input[name="canonChoice"]:checked')?.value;
