@@ -1,5 +1,5 @@
 import { StEphremPrayer, gloryGospel, usualBeginning, tripleAlleluia, glory, andNow, trisagionToPater, prayerOfTheHours, LHM, comeLetUs, gloryAndNow, moreHonorable, inTheName, prayerBlessingMayGodBeGracious, endingBlockMinor, amen, getCommonText } from './text_generation.js';
-import { getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords, specialSunday } from './script.js';
+import { getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords, specialSunday, cancelPostfeastHypapante } from './script.js';
 const address = `Text\\English`
 
 export async function minorHour(hour, priest, full, date){
@@ -96,8 +96,12 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
     } catch (error) {
         console.log("No data for the day! Using the weekday troparia.")
     }
-    if (mm === 2 && cancelPostfeastHypapante(dd, season, seasonWeek, dayOfWeek) && "postfeast" in dayData) {
+    if ("postfeast" in dayData && dayData["postfeast"]==="02//02" && cancelPostfeastHypapante(date.slice(4, 6), season, seasonWeek, dayOfWeek)) {
         delete dayData["postfeast"];
+    } else if ("postfeast" in dayData && dayData["postfeast"]==="02//02"  && cancelPostfeastHypapante(Number(date.slice(4, 6))+1, season, seasonWeek+(dayOfWeek===6), (dayOfWeek+1)%7)) {
+        // leave-taking is moved to today
+        dayData["troparia"] = []
+        dayData["kontakia"] = (await getData(`${address}\\menaion\\02\\02.json`))["kontakia"];
     }
     const isPenitential = (
         (season === "Lent" && dayOfWeek < 6 && dayOfWeek > 0)
