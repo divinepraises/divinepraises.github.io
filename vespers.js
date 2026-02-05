@@ -1,5 +1,5 @@
 import { getBeginning, usualBeginning, comeLetUs ,tripleAlleluia, lesserDoxology, trisagionToPater, glory, andNow, LHM, GTL, TYL, gloryAndNow, getCommonText, moreHonorable, amen, giveTheBlessing, dismissalMajor } from './text_generation.js';
-import { getDayInfo, getData, isBetweenDates, readPsalmsFromNumbers, constructDayName, replaceCapsWords, specialSunday } from './script.js';
+import { cancelPostfeastHypapante, getDayInfo, getData, isBetweenDates, readPsalmsFromNumbers, constructDayName, replaceCapsWords, specialSunday } from './script.js';
 var address = `Text\\English`
 
 // TODO readings
@@ -26,6 +26,9 @@ export async function enhanceVespers(priest, full, date) {
     const dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
     const vespersData = await getData(`${address}\\horologion\\general_vespers.json`);
     var vespersMenaionData = await getData(`${address}\\menaion\\${dateAddress}_vespers.json`)
+    if (mm === 2 && cancelPostfeastHypapante(dd, season, seasonWeek, dayOfWeek) && "postfeast" in dayData) {
+        delete dayData["postfeast"];
+    }
 
     const isStBasil = (dateAddress === "12\\25" || dateAddress === "01\\06" || dateAddress === "03\\25");
 

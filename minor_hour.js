@@ -96,6 +96,9 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
     } catch (error) {
         console.log("No data for the day! Using the weekday troparia.")
     }
+    if (mm === 2 && cancelPostfeastHypapante(dd, season, seasonWeek, dayOfWeek) && "postfeast" in dayData) {
+        delete dayData["postfeast"];
+    }
     const isPenitential = (
         (season === "Lent" && dayOfWeek < 6 && dayOfWeek > 0)
         || ((season === "Forelent" && seasonWeek === 3) && (dayOfWeek === 3 || dayOfWeek === 5))

@@ -33,42 +33,52 @@ export function setDefaultHour(currentDate) {
 }
 
 export async function displayCurrentDay(currentDate){
-    var season, seasonWeek, seasonToShow, glas;
+    var season, seasonWeek, seasonToShow, glas, dayOfWeek;
     let [year, month, day] = currentDate.split("-").map(Number);
 	[season, seasonWeek, seasonToShow, glas] = parseDate(year, month, day);
+	let thisDate = new Date(year, month - 1, day);
+	dayOfWeek = thisDate.getDay();
 	document.getElementById("date-container").innerHTML = seasonToShow;
-    document.getElementById("date-name").innerHTML = await showMenaionDate(year, month, day);
+    document.getElementById("date-name").innerHTML = await showMenaionDate(year, month, day, season, seasonWeek, dayOfWeek);
 
-    let nextDate = new Date(year, month - 1, day);
-    nextDate.setDate(nextDate.getDate() + 1);
-    let [next_year, next_mm, next_dd] = nextDate.toISOString().slice(0, 10).split("-").map(Number);
-    document.getElementById("next-date-name").innerHTML = await showMenaionDate(next_year, next_mm, next_dd);
+    
+    thisDate.setDate(thisDate.getDate() + 1);
+    let [next_year, next_mm, next_dd] = thisDate.toISOString().slice(0, 10).split("-").map(Number);
+    let [next_season, next_seasonWeek, next_seasonToShow, next_glas] = parseDate(year, month, day);
+    let next_dayOfWeek = thisDate.getDay();
+    document.getElementById("next-date-name").innerHTML = await showMenaionDate(next_year, next_mm, next_dd, next_season, next_seasonWeek, next_dayOfWeek);
 }
 
 export async function specialSunday(month, day){
     const specialSundays = await getData(`${address}\\menaion\\special_sundays.json`);
     if (!(month in specialSundays)) return;
-    for (let [sundayName, [first, last]] of Object.entries(specialSundays[month])){
+    for (let [specialName, [first, last]] of Object.entries(specialSundays[month])){
         if (isBetweenDates(month, day, month, first, month, last)){
-            return sundayName;
+            return specialName;
         }
     }
 }
 
-async function showMenaionDate(yyyy, mm, dd){
+async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
     yyyy = String(yyyy);
     mm = String(mm).padStart(2, "0");
     dd = String(dd).padStart(2, "0");
 	const dateAddress = `${mm}\\${dd}`;
 
-    var sundayName = "";
+    var specialName = "";
 	if ((new Date(`${yyyy}-${mm}-${dd}`)).getUTCDay() === 0) {
 	    const specialSundayName = await specialSunday(mm, dd);
 	    if (specialSundayName != undefined) {
 	        const sundayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
-	        if ("day name" in sundayData) sundayName = sundayData["day name"];
-	        else sundayName = sundayData["name"];
+	        if ("day name" in sundayData) specialName = sundayData["day name"];
+	        else specialName = sundayData["name"];
 	    }
+	}
+	if (season != "0") {
+	    try {
+	        let dayTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}.json`);
+	        specialName = dayTriodionData["day name"];
+	    } catch {}
 	}
     try {
         const dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
@@ -76,23 +86,28 @@ async function showMenaionDate(yyyy, mm, dd){
         var feastName = "";
         var note = "";
         var dayName;
+
+        const noPostFeast = (season === "Forelent" && seasonWeek === 2 && dayOfWeek === 6)
+
         if ("forefeast" in dayData) {
             let feast = await getData(`${address}\\menaion\\${dayData["forefeast"]}.json`);
             if ("day name" in feast) feastName = `${forefeast} ${feast["day name"]}, `;
             else feastName = `${forefeast} ${feast["name"]}, `;
         }
         if ("postfeast" in dayData) {
-            let feast = await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`);
-            if ("day name" in feast) feastName = `${postfeast} ${feast["day name"]}, `;
-            else feastName = `${postfeast} ${feast["name"]}, `;
+            if (!(mm === "02" && cancelPostfeastHypapante(dd, season, seasonWeek, dayOfWeek))) {
+                let feast = await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`);
+                if ("day name" in feast) feastName = `${postfeast} ${feast["day name"]}, `;
+                else feastName = `${postfeast} ${feast["name"]}, `;
+            }
         }
         if ("note" in dayData) {
             note = `<br><div class="rubric">${dayData["note"]}</div>`
         }
-        if (sundayName != "" && dayData["class"] < 6) dayName = "";
+        if (specialName != "" && dayData["class"] < 6) dayName = "";
         else dayName = constructDayName(dayData, false);
 
-        return `${symbolData[dayData["class"]]} ${dd}/${mm}: ${feastName} ${sundayName} ${dayName}${note}`;
+        return `${symbolData[dayData["class"]]} ${dd}/${mm}: ${feastName} ${specialName} ${dayName}${note}`;
     } catch (error) {
          return `No data for this day at ${address}\\menaion\\${dateAddress}.json`
     }
@@ -291,4 +306,19 @@ export async function readPsalmsFromNumbers(psalmNums, psalmHeaders){
         formattedValues.push(psalm);  // TODO add 2 <br>
     }
     return formattedValues;
+}
+
+export function cancelPostfeastHypapante(dd_str, season, seasonWeek, dayOfWeek) {
+    const dd = Number(dd_str);
+    /// explore all options and return a bool that tells whether the postfeast of hypapante should be cancelled
+    if (season != "Forelent" || seasonWeek < 2) return false  // quich exit
+    if (
+        (seasonWeek === 1 && dayOfWeek === 6) ||  // meatfare sat no matter what calendar date
+        (dd >= 3 && dd <= 5 && seasonWeek >= 3 && dayOfWeek > 0) ||
+        (dd === 6 && (seasonWeek >= 3 || seasonWeek === 2 && (dd === 5 || dd === 3))) ||
+        (dd === 7 && (seasonWeek >= 3 || seasonWeek === 2 && dd != 1 && dd != 2)) ||
+        (dd === 8 && (seasonWeek >= 3 || seasonWeek === 2 && dd != 1)) ||
+        (dd === 9 && seasonWeek >= 2)
+    ) return true
+    return false
 }

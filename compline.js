@@ -26,6 +26,9 @@ export async function enhanceCompline(priest, full, date){
         dayData = {"class" : 0};
         `No data for this day! ${`${address}\\menaion\\${dateAddress}.json`}`
     }
+    if (mm === 2 && cancelPostfeastHypapante(dd, season, seasonWeek, dayOfWeek) && "postfeast" in dayData) {
+        delete dayData["postfeast"];
+    }
     const isIncarnationFeast = (dd_mm === "2512" || dd_mm === "0601" || dd_mm === "2503");
     const isAlleluiaDay = (
         isBetweenDates(mm, dd, 11, 15, 12, 19) &&
