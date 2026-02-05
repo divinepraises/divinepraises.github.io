@@ -401,7 +401,7 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData, specialDay
             }
         }
         if (prePostFeast != ""){
-            if (hour === "1hour" || hour === "6hour"){
+            if (hour === "1hour" || hour === "6hour" || dayTriodionData != undefined){
                 return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${prePostFeastTroparion}`;
             }
             if ("troparia" in dayData) dayTrop = dayData["troparia"];
@@ -416,7 +416,7 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData, specialDay
             }
         }
 
-        if (hour === "1hour" && dayData["class"] < 8){
+        if (hour === "1hour" && dayData["class"] < 8 || dayTriodionData != undefined){
             return `${glory}<br><br>${sundayTrop["troparia"][glas]}`;
         }
 
@@ -585,6 +585,9 @@ async function selectKondak(hour, dayOfWeek, hourData, glas, dayData, specialDay
             if (Array.isArray(dayData["kontakia"])) return dayData["kontakia"][0];
             else return dayData["kontakia"];
         }
+    } else if (dayTriodionData != undefined && dayOfWeek === 0 && prePostFeast != "") {
+        if (hour === "1hour" || hour === "6hour") return prePostFeastKontakion
+        return dayTriodionData["kontakia"];
     } else if (dayTriodionData != undefined) {
         return dayTriodionData["kontakia"];
     }
