@@ -26,14 +26,26 @@ export async function enhanceVespers(priest, full, date) {
     const dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
     const vespersData = await getData(`${address}\\horologion\\general_vespers.json`);
     var vespersMenaionData = await getData(`${address}\\menaion\\${dateAddress}_vespers.json`)
-    if (mm === 2 && cancelPostfeastHypapante(dd, season, seasonWeek, dayOfWeek) && "postfeast" in dayData) {
+    if ("postfeast" in dayData && dayData["postfeast"]==="02//02" && cancelPostfeastHypapante(dd, season, seasonWeek, dayOfWeek)) {
         delete dayData["postfeast"];
+    }  else if ("postfeast" in dayData && dayData["postfeast"]==="02//02" && cancelPostfeastHypapante(dd+1, season, seasonWeek+(dayOfWeek===6), (dayOfWeek+1)%7)) {
+        // leave-taking is moved to today
+        dayData["class"] = 6
+        dayData["troparia"] = []
+        dayData["type"] = [""]
+        dayData["saint"] = [""]
+        dayData["name"] = [""]
+        dayData["day name"] = [`Leave-taking of the ${(await getData(`${address}\\menaion\\02\\02.json`))["day name"]}`]
+        const vespersMenaionDataFeast = await getData(`${address}\\menaion\\02\\02_vespers.json`);
+        vespersMenaionData["ps140"] = vespersMenaionDataFeast["ps140"];
+        vespersMenaionData["aposticha"] = vespersMenaionDataFeast["aposticha"];
+        // this is not working for stychera yet
     }
 
     const isStBasil = (dateAddress === "12\\25" || dateAddress === "01\\06" || dateAddress === "03\\25");
 
     await vespersBeginning(
-        vespersData, full, dayOfWeek, mm, dd, glas, dayData, dateAddress, priest, season, seasonWeek, isStBasil
+        vespersData, vespersMenaionData, full, dayOfWeek, mm, dd, glas, dayData, dateAddress, priest, season, seasonWeek, isStBasil
     );
 
      if (isStBasil) {
@@ -66,7 +78,7 @@ async function liturgyEnding(dayOfWeek, dayData, priest, vespersData) {
     document.getElementById("ending").innerHTML =  await loadTextBasil(dayOfWeek, dayData, priest, vespersData, priestlyExclamationsData);
 }
 
-async function vespersBeginning(vespersData, full, dayOfWeek, mm, dd, glas, dayData, dateAddress, priest, season, seasonWeek, isStBasil){
+async function vespersBeginning(vespersData, vespersMenaionData, full, dayOfWeek, mm, dd, glas, dayData, dateAddress, priest, season, seasonWeek, isStBasil){
   const text = `
   <h2>Vespers</h2>
   <h4><div id="day_name"></div></h4>
@@ -91,7 +103,7 @@ async function vespersBeginning(vespersData, full, dayOfWeek, mm, dd, glas, dayD
   <div id="lesserDoxology"></div><br>
   <div id="ektenia_supplication"></div>
   `;
-  setTimeout(() => loadTextBeginning(vespersData, full, dayOfWeek, mm, dd, season, seasonWeek, glas, dateAddress, dayData, priest, isStBasil), 0);
+  setTimeout(() => loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWeek, mm, dd, season, seasonWeek, glas, dateAddress, dayData, priest, isStBasil), 0);
   document.getElementById("common_part").innerHTML = text;
 }
 
@@ -215,13 +227,12 @@ async function arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionDat
 }
 
 
-async function loadTextBeginning(vespersData, full, dayOfWeek, mm, dd, season, seasonWeek, glas, dateAddress, dayData, priest, isStBasil) {
+async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWeek, mm, dd, season, seasonWeek, glas, dateAddress, dayData, priest, isStBasil) {
     var isGreatVespers = (dayData["class"] >= 8 || dayOfWeek === 0);
     const isWeekday = (dayOfWeek >= 1 && dayOfWeek <=5);
 
     var priestlyExclamationsData;
     if (priest === "1") priestlyExclamationsData = await getData(`${address}\\horologion\\priestly_exclamations.json`);
-    var vespersMenaionData = await getData(`${address}\\menaion\\${dateAddress}_vespers.json`);
     var vespersTriodionData, dayTriodionData;
     const isLytia = ("lytia" in vespersMenaionData && dayData["class"] >= 10);
     var vespersOctoechosData;
