@@ -76,6 +76,7 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
 	}
 	if (season != "0") {
 	    try {
+	        if (dayOfWeek === 0) seasonWeek += 1;
 	        let dayTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}.json`);
 	        specialName = dayTriodionData["day name"];
 	    } catch {}
