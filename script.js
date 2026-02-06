@@ -40,11 +40,10 @@ export async function displayCurrentDay(currentDate){
 	dayOfWeek = thisDate.getDay();
 	document.getElementById("date-container").innerHTML = seasonToShow;
     document.getElementById("date-name").innerHTML = await showMenaionDate(year, month, day, season, seasonWeek, dayOfWeek);
-
     
     thisDate.setDate(thisDate.getDate() + 1);
     let [next_year, next_mm, next_dd] = thisDate.toISOString().slice(0, 10).split("-").map(Number);
-    let [next_season, next_seasonWeek, next_seasonToShow, next_glas] = parseDate(year, month, day);
+    let [next_season, next_seasonWeek, next_seasonToShow, next_glas] = parseDate(next_year, next_mm, next_dd);
     let next_dayOfWeek = thisDate.getDay();
     document.getElementById("next-date-name").innerHTML = await showMenaionDate(next_year, next_mm, next_dd, next_season, next_seasonWeek, next_dayOfWeek);
 }
@@ -76,9 +75,8 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
 	}
 	if (season != "0") {
 	    try {
-	        if (dayOfWeek === 0) seasonWeek += 1;
 	        let dayTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}.json`);
-	        specialName = dayTriodionData["day name"];
+	        specialName = dayTriodionData["day name"] + ". ";
 	    } catch {}
 	}
     try {
@@ -87,8 +85,6 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
         var feastName = "";
         var note = "";
         var dayName;
-
-        const noPostFeast = (season === "Forelent" && seasonWeek === 2 && dayOfWeek === 6)
 
         if ("forefeast" in dayData) {
             let feast = await getData(`${address}\\menaion\\${dayData["forefeast"]}.json`);
@@ -105,8 +101,9 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
         if ("note" in dayData) {
             note = `<br><div class="rubric">${dayData["note"]}</div>`
         }
-        if (specialName != "" && dayData["class"] < 6) dayName = "";
-        else dayName = constructDayName(dayData, false);
+        if (dayData["class"] <= 6 && season === "Forelent" && (dayOfWeek === 0 || dayOfWeek === 6 && seasonWeek === 2)) {
+            dayName = "";
+        } else dayName = constructDayName(dayData, false);
 
         return `${symbolData[dayData["class"]]} ${dd}/${mm}: ${feastName} ${specialName} ${dayName}${note}`;
     } catch (error) {
@@ -315,11 +312,11 @@ export function cancelPostfeastHypapante(dd_str, season, seasonWeek, dayOfWeek) 
     if (season === "0") return false
     if (season === "Lent") return true
     if (
-        (seasonWeek === 1 && dayOfWeek === 6) ||  // meatfare sat no matter what calendar date
-        (dd === 6 && (seasonWeek === 3 || seasonWeek === 2 && (dayOfWeek === 5 || dayOfWeek === 3))) ||
-        (dd === 7 && (seasonWeek === 3 || seasonWeek === 2 && dayOfWeek != 1 && dayOfWeek != 2)) ||
-        (dd === 8 && (seasonWeek === 3 || seasonWeek === 2 && dayOfWeek != 1)) ||
-        (dd === 9 && seasonWeek >= 2)
+        (seasonWeek === 2 && dayOfWeek === 6) ||  // meatfare sat no matter what calendar date
+        (dd === 6 && (seasonWeek === 4 || seasonWeek === 3 && (dayOfWeek === 5 || dayOfWeek === 3))) ||
+        (dd === 7 && (seasonWeek === 4 || seasonWeek === 3 && dayOfWeek != 1 && dayOfWeek != 2)) ||
+        (dd === 8 && (seasonWeek === 4 || seasonWeek === 3 && dayOfWeek != 1)) ||
+        (dd === 9 && seasonWeek >= 3)
     ) return true
     return false
 }
