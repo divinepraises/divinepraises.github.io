@@ -28,7 +28,10 @@ export async function enhanceVespers(priest, full, date) {
     var vespersMenaionData = await getData(`${address}\\menaion\\${dateAddress}_vespers.json`)
     if ("postfeast" in dayData && dayData["postfeast"]==="02//02" && cancelPostfeastHypapante(dd, season, seasonWeek, dayOfWeek)) {
         delete dayData["postfeast"];
-    }  else if ("postfeast" in dayData && dayData["postfeast"]==="02//02" && cancelPostfeastHypapante(dd+1, season, seasonWeek+(dayOfWeek===6), (dayOfWeek+1)%7)) {
+    }  else if (
+        ("postfeast" in dayData && dayData["postfeast"]==="02//02" && cancelPostfeastHypapante(dd+1, season, seasonWeek+(dayOfWeek===6), (dayOfWeek+1)%7))
+        || ("postfeast" in dayData && dayData["postfeast"]==="02//02" && dd === 9)
+    ) {
         // leave-taking is moved to today
         dayData["class"] = 6
         dayData["troparia"] = []
@@ -39,6 +42,7 @@ export async function enhanceVespers(priest, full, date) {
         const vespersMenaionDataFeast = await getData(`${address}\\menaion\\02\\02_vespers.json`);
         vespersMenaionData["ps140"] = vespersMenaionDataFeast["ps140"];
         vespersMenaionData["aposticha"] = vespersMenaionDataFeast["aposticha"];
+        vespersMenaionData["aposticha_verses"] = vespersMenaionDataFeast["aposticha_verses"];
         // this is not working for stychera yet
     }
 
@@ -875,14 +879,13 @@ export async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, ve
                 if (apostMain[i] === "n") separateGlory = true;
                 i -= 1;
             }
-            if (apostMain[i] != apostMen[0]) aposticha += `<div class="rubric">Tone ${apostMen[i]}</div>`;
             if (separateGlory) {
                 aposticha += `<i>${glory}</i>
                      ${apostMain[4]}<br><br>
                     <i>${andNow}</i><br><br>
                     ${apostMain[5]}<br><br>`;
             } else {
-                aposticha += `<i>${gloryAndNow}</i>
+                aposticha += `<i>${gloryAndNow}</i><br><br>
                      ${apostMain[4]}<br><br>`;
             }
         }
