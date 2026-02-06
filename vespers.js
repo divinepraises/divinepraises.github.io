@@ -261,11 +261,13 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
         try {
             dayTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}.json`);
             if ("day name" in dayTriodionData) {
-                if ("day name" in dayData && dayData["day name"] != dayTriodionData["day name"]) {
-                    dayData["day name"] = dayTriodionData["day name"] + dayData["day name"];
-                } else if (dayData["class"] >= 8) {
+                if (dayOfWeek === 0 && dayData["class"] <= 6 || dayOfWeek === 6 && seasonWeek === 2) {
+                    dayData["day name"] = dayTriodionData["day name"];
+                } else if ("day name" in dayData && dayData["day name"] != dayTriodionData["day name"]) {
+                    dayData["day name"] = dayTriodionData["day name"] + ", " + dayData["day name"];
+                } else {
                     dayData["day name"] = dayTriodionData["day name"] + ", " + constructDayName(dayData, false);
-                } else dayData["day name"] = dayTriodionData["day name"];
+                }
             }
         } catch {}
     }
