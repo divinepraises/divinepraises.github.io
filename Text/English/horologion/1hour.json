@@ -1,8 +1,22 @@
 {
-  "psalms": [5, 89, 100],
+  "psalms": [
+    5,
+    89,
+    100
+  ],
   "theotokion": "What shall we call you, O Full of grace?* Heaven? For you made the Sun of righteousness to dawn.* Paradise? For you made the flower of incorruption blossom.* Virgin? For you remained incorrupt.* Pure Mother? For you held in your holy embrace a Son who is the God of all.* Implore Him that our souls may be saved.",
-  "chapter": "Direct my steps according to Your word, and let no iniquity control me.* Deliver me from people’s slander, and I shall keep Your commandments.* Let Your face shine on Your servant, and teach me Your statutes.<br><br>Let my mouth be filled with Your praise, O Lord, that I may hymn Your glory, and sing Your splendor all the day.",
+  "chapter": "Direct my steps according to Your word, and let no iniquity control me.TWICE* Deliver me from people’s slander, and I shall keep Your commandments.TWICE* Let Your face shine on Your servant, and teach me Your statutes.TWICE<br>Let my mouth be filled with Your praise, O Lord, that I may hymn Your glory, and sing Your splendor all the day.THRICE",
   "prayer": "O Christ, the true Light, You enlighten and sanctify everyone who comes into the world; let the light of Your countenance be signed upon us, that in it we may see Your unapproachable light. Direct our steps that we might fulfill Your commandments; through the prayers of Your immaculate Mother and of all Your saints. Amen.",
-  "lenten_troparia": "In the morning You will hear my voice,* O my King and my God.<br><i>Verse:</i> Give ear to my words, O Lord, understand my cry.<br>In the morning You will hear my voice,* O my King and my God.<br><i>Verse:</i>For to You I shall pray, O Lord.<br>In the morning You will hear my voice,* O my King and my God.",
-  "lenten_kontakion": "<i>(Tone 4 special)</i> Come to us in haste, O Christ our God,* before we become slaves of those who blaspheme You and threaten our lives.* With Your cross cut down those who make war against us;* let them know how strong is the Orthodox faith.* Grant this through the prayers of the Mother of God,* for You alone are the Lover of mankind.<br>Glory...<br>O Teacher of wisdom, O Bestower of understanding,* O Instructor of the ignorant and Protector of the poor,* strengthen and teach my heart, O Master.* O Word of the Father, give me words,* and do not prevent my mouth from calling out to You:* I have fallen, have mercy on me, O merciful One.<br>Now…<br>Let us with our hearts and lips continually extol the most glorious Mother of God,* holier than the heavenly angels,* and proclaim that she is truly the Theotokos,* for she has truly given birth to God in the flesh* and never ceases to intercede for our souls."
+  "lenten_troparia": [
+    "6",
+    "In the morning* You will hear my voice,* O my King and my God.",
+    "Give ear to my words, O Lord, understand my cry.",
+    "For to You I shall pray, O Lord."
+  ],
+  "lenten_kontakion": [
+    "4",
+    "Come to us in haste, O Christ our God,* before we become slaves of those who blaspheme You and threaten our lives.* With Your cross cut down those who make war against us;* let them know how strong is the Orthodox faith.* Grant this through the prayers of the Mother of God,* for You alone are the Lover of mankind.",
+    "O Teacher of wisdom, O Bestower of understanding,* O Instructor of the ignorant and Protector of the poor,* strengthen and teach my heart, O Master.* O Word of the Father, give me words,* and do not prevent my mouth from calling out to You:* I have fallen, have mercy on me, O merciful One.",
+    "Let us with our hearts and lips continually extol the most glorious Mother of God,* holier than the heavenly angels,* and proclaim that she is truly the Theotokos,* for she has truly given birth to God in the flesh* and never ceases to intercede for our souls."
+  ]
 }

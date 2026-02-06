@@ -1,4 +1,5 @@
 {
   "day name": "Cheesefare Friday",
-  "omit compline canon": true
+  "omit compline canon": true,
+  "usual compline troparia": true
 }

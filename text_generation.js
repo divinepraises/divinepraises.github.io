@@ -83,6 +83,14 @@ export function getBeginning(withPriest) {
 	};
 }
 
+export function HeWhoIs(withPriest) {
+	if (withPriest == "1") {
+		return `<FONT COLOR="RED">Priest:</FONT> <b>${data.HeWhoIs}</b> `;
+	} else {
+		return `<FONT COLOR="RED">Chariman:</FONT> ${data.zamolytv} `;
+	};
+}
+
 function getOurFatherEnding(withPriest) {
 	if (withPriest == "1") {
 		return `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.forTheKingdom}</b> `;
@@ -94,7 +102,7 @@ function getOurFatherEnding(withPriest) {
 export function prayerBlessingMayGodBeGracious(withPriest, hour="") {
 	if (withPriest === "0") {
 		return `<FONT COLOR="RED">Chariman:</FONT> ${data.zamolytv} `;
-	} else if (hour != "3hour" && hour != "6hour") {
+	} else if (hour === "1hour" || hour === "9hour") {
 		return `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.mayGodBeGracious}</b> `;
 	} else {
 		return `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.zamolytv}</b> `;

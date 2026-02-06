@@ -54,7 +54,7 @@ export async function enhanceCompline(priest, full, date){
         vespersMenaionData = await getData(`${address}\\menaion\\${dateAddress}_compline.json`)
         greatComplineBeginning(full, season, priest, dayOfWeek, dayData, isIncarnationFeast);
         const vespersData = await getData(`${address}\\horologion\\general_vespers.json`);
-        vespersEnding(vespersData, dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, season, seasonWeek);
+        vespersEnding(vespersData, dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, season, seasonWeek, false);
     } else if (
             (season === "Lent" && dayOfWeek < 6 && dayOfWeek > 0) 
             || ((season === "Forelent" && seasonWeek === 3) && (dayOfWeek === 3 || dayOfWeek === 5))
@@ -118,7 +118,7 @@ async function loadComplineEnding(smallComplineData, full, dayOfWeek, priest, gl
     document.getElementById("prayers").innerHTML = smallComplineData["prayers"].join("<br><br>");
     document.getElementById("after_prayers").innerHTML =  postComplinePrayers(priest, smallComplineData, ekteniasData, dayOfWeek);
 
-    if (isGreatCompline && !("forefeast" in dayData || "postfeast" in dayData)){
+    if (isGreatCompline && !("forefeast" in dayData || "postfeast" in dayData || "usual compline troparia" in dayTriodionData)){
 	    const greatComplineData = await getData(`${address}\\horologion\\great_compline.json`);
         makeThirdSectionTroparia(greatComplineData["troparia_3"])
         document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest);
