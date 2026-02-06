@@ -63,7 +63,7 @@ export function usualBeginning(priest, season){
  } else {
   HK = `${data.heavenlyKing}<br>`;
  }
- return `${getBeginning(priest)}<br><br>
+ return `${cross} ${getBeginning(priest)}<br><br>
 		<FONT COLOR="RED">Choir:</FONT> ${data.amen}<br><br>
 		${data.gloryBeToYou}<br><br>
 		${HK}<br>
