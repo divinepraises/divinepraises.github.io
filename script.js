@@ -312,13 +312,13 @@ export async function readPsalmsFromNumbers(psalmNums, psalmHeaders){
 export function cancelPostfeastHypapante(dd_str, season, seasonWeek, dayOfWeek) {
     const dd = Number(dd_str);
     /// explore all options and return a bool that tells whether the postfeast of hypapante should be cancelled
-    if (season != "Forelent" || seasonWeek < 2) return false  // quich exit
+    if (season === "0") return false
+    if (season === "Lent") return true
     if (
         (seasonWeek === 1 && dayOfWeek === 6) ||  // meatfare sat no matter what calendar date
-        (dd >= 3 && dd <= 5 && seasonWeek >= 3 && dayOfWeek > 0) ||
-        (dd === 6 && (seasonWeek >= 3 || seasonWeek === 2 && (dd === 5 || dd === 3))) ||
-        (dd === 7 && (seasonWeek >= 3 || seasonWeek === 2 && dd != 1 && dd != 2)) ||
-        (dd === 8 && (seasonWeek >= 3 || seasonWeek === 2 && dd != 1)) ||
+        (dd === 6 && (seasonWeek === 3 || seasonWeek === 2 && (dayOfWeek === 5 || dayOfWeek === 3))) ||
+        (dd === 7 && (seasonWeek === 3 || seasonWeek === 2 && dayOfWeek != 1 && dayOfWeek != 2)) ||
+        (dd === 8 && (seasonWeek === 3 || seasonWeek === 2 && dayOfWeek != 1)) ||
         (dd === 9 && seasonWeek >= 2)
     ) return true
     return false
