@@ -362,16 +362,16 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
 
     makeHymnOfLight(priest, isGreatVespers, priestPrayers, wisdom, vespersData);
 
-    document.getElementById("prokimenon").innerHTML = await makeProkimenon(dayOfWeek, vespersData, priest, dayData, vespersMenaionData, priestlyExclamationsData);
+    document.getElementById("prokimenon").innerHTML = await makeProkimenon(dayOfWeek, vespersData, priest, dayData, vespersMenaionData, priestlyExclamationsData, vespersTriodionData);
 
-    if ("readings" in vespersMenaionData){
+    if ("readings" in vespersMenaionData || vespersTriodionData != undefined && "readings" in vespersTriodionData){
         document.getElementById("readings_selector").innerHTML = `<br>
           <label><input type="radio" name="readingsChoice" value="show"> Show the insert with full readings.</label><br>
           <label><input type="radio" name="readingsChoice" value="hide" checked> Hide the insert with full readings.</label>
           <br><br>`
-        document.getElementById("readings_selector").addEventListener("change",() => document.getElementById("readings").innerHTML = makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData));
+        document.getElementById("readings_selector").addEventListener("change",() => document.getElementById("readings").innerHTML =makeReadings(vespersTriodionData, priest, dayOfWeek, ekteniaData) + makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData));
 
-        document.getElementById("readings").innerHTML = makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData);
+        document.getElementById("readings").innerHTML = makeReadings(vespersTriodionData, priest, dayOfWeek, ekteniaData) + makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData);
     }
 
     if (isStBasil && priest === "1" && isWeekday) {
@@ -479,18 +479,18 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
 
     document.getElementById("troparia").innerHTML = await makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, haire, specialSundayName, isLenten);
 
-
-    if (!isGreatVespers && !isLenten) {
+    const isSemiLenten = (season === "Forelent" && seasonWeek === 3 && dayOfWeek > 3);
+    if (isLenten || isSemiLenten) {
+        document.getElementById("ektenia_augmented_or_ps33").innerHTML = await makeLentenEnding(priest, !isLenten);
+    } else if (!isGreatVespers && !isLenten) {
         if (priest == "1"){
             document.getElementById("ektenia_augmented_or_ps33").innerHTML = makeEktenia(ekteniaData["augmented"], "augmented") + "<br><br>";
         } else {
             document.getElementById("ektenia_augmented_or_ps33").innerHTML = `${LHM} <FONT COLOR="RED">(40)</FONT><br>${gloryAndNow}<br><br>`;
         }
-    } else if (isLenten) {
-        document.getElementById("ektenia_augmented_or_ps33").innerHTML = await makeLentenEnding(priest, dayOfWeek === 1);
     }
 
-    document.getElementById("ending_block").innerHTML = await makeEndingBlockMajor(priest, dayOfWeek, dayData["class"]>=8, vespersData, dayData, priestlyExclamationsData, isLenten);
+    document.getElementById("ending_block").innerHTML = await makeEndingBlockMajor(priest, dayOfWeek, dayData["class"]>=8, vespersData, dayData, priestlyExclamationsData, isLenten || isSemiLenten);
 }
 
 export async function makePs33(priest, vigilVespersData){
@@ -637,7 +637,17 @@ async function makeLentenEnding(priest, isLessPenitential) {
 
     const blessedBe = (await getData(`${address}\\horologion\\vigil_vespers.json`))["blessed_be"];
     const ps33 = (await readPsalmsFromNumbers(["33vespers"], ["Psalm 33"])).join("")
-    var text = `<div class="subhead">Lenten conclusion</div><br>
+
+    var prostrationsOr40 = ``;
+    var stEphremOrNothing = StEphremPrayer(priest, false, false);
+    if (isLessPenitential) {
+        // just the prostrations
+        prostrationsOr40 = StEphremPrayer(priest, false, true);
+        stEphremOrNothing = "";
+    }
+    var text = `<div class="subhead">Lenten conclusion</div><br>`
+    if (!isLessPenitential){
+        text += `
             ${LHM} <FONT COLOR="RED">(40)</FONT> ${giveTheBlessing(false)}<br><br>
             ${HeWhoIs(priest)}<br><br>
             <FONT COLOR="RED">Choir:</FONT> ${amen}<br><br>
@@ -648,11 +658,17 @@ async function makeLentenEnding(priest, isLessPenitential) {
             ${moreHonorable}<br><br>
             ${inTheName}<br><br>
             ${prayerBlessingMayGodBeGracious(priest, "vespers")}<br><br>
-            <FONT COLOR="RED">Choir:</FONT> ${amen}<br><br>
-            ${StEphremPrayer(priest, false, isLessPenitential)}`
-    if (isLessPenitential) return text;
+            <FONT COLOR="RED">Choir:</FONT> ${amen}<br><br>`;
+    } else {
+        if (priest == "1"){
+            text = makeEktenia(ekteniaData["augmented"], "augmented") + "<br><br>" + text;
+        } else {
+            text = `${LHM} <FONT COLOR="RED">(40)</FONT><br>${gloryAndNow}<br><br>${text}`;
+        }
+    }
     return text +
-            `${vesperalPrayer}<br><br>
+            `${StEphremPrayer(priest, false, isLessPenitential)}
+            ${vesperalPrayer}<br><br>
             ${blessedBe}<FONT COLOR="RED"><i>(3)</i></FONT><br><br>
             ${ps33}<br><br>
             ${itIsTrulyRight}<br><br>`
@@ -972,24 +988,26 @@ export async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, ve
 export function frameReadings(readings) {
     var instruction = document.querySelector('input[name="readingsChoice"]:checked')?.value;
     if (instruction != "hide" && Array.isArray(readings)) {
-        readings = readings.join(";")
-        var text = `
-            <div class="subhead">Readings</div><br>
-            <div class="rubric">
-                The readings today are <b>${readings}</b>.
-                The text from Bible Gateway given below might not fully correspond to the liturgical readings,
-                as the beginnings and ends in those are usually adapted to the context.<br>
-                Note also that if a single reading consists of several passages, below it will be represented as several readings.<br>
-                We also omit the dialogue with a priest here, to not add this insertion several times.
-            </div>
-            <br><br>
-            <iframe
-          src="https://www.biblegateway.com/passage/?search=${readings}&version=RSV&interface=mobile"
-          width="100%"
-          height="500"
-          style="border: none;">
-        </iframe>
-        `
+        var text = `<div class="subhead">Readings</div><br>
+                <div class="rubric">
+                    The text from Bible Gateway given below might not fully correspond to the liturgical readings,
+                    as the beginnings and ends in those are usually adapted to the context.<br>
+                    Note also that if a single reading consists of several passages, below it will be represented as several readings.<br>
+                    We omit the dialogue with a priest and the titles of readings for the moment.<br><br>
+                </div>`;
+        for (let reading of readings){
+            text += `
+                <div class="rubric">
+                    <b>${reading}</b>
+                </div>
+                <iframe
+              src="https://www.biblegateway.com/passage/?search=${reading}&version=RSV&interface=mobile"
+              width="100%"
+              height="500"
+              style="border: none;">
+            </iframe>
+            `
+        }
     } else if (instruction === "hide" && Array.isArray(readings)) {
         var text = `
             <div class="subhead">Readings</div><br>
@@ -1006,6 +1024,7 @@ export function frameReadings(readings) {
 }
 
 function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData) {
+    if (!("readings" in vespersMenaionData)) return "";
     var text = frameReadings(vespersMenaionData["readings"]);
 
     if ("troparia_and_readings" in vespersMenaionData) {
@@ -1072,6 +1091,10 @@ function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData) {
         }
         text += "<br><br>"
     }
+    if ("second_prokimenon" in vespersMenaionData) {
+        text += `<div class="subhead">Prokimenon</div><br>
+            ${arrangeProkimenon(vespersMenaionData["second_prokimenon"])}<br>`;
+    }
     return text;
 }
 
@@ -1087,7 +1110,7 @@ export function arrangeProkimenon(prokData) {
     return prokimenon
 }
 
-async function makeProkimenon(dayOfWeek, vespersData, priest, dayData, vespersMenaionData, priestlyExclamationsData) {
+async function makeProkimenon(dayOfWeek, vespersData, priest, dayData, vespersMenaionData, priestlyExclamationsData, vespersTriodionData) {
     var prokimenon = `<div class="subhead">Prokimenon</div><br>`;
     if (priest === "1"){
         prokimenon += `
@@ -1106,6 +1129,8 @@ async function makeProkimenon(dayOfWeek, vespersData, priest, dayData, vespersMe
          || (dayData["class"] === 12 && dayOfWeek === 6))
     ) {
         prokData = (await getData(`${address}\\horologion\\special_prokimena.json`))[vespersMenaionData["special_prokimenon_index"]];
+    } else if (vespersTriodionData != undefined && "prokimenon" in vespersTriodionData) {
+        prokData = vespersTriodionData["prokimenon"];
     } else {
         prokData = vespersData["prokimenon"][dayOfWeek];
     }
