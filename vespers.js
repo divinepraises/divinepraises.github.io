@@ -780,7 +780,6 @@ async function makeGloryAposticha(aposticha, vespersMenaionData, dayOfWeek) {
 }
 
 export async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, vespersData, vespersMenaionData, vespersOctoechosData, vespersTriodionData){
-    // TODO triodion
     var apostMain;
     var apostVerses, aposticha;
 
@@ -896,6 +895,7 @@ export async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, ve
             && vespersTriodionData != undefined
             && !("special_prokimenon_index" in vespersTriodionData)
         ) {
+        // triodion weekday
         apostMain = vespersTriodionData["aposticha"];
         aposticha += `
             <div class="rubric">Tone ${apostMain[0]}</div>
@@ -919,14 +919,21 @@ export async function makeAposticha(glas, dayOfWeek, isGreatVespers, dayData, ve
                 if (apostMain[i] === "n") separateGlory = true;
                 i -= 1;
             }
+            if (i === 0) {
+                i = 4;  // no new tone indication. stichera is at 4
+            } else {
+                if (apostMain[i] != apostMain[0]) aposticha += `<div class="rubric">Tone ${apostMain[i]}</div>`;
+                // i - tone, i+1 - g/gn, i+2 - stichera
+                i += 2;
+            }
             if (separateGlory) {
                 aposticha += `<i>${glory}</i>
-                     ${apostMain[4]}<br><br>
+                     ${apostMain[i]}<br><br>
                     <i>${andNow}</i><br><br>
-                    ${apostMain[5]}<br><br>`;
+                    ${apostMain[i+1]}<br><br>`;
             } else {
                 aposticha += `<i>${gloryAndNow}</i><br><br>
-                     ${apostMain[4]}<br><br>`;
+                     ${apostMain[i]}<br><br>`;
             }
         }
     } else {
