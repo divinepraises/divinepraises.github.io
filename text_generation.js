@@ -22,8 +22,11 @@ export const TYL = data.tyl;
 export const st = data.saint;
 
 export function StEphremPrayer(priest, short=false, replaced=false){
-    var res = `<div class=subhead>Prayer of st. Ephrem of Syria</div><br>`;
-    if (replaced) return res + `<div class="rubric">${cross} Three prostrations with no words are made here instead of the prayer of st. Ephrem.</div><br>`
+    var res = "";
+
+    if (replaced) return res + `<div class="rubric">${cross} Three prostrations with no words are made here instead of the prayer of St. Ephrem.</div><br>`
+    else res += `<div class=subhead>Prayer of St. Ephrem of Syria</div><br>`;
+
     const stEphrem = data.st_ephrem
     for (let verse of stEphrem.slice(0, 3)){
         res += `${cross} ${verse} <div class="rubric">Prostration.</div>`
