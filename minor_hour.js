@@ -125,10 +125,10 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
 
         document.getElementById("psalms").innerHTML = `<div class="subhead">Psalm ${n}</div>${psalmData}`;
     }
-    selectTropar(hour, dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData, isLenten).then(tropar => {
+    selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData, isLenten).then(tropar => {
         document.getElementById("troparia").innerHTML = tropar;
     });
-    selectKondak(hour, dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData, isLenten).then(kondak => {
+    selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData, isLenten).then(kondak => {
         document.getElementById("kontakia").innerHTML = kondak;
     });
 
@@ -304,7 +304,7 @@ async function arrangeAdditionalElements(additionalElements, hour, priest, full)
     return ""
 }
 
-async function selectTropar(hour, dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData, isLenten){
+async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData, isLenten){
    /*
        1: weekday
        3: day of month
@@ -412,9 +412,15 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData, specialDay
     }
 
     if (dayTriodionData != undefined && "troparia" in dayTriodionData && dayOfWeek === 6) {
-        // for the deceased
-        if (Array.isArray(dayTriodionData["troparia"])) return dayTriodionData["troparia"][0];
-        else return dayTriodionData["troparia"];
+        var dayTrop = dayTriodionData["troparia"];
+        if (Array.isArray(dayTrop)) dayTrop = dayTrop[0];
+        if (dayData["class"] < 8 || seasonWeek === 2) {
+            // for the deceased or fathers
+            return glory + "<br><br>" + dayTriodionData["troparia"];
+        } else {
+            // fatehrs + polyeleios
+            return `${dayData["troparia"]}<br><br>${glory}<br><br>${dayTrop}`
+        }
     }
     if (isLenten) {
         dayTrop = hourData["lenten_troparia"];
@@ -565,7 +571,7 @@ async function selectTropar(hour, dayOfWeek, hourData, glas, dayData, specialDay
     return `${glory}<br><br>${dayTrop[0]}`;
 }
 
-async function selectKondak(hour, dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData, isLenten){
+async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData, isLenten){
     /*
      Якщо ж в уставі буде подано більше, ніж два тропарі і більше, ніж один кондак,
     тоді вони беруться поперемінне, тобто:
@@ -619,6 +625,7 @@ async function selectKondak(hour, dayOfWeek, hourData, glas, dayData, specialDay
     }
 
     if (dayTriodionData != undefined && dayData["class"] >= 8 && dayOfWeek === 0 && "kontakia" in dayTriodionData) {
+        // Sun of Triod + feast
         if (hour === "1hour" || hour === "9hour") {
             const sundayKond = await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`);
             return sundayKond["kontakia"][glas];
@@ -629,9 +636,15 @@ async function selectKondak(hour, dayOfWeek, hourData, glas, dayData, specialDay
             else return dayData["kontakia"];
         }
     } else if (dayTriodionData != undefined && dayOfWeek === 0 && prePostFeast != "" && "kontakia" in dayTriodionData) {
+        // Sun of Triod + pre/post-feast
         if (hour === "1hour" || hour === "6hour") return prePostFeastKontakion
         return dayTriodionData["kontakia"];
+    } else if (dayTriodionData != undefined && season === "Forelent" && seasonWeek === 3 && dayData["class"] >= 8) {
+        // sat of fathers + feast
+        if (hour === "1hour" || hour === "6hour") return dayData["kontakia"];
+        else return dayTriodionData["kontakia"];
     } else if (dayTriodionData != undefined && "kontakia" in dayTriodionData) {
+        // other Triod
         return dayTriodionData["kontakia"];
     }
 
