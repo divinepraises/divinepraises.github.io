@@ -817,7 +817,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
             versesMaterial[4],
             versesMaterial[5]
         ]
-    } else if (vespersTriodionData != undefined && dayData["class"] < 8) {
+    } else if (vespersTriodionData != undefined && dayData["class"] < 11) {
         // use weekday if triodion day
         apostVerses = vespersData["aposticha"];
     } else if ("aposticha_verses" in vespersMenaionData && !("additional_aposticha" in vespersMenaionData)) apostVerses = vespersMenaionData["aposticha_verses"];
