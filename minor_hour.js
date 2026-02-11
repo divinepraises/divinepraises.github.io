@@ -69,7 +69,7 @@ export async function minorHour(hour, priest, full, date){
 	<div id="chapter"></div><br>
 	<div class="subhead">Trisagion</div>
 	${trisagionToPater(priest)}
-	<div class="subhead">Kontakion</div>
+	<div id="kontakia_header"></div>
 	<div id="kontakia"></div><br>
 	${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
 	<div class="subhead">Prayer of the hours</div>
@@ -128,6 +128,10 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
     selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData, isLenten).then(tropar => {
         document.getElementById("troparia").innerHTML = tropar;
     });
+
+    if (isLenten) document.getElementById("kontakia_header").innerHTML = `<div class="subhead">Lenten troparia</div>`
+    else document.getElementById("kontakia_header").innerHTML = `<div class="subhead">Kontakion</div>`
+
     selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData, isLenten).then(kondak => {
         document.getElementById("kontakia").innerHTML = kondak;
     });
@@ -745,7 +749,7 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         dayKond = hourData["lenten_kontakion"];
         var i = 0;
         if (hour === "6hour" && (dayOfWeek === 3 || dayOfWeek === 5)) i = 1;
-        return `<br><div class="rubric">Troparia in tone ${dayKond[0]}</div>
+        return `<br><div class="rubric">Tone ${dayKond[0]}</div>
         ${dayKond[1]}<br><br>
         <i>${glory}</i><br><br>
         ${dayKond[2]}<br><br>
