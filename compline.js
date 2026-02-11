@@ -386,11 +386,14 @@ function makePetitions(petitions, full, isIncarnationFeast){
         document.getElementById("petitions").innerHTML = petitions.join("<br>");
         return;
     }
-    var res = `
-        ${cross} ${petitions[0]} <FONT COLOR="RED">(3)</FONT> <br>`;
-    for (let [i, petition] of petitions.slice(1, petitions.length).entries()){
+    var res = ``;
+    for (let [i, petition] of petitions.slice(0, petitions.length-2).entries()){
         res += `${cross} ${petition} <FONT COLOR="RED">(2)</FONT><br>`
     }
+    if (!isIncarnationFeast) {
+        res += `<div class="rubric">If there are two choirs, they chant together, and make inclination every time:</div>`
+    }
+    res += `${cross} ${petitions[petitions.length-1]} <FONT COLOR="RED">(3)</FONT> <br>`
     if (!isIncarnationFeast) {
         res = `<div class="rubric">One choir chants a petition, while the other one makes an inclination.</div>` + res;
     } else {
