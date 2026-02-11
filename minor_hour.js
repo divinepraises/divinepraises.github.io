@@ -1,5 +1,5 @@
 import { cross, StEphremPrayer, gloryGospel, usualBeginning, tripleAlleluia, glory, andNow, trisagionToPater, prayerOfTheHours, LHM, comeLetUs, gloryAndNow, moreHonorable, inTheName, prayerBlessingMayGodBeGracious, endingBlockMinor, amen, getCommonText } from './text_generation.js';
-import { getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords, specialSunday, cancelPostfeastHypapante } from './script.js';
+import { kathismaToText, getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords, specialSunday, cancelPostfeastHypapante } from './script.js';
 import { arrangeProkimenon, frameReadings } from './vespers.js';
 
 const address = `Text\\English`
@@ -135,7 +135,7 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
     var thotokionRubric = "";
     if (isLenten) thotokionRubric = `<div class="rubric">${cross} During the theotokion, three inclinations are made.</div>`
     document.getElementById("theotokion").innerHTML = thotokionRubric + hourData["theotokion"]
-    await arrangeAdditionalElements(additionalElements, hour, priest, full);
+    await arrangeAdditionalElements(additionalElements, hour, priest, full, season, seasonWeek, dayOfWeek);
     if (isLenten) {
         const isLessPenitential = ("forefeast" in dayData || "postfeast" in dayData || dayData["class"] >= 11);
         document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest, false, isLessPenitential);
@@ -264,25 +264,76 @@ async function arrangeRoyalHours(additionalElements, hour, priest) {
         return res;
     }
 
-async function arrangeAdditionalElements(additionalElements, hour, priest, full) {
 
-    if (additionalElements === undefined) {
-        document.getElementById("additionalElementsSelector").innerHTML =  "";
-        document.getElementById("additional_elements").innerHTML =  "";
-        return
+async function makeKathisma(seasonWeek, dayOfWeek, hour){
+    var full = document.querySelector('input[name="selectKathisma"]:checked')?.value;
+    if (full === "0") return " ";
+    var k;
+    const no_kath = `<div class="rubric">No kathisma prescribed at this hour.</div>`
+    if (seasonWeek != 4) {
+        if (dayOfWeek === 1) {
+            if (hour === "1hour") return no_kath;
+            else if (hour === "3hour") k = 7;
+            else if (hour === "6hour") k = 8;
+            else if (hour === "9hour") k = 9;
+        } else if (dayOfWeek === 2) {
+            if (hour === "1hour") k = 13;
+            else if (hour === "3hour") k = 14;
+            else if (hour === "6hour") k = 15;
+            else if (hour === "9hour") k = 16;
+        } else if (dayOfWeek === 3) {
+            if (hour === "1hour") k = 2;
+            else if (hour === "3hour") k = 3;
+            else if (hour === "6hour") k = 4;
+            else if (hour === "9hour") k = 5;
+        } else if (dayOfWeek === 4) {
+            if (hour === "1hour") k = 9;
+            else if (hour === "3hour") k = 10;
+            else if (hour === "6hour") k = 11;
+            else if (hour === "9hour") k = 12;
+        } else if (dayOfWeek === 5) {
+            if (hour === "1hour") return no_kath;
+            else if (hour === "3hour") k = 19;
+            else if (hour === "6hour") k = 20;
+            else if (hour === "9hour") return no_kath;
+        }
+    } else {
+        // 5th week
+        if (dayOfWeek === 1) {
+            if (hour === "1hour") return no_kath;
+            else if (hour === "3hour") k = 7;
+            else if (hour === "6hour") k = 8;
+            else if (hour === "9hour") k = 9;
+        } else if (dayOfWeek === 2) {
+            if (hour === "1hour") k = 14;
+            else if (hour === "3hour") k = 15;
+            else if (hour === "6hour") k = 16;
+            else if (hour === "9hour") k = 18;
+        } else if (dayOfWeek === 3) {
+            if (hour === "1hour") k = 3;
+            else if (hour === "3hour") k = 4;
+            else if (hour === "6hour") k = 5;
+            else if (hour === "9hour") k = 6;
+        } else if (dayOfWeek === 4) {
+            if (hour === "1hour") return no_kath;
+            else if (hour === "3hour") k = 9;
+            else if (hour === "6hour") k = 10;
+            else if (hour === "9hour") k = 11;
+        } else if (dayOfWeek === 5) {
+            if (hour === "1hour") return no_kath;
+            else if (hour === "3hour") k = 19;
+            else if (hour === "6hour") k = 20;
+            else if (hour === "9hour") return no_kath;
+        }
     }
-    // Royal hours
-    if ("psalms" in additionalElements) {
-        document.getElementById("additionalElementsSelector").innerHTML = `<div class="subhead">Stichera</div><br>
-          <label><input type="radio" name="selectStychera" value="1" checked> Repeat stichera as prescribed.</label><br>
-          <label><input type="radio" name="selectStychera" value="0"> No repetitions.</label>
-          <br><br>`
-        document.getElementById("additional_elements").innerHTML = await arrangeRoyalHours(additionalElements, hour, priest);
-        document.getElementById("additionalElementsSelector").addEventListener("change", async function () {document.getElementById("additional_elements").innerHTML = await arrangeRoyalHours(additionalElements, hour, priest)});
-        return
-    }
-    // Lent
-    document.getElementById("additionalElementsSelector").innerHTML =  "";
+
+    var text = `<div class="subhead">Kathisma ${k}</div>`
+    text += await kathismaToText(k, false, dayOfWeek) + "<br>"
+    return text
+}
+
+async function arrangeLentenReading(additionalElements, full) {
+    if (additionalElements === undefined) return "";
     const troparia = additionalElements["troparion"];
     const prokimenon = additionalElements["prokimenon"];
     const readings = additionalElements["readings"];
@@ -300,8 +351,50 @@ async function arrangeAdditionalElements(additionalElements, hour, priest, full)
         <div class="subhead">Prokimenon of the prophecy</div><br>
         ${arrangeProkimenon(prokimenon2)}
     `
+    return text;
+}
+
+async function arrangeLentenElements(additionalElements, full, seasonWeek, dayOfWeek, hour, addKathisma) {
+    var text = "";
+    if (addKathisma) text = await makeKathisma(seasonWeek, dayOfWeek, hour);
+    text += await arrangeLentenReading(additionalElements, full);
     document.getElementById("additional_elements").innerHTML = text;
-    return ""
+}
+
+async function arrangeAdditionalElements(additionalElements, hour, priest, full, season, seasonWeek, dayOfWeek) {
+
+    const addKathisma = (season === "Lent" && dayOfWeek != 0 && dayOfWeek != 6);
+
+    if (additionalElements === undefined && !addKathisma) {
+        document.getElementById("additionalElementsSelector").innerHTML = "";
+        document.getElementById("additional_elements").innerHTML = "";
+        return
+    }
+    // Royal hours
+    if (additionalElements != undefined && "psalms" in additionalElements) {
+        document.getElementById("additionalElementsSelector").innerHTML = `<div class="subhead">Stichera</div><br>
+          <label><input type="radio" name="selectStychera" value="1" checked> Repeat stichera as prescribed.</label><br>
+          <label><input type="radio" name="selectStychera" value="0"> No repetitions.</label>
+          <br><br>`
+        document.getElementById("additional_elements").innerHTML = await arrangeRoyalHours(additionalElements, hour, priest);
+        document.getElementById("additionalElementsSelector").addEventListener("change", async function () {document.getElementById("additional_elements").innerHTML = await arrangeRoyalHours(additionalElements, hour, priest)});
+        return
+    }
+    // Lent and forelent
+    if (addKathisma) {
+        document.getElementById("additionalElementsSelector").innerHTML = `
+          <label><input type="radio" name="selectKathisma" value="1"> Show kathisma indications </label><br>
+          <label><input type="radio" name="selectKathisma" value="0" checked> Hide kathisma indications </label>
+          <br><br>`
+        await arrangeLentenElements(additionalElements, full, seasonWeek, dayOfWeek, hour, addKathisma);
+        document.getElementById("additionalElementsSelector").addEventListener(
+            "change",
+             async function () {await arrangeLentenElements(additionalElements, full, seasonWeek, dayOfWeek, hour, addKathisma)}
+        );
+    } else {
+        document.getElementById("additionalElementsSelector").innerHTML = "";
+        await arrangeLentenElements(additionalElements, full, seasonWeek, dayOfWeek, hour, addKathisma);
+    }
 }
 
 async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData, isLenten){

@@ -56,21 +56,21 @@ export async function enhanceCompline(priest, full, date){
         const vespersData = await getData(`${address}\\horologion\\general_vespers.json`);
         vespersEnding(vespersData, dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, season, seasonWeek, false);
     } else if (
-            (season === "Lent" && dayOfWeek < 6 && dayOfWeek > 0) 
+            (season === "Lent" && dayOfWeek < 6 && dayOfWeek > 1)
             || ((season === "Forelent" && seasonWeek === 3) && (dayOfWeek === 3 || dayOfWeek === 5))
         ) {
         greatComplineBeginning(full, season, priest, dayOfWeek, dayData, isIncarnationFeast);
-        complineEnding(full, dayOfWeek, priest, glas, dayData, true, specialDayData, dayTriodionData, dateAddress);
+        complineEnding(full, season, dayOfWeek, priest, glas, dayData, true, specialDayData, dayTriodionData, dateAddress);
     } else {
         smallComplineBeginning(full, season, dayOfWeek, priest, isAlleluiaDay, glas, dayData, dateAddress);
-        complineEnding(full, dayOfWeek, priest, glas, dayData, false, specialDayData, dayTriodionData, dateAddress);
+        complineEnding(full, season, dayOfWeek, priest, glas, dayData, false, specialDayData, dayTriodionData, dateAddress);
     }
 
 }
 
-async function complineEnding(full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dayTriodionData, dateAddress) {
+async function complineEnding(full, season, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dayTriodionData, dateAddress) {
 	const smallComplineData = await getData(`${address}\\horologion\\small_compline.json`);
-	loadComplineEnding(smallComplineData, full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dayTriodionData, dateAddress);
+	loadComplineEnding(smallComplineData, full, season, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dayTriodionData, dateAddress);
     document.getElementById("ending").innerHTML =  `<div id="canonSelector">
       <label><input type="radio" name="canonChoice" value="omit_canon"> Omit the canon</label><br>
       <label><input type="radio" name="canonChoice" value="shorten_canon" id="shorten_canon"> Shorten the canon</label><br>
@@ -100,7 +100,7 @@ async function complineEnding(full, dayOfWeek, priest, glas, dayData, isGreatCom
 	`;
 }
 
-async function loadComplineEnding(smallComplineData, full, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dayTriodionData, dateAddress){
+async function loadComplineEnding(smallComplineData, full, season, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dayTriodionData, dateAddress){
 	var ekteniasData = await getData(`${address}\\horologion\\night_ektenias.json`);
 
     if (full === "1") {
@@ -118,7 +118,7 @@ async function loadComplineEnding(smallComplineData, full, dayOfWeek, priest, gl
     document.getElementById("prayers").innerHTML = smallComplineData["prayers"].join("<br><br>");
     document.getElementById("after_prayers").innerHTML =  postComplinePrayers(priest, smallComplineData, ekteniasData, dayOfWeek);
 
-    if (isGreatCompline && !("forefeast" in dayData || "postfeast" in dayData || "usual compline troparia" in dayTriodionData)){
+    if (isGreatCompline && !("forefeast" in dayData || "postfeast" in dayData || dayTriodionData != undefined && "usual compline troparia" in dayTriodionData)){
 	    const greatComplineData = await getData(`${address}\\horologion\\great_compline.json`);
         makeThirdSectionTroparia(greatComplineData["troparia_3"])
         document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest);
@@ -128,7 +128,8 @@ async function loadComplineEnding(smallComplineData, full, dayOfWeek, priest, gl
         selectTropar(dayOfWeek,  smallComplineData, glas, dayData, specialDayData, dayTriodionData).then(tropar => {
             document.getElementById("troparia").innerHTML = tropar + prostrations;
         });
-        document.getElementById("st_ephrem").innerHTML = "";
+        if (season === "Lent" && dayOfWeek === 1) document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest);
+        else document.getElementById("st_ephrem").innerHTML = "";
     }
 }
 
@@ -182,7 +183,7 @@ async function loadSmallComplineBeginning(smallComplineData, full, season, dayOf
             `;
         document.getElementById("switch").addEventListener("change", () => {
             greatComplineBeginning(full, season, priest, dayOfWeek, dayData, false);
-            complineEnding(full, dayOfWeek, priest, glas, dayData, true, {}, undefined, dateAddress);
+            complineEnding(full, season, dayOfWeek, priest, glas, dayData, true, {}, undefined, dateAddress);
             }
         );
     }

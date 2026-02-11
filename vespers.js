@@ -1,5 +1,5 @@
 import { StEphremPrayer, itIsTrulyRight, prayerBlessingMayGodBeGracious, inTheName, HeWhoIs, getBeginning, usualBeginning, comeLetUs ,tripleAlleluia, lesserDoxology, trisagionToPater, glory, andNow, LHM, GTL, TYL, gloryAndNow, getCommonText, moreHonorable, amen, giveTheBlessing, dismissalMajor, cross } from './text_generation.js';
-import { cancelPostfeastHypapante, getDayInfo, getData, isBetweenDates, readPsalmsFromNumbers, constructDayName, replaceCapsWords, specialSunday } from './script.js';
+import { kathismaToText, cancelPostfeastHypapante, getDayInfo, getData, isBetweenDates, readPsalmsFromNumbers, constructDayName, replaceCapsWords, specialSunday } from './script.js';
 var address = `Text\\English`
 
 // TODO readings
@@ -47,7 +47,7 @@ export async function enhanceVespers(priest, full, date) {
     }
 
     const isStBasil = (dateAddress === "12\\25" || dateAddress === "01\\06" || dateAddress === "03\\25");
-    const isLenten = (season === "Lent" && dayOfWeek > 0 && dayOfWeek < 6) || (season === "Forelent" && seasonWeek === 3 && (dayOfWeek === 3 || dayOfWeek === 5));
+    const isLenten = (season === "Lent" && dayOfWeek > 0) || (season === "Forelent" && seasonWeek === 3 && (dayOfWeek === 3 || dayOfWeek === 5));
 
     await vespersBeginning(
         vespersData, vespersMenaionData, full, dayOfWeek, mm, dd, glas, dayData, dateAddress, priest, season, seasonWeek, isStBasil, isLenten
@@ -355,7 +355,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
     makeKathisma(dayOfWeek, dayData["class"], mm, dd, season, priest, ekteniaData, omit_kathisma);
     document.getElementById("kathismaSelector").addEventListener("change",() => makeKathisma(dayOfWeek, dayData["class"], mm, dd, season, priest, ekteniaData, omit_kathisma));
 
-    await makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vespersMenaionData, vespersOctoechosData, vespersTriodionData, dayData, specialSundayName);
+    await makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers, vespersData, vespersMenaionData, vespersOctoechosData, vespersTriodionData, dayData, specialSundayName);
 
     if (priest === "1"){
         var wisdom = priestlyExclamationsData["wisdom"];
@@ -363,7 +363,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
         wisdom = "";
     }
 
-    makeHymnOfLight(priest, isGreatVespers, priestPrayers, wisdom, vespersData);
+    makeHymnOfLight(priest, isGreatVespers || (vespersTriodionData != undefined && "special_prokimenon_index" in vespersTriodionData), priestPrayers, wisdom, vespersData);
 
     document.getElementById("prokimenon").innerHTML = await makeProkimenon(dayOfWeek, vespersData, priest, dayData, vespersMenaionData, priestlyExclamationsData, vespersTriodionData);
 
@@ -380,7 +380,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
     if (isStBasil && priest === "1" && isWeekday) {
         document.getElementById("lesserDoxology").innerHTML = "";
     } else {
-        document.getElementById("lesserDoxology").innerHTML = await lesserDoxology("vespers");
+        document.getElementById("lesserDoxology").innerHTML = await lesserDoxology("vespers", season === "Lent" && dayOfWeek != 0);
     }
 
     if (isGreatVespers) {
@@ -486,7 +486,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
 
     const isSemiLenten = (season === "Forelent" && seasonWeek === 3 && dayOfWeek > 3);
     if (isLenten || isSemiLenten) {
-        document.getElementById("ektenia_augmented_or_ps33").innerHTML = await makeLentenEnding(priest, !isLenten);
+        document.getElementById("ektenia_augmented_or_ps33").innerHTML = await makeLentenEnding(priest, season, seasonWeek, dayOfWeek, dayData["class"], ekteniaData);
     } else if (!isGreatVespers && !isLenten) {
         if (priest == "1"){
             document.getElementById("ektenia_augmented_or_ps33").innerHTML = makeEktenia(ekteniaData["augmented"], "augmented") + "<br><br>";
@@ -635,7 +635,7 @@ export async function makeEndingBlockMajor(priest, dayOfWeek, isGreatVespers, ve
     return res;
 }
 
-async function makeLentenEnding(priest, isLessPenitential) {
+async function makeLentenEnding(priest, season, seasonWeek, dayOfWeek, dayClass, ekteniaData) {
     const lentenTexts = await getData(`${address}\\horologion\\lenten_vespers.json`);
     const lentenPrayer = lentenTexts["O heavenly King"];
     const vesperalPrayer = lentenTexts["prayer"];
@@ -643,15 +643,25 @@ async function makeLentenEnding(priest, isLessPenitential) {
     const blessedBe = (await getData(`${address}\\horologion\\vigil_vespers.json`))["blessed_be"];
     const ps33 = (await readPsalmsFromNumbers(["33vespers"], ["Psalm 33"])).join("")
 
-    var prostrationsOr40 = ``;
-    var stEphremOrNothing = StEphremPrayer(priest, false, false);
-    if (isLessPenitential) {
-        // just the prostrations
-        prostrationsOr40 = StEphremPrayer(priest, false, true);
-        stEphremOrNothing = "";
-    }
+    // 4 possible cases:
+    // 1) full Ephrem and full conclusion (all cases except following)
+    // 2) 3-prostration Ephrem and no conclusion (Sun evenings)
+    // 3) no Ephrem nor conclusion (feast, Sat of Lent)
+    // 4) no Ephrem and full conclusion (forelent Thu and Sat)
+    const noEphrem = (
+        dayOfWeek === 6
+        || (season === "Forelent" && seasonWeek === 3 && dayOfWeek === 4)
+        || dayClass >= 8
+    )
+    const smallEphrem = (season === "Lent" && dayOfWeek === 1)
+    const noConclusion = (
+        (season === "Lent" && dayOfWeek === 6)
+        || dayOfWeek === 1
+        || dayClass >= 8
+    );
+
     var text = `<div class="subhead">Lenten conclusion</div><br>`
-    if (!isLessPenitential){
+    if (!noEphrem) {
         text += `
             ${LHM} <FONT COLOR="RED">(40)</FONT> ${giveTheBlessing(false)}<br><br>
             ${HeWhoIs(priest)}<br><br>
@@ -671,9 +681,10 @@ async function makeLentenEnding(priest, isLessPenitential) {
             text = `${LHM} <FONT COLOR="RED">(40)</FONT><br>${gloryAndNow}<br><br>${text}`;
         }
     }
+    text += StEphremPrayer(priest, smallEphrem, noEphrem);
+    if (noConclusion) return text;
     return text +
-            `${StEphremPrayer(priest, false, isLessPenitential)}
-            ${vesperalPrayer}<br><br>
+            `${vesperalPrayer}<br><br>
             ${blessedBe}<FONT COLOR="RED"><i>(3)</i></FONT><br><br>
             ${ps33}<br><br>
             ${itIsTrulyRight}<br><br>`
@@ -819,7 +830,8 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
         ]
     } else if (vespersTriodionData != undefined && dayData["class"] < 11) {
         // use weekday if triodion day
-        apostVerses = vespersData["aposticha"];
+        if (dayOfWeek === 6 && season === "Forelent" && seasonWeek < 3) apostVerses = vespersData["aposticha_dead"];
+        else apostVerses = vespersData["aposticha"];
     } else if ("aposticha_verses" in vespersMenaionData && !("additional_aposticha" in vespersMenaionData)) apostVerses = vespersMenaionData["aposticha_verses"];
     else if (prePostFeast != "") {
         apostVerses = (await getData(`${address}\\menaion\\${dayData[prePostFeast]}_vespers.json`))["aposticha_verses"];
@@ -832,7 +844,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
         && prePostFeast === ""
         && (
             vespersTriodionData === undefined
-            || (vespersTriodionData != undefined && "special_prokimenon_index" in vespersTriodionData)
+            || (season === "Forelent" && seasonWeek === 2 && dayOfWeek === 6)
             )
         ) {
         // weekday or Saturday for the dead
@@ -914,7 +926,6 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
     } else if (
             dayData["class"] < 11
             && vespersTriodionData != undefined
-            && !("special_prokimenon_index" in vespersTriodionData)
         ) {
         // triodion weekday
         apostMain = vespersTriodionData["aposticha"];
@@ -1115,14 +1126,18 @@ function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData) {
 }
 
 export function arrangeProkimenon(prokData) {
+    var asterisk = "*";
+    if (prokData[2] === "") asterisk = "";
     var prokimenon = `
         <div class="rubric">Tone ${prokData[0]}</div>
-        <FONT COLOR="RED">Choir:</FONT> ${prokData[1]}* ${prokData[2]}<br>`
+        <FONT COLOR="RED">Choir:</FONT> ${prokData[1]}${asterisk} ${prokData[2]}<br>`
     for (let verse of prokData.slice(3)){
-        prokimenon += `<FONT COLOR="RED">v.</FONT> ${verse}<br><FONT COLOR="RED">Choir:</FONT> ${prokData[1]}* ${prokData[2]}<br>`
+        prokimenon += `<FONT COLOR="RED">v.</FONT> ${verse}<br><FONT COLOR="RED">Choir:</FONT> ${prokData[1]}${asterisk} ${prokData[2]}<br>`
     }
-    prokimenon += `
-        <FONT COLOR="RED">v.</FONT> ${prokData[1]} <br><FONT COLOR="RED">Choir:</FONT> ${prokData[2]}<br>`
+    if (prokData[2] != "") {
+        prokimenon += `
+            <FONT COLOR="RED">v.</FONT> ${prokData[1]} <br><FONT COLOR="RED">Choir:</FONT> ${prokData[2]}<br>`
+    }
     return prokimenon
 }
 
@@ -1145,6 +1160,8 @@ async function makeProkimenon(dayOfWeek, vespersData, priest, dayData, vespersMe
          || (dayData["class"] === 12 && dayOfWeek === 6))
     ) {
         prokData = (await getData(`${address}\\horologion\\special_prokimena.json`))[vespersMenaionData["special_prokimenon_index"]];
+    } if (vespersTriodionData != undefined && "special_prokimenon_index" in vespersTriodionData) {
+        prokData = (await getData(`${address}\\horologion\\special_prokimena.json`))[vespersTriodionData["special_prokimenon_index"]];
     } else if (vespersTriodionData != undefined && "prokimenon" in vespersTriodionData) {
         prokData = vespersTriodionData["prokimenon"];
     } else {
@@ -1193,9 +1210,7 @@ function countStichera(sticheras) {
     return [numStycheras, numSetsStycheras]
 }
 
-async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vespersMenaionData, vespersOctoechosData, vespersTriodionData, dayData, specialSundayName){
-    // TODO triodion
-
+async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers, vespersData, vespersMenaionData, vespersOctoechosData, vespersTriodionData, dayData, specialSundayName){
     var prePostFeast = "";
     if ("forefeast" in dayData) prePostFeast = "forefeast";
     else if ("postfeast" in dayData) prePostFeast = "postfeast";
@@ -1228,8 +1243,27 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
     var stycheras;
     var psalm140OctoechosStycheras;
 
-    var forceSixSticheras = false;
-    if (dayOfWeek === 0 && vespersTriodionData != undefined) {
+    var forceNumSticheras;
+    if (dayOfWeek === 1 && season === "Lent" && dayData["class"] < 8) {
+        psalm140tone = glas;
+
+        var matinsStichera = (await getData(`${address}\\octoechos\\${glas}\\1_matins.json`))["aposticha"].slice(1, 3);
+        if (numStycheras > 3) {
+            // 2 saints: one is moved to matins
+            // 6-saint: limit to 3 stichera
+            if (numSetsMenaionStycheras === 2) psalm140menaionStycheras = psalm140menaionStycheras.slice(0, 4).concat(psalm140menaionStycheras.slice(numStycheras+2, numStycheras+6))
+            else if (numSetsMenaionStycheras === 1) psalm140menaionStycheras = psalm140menaionStycheras.slice(0, 4).concat(psalm140menaionStycheras.slice(numStycheras+1, numStycheras+5))
+        }
+        stycheras = (
+            vespersOctoechosData["aposticha"].slice(0, 3)
+            .concat(matinsStichera)
+            .concat(vespersTriodionData["ps140"])
+            .concat(psalm140menaionStycheras)
+        )
+        stycheraScheme = Array(10).fill(1);
+        numStycheras = 10;
+        forceNumSticheras = 10;
+    } else if (dayOfWeek === 0 && vespersTriodionData != undefined) {
         psalm140tone = glas;
         psalm140OctoechosStycheras = vespersOctoechosData["ps140"];
 
@@ -1467,10 +1501,10 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
         )
         stycheraScheme = Array(6).fill(1);
         numStycheras = 6;
-        forceSixSticheras = true;
+        forceNumSticheras = 6;
     } else {
          // great vespers not on Sunday
-         if ("six stichera" in vespersMenaionData) forceSixSticheras = true;
+         if ("six stichera" in vespersMenaionData) forceNumSticheras = 6;
          psalm140tone = psalm140menaionStycheras[0][0];
          stycheras = psalm140menaionStycheras;
          if (numStycheras === 2) stycheraScheme = Array(2).fill(4);
@@ -1495,11 +1529,11 @@ async function makePsalm140(dayOfWeek, glas, isGreatVespers, vespersData, vesper
     var numVersesLeft;
     var currentPsalm;
     var nextPsalmList = [psalm116split];
-    if (!isGreatVespers || forceSixSticheras) {
+    if (!isGreatVespers && forceNumSticheras === undefined || forceNumSticheras === 6) {
         i = 2;   // start at 2nd verse of ps 129
         numVersesLeft = 6;
         currentPsalm = psalm129split;
-    } else if (dayOfWeek === 0 && dayData["class"] < 12) {
+    } else if (dayOfWeek === 0 && dayData["class"] < 12 && forceNumSticheras === undefined || forceNumSticheras === 10) {
         i = 9;
         numVersesLeft = 10;
         currentPsalm = psalm141split;
@@ -1702,16 +1736,7 @@ async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, priest, ektenia
         else if (dayOfWeek === 5) k = 15;
     }
 
-    // replace with readPsalmsFromNumbers when psalms are here
-    var kathPsalms = await getData(`${address}\\psalms\\kathismas.json`)
-    var kathPsalmsToText = ""
-    for (const [i, stasis] of kathPsalms[k].entries()){
-        kathPsalmsToText += `
-        <div class="rubric">Psalms ${stasis} (in traditional/LXX numeration)</div>
-        ${tripleAlleluia}`
-        if (isGreatVespers && dayOfWeek != 0) break;
-        if (i < 2) kathPsalmsToText += `${LHM} <FONT COLOR="RED">(3)</FONT><br>${gloryAndNow}`
-    }
+    const kathPsalmsToText = await kathismaToText(k, isGreatVespers, dayOfWeek);
     if (isGreatVespers && dayOfWeek != 0){
       document.getElementById("kathisma").innerHTML = `<div class="subhead">First stasis of Kathisma ${k}</div>${kathPsalmsToText}<br>`
     } else {
@@ -1719,7 +1744,6 @@ async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, priest, ektenia
     }
 
     makeSmallEktenia(priest, ekteniaData);
-
 }
 
 export function makeEktenia(ekteniaData, key=false){

@@ -31,7 +31,7 @@ export function StEphremPrayer(priest, short=false, replaced=false){
     for (let verse of stEphrem.slice(0, 3)){
         res += `${cross} ${verse} <div class="rubric">Prostration.</div>`
     }
-    if (short) return res;
+    if (short) return res + "<br>";
     res += `<br> <div class="rubric">Then twelve inclinations, repeating these three verses for four times:</div>`;
     for (let verse of stEphrem.slice(3, stEphrem.length)){
         res += `${cross} ${verse} <br>`
@@ -187,13 +187,15 @@ export const wePraise = data.wePraise;
 export const letUsBless = data.letUsBless;
 export const gloryGospel = data.gloryGospel;
 
-export async function lesserDoxology(hour){
+export async function lesserDoxology(hour, isLenten=false){
     const dox = await getData(`Text\\English\\horologion\\lesser_doxology.json`)
     const replacementDict = {"DAYPART": dox[hour]}
     const head = `<div class="subhead">Lesser Doxology</div><br>`
+    var prostrations = "";
+    if (isLenten) prostrations = `<div class="rubric">${cross} Three inclinations with no words are made after the doxology.</div>`
     if (hour === "vespers"){
         // vespers uses only the 2nd part
-        return `${head}${replaceCapsWords(dox["2"], replacementDict)}`
+        return `${head}${replaceCapsWords(dox["2"], replacementDict)} ${prostrations}`
     }
     return `${head}${replaceCapsWords(dox["1"], replacementDict)} ${replaceCapsWords(dox["2"], replacementDict)}`
 }

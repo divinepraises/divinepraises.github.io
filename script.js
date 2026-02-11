@@ -1,4 +1,4 @@
-import {forefeast, postfeast, st} from './text_generation.js';
+import {forefeast, postfeast, st, tripleAlleluia, LHM, gloryAndNow} from './text_generation.js';
 var address = `Text\\English`
 
 export function dateToStr(currentDate){
@@ -319,4 +319,18 @@ export function cancelPostfeastHypapante(dd_str, season, seasonWeek, dayOfWeek) 
         (dd === 9 && seasonWeek >= 3)
     ) return true
     return false
+}
+
+export async function kathismaToText(k, isGreatVespers, dayOfWeek) {
+    // replace with readPsalmsFromNumbers when psalms are here
+    var kathPsalms = await getData(`${address}\\psalms\\kathismas.json`)
+    var kathPsalmsToText = ""
+    for (const [i, stasis] of kathPsalms[k].entries()){
+        kathPsalmsToText += `
+        <div class="rubric">Psalms ${stasis} (in traditional/LXX numeration)</div>
+        ${tripleAlleluia}`
+        if (isGreatVespers && dayOfWeek != 0) break;
+        if (i < 2) kathPsalmsToText += `${LHM} <FONT COLOR="RED">(3)</FONT><br>${gloryAndNow}`
+    }
+    return kathPsalmsToText;
 }
