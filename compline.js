@@ -242,7 +242,7 @@ async function loadGreatComplineBeginning(smallComplineData, full, season, seaso
     const greatComplineData = await getData(`${address}\\horologion\\great_compline.json`);
 
     const alleluiaUnit = `<br><br>${tripleAlleluia} ${LHM} <FONT COLOR="RED">(3)</FONT><br>${gloryAndNow}`
-    if (season === "Lent" && seasonWeek === 1) {
+    if (season === "Lent" && seasonWeek === 1 && dayOfWeek >= 2 && dayOfWeek <= 5) {
         const psalm_69 = await readPsalmsFromNumbers([69]);
         const canonData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}_compline.json`)
         const [stAndrew, _] = constructMenaionCanon(canonData, "1", dayOfWeek);
@@ -259,7 +259,7 @@ async function loadGreatComplineBeginning(smallComplineData, full, season, seaso
         document.getElementById("psalms_1").innerHTML = psalms_1.join("");
         document.getElementById("psalms_2").innerHTML = (await readPsalmsFromNumbers(greatComplineData["psalms_2"])).join("");
         var psalms_3 = (await readPsalmsFromNumbers(greatComplineData["psalms_3"]));
-        if (season === "Lent" && seasonWeek === 1) psalms_3 = psalms_3.slice(2, 4);
+        if (season === "Lent" && seasonWeek === 1 && dayOfWeek >= 2 && dayOfWeek <= 5) psalms_3 = psalms_3.slice(2, 4);
         document.getElementById("psalms_3").innerHTML = psalms_3.join("");
     } else if (full === "0") {
         const dayToPsalm_1 = {1: [0, 3], 2: [1, 4], 3: [2, 5], 4:[2, 5]}[dayOfWeek];
@@ -273,7 +273,7 @@ async function loadGreatComplineBeginning(smallComplineData, full, season, seaso
         document.getElementById("psalms_2").innerHTML = (await readPsalmsFromNumbers([greatComplineData["psalms_2"][dayToPsalm_2_3]])).join("");
         var psalms_3;
         // we have read Ps 69, so nothing to choose from here
-        if (season === "Lent" && seasonWeek === 1) psalms_3 = (await readPsalmsFromNumbers([greatComplineData["psalms_3"][1]]));
+        if (season === "Lent" && seasonWeek === 1 && dayOfWeek >= 2 && dayOfWeek <= 5) psalms_3 = (await readPsalmsFromNumbers([greatComplineData["psalms_3"][1]]));
         else psalms_3 = (await readPsalmsFromNumbers([greatComplineData["psalms_3"][dayToPsalm_2_3]]));
         document.getElementById("psalms_3").innerHTML = psalms_3.join("");
     }
@@ -575,7 +575,7 @@ async function constructCanon(dayOfWeek, glas, full, refrain, dateAddress){
 }
 
 async function selectCanon(season, seasonWeek, dayOfWeek, glas, full, refrain, dateAddress, dayTriodionData) {
-    if (season === "Lent" && seasonWeek === 1) {
+    if (season === "Lent" && seasonWeek === 1 && dayOfWeek >= 2 && dayOfWeek <= 5) {
         document.getElementById("canon").innerHTML = `<div class=rubric>Canon was already said today<br><br></div>`;
         document.getElementById("canonSelector").innerHTML = "";
         return true
