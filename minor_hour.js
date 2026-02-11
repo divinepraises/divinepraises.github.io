@@ -331,7 +331,7 @@ async function makeKathisma(seasonWeek, dayOfWeek, hour){
         }
     }
 
-    var text = `<div class="subhead">Kathisma ${k}</div>`
+    var text = `<br><div class="subhead">Kathisma ${k}</div>`
     text += await kathismaToText(k, false, dayOfWeek) + "<br>"
     return text
 }
@@ -389,7 +389,7 @@ async function arrangeAdditionalElements(additionalElements, hour, priest, full,
         document.getElementById("additionalElementsSelector").innerHTML = `
           <label><input type="radio" name="selectKathisma" value="1"> Show kathisma indications </label><br>
           <label><input type="radio" name="selectKathisma" value="0" checked> Hide kathisma indications </label>
-          <br><br>`
+          <br>`
         await arrangeLentenElements(additionalElements, full, seasonWeek, dayOfWeek, hour, addKathisma);
         document.getElementById("additionalElementsSelector").addEventListener(
             "change",
