@@ -124,11 +124,11 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
         document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest);
     } else {
         var prostrations = "";
-        if (isGreatCompline) prostrations = `<br><br> <div class="rubric">${cross} Three prostrations with no words are made here instead of the prayer of st. Ephrem later.</div>`
+        if (isGreatCompline && ("forefeast" in dayData || "postfeast" in dayData)) prostrations = `<br><br> <div class="rubric">${cross} Three prostrations with no words are made here instead of the prayer of st. Ephrem later.</div>`
         selectTropar(dayOfWeek,  smallComplineData, glas, dayData, specialDayData, dayTriodionData).then(tropar => {
             document.getElementById("troparia").innerHTML = tropar + prostrations;
         });
-        if (season === "Lent" && dayOfWeek === 1) document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest);
+        if (season === "Lent" && dayOfWeek === 1 || isGreatCompline && !("forefeast" in dayData || "postfeast" in dayData)) document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest);
         else document.getElementById("st_ephrem").innerHTML = "";
     }
 }
