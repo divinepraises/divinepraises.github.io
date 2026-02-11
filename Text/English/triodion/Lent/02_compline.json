@@ -26,7 +26,7 @@
             "hirmos": "Attend, O heaven, and I shall speak — and sing in praise of Christ, who took flesh from a Virgin and came to dwell among us.",
             "troparia": [
                 [
-                   "Attend, O heaven, and I shall speak; give ear, O earth, to the voice of one who repents before God and sings His praise.",
+                    "Attend, O heaven, and I shall speak; give ear, O earth, to the voice of one who repents before God and sings His praise.",
                     "Look on me, God my Saviour, with your merciful eye, and accept my fervent confession.",
                     "I have sinned more than all people; I alone have sinned against you. But as God take pity on your creation, O Saviour.",
                     "With my lustful desires I have given form to the deformity of the passions and disfigured the beauty of my mind.",
@@ -36,7 +36,7 @@
                     "I have now torn the first robe that the Creator wove for me from the beginning, and I lie naked.",
                     "I have clothed myself in the torn garment that the serpent wove for me, and I am ashamed.",
                     "The tears of the harlot I too offer to you, O Merciful One. Take pity on me, O Saviour, in your compassion. ",
-                    "I looked on the beauty of the tree and my mind was deceived; and now I lie naked and ashamed.  ",
+                    "I looked on the beauty of the tree and my mind was deceived; and now I lie naked and ashamed. ",
                     "All the ruling passions have worked on my back, lengthening their evils on me. ",
                     "I sing your praises, God of all, one in three Persons, the Father, the Son and the Holy Spirit.",
                     "Most pure Virgin Mother of God, alone all-praised, intercede fervently for our salvation. "
@@ -48,12 +48,12 @@
             "hirmos": "Establish my thoughts on the unshaken rock of your commandments, O Christ. ",
             "troparia": [
                 [
-                   "The Lord once rained down fire from the Lord, and consumed the land of Sodom of old.",
+                    "The Lord once rained down fire from the Lord, and consumed the land of Sodom of old.",
                     "O soul, save yourself on the mountain like Lot — and take refuge in Seegor. ",
                     "O soul, flee from the flames, flee from the burning of Sodom, flee from destruction by the fire of God. ",
                     "I alone have sinned against you, I have sinned more than all; O Saviour Christ, do not reject me.",
                     "You are the Good Shepherd: seek me, the lamb, and, though I have strayed, do not forget me.",
-                    "You are the sweet Jesus, you are my Creator; in you, O Saviour, I shall be justified.  ",
+                    "You are the sweet Jesus, you are my Creator; in you, O Saviour, I shall be justified. ",
                     "I confess to you, O Saviour: I have sinned, I have sinned against you. But, as you are compassionate, absolve and forgive me. ",
                     "O Trinity, one God, save us from delusion and temptations and misfortunes.",
                     "Rejoice, womb that received God. Rejoice, throne of the Lord. Rejoice, Mother of our Life."
@@ -65,7 +65,7 @@
             "hirmos": "The prophet heard of your coming, O Lord, and he was afraid — how You were to be born of a Virgin and revealed to mankind; and he said: I have heard the report of You, and I was afraid. Glory to Your power, O Lord.",
             "troparia": [
                 [
-                   "O just Judge, do not despise Your works; do not forsake Your creation, even though I alone have sinned as a human more than all people, O Lover of mankind. But as Lord of all You have the power to pardon s",
+                    "O just Judge, do not despise Your works; do not forsake Your creation, even though I alone have sinned as a human more than all people, O Lover of mankind. But as Lord of all You have the power to pardon s",
                     "The end draws near, O soul, it draws near; but you do not trouble or prepare. The time grows short, rise up: the Judge is near the doors. As a dream, as a flower, the days of our life pass swiftly. Why do we trouble ourselves in vain? ",
                     "Return to sobriety, O my soul. Consider the actions that you have done, and set them before your eyes, and let the drops of your tears fall. With freedom to speak tell Christ your actions and thoughts, and be justified.",
                     "There has been in life no sin, no deed, no wickedness, that I have not committed, O Saviour. In mind and in word, in intent and in design, in thought and in action, I have sinned as no other has ever done.",
@@ -83,7 +83,7 @@
             "hirmos": "From the night I seek You early, O Lover of mankind: give me light, I pray You, and guide me also in Your commandments, and teach me, O Saviour, to do your will.",
             "troparia": [
                 [
-                   "I have ever passed my life in night, for the night of sin has been for me darkness and deepest gloom. But show me to be as a child of the day, O Saviour.",
+                    "I have ever passed my life in night, for the night of sin has been for me darkness and deepest gloom. But show me to be as a child of the day, O Saviour.",
                     "I, the wretched one, imitating Reuben have devised an unlawful and disobedient plan against God Most High, defiling my bed as he did his father's.",
                     "I confess to you, Christ King: I have sinned, I have sinned like the brothers of Joseph, who once sold the fruit of purity and chastity.",
                     "The righteous soul was bound by his kinsmen; the sweet one was sold into slavery as a figure of the Lord; but as for you, O soul, you have sold yourself entirely to your evils.",
@@ -99,7 +99,7 @@
             "hirmos": "With my whole heart I cried to the compassionate God, and He heard me from the lowest depths of hell, and brought my life up from corruption.",
             "troparia": [
                 [
-                   "I offer to you in purity, O Saviour, the tears of my eyes and groanings from the depths of my heart, crying: I have sinned against You, O God — be merciful to me.",
+                    "I offer to you in purity, O Saviour, the tears of my eyes and groanings from the depths of my heart, crying: I have sinned against You, O God — be merciful to me.",
                     "O soul, like Dathan and Aveiron you have become a stranger to God — but from the lowest depths of hell cry out: Spare me — so that the chasm of the earth may not cover you.",
                     "O soul, raging like a heifer you have become like Ephraim. Rescue your life, like a deer from the snares, gaining wings for the mind through action and contemplation.",
                     "O soul, the hand of Moses will be our assurance, proving how God can make a leprous life white and clean; and do not be in despair of yourself, even though you are leprous.",
@@ -110,14 +110,18 @@
         },
         {
             "ode": "6a",
-            "troparia": [["<i>(Kontakion, Tone 6)</i> My soul, my soul, rise up. Why are you sleeping? The end draws near, and soon you will be troubled. Watch, then, so that Christ God may spare you, for He is present everywhere and fills all things."]]
+            "troparia": [
+                [
+                    "<i>(Kontakion, Tone 6)</i> My soul, my soul, rise up. Why are you sleeping? The end draws near, and soon you will be troubled. Watch, then, so that Christ God may spare you, for He is present everywhere and fills all things."
+                ]
+            ]
         },
         {
             "ode": "7",
-            "hirmos": "We have sinned, we have transgressed, we have done evil before You, and neither have we followed, nor have we done, what You commanded us. But do not reject us utterly,  O God of our fat",
+            "hirmos": "We have sinned, we have transgressed, we have done evil before You, and neither have we followed, nor have we done, what You commanded us. But do not reject us utterly, O God of our fat",
             "troparia": [
                 [
-                   "I have sinned, I have offended, and I have rejected Your commandments, for I came forth in sins and added bruises to my wounds. But, as You yourself are compassionate, have mercy on me, O God of our fathers.",
+                    "I have sinned, I have offended, and I have rejected Your commandments, for I came forth in sins and added bruises to my wounds. But, as You yourself are compassionate, have mercy on me, O God of our fathers.",
                     "I have confessed the secrets of my heart to You, my Judge. See my abasement, and see my affliction, and attend to my judgement now; and, as You yourself are compassionate, have mercy on me, O God of our fathers.",
                     "O soul, once when Saul lost his father's asses, in searching for them he found Himself proclaimed as king. Beware, lest unknown to yourself you prefer your animal appetites to the Kingdom of Christ.",
                     "My soul, David, the forefather of God, once sinned doubly, pierced with the arrow of adultery and the point of the spear of vengeful murder. But you are sick from weightier acts, the impulses of your will.",
@@ -128,13 +132,12 @@
                 ]
             ]
         },
-
         {
             "ode": "8",
             "hirmos": "Him, whom the hosts of heaven glorify, and who terrifies the Cherubim and the Seraphim, let everything that has breath and every creature praise, bless, and highly exalt to all the ages.",
             "troparia": [
                 [
-                   "I have sinned, O Saviour, have mercy. Awaken my mind so that I may be converted; accept me in repentance, have pity as I cry: I have sinned against you, save me; I have done evil, have mercy on me.",
+                    "I have sinned, O Saviour, have mercy. Awaken my mind so that I may be converted; accept me in repentance, have pity as I cry: I have sinned against you, save me; I have done evil, have mercy on me.",
                     "The charioteer Elias once mounted a chariot of the virtues, and was carried as if to heaven, high above earthly things. My soul, reflect on his ascent.",
                     "Elissaios once took the mantle of Elias, and received a double portion of grace from the Lord; but you, O my soul, have no share in this grace because of your uncontrolled desires.",
                     "With the mantle of Elias, Elissaios made the stream of the Jordan stand still on either side; but you, O my soul, have no share in this grace because of your uncontrolled desires.",
