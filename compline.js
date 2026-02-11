@@ -52,25 +52,25 @@ export async function enhanceCompline(priest, full, date){
 
     if (isIncarnationFeast) {
         vespersMenaionData = await getData(`${address}\\menaion\\${dateAddress}_compline.json`)
-        greatComplineBeginning(full, season, priest, dayOfWeek, dayData, isIncarnationFeast);
+        greatComplineBeginning(full, season, seasonWeek, priest, dayOfWeek, dayData, isIncarnationFeast);
         const vespersData = await getData(`${address}\\horologion\\general_vespers.json`);
         vespersEnding(vespersData, dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, season, seasonWeek, false);
     } else if (
             (season === "Lent" && dayOfWeek < 6 && dayOfWeek > 1)
             || ((season === "Forelent" && seasonWeek === 3) && (dayOfWeek === 3 || dayOfWeek === 5))
         ) {
-        greatComplineBeginning(full, season, priest, dayOfWeek, dayData, isIncarnationFeast);
-        complineEnding(full, season, dayOfWeek, priest, glas, dayData, true, specialDayData, dayTriodionData, dateAddress);
+        greatComplineBeginning(full, season, seasonWeek, priest, dayOfWeek, dayData, isIncarnationFeast);
+        complineEnding(full, season, seasonWeek, dayOfWeek, priest, glas, dayData, true, specialDayData, dayTriodionData, dateAddress);
     } else {
         smallComplineBeginning(full, season, dayOfWeek, priest, isAlleluiaDay, glas, dayData, dateAddress);
-        complineEnding(full, season, dayOfWeek, priest, glas, dayData, false, specialDayData, dayTriodionData, dateAddress);
+        complineEnding(full, season, seasonWeek, dayOfWeek, priest, glas, dayData, false, specialDayData, dayTriodionData, dateAddress);
     }
 
 }
 
-async function complineEnding(full, season, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dayTriodionData, dateAddress) {
+async function complineEnding(full, season, seasonWeek, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dayTriodionData, dateAddress) {
 	const smallComplineData = await getData(`${address}\\horologion\\small_compline.json`);
-	loadComplineEnding(smallComplineData, full, season, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dayTriodionData, dateAddress);
+	loadComplineEnding(smallComplineData, full, season, seasonWeek, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dayTriodionData, dateAddress);
     document.getElementById("ending").innerHTML =  `<div id="canonSelector">
       <label><input type="radio" name="canonChoice" value="omit_canon"> Omit the canon</label><br>
       <label><input type="radio" name="canonChoice" value="shorten_canon" id="shorten_canon"> Shorten the canon</label><br>
@@ -100,7 +100,7 @@ async function complineEnding(full, season, dayOfWeek, priest, glas, dayData, is
 	`;
 }
 
-async function loadComplineEnding(smallComplineData, full, season, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dayTriodionData, dateAddress){
+async function loadComplineEnding(smallComplineData, full, season, seasonWeek, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dayTriodionData, dateAddress){
 	var ekteniasData = await getData(`${address}\\horologion\\night_ektenias.json`);
 
     if (full === "1") {
@@ -111,7 +111,7 @@ async function loadComplineEnding(smallComplineData, full, season, dayOfWeek, pr
         document.getElementById("penitential_troparia").innerHTML = "";
     }
 
-    var matinslike = await selectCanon(dayOfWeek, glas, full, smallComplineData["canon_refrain"], dateAddress, dayTriodionData);
+    var matinslike = await selectCanon(season, seasonWeek, dayOfWeek, glas, full, smallComplineData["canon_refrain"], dateAddress, dayTriodionData);
     if (matinslike) document.getElementById("itIsTrulyRight").innerHTML = "";
     else document.getElementById("itIsTrulyRight").innerHTML = itIsTrulyRight;
 
@@ -182,20 +182,21 @@ async function loadSmallComplineBeginning(smallComplineData, full, season, dayOf
           <label><input type="checkbox" name="greatCompline"> Use Great Compline instead.</label><br>
             `;
         document.getElementById("switch").addEventListener("change", () => {
-            greatComplineBeginning(full, season, priest, dayOfWeek, dayData, false);
-            complineEnding(full, season, dayOfWeek, priest, glas, dayData, true, {}, undefined, dateAddress);
+            greatComplineBeginning(full, season, seasonWeek, priest, dayOfWeek, dayData, false);
+            complineEnding(full, season, seasonWeek, dayOfWeek, priest, glas, dayData, true, {}, undefined, dateAddress);
             }
         );
     }
 }
 
-async function greatComplineBeginning(full, season, priest, dayOfWeek, dayData, isIncarnationFeast) {
+async function greatComplineBeginning(full, season, seasonWeek, priest, dayOfWeek, dayData, isIncarnationFeast) {
 	const smallComplineData = await getData(`${address}\\horologion\\small_compline.json`);
 
-    loadGreatComplineBeginning(smallComplineData, full, dayOfWeek, dayData, isIncarnationFeast);
+    loadGreatComplineBeginning(smallComplineData, full, season, seasonWeek, dayOfWeek, dayData, isIncarnationFeast);
 	document.getElementById("beginning").innerHTML =  `<h2>Great Compline</h2>
 	${usualBeginning(priest, season)}<br><br>
 	${comeLetUs}<br><br>
+	<div id="1_week_of_Lent_intro"></div>
 	<div id="psalms_1"></div><br>
 	<div class=subhead>Canticle of Isaiah</div><br>
 	<div id="god_is_with_us"></div><br>
@@ -237,18 +238,29 @@ async function greatComplineBeginning(full, season, priest, dayOfWeek, dayData, 
 	`;
 }
 
-async function loadGreatComplineBeginning(smallComplineData, full, dayOfWeek, dayData, isIncarnationFeast) {
+async function loadGreatComplineBeginning(smallComplineData, full, season, seasonWeek, dayOfWeek, dayData, isIncarnationFeast) {
     const greatComplineData = await getData(`${address}\\horologion\\great_compline.json`);
 
     const alleluiaUnit = `<br><br>${tripleAlleluia} ${LHM} <FONT COLOR="RED">(3)</FONT><br>${gloryAndNow}`
-
+    if (season === "Lent" && seasonWeek === 1) {
+        const psalm_69 = await readPsalmsFromNumbers([69]);
+        const canonData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}_compline.json`)
+        const [stAndrew, _] = constructMenaionCanon(canonData, "1", dayOfWeek);
+        document.getElementById("1_week_of_Lent_intro").innerHTML = `${psalm_69.join("")}<br><br>
+            <div class="subhead">Canon of st. Andrew</div><br>
+            ${stAndrew}<br>`
+    } else {
+        document.getElementById("1_week_of_Lent_intro").innerHTML = "";
+    }
     if (full === "1") {
         const psalms_1 = (await readPsalmsFromNumbers(greatComplineData["psalms_1"]));
         psalms_1.splice(6, 0, alleluiaUnit+"<br><br>");
         psalms_1.push(alleluiaUnit);
         document.getElementById("psalms_1").innerHTML = psalms_1.join("");
         document.getElementById("psalms_2").innerHTML = (await readPsalmsFromNumbers(greatComplineData["psalms_2"])).join("");
-        document.getElementById("psalms_3").innerHTML = (await readPsalmsFromNumbers(greatComplineData["psalms_3"])).join("");
+        var psalms_3 = (await readPsalmsFromNumbers(greatComplineData["psalms_3"]));
+        if (season === "Lent" && seasonWeek === 1) psalms_3 = psalms_3.slice(2, 4);
+        document.getElementById("psalms_3").innerHTML = psalms_3.join("");
     } else if (full === "0") {
         const dayToPsalm_1 = {1: [0, 3], 2: [1, 4], 3: [2, 5], 4:[2, 5]}[dayOfWeek];
         const dayToPsalm_2_3 = (dayOfWeek + 1)  % 2;
@@ -259,7 +271,11 @@ async function loadGreatComplineBeginning(smallComplineData, full, dayOfWeek, da
         psalms_1.push(alleluiaUnit);
         document.getElementById("psalms_1").innerHTML = psalms_1.join("");
         document.getElementById("psalms_2").innerHTML = (await readPsalmsFromNumbers([greatComplineData["psalms_2"][dayToPsalm_2_3]])).join("");
-        document.getElementById("psalms_3").innerHTML = (await readPsalmsFromNumbers([greatComplineData["psalms_3"][dayToPsalm_2_3]])).join("");
+        var psalms_3;
+        // we have read Ps 69, so nothing to choose from here
+        if (season === "Lent" && seasonWeek === 1) psalms_3 = (await readPsalmsFromNumbers([greatComplineData["psalms_3"][1]]));
+        else psalms_3 = (await readPsalmsFromNumbers([greatComplineData["psalms_3"][dayToPsalm_2_3]]));
+        document.getElementById("psalms_3").innerHTML = psalms_3.join("");
     }
 
     makeNethimon(greatComplineData["god_is_with_us"], greatComplineData["troparia_0"]);
@@ -427,8 +443,12 @@ function constructMenaionCanon(canonData, full, dayOfWeek){
     for (const ode of canonData["odes"]) {
         var ode_n = ode["ode"]
         if ((ode_n === "3a" && allowedOdes.has("3")) || (ode_n === "6a" && allowedOdes.has("6"))){
-            canon += `${LHM} <FONT COLOR="RED">(3)</FONT><br><br>${gloryAndNow}<br><br>${ode}<br><br>`;
+            canon += `${LHM} <FONT COLOR="RED">(3)</FONT><br><br>${gloryAndNow}<br><br>${ode["troparia"][0]}<br><br>`;
             continue;
+        }
+        if (ode_n === "9a" && allowedOdes.has("9")) {
+            canon += ode["troparia"].join("<br><br>");
+            continue
         }
         if (!allowedOdes.has(ode_n)) continue;
 
@@ -554,7 +574,12 @@ async function constructCanon(dayOfWeek, glas, full, refrain, dateAddress){
     return matinslike;
 }
 
-async function selectCanon(dayOfWeek, glas, full, refrain, dateAddress, dayTriodionData){
+async function selectCanon(season, seasonWeek, dayOfWeek, glas, full, refrain, dateAddress, dayTriodionData) {
+    if (season === "Lent" && seasonWeek === 1) {
+        document.getElementById("canon").innerHTML = `<div class=rubric>Canon was already said today<br><br></div>`;
+        document.getElementById("canonSelector").innerHTML = "";
+        return true
+    }
     if (dayTriodionData != undefined && "omit compline canon" in dayTriodionData) {
         document.getElementById("canon").innerHTML = `<div class=rubric>No canon today<br><br></div>`;
         document.getElementById("canonSelector").innerHTML = "";
