@@ -56,7 +56,7 @@ export async function enhanceVespers(priest, full, date) {
      if (isStBasil) {
         // this also includes a priestless case, ending like when the 24th is on weekend day
         await liturgyEnding(dayOfWeek, dayData, priest, vespersData);
-    } else if (priest === "1" && season === "Lent" && (dayOfWeek === 3 || dayOfWeek === 5)) {
+    } else if (priest === "1" && season === "Lent" && (dayOfWeek === 4 || dayOfWeek === 6)) {
         presanctifiedEnding(full, dayOfWeek, mm, dd, glas, dayData, dateAddress, priest, season);
     } else {
         await vespersEnding(
