@@ -1263,6 +1263,30 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         stycheraScheme = Array(10).fill(1);
         numStycheras = 10;
         forceNumSticheras = 10;
+    } else if (dayOfWeek > 1 && season === "Lent" && dayData["class"] < 8) {
+        psalm140tone = vespersTriodionData["ps140"][0];
+        stycheras = vespersTriodionData["ps140"]
+        if (numStycheras > 3) {
+            // 2 saints: one is moved to matins
+            // 6-saint: limit to 3 stichera
+            if (numSetsMenaionStycheras === 2) {
+                stycheras = (
+                    stycheras
+                    .concat(psalm140menaionStycheras.slice(0, 4))
+                    .concat(psalm140menaionStycheras.slice(numStycheras+2, numStycheras+6))
+                )
+            }
+            else if (numSetsMenaionStycheras === 1) {
+                psalm140menaionStycheras = (
+                    stycheras
+                    .concat(psalm140menaionStycheras.slice(0, 4))
+                    .concat(psalm140menaionStycheras.slice(numStycheras+1, numStycheras+5))
+                )
+            }
+        } else stycheras = stycheras.concat(psalm140menaionStycheras);
+
+        stycheraScheme = Array(6).fill(1);
+        numStycheras = 6;
     } else if (dayOfWeek === 0 && vespersTriodionData != undefined) {
         psalm140tone = glas;
         psalm140OctoechosStycheras = vespersOctoechosData["ps140"];
