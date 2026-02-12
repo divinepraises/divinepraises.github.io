@@ -6,6 +6,10 @@ To pray the office, please visit [the website](https://divinepraises.github.io/)
 
 Some of the texts here might be copyrighted. We lay no claim on the texts, and if you are the rights owner and want them removed, we'll gladly oblige. All the sources are indicated in the `about.html` file.
 
+## Contact details
+
+You can contact us by filling in <a href="https://forms.gle/Sw3vnVAEtnqK3Qyh6">this form</a>.
+
 ## Contribution guidelines
 
 The project is in the development stages, so there is much work to do. If you want to join, contact us or check out [this Issue](https://github.com/divinepraises/divinepraises.github.io/issues/1) and choose a task to work on.
