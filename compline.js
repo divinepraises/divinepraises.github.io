@@ -1,4 +1,4 @@
-import { letUsBless, wePraise, cross, usualBeginning, comeLetUs , lesserDoxology, itIsTrulyRight, trisagionToPater, tripleAlleluia, glory, andNow, LHM, prayerOfTheHours, gloryAndNow, moreHonorable, inTheName,prayerBlessingMayGodBeGracious, amen, endingBlockMinor, StEphremPrayer } from './text_generation.js';
+import { theotokionRefrain, letUsBless, wePraise, cross, usualBeginning, comeLetUs , lesserDoxology, itIsTrulyRight, trisagionToPater, tripleAlleluia, glory, andNow, LHM, prayerOfTheHours, gloryAndNow, moreHonorable, inTheName,prayerBlessingMayGodBeGracious, amen, endingBlockMinor, StEphremPrayer } from './text_generation.js';
 import { getDayInfo, getData, readPsalmsFromNumbers, isBetweenDates, specialSunday, cancelPostfeastHypapante  } from './script.js';
 import { vespersEnding  } from './vespers.js';
 
@@ -423,8 +423,10 @@ function makeNethimon(verses, troparia){
 
 function constructMenaionCanon(canonData, full, dayOfWeek){
     // TODO
-    // this should be the default function, but ut requires re-formatting octoechos canons
-    const refrain = canonData["refrain"];
+    // this should be the default function, but it requires re-formatting octoechos canons
+    var refrains = canonData["refrain"];
+    if (!Array.isArray(refrains)) refrains = [refrains];
+
     const intro = canonData["comment"] ?? "";
     const matinslike = canonData["matinslike"] ?? false;
     var allowedOdes = new Set(["1","2", "3","4","5","6","7","8","9"]);
@@ -477,12 +479,14 @@ function constructMenaionCanon(canonData, full, dayOfWeek){
         var n_trop_added = 0;
         var nTropWithReps = repetitionScheme.reduce((a, b) => a + b, 0)
         var isNotShortOde = nTropWithReps > 2;
-        for (const canon_ode of ode["troparia"]){
-            if (index > 0) canon += `<div class=rubric>Another canon:</div>`;
-            for (const tropar of canon_ode){
+        var ode_len;
+        for (let [canon_idx, canon_ode] of ode["troparia"].entries()){
+            ode_len = canon_ode.length;
+            if (index > 0 && ode_len > 0) canon += `<div class=rubric>Another canon:</div>`;
+            for (let [tropar_idx, tropar] of canon_ode.entries()){
                 var n_rep = repetitionScheme[index];
                 i = 0;
-                while (i < n_rep){
+                while (i < n_rep) {
                     if (matinslike && (ode_n === "8") && isNotShortOde && (n_trop_added === nTropWithReps - 2)) {
                         // penultimate: letUsBless
                         canon += `<i>${letUsBless}</i><br><br>` + tropar + "<br><br>"
@@ -495,8 +499,12 @@ function constructMenaionCanon(canonData, full, dayOfWeek){
                         canon += `<i>${letUsBless} ${andNow}</i><br><br>` + tropar + "<br><br>"
                     } else if (!isNotShortOde && (n_trop_added === 1)) {  // ultimate in a short canon: and now
                         canon += `<i>${gloryAndNow}</i><br><br>` + tropar + "<br><br>"
+                    } else if ("special_refrains" in ode && Object.hasOwn(ode["special_refrains"][canon_idx], tropar_idx)) {
+                        canon += `<i>${ode["special_refrains"][canon_idx][tropar_idx]}</i><br><br>${tropar}<br><br>`;
+                    } else if (tropar_idx === ode_len - 1) {
+                        canon += `<i>${theotokionRefrain}</i><br><br>${tropar}<br><br>`;
                     } else {  // in the middle: add refrain
-                        canon += `<i>${refrain}</i><br><br>${tropar}<br><br>`;
+                        canon += `<i>${refrains[canon_idx]}</i><br><br>${tropar}<br><br>`;
                     }
                     i += 1;
                     n_trop_added += 1;

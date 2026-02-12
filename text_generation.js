@@ -21,6 +21,8 @@ export const TYL = data.tyl;
 
 export const st = data.saint;
 
+export const theotokionRefrain = data.theotokionRefrain;
+
 export function StEphremPrayer(priest, short=false, replaced=false){
     var res = "";
 
