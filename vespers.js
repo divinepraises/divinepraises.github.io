@@ -969,27 +969,32 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
                     ${apostMain[7]}<br><br>`;
         } else {
             let i = apostMain.length - 1;
-            let separateGlory = false;
-            while (i > 0) {
-                if (!isNaN(parseInt(apostMain[i][0]))) break;
-                if (apostMain[i] === "n") separateGlory = true;
-                i -= 1;
-            }
-            if (i === 0) {
-                i = 4;  // no new tone indication. stichera is at 4
+            if (i === 2) {
+                const theotokion = (await getData(`${address}\\octoechos\\${apostMain[0][0]}\\${dayOfWeek}_vespers.json`))["aposticha"][5];
+                aposticha += `<i>${andNow}</i><br><br>${theotokion}<br><br>`
             } else {
-                if (apostMain[i] != apostMain[0]) aposticha += `<div class="rubric">Tone ${apostMain[i]}</div>`;
-                // i - tone, i+1 - g/gn, i+2 - stichera
-                i += 2;
-            }
-            if (separateGlory) {
-                aposticha += `<i>${glory}</i>
-                     ${apostMain[i]}<br><br>
-                    <i>${andNow}</i><br><br>
-                    ${apostMain[i+2]}<br><br>`;
-            } else {
-                aposticha += `<i>${gloryAndNow}</i><br><br>
-                     ${apostMain[i]}<br><br>`;
+                let separateGlory = false;
+                while (i > 0) {
+                    if (!isNaN(parseInt(apostMain[i][0]))) break;
+                    if (apostMain[i] === "n") separateGlory = true;
+                    i -= 1;
+                }
+                if (i === 0) {
+                    i = 4;  // no new tone indication. stichera is at 4
+                } else {
+                    if (apostMain[i] != apostMain[0]) aposticha += `<div class="rubric">Tone ${apostMain[i]}</div>`;
+                    // i - tone, i+1 - g/gn, i+2 - stichera
+                    i += 2;
+                }
+                if (separateGlory) {
+                    aposticha += `<i>${glory}</i>
+                         ${apostMain[i]}<br><br>
+                        <i>${andNow}</i><br><br>
+                        ${apostMain[i+2]}<br><br>`;
+                } else {
+                    aposticha += `<i>${gloryAndNow}</i><br><br>
+                         ${apostMain[i]}<br><br>`;
+                }
             }
         }
     } else {
