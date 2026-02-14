@@ -43,7 +43,6 @@ export async function enhanceVespers(priest, full, date) {
         vespersMenaionData["ps140"] = vespersMenaionDataFeast["ps140"];
         vespersMenaionData["aposticha"] = vespersMenaionDataFeast["aposticha"];
         vespersMenaionData["aposticha_verses"] = vespersMenaionDataFeast["aposticha_verses"];
-        // this is not working for stychera yet
     }
 
     const isStBasil = (dateAddress === "12\\25" || dateAddress === "01\\06" || dateAddress === "03\\25");
@@ -57,7 +56,10 @@ export async function enhanceVespers(priest, full, date) {
         // this also includes a priestless case, ending like when the 24th is on weekend day
         await liturgyEnding(dayOfWeek, dayData, priest, vespersData);
     } else if (priest === "1" && season === "Lent" && (dayOfWeek === 4 || dayOfWeek === 6)) {
-        presanctifiedEnding(full, dayOfWeek, mm, dd, glas, dayData, dateAddress, priest, season);
+        //presanctifiedEnding(full, dayOfWeek, mm, dd, glas, dayData, dateAddress, priest, season);
+        await vespersEnding(
+            vespersData, dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, season, seasonWeek, isLenten
+        );
     } else {
         await vespersEnding(
             vespersData, dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, season, seasonWeek, isLenten
@@ -302,7 +304,18 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
       ${usualBeginning(priest, season)}
       <hr>`
     }
-
+     if (priest === "1" && season === "Lent" && (dayOfWeek === 4 || dayOfWeek === 6)) {
+        dayName += `
+            <br><br>
+            <div class="rubric">
+                This is NOT the Liturgy of Presanctified Gifts, but usual vespers.
+                Here is how to arrange stichera for Presanctified.
+                <p>There will be 10 of them, so you need to start inserting them into the verses from "Lead my soul forth from prison".
+                <p> Use fist the three stichera of Aposticha (first one and its repetition counting as different).
+                    Then three first stichera from ps 140. Then 4th stichera at ps140 (at "3. For with the Lord...") twice.
+                    Then continiue with the stichera at ps140.
+                </div>`
+     }
     document.getElementById("day_name").innerHTML = dayName;
 
     if (isGreatVespers) {
@@ -1664,7 +1677,7 @@ function makePrayers(prayersList, full, glas){
     var instruction = document.querySelector('input[name="prayersChoice"]:checked')?.value;
     if (instruction === "hide"){document.getElementById("priestly_prayers").innerHTML = ""; return "";}
     else if (full === "1") document.getElementById("priestly_prayers").innerHTML = prayersList.join("<br><br>") + "<br><br>";
-    else document.getElementById("priestly_prayers").innerHTML = prayersList[glas] + "<br><br>";
+    else document.getElementById("priestly_prayers").innerHTML = prayersList[glas-1] + "<br><br>";
 
 }
 
