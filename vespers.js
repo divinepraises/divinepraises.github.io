@@ -252,7 +252,11 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
         try {
             dayTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}.json`);
             if ("day name" in dayTriodionData) {
-                if (dayOfWeek === 0 && dayData["class"] <= 6 || dayOfWeek === 6 && seasonWeek === 2) {
+                if (
+                    (dayOfWeek === 0 && dayData["class"] <= 6)
+                    || (dayOfWeek === 6 && seasonWeek === 2 && season === "Forelent")
+                    || (dayOfWeek === 6 && seasonWeek === 1 && season === "Lent")
+                ) {
                     dayData["day name"] = dayTriodionData["day name"];
                 } else if ("day name" in dayData && dayData["day name"] != dayTriodionData["day name"]) {
                     dayData["day name"] = dayTriodionData["day name"] + ", " + dayData["day name"];
@@ -455,6 +459,8 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
                 dayData["troparia"] = [];
             } else if (dayOfWeek === 0 && "forefeast" in dayData) {
                 dayData["troparia"] = dayData["troparia"][dayData["troparia"].length-1];
+            } else if (season === "Lent" && seasonWeek === 1 && dayOfWeek === 6) {
+                Object.assign(dayData, dayTriodionData);
             }
         } catch {}
     }
@@ -704,7 +710,7 @@ async function makeLentenEnding(priest, season, seasonWeek, dayOfWeek, dayClass,
 }
 
 export async function makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, haire, specialSundayName, isLenten){
-    if (isLenten) {
+    if (isLenten && dayOfWeek < 6) {
         const lentenTrop = (await getData(`${address}\\horologion\\lenten_vespers.json`))["troparia"];
         return replaceCapsWords(`${lentenTrop[0]}<br>
             <i>${glory}</i><br><br>
@@ -987,7 +993,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
                     i += 2;
                 }
                 if (separateGlory) {
-                    aposticha += `<i>${glory}</i>
+                    aposticha += `<i>${glory}</i><br><br>
                          ${apostMain[i]}<br><br>
                         <i>${andNow}</i><br><br>
                         ${apostMain[i+2]}<br><br>`;
@@ -1281,6 +1287,12 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         stycheraScheme = Array(10).fill(1);
         numStycheras = 10;
         forceNumSticheras = 10;
+    } else if (season === "Lent" && seasonWeek === 1 && dayOfWeek === 6 && dayData["class"] < 8) {
+        // 1st Saturday of Lent
+        psalm140tone = glas;
+        stycheras = vespersOctoechosData["ps140"].concat(vespersTriodionData["ps140"])
+        stycheraScheme = Array(6).fill(1);
+        numStycheras = 6;
     } else if (dayOfWeek > 1 && season === "Lent" && dayData["class"] < 8) {
         psalm140tone = vespersTriodionData["ps140"][0];
         stycheras = vespersTriodionData["ps140"]
