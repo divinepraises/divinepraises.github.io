@@ -249,8 +249,10 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
     }
 
     if (season === "Lent" || season === "Forelent") {
+        var weekToLookAt = seasonWeek - 1;
+        if (dayOfWeek === 0 && season === "Lent") weekToLookAt = seasonWeek;
         try {
-            dayTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}.json`);
+            dayTriodionData = await getData(`${address}\\triodion\\${season}\\${weekToLookAt}${dayOfWeek}.json`);
             if ("day name" in dayTriodionData) {
                 if (
                     (dayOfWeek === 0 && dayData["class"] <= 6)
@@ -266,7 +268,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
             }
         } catch {}
         try {
-            vespersTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}_vespers.json`);
+            vespersTriodionData = await getData(`${address}\\triodion\\${season}\\${weekToLookAt}${dayOfWeek}_vespers.json`);
             if (season === "Forelent" && seasonWeek === 2 && dayOfWeek === 6) {
                 // only Triodion
                 Object.assign(vespersMenaionData, vespersTriodionData);
@@ -439,11 +441,13 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
     var vespersOctoechosData = await getData(`${address}\\octoechos\\${glas}\\${dayOfWeek}_vespers.json`);
     var vespersTriodionData, dayTriodionData;
     if (season === "Lent" || season === "Forelent") {
+        var weekToLookAt = seasonWeek - 1;
+        if (dayOfWeek === 0 && season === "Lent") weekToLookAt = seasonWeek;
         try {
-            dayTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}.json`);
+            dayTriodionData = await getData(`${address}\\triodion\\${season}\\${weekToLookAt}${dayOfWeek}.json`);
         } catch {}
         try {
-            vespersTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}_vespers.json`);
+            vespersTriodionData = await getData(`${address}\\triodion\\${season}\\${weekToLookAt}${dayOfWeek}_vespers.json`);
             if (season === "Forelent" && seasonWeek === 2 && dayOfWeek === 6) {
                 for (let key in dayData) {
                     if (!(key in dayTriodionData)) delete dayData[key]
@@ -455,12 +459,14 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
                 Object.assign(dayData, dayTriodionData);
             } else if (season === "Forelent" && seasonWeek === 3 && dayOfWeek === 6 && dayData["class"] >= 8) {
                 dayData["troparia"] = dayData["troparia"].concat(dayTriodionData["troparia"]);
-            } else if (dayOfWeek === 0 && dayData["class"] <= 6 && !("forefeast" in dayData) && !("postfeast" in dayData)) {
+            } else if (season === "Forelent" && dayOfWeek === 0 && dayData["class"] <= 6 && !("forefeast" in dayData) && !("postfeast" in dayData)) {
                 dayData["troparia"] = [];
-            } else if (dayOfWeek === 0 && "forefeast" in dayData) {
+            } else if (season === "Forelent" && dayOfWeek === 0 && "forefeast" in dayData) {
                 dayData["troparia"] = dayData["troparia"][dayData["troparia"].length-1];
             } else if (season === "Lent" && seasonWeek === 1 && dayOfWeek === 6) {
                 Object.assign(dayData, dayTriodionData);
+            } else if (season === "Lent" && seasonWeek != 2 && dayOfWeek === 0) {
+                dayData["troparia"] = dayTriodionData["troparia"];
             }
         } catch {}
     }
@@ -1318,6 +1324,7 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         stycheraScheme = Array(6).fill(1);
         numStycheras = 6;
     } else if (dayOfWeek === 0 && vespersTriodionData != undefined) {
+        // Sun in Triodion
         psalm140tone = glas;
         psalm140OctoechosStycheras = vespersOctoechosData["ps140"];
 
@@ -1379,22 +1386,23 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
                 stycheraScheme = stycheraScheme.concat([2, 1]);
             }
         } else {
+            var repAtPs140 = vespersTriodionData["repeat at ps140"] ?? numTriodionStycheras;
             stycheras = (
-                psalm140OctoechosStycheras.slice(0, 11 - vespersTriodionData["repeat at ps140"])
+                psalm140OctoechosStycheras.slice(0, 11 -  repAtPs140)
                 .concat(vespersTriodionData["ps140"])
             )
-            if (vespersTriodionData["repeat at ps140"] === 3 && numTriodionStycheras === 2) {
+            if ( repAtPs140 === 3 && numTriodionStycheras === 2) {
                 stycheraScheme = Array(7).fill(1).concat([2, 1]);
-            } else if (vespersTriodionData["repeat at ps140"] === 3 && numTriodionStycheras === 3) {
+            } else if ( repAtPs140 === 3 && numTriodionStycheras === 3) {
                 stycheraScheme = Array(10).fill(1);
-            } else if (vespersTriodionData["repeat at ps140"] === 4 && numTriodionStycheras === 2) {
+            } else if ( repAtPs140 === 4 && numTriodionStycheras === 2) {
                 stycheraScheme = Array(6).fill(1).concat([2, 2]);
-            } else if (vespersTriodionData["repeat at ps140"] === 4 && numTriodionStycheras === 3) {
+            } else if ( repAtPs140 === 4 && numTriodionStycheras === 3) {
                 stycheraScheme = Array(6).fill(1).concat([2, 1, 1]);
-            } else if (vespersTriodionData["repeat at ps140"] === 4 && numTriodionStycheras === 4) {
+            } else if ( repAtPs140 === 4 && numTriodionStycheras === 4) {
                 stycheraScheme = Array(10).fill(1);
             }
-            numStycheras = 10 - vespersTriodionData["repeat at ps140"] + numTriodionStycheras;
+            numStycheras = 10 -  repAtPs140 + numTriodionStycheras;
         }
     } else if (dayOfWeek === 0 && dayData["class"] <= 11) {
         // Sunday without Lord's feast

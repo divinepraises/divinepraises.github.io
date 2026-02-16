@@ -45,8 +45,10 @@ export async function enhanceCompline(priest, full, date){
     }
     var dayTriodionData;
     if (season === "Lent" || season === "Forelent") {
+        var weekToLookAt = seasonWeek - 1;
+        if (dayOfWeek === 0 && season === "Lent") weekToLookAt = seasonWeek;
         try {
-            dayTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}.json`)
+            dayTriodionData = await getData(`${address}\\triodion\\${season}\\${weekToLookAt}${dayOfWeek}.json`)
         } catch {}
     }
 
@@ -244,7 +246,9 @@ async function loadGreatComplineBeginning(smallComplineData, full, season, seaso
     const alleluiaUnit = `<br><br>${tripleAlleluia} ${LHM} <FONT COLOR="RED">(3)</FONT><br>${gloryAndNow}`
     if (season === "Lent" && seasonWeek === 1 && dayOfWeek >= 2 && dayOfWeek <= 5) {
         const psalm_69 = await readPsalmsFromNumbers([69]);
-        const canonData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}_compline.json`)
+        var weekToLookAt = seasonWeek - 1;
+        if (dayOfWeek === 0 && season === "Lent") weekToLookAt = seasonWeek;
+        const canonData = await getData(`${address}\\triodion\\${season}\\${weekToLookAt}${dayOfWeek}_compline.json`)
         const [stAndrew, _] = constructMenaionCanon(canonData, "1", dayOfWeek);
         document.getElementById("1_week_of_Lent_intro").innerHTML = `${psalm_69.join("")}<br><br>
             <div class="subhead">Canon of st. Andrew</div><br>

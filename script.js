@@ -73,9 +73,14 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
 	        else specialName = sundayData["name"];
 	    }
 	}
-	if (season != "0") {
+	if (season === "Forelent" || season === "Lent" && dayOfWeek != 0) {
 	    try {
 	        let dayTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}.json`);
+	        specialName = dayTriodionData["day name"] + ". ";
+	    } catch {}
+	} else if (season === "Lent" && dayOfWeek === 0) {
+	    try {
+	        let dayTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek}${dayOfWeek}.json`);
 	        specialName = dayTriodionData["day name"] + ". ";
 	    } catch {}
 	}

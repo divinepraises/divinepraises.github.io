@@ -26,8 +26,10 @@ export async function minorHour(hour, priest, full, date){
 
     var dayTriodionData;
     if (season === "Lent" || season === "Forelent") {
+        var weekToLookAt = seasonWeek - 1;
+        if (dayOfWeek === 0 && season === "Lent") weekToLookAt = seasonWeek;
         try {
-            dayTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}.json`)
+            dayTriodionData = await getData(`${address}\\triodion\\${season}\\${weekToLookAt}${dayOfWeek}.json`)
         } catch {}
     }
     const isLenten = (season === "Lent" && dayOfWeek > 0 && dayOfWeek < 6) || (season === "Forelent" && seasonWeek === 3 && (dayOfWeek === 3 || dayOfWeek === 5));
@@ -562,8 +564,10 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
             }
         }
 
-        if (hour === "1hour" && dayData["class"] < 8 || dayTriodionData != undefined){
+        if (hour === "1hour" && dayData["class"] < 8 && dayTriodionData === undefined || dayTriodionData != undefined && season === "Forelent"){
             return `${glory}<br><br>${sundayTrop["troparia"][glas]}`;
+        } else if (season === "Lent" && seasonWeek != 2){
+            return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTriodionData["troparia"]}`;
         }
 
         if ("troparia" in dayData) dayTrop = dayData["troparia"];
