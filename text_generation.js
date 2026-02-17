@@ -27,7 +27,7 @@ export function StEphremPrayer(priest, short=false, replaced=false){
     var res = "";
 
     if (replaced) return res + `<div class="rubric">${cross} Three prostrations with no words are made here instead of the prayer of St. Ephrem.</div><br>`
-    else res += `<div class=subhead>Prayer of St. Ephrem of Syria</div><br>`;
+    else res += `<div class=subhead>Prayer of St. Ephrem the Syrian</div><br>`;
 
     const stEphrem = data.st_ephrem
     for (let verse of stEphrem.slice(0, 3)){
