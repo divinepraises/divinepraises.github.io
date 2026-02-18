@@ -357,7 +357,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
         document.getElementById("ektenia_peace").innerHTML = `${LHM} <FONT COLOR="RED">(12)</FONT><br>${gloryAndNow}`;
     }
 
-    if (isGreatVespers){
+    if (isGreatVespers && !isLenten){
         document.getElementById("kathismaSelector").innerHTML = `
           <label><input type="radio" name="kathismaChoice" value="verses" checked> Only verses</label><br>
           <label><input type="radio" name="kathismaChoice" value="full"> Full psalms</label>
@@ -1152,6 +1152,9 @@ function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData) {
         text += `<div class="subhead">Prokimenon</div><br>
             ${arrangeProkimenon(vespersMenaionData["second_prokimenon"])}<br>`;
     }
+    if ("second_reading" in vespersMenaionData) {
+        text += frameReadings(vespersMenaionData["second_reading"])
+    }
     return text;
 }
 
@@ -1769,7 +1772,7 @@ async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, priest, ektenia
     }
 
     var k;
-    const isGreatVespers = (dayClass >= 8);
+    const isGreatVespers = (dayClass >= 8 && !(season === "Lent" && dayOfWeek > 0));
     const long_scheme = (
         (season === "Lent")
         || (season === "Forelent")
