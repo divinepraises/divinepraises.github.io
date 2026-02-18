@@ -507,7 +507,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
 
     document.getElementById("simeon").innerHTML = `<div class="subhead">Song of Simeon</div><br>${vespersData["simeon"]}`;
 
-    document.getElementById("troparia").innerHTML = await makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, haire, specialSundayName, isLenten);
+    document.getElementById("troparia").innerHTML = await makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, haire, specialSundayName, isLenten && dayData["class"] < 8);
 
     const isSemiLenten = (season === "Forelent" && seasonWeek === 3 && dayOfWeek > 3);
     if (isLenten || isSemiLenten) {
@@ -668,21 +668,20 @@ async function makeLentenEnding(priest, season, seasonWeek, dayOfWeek, dayClass,
     const blessedBe = (await getData(`${address}\\horologion\\vigil_vespers.json`))["blessed_be"];
     const ps33 = (await readPsalmsFromNumbers(["33vespers"], ["Psalm 33"])).join("")
 
-    // 4 possible cases:
+    // possible cases:
     // 1) full Ephrem and full conclusion (all cases except following)
-    // 2) 3-prostration Ephrem and no conclusion (Sun evenings)
-    // 3) no Ephrem nor conclusion (feast, Sat of Lent)
-    // 4) no Ephrem and full conclusion (forelent Thu and Sat)
-    const noEphrem = (
-        dayOfWeek === 6
-        || (season === "Forelent" && seasonWeek === 3 && dayOfWeek === 4)
+    // 2) 3-prostration Ephrem and no conclusion (Sun evenings - Dol p381, Fri evenings Triodion p149 of pdf, feast on Mon 266)
+    // 3) 3-prostration Ephrem and full conclusion (feasts - p267)
+    // 4) no Ephrem nor conclusion (???)
+    // 5) no Ephrem and full conclusion (forelent Thu and Sat p377)
+    const noEphrem = (season === "Forelent" && seasonWeek === 3 && (dayOfWeek === 4 || dayOfWeek === 6))
+    const smallEphrem = (
+        season === "Lent" && (dayOfWeek === 1 || dayOfWeek === 6)
         || dayClass >= 8
     )
-    const smallEphrem = (season === "Lent" && dayOfWeek === 1)
     const noConclusion = (
         (season === "Lent" && dayOfWeek === 6)
         || dayOfWeek === 1
-        || (dayClass >= 8 && !(season === "Forelent" && seasonWeek === 3 && dayOfWeek === 6))
     );
 
     var text = `<div class="subhead">Lenten conclusion</div><br>`
