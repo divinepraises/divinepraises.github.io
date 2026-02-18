@@ -127,29 +127,29 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
 
         document.getElementById("psalms").innerHTML = `<div class="subhead">Psalm ${n}</div>${psalmData}`;
     }
-    selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData, isLenten).then(tropar => {
+    selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData, isLenten && dayData["class"] < 8).then(tropar => {
         document.getElementById("troparia").innerHTML = tropar;
     });
 
-    if (isLenten) document.getElementById("kontakia_header").innerHTML = `<div class="subhead">Lenten troparia</div>`
+    if (isLenten && dayData["class"] < 8) document.getElementById("kontakia_header").innerHTML = `<div class="subhead">Lenten troparia</div>`
     else document.getElementById("kontakia_header").innerHTML = `<div class="subhead">Kontakion</div>`
 
-    selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData, isLenten).then(kondak => {
+    selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData, isLenten && dayData["class"] < 8).then(kondak => {
         document.getElementById("kontakia").innerHTML = kondak;
     });
 
     var thotokionRubric = "";
-    if (isLenten) thotokionRubric = `<div class="rubric">${cross} During the theotokion, three inclinations are made.</div>`
+    if (isLenten && dayData["class"] < 8) thotokionRubric = `<div class="rubric">${cross} During the theotokion, three inclinations are made.</div>`
     document.getElementById("theotokion").innerHTML = thotokionRubric + hourData["theotokion"]
     await arrangeAdditionalElements(additionalElements, hour, priest, full, season, seasonWeek, dayOfWeek);
     if (isLenten) {
-        const isLessPenitential = ("forefeast" in dayData || "postfeast" in dayData || dayData["class"] >= 11);
+        const isLessPenitential = ("forefeast" in dayData || "postfeast" in dayData || dayData["class"] >= 8);
         document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest, false, isLessPenitential);
     } else {
         document.getElementById("st_ephrem").innerHTML = "";
     }
 
-    if (hour === "1hour" && isLenten) {
+    if (hour === "1hour" && isLenten && dayData["class"] < 8) {
         document.getElementById("chapter").innerHTML = replaceCapsWords(
             hourData["chapter"],
             {"TWICE":` <FONT COLOR="RED">(2)</FONT> `, "THRICE":` <FONT COLOR="RED">(3)</FONT> `}

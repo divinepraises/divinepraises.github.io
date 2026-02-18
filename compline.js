@@ -120,7 +120,7 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
     document.getElementById("prayers").innerHTML = smallComplineData["prayers"].join("<br><br>");
     document.getElementById("after_prayers").innerHTML =  postComplinePrayers(priest, smallComplineData, ekteniasData, dayOfWeek);
 
-    if (isGreatCompline && !("forefeast" in dayData || "postfeast" in dayData || dayTriodionData != undefined && "usual compline troparia" in dayTriodionData)){
+    if (isGreatCompline && !(dayData["class"] >= 8 || "forefeast" in dayData || "postfeast" in dayData || dayTriodionData != undefined && "usual compline troparia" in dayTriodionData)){
 	    const greatComplineData = await getData(`${address}\\horologion\\great_compline.json`);
         makeThirdSectionTroparia(greatComplineData["troparia_3"])
         document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest);
@@ -130,7 +130,7 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
         selectTropar(dayOfWeek,  smallComplineData, glas, dayData, specialDayData, dayTriodionData).then(tropar => {
             document.getElementById("troparia").innerHTML = tropar + prostrations;
         });
-        if (season === "Lent" && dayOfWeek === 1 || isGreatCompline && !("forefeast" in dayData || "postfeast" in dayData)) document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest);
+        if (season === "Lent" && dayOfWeek === 1 || isGreatCompline && !("forefeast" in dayData || "postfeast" in dayData)) document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest, dayData["class"] >= 8);
         else document.getElementById("st_ephrem").innerHTML = "";
     }
 }
@@ -284,7 +284,8 @@ async function loadGreatComplineBeginning(smallComplineData, full, season, seaso
 
     makeNethimon(greatComplineData["god_is_with_us"], greatComplineData["troparia_0"]);
     makePetitions(greatComplineData["petitions"], full, isIncarnationFeast);
-    makeFirstSectionTroparia(greatComplineData["troparia_1"], full, dayOfWeek, isIncarnationFeast, dayData);
+    if (dayData["class"] < 8) await makeFirstSectionTroparia(greatComplineData["troparia_1"], full, dayOfWeek, isIncarnationFeast, dayData);
+    else await makeFirstSectionTroparia(dayData["troparia"], full, dayOfWeek, isIncarnationFeast, dayData);
 
     getData(`${address}\\horologion\\creed.json`).then(creed => {
         document.getElementById("creed").innerHTML = creed["0"];
@@ -343,9 +344,14 @@ function makeSecondSectionTroparia(troparia, isIncarnationFeast, dayData){
         `
 }
 
-function makeFirstSectionTroparia(tropariaDict, full, dayOfWeek, isIncarnationFeast, dayData){
+async function makeFirstSectionTroparia(tropariaDict, full, dayOfWeek, isIncarnationFeast, dayData){
     if (isIncarnationFeast){
         document.getElementById("troparia_1").innerHTML = dayData["troparia"];
+        return
+    } else if (dayData["class"] >= 8) {
+        let tropGlas  = parseInt(dayData["troparia"][0].match(/\d+/)[0], 10);
+        const theotokion = (await getData(`${address}\\octoechos\\${tropGlas}\\troparia_theotokia.json`))[0];
+        document.getElementById("troparia_1").innerHTML = `${dayData["troparia"]}<br><br><i>${gloryAndNow}</i><br><br>${theotokion}`;
         return
     }
     var troparia;
