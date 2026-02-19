@@ -566,7 +566,12 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
             }
         }
 
-        if (hour === "1hour" && dayData["class"] < 8 && dayTriodionData === undefined || dayTriodionData != undefined && season === "Forelent"){
+        if (hour === "1hour" && dayData["class"] < 8 && dayTriodionData === undefined
+            || dayTriodionData != undefined && season === "Forelent"
+            || hour === "1hour" && dayData["class"] < 8 && season === "Lent" && seasonWeek === 2
+        ){
+            // 1st hour on a Sunday outside Triodion or unclaimed lenten Sunday
+            // or any hour in pre-Lent
             return `${glory}<br><br>${sundayTrop["troparia"][glas]}`;
         } else if (season === "Lent" && seasonWeek != 2){
             return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTriodionData["troparia"]}`;

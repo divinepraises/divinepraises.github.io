@@ -255,7 +255,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
             dayTriodionData = await getData(`${address}\\triodion\\${season}\\${weekToLookAt}${dayOfWeek}.json`);
             if ("day name" in dayTriodionData) {
                 if (
-                    (dayOfWeek === 0 && dayData["class"] <= 6)
+                    (dayOfWeek === 0 && dayData["class"] <= 6 && !(season === "Lent" && seasonWeek === 2))
                     || (dayOfWeek === 6 && seasonWeek === 2 && season === "Forelent")
                     || (dayOfWeek === 6 && seasonWeek === 1 && season === "Lent")
                 ) {
