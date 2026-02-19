@@ -512,10 +512,11 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
 
     if (dayTriodionData != undefined && "troparia" in dayTriodionData && dayOfWeek === 6) {
         var dayTrop = dayTriodionData["troparia"];
-        if (Array.isArray(dayTrop)) dayTrop = dayTrop[0];
+        if (Array.isArray(dayTrop) && dayTrop.length === 1) dayTrop = dayTrop[0];
         if (dayData["class"] < 8 || seasonWeek === 2) {
             // for the deceased or fathers
-            return glory + "<br><br>" + dayTriodionData["troparia"];
+            if (Array.isArray(dayTrop) && dayTrop.length === 2) return `${dayTrop[0]}<br><br>${glory}<br><br>${dayTrop[1]}`;
+            return glory + "<br><br>" + dayTrop;
         } else {
             // fatehrs + polyeleios
             return `${dayData["troparia"]}<br><br>${glory}<br><br>${dayTrop}`

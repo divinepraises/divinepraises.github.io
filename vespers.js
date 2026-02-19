@@ -958,14 +958,38 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
         ) {
         // triodion weekday
         apostMain = vespersTriodionData["aposticha"];
-        aposticha += `
-            <div class="rubric">Tone ${apostMain[0]}</div>
-            ${apostMain[1]}<br><br>
-            <i>${apostVerses[0]}</i><br><br>
-            ${apostMain[1]}<br><br>
-            <i>${apostVerses[1]}</i><br><br>
-            ${apostMain[2]}<br><br>
-            `
+        if (apostMain.length > 2) {
+            aposticha += `
+                <div class="rubric">Tone ${apostMain[0]}</div>
+                ${apostMain[1]}<br><br>
+                <i>${apostVerses[0]}</i><br><br>
+                ${apostMain[1]}<br><br>
+                <i>${apostVerses[1]}</i><br><br>
+                ${apostMain[2]}<br><br>
+                `
+        } else {
+             const apostOcto = (await getData(`${address}\\octoechos\\${glas}\\${dayOfWeek}_vespers.json`))["aposticha"];
+             aposticha += `
+                <div class="rubric">Tone ${apostMain[0]}</div>
+                ${apostMain[1]}<br><br>
+                <i>${apostVerses[0]}</i><br><br>
+                ${apostMain[1]}<br><br>
+                <div class="rubric">Tone ${apostOcto[0]}</div>
+                <i>${apostVerses[1]}</i><br><br>
+                ${apostOcto[2]}<br><br>
+                `
+                if (!("aposticha" in vespersMenaionData || "additional_aposticha" in vespersMenaionData)) {
+                    // see triodion p 205 of pdf (ca of the book) on what to get for presanctified on Fri
+                    // (muchenychen - because other 3 are used at ps140, and, at glory, mertven)
+                    // Dol p404 agrees.
+                    aposticha += `
+                        <i>${glory}</i><br><br>
+                        ${apostOcto[3]}<br><br>
+                        <i>${andNow}</i><br><br>
+                        ${apostOcto[5]}<br><br>`
+                    return aposticha;
+                }
+        }
         if (prePostFeast != "") {
             const apostMen = vespersMenaionData["aposticha"];
             aposticha += `<div class="rubric">Tone ${apostMen[apostMen.length-3]}</div>`;
@@ -1310,8 +1334,8 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         stycheras = vespersOctoechosData["ps140"].concat(vespersTriodionData["ps140"])
         stycheraScheme = Array(6).fill(1);
         numStycheras = 6;
-    } else if (dayOfWeek > 1 && season === "Lent" && dayData["class"] <= 8) {
-        // weekday of Lent
+    } else if (dayOfWeek > 1 && dayOfWeek < 6 && season === "Lent" && dayData["class"] <= 8) {
+        // weekday of Lent (Tue-Fri)
         psalm140tone = vespersTriodionData["ps140"][0][0];
         stycheras = vespersTriodionData["ps140"]
         if (numStycheras > 3) {
