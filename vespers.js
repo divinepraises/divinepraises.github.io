@@ -986,8 +986,9 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
         } else {
             let i = apostMain.length - 1;
             if (i === 2) {
+                // wed and fri of Lent, only 2 stichera provided, so we need to find a theotokion
                 const theotokion = (await getData(`${address}\\octoechos\\${apostMain[0][0]}\\${dayOfWeek}_vespers.json`))["aposticha"][5];
-                aposticha += `<i>${andNow}</i><br><br>${theotokion}<br><br>`
+                aposticha += `<i>${gloryAndNow}</i><br><br>${theotokion}<br><br>`
             } else {
                 let separateGlory = false;
                 while (i > 0) {
