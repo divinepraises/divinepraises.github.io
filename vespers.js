@@ -1311,7 +1311,8 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         stycheraScheme = Array(6).fill(1);
         numStycheras = 6;
     } else if (dayOfWeek > 1 && season === "Lent" && dayData["class"] <= 8) {
-        psalm140tone = vespersTriodionData["ps140"][0];
+        // weekday of Lent
+        psalm140tone = vespersTriodionData["ps140"][0][0];
         stycheras = vespersTriodionData["ps140"]
         if (numStycheras > 3) {
             // 2 saints: one is moved to matins
