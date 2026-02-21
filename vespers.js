@@ -670,14 +670,15 @@ async function makeLentenEnding(priest, season, seasonWeek, dayOfWeek, dayClass,
 
     // possible cases:
     // 1) full Ephrem and full conclusion (all cases except following)
-    // 2) 3-prostration Ephrem and no conclusion (Sun evenings - Dol p381, Fri evenings Triodion p149 of pdf, feast on Mon 266)
+    // 2) 3-prostration Ephrem and no conclusion (Sun evenings - Dol p381)
     // 3) 3-prostration Ephrem and full conclusion (feasts - p267)
-    // 4) no Ephrem nor conclusion (???)
+    // 4) no Ephrem nor conclusion (Fri evenings Triodion p149 of pdf/Dol 398, feast on Mon 266)
     // 5) no Ephrem and full conclusion (forelent Thu and Sat p377)
-    const noEphrem = (season === "Forelent" && seasonWeek === 3 && (dayOfWeek === 4 || dayOfWeek === 6))
+    const noEphrem = (season === "Forelent" && seasonWeek === 3 && (dayOfWeek === 4 || dayOfWeek === 6)
+        || season === "Lent" && dayOfWeek === 6
+        || dayClass >= 8)
     const smallEphrem = (
-        season === "Lent" && (dayOfWeek === 1 || dayOfWeek === 6)
-        || dayClass >= 8
+        season === "Lent" && dayOfWeek === 1
     )
     const noConclusion = (
         (season === "Lent" && dayOfWeek === 6)
