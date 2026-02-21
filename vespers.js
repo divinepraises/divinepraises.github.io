@@ -637,21 +637,21 @@ export async function makeEndingBlockMajor(priest, dayOfWeek, isGreatVespers, ve
     if (prePostFeastData && "specialDismissal" in prePostFeastData) specialDismissal = prePostFeastData["specialDismissal"];
 
     if (priest === "1"){
-        if ((dayOfWeek === 6 || isGreatVespers) && !isLenten) res += `
+        if ((dayOfWeek === 6 || isGreatVespers && !isLenten)) res += `
             ${priestlyExclamationsData["wisdom"]}<br><br>
             ${giveTheBlessing(priest)}<br><br>
             ${priestlyExclamationsData["blessing"]}<br><br>
             ${amen} ${vespersData["strengthen"]}<br><br>
             ${priestlyExclamationsData["theotokos"]}<br><br>
             `;
-        if (!isLenten) res += `${priestlyExclamationsData["wisdom"]}<br><br>${moreHonorable}<br><br>`
+        if (!isLenten || dayOfWeek === 6) res += `${priestlyExclamationsData["wisdom"]}<br><br>${moreHonorable}<br><br>`
         res += `${priestlyExclamationsData["Christ"]}<br><br>
             ${gloryAndNow} ${LHM} ${LHM} ${LHM} ${giveTheBlessing(priest)}<br><br>
             ${dismissalMajor(dayOfWeek, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal)}
             `;
     } else {
-        if ((dayOfWeek === 6 || dayOfWeek === 0 || isGreatVespers) && !isLenten) res += `${vespersData["strengthen"]}<br><br>`
-        if (!isLenten) res += `${moreHonorable}<br><br>`
+        if ((dayOfWeek === 6 || dayOfWeek === 0 || isGreatVespers && !isLenten)) res += `${vespersData["strengthen"]}<br><br>`
+        if (!isLenten || dayOfWeek === 6) res += `${moreHonorable}<br><br>`
         res +=`${gloryAndNow} ${LHM} ${LHM} ${LHM} ${giveTheBlessing(priest)}<br><br>
         ${dismissalMajor(dayOfWeek, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal)}
         `;
