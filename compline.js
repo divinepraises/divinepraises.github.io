@@ -126,12 +126,16 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
         document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest);
     } else {
         var prostrations = "";
-        if (isGreatCompline && ("forefeast" in dayData || "postfeast" in dayData)) prostrations = `<br><br> <div class="rubric">${cross} Three prostrations with no words are made here instead of the prayer of st. Ephrem later.</div>`
+        // in forelent if pre/post feast, we make 3 prostrations with no words after kontakion: Dol p242 (case 4, paragraph 1)
+        if (isGreatCompline && season === "Forelent" && ("forefeast" in dayData || "postfeast" in dayData)) prostrations = `<br><br> <div class="rubric">${cross} Three prostrations with no words are made here instead of the prayer of st. Ephrem later.</div>`
         selectTropar(dayOfWeek,  smallComplineData, glas, dayData, specialDayData, dayTriodionData).then(tropar => {
             document.getElementById("troparia").innerHTML = tropar + prostrations;
         });
-        if (season === "Lent" && dayOfWeek === 1 || isGreatCompline && !("forefeast" in dayData || "postfeast" in dayData)) document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest, dayData["class"] >= 8);
-        else document.getElementById("st_ephrem").innerHTML = "";
+        if (season === "Lent" && dayOfWeek === 1 || isGreatCompline && !(season === "Forelent" && ("forefeast" in dayData || "postfeast" in dayData))) {
+            // if feast in Lent, we make 3 prostrations only, after "most honorable" (Dol p 268). i interpret it as 3 prostrations with this prayer,
+            // because in case we said them with no prayer, it was after kontakion
+            document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest, dayData["class"] >= 8);
+        } else document.getElementById("st_ephrem").innerHTML = "";
     }
 }
 
