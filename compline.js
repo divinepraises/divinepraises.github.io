@@ -306,7 +306,7 @@ async function loadGreatComplineBeginning(smallComplineData, full, season, seaso
     });
 
     // section 3
-    lesserDoxology("compline").then(dox => {
+    lesserDoxology("compline", season === "Lent").then(dox => {
         document.getElementById("lesserDoxology").innerHTML = dox;
     });
 }

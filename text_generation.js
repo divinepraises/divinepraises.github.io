@@ -199,7 +199,7 @@ export async function lesserDoxology(hour, isLenten=false){
         // vespers uses only the 2nd part
         return `${head}${replaceCapsWords(dox["2"], replacementDict)} ${prostrations}`
     }
-    return `${head}${replaceCapsWords(dox["1"], replacementDict)} ${replaceCapsWords(dox["2"], replacementDict)}`
+    return `${head}${replaceCapsWords(dox["1"], replacementDict)} ${replaceCapsWords(dox["2"], replacementDict)} ${prostrations}`
 }
 
 export async function getCommonText(textType, dayData){
