@@ -134,7 +134,7 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
         if (season === "Lent" && dayOfWeek === 1 || isGreatCompline && !(season === "Forelent" && ("forefeast" in dayData || "postfeast" in dayData))) {
             // if feast in Lent, we make 3 prostrations only, after "most honorable" (Dol p 268). i interpret it as 3 prostrations with this prayer,
             // because in case we said them with no prayer, it was after kontakion
-            document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest, dayData["class"] >= 8);
+            document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest, false, dayData["class"] >= 8);
         } else document.getElementById("st_ephrem").innerHTML = "";
     }
 }
