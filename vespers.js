@@ -399,7 +399,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
     if (isStBasil && priest === "1" && isWeekday) {
         document.getElementById("lesserDoxology").innerHTML = "";
     } else {
-        document.getElementById("lesserDoxology").innerHTML = await lesserDoxology("vespers", season === "Lent" && dayOfWeek != 0);
+        document.getElementById("lesserDoxology").innerHTML = await lesserDoxology("vespers", season === "Lent" && dayOfWeek != 0 && dayOfWeek < 6);
     }
 
     if (isGreatVespers) {
