@@ -88,6 +88,7 @@ export async function minorHour(hour, priest, full, date){
 	<div class=rubric>When this hour is followed by another one, switch to the <a href="${linkToNext}">next hour</a>. Otherwise, conclude with the dismissal:</div>
 	<hr>
 	${endingBlockMinor(priest)}
+	<div id="after_hour_elements"></div>
 	`;
 }
 
@@ -151,20 +152,33 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
     }
 
     if (hour === "1hour" && isLenten && dayData["class"] < 8) {
-        if (season === "Lent" && seasonWeek === 4 && dayOfWeek === 1) {
-            // Triodion p. co/270. This Monday is unique in this sense.
-            document.getElementById("chapter").innerHTML = (await getData(`${address}\\triodion\\Lent\\32_6hour.json`))["troparion"];
-        } else {
-            document.getElementById("chapter").innerHTML = replaceCapsWords(
-                hourData["chapter"],
-                {"TWICE":` <FONT COLOR="RED">(2)</FONT> `, "THRICE":` <FONT COLOR="RED">(3)</FONT> `}
-            )
-        }
+        document.getElementById("chapter").innerHTML = replaceCapsWords(
+            hourData["chapter"],
+            {"TWICE":` <FONT COLOR="RED">(2)</FONT> `, "THRICE":` <FONT COLOR="RED">(3)</FONT> `}
+        )
     } else {
         document.getElementById("chapter").innerHTML = replaceCapsWords(hourData["chapter"], {"TWICE":"", "THRICE":""})
     }
 
-    document.getElementById("prayer").innerHTML = hourData["prayer"]
+    document.getElementById("prayer").innerHTML = hourData["prayer"];
+
+    if (season === "Lent" && seasonWeek === 4 && dayOfWeek > 0 && (dayOfWeek < 5 || dayOfWeek === 5 && hour != "9hour")) {
+        // Dolnytstly p 410
+        const toYourCross = (await getData(`${address}\\triodion\\Lent\\32_6hour.json`))["troparion"];
+        var whoSings;
+        if (priest === "1") whoSings = "by clergy, then by all, then started by clergy and finished by all"
+        else whoSings = "thrice"
+        var afterRubric = `
+            <br><div class="rubric">
+                The Cross is venerated as on the previous Sunday:
+                 "To Your Cross" is sung ${whoSings}.
+                 If more people are present, stichera from veneration at Sunday Matins are sung.`
+        if (dayOfWeek === 5 && hour === "6hour") afterRubric += " The Cross is carried to its usual place afterwards.";
+        afterRubric += `</div>${toYourCross}<br><br>`
+        document.getElementById("after_hour_elements").innerHTML = afterRubric;
+    } else {
+        document.getElementById("after_hour_elements").innerHTML = "";
+    }
 }
 
 async function arrangeRoyalHours(additionalElements, hour, priest) {
@@ -356,15 +370,8 @@ async function arrangeLentenReading(additionalElements, full) {
     var text = `
         <div class="subhead">Troparion of the prophecy</div><br>
         ${troparia}<br><br>`
-    if (full === "1" && !("rubric" in additionalElements)) text += `<i>${gloryAndNow}</i><br><br>
+    if (full === "1") text += `<i>${gloryAndNow}</i><br><br>
         ${troparia}<br><br>`
-    else if ("rubric" in additionalElements) {
-        var rubric = additionalElements["rubric"];
-        if (rubric[0] === "@") {
-            rubric = (await readFromAddress(rubric))["rubric"];
-        }
-        text += `<div class="rubric">${rubric}</div>`
-    }
 
     text += `
         <div class="subhead">Prokimenon of the prophecy</div><br>
@@ -764,13 +771,6 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         // sat of fathers + feast
         if (hour === "1hour" || hour === "6hour") return dayData["kontakia"];
         else return dayTriodionData["kontakia"];
-    } else if (dayTriodionData != undefined && season === "Lent" && seasonWeek === 4 && dayOfWeek > 0 && dayOfWeek < 6 && dayData["class"] < 8) {
-        // weekdays of the week of Cross veneration
-        dayKond = dayTriodionData["kontakia"];
-        if (dayKond[0] === "@") {
-            dayKond = (await readFromAddress(dayKond))["kontakia"];
-        }
-        return dayKond;
     } else if (dayTriodionData != undefined && "kontakia" in dayTriodionData) {
         // other Triod
         return dayTriodionData["kontakia"];
