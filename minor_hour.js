@@ -1,5 +1,5 @@
 import { cross, StEphremPrayer, gloryGospel, usualBeginning, tripleAlleluia, glory, andNow, trisagionToPater, prayerOfTheHours, LHM, comeLetUs, gloryAndNow, moreHonorable, inTheName, prayerBlessingMayGodBeGracious, endingBlockMinor, amen, getCommonText } from './text_generation.js';
-import { kathismaToText, getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords, specialSunday, cancelPostfeastHypapante } from './script.js';
+import { readFromAddress, kathismaToText, getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords, specialSunday, cancelPostfeastHypapante } from './script.js';
 import { arrangeProkimenon, frameReadings } from './vespers.js';
 
 const address = `Text\\English`
@@ -103,6 +103,7 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
         dayData = await getData(`${address}\\menaion\\${date}.json`);
     } catch (error) {
         console.log("No data for the day! Using the weekday troparia.")
+        dayData = {"class": 0}
     }
     if ("postfeast" in dayData && dayData["postfeast"]==="02//02" && cancelPostfeastHypapante(date.slice(4, 6), season, seasonWeek, dayOfWeek)) {
         delete dayData["postfeast"];
@@ -131,16 +132,16 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
         document.getElementById("troparia").innerHTML = tropar;
     });
 
-    if (isLenten && dayData["class"] < 8) document.getElementById("kontakia_header").innerHTML = `<div class="subhead">Lenten troparia</div>`
+    if (isLenten && dayData["class"] < 8 && !(dayTriodionData != undefined && "kontakia" in dayTriodionData)) document.getElementById("kontakia_header").innerHTML = `<div class="subhead">Lenten troparia</div>`
     else document.getElementById("kontakia_header").innerHTML = `<div class="subhead">Kontakion</div>`
 
     selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData, isLenten && dayData["class"] < 8).then(kondak => {
         document.getElementById("kontakia").innerHTML = kondak;
     });
 
-    var thotokionRubric = "";
-    if (isLenten && dayData["class"] < 8) thotokionRubric = `<div class="rubric">${cross} During the theotokion, three inclinations are made.</div>`
-    document.getElementById("theotokion").innerHTML = thotokionRubric + hourData["theotokion"]
+    var theotokionRubric = "";
+    if (isLenten && dayData["class"] < 8) theotokionRubric = `<div class="rubric">${cross} During the theotokion, three inclinations are made.</div>`
+    document.getElementById("theotokion").innerHTML = theotokionRubric + hourData["theotokion"]
     await arrangeAdditionalElements(additionalElements, hour, priest, full, season, seasonWeek, dayOfWeek);
     if (isLenten) {
         const isLessPenitential = ("forefeast" in dayData || "postfeast" in dayData || dayData["class"] >= 8);
@@ -150,10 +151,15 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
     }
 
     if (hour === "1hour" && isLenten && dayData["class"] < 8) {
-        document.getElementById("chapter").innerHTML = replaceCapsWords(
-            hourData["chapter"],
-            {"TWICE":` <FONT COLOR="RED">(2)</FONT> `, "THRICE":` <FONT COLOR="RED">(3)</FONT> `}
-        )
+        if (season === "Lent" && seasonWeek === 4 && dayOfWeek === 1) {
+            // Triodion p. co/270. This Monday is unique in this sense.
+            document.getElementById("chapter").innerHTML = (await getData(`${address}\\triodion\\Lent\\32_6hour.json`))["troparion"];
+        } else {
+            document.getElementById("chapter").innerHTML = replaceCapsWords(
+                hourData["chapter"],
+                {"TWICE":` <FONT COLOR="RED">(2)</FONT> `, "THRICE":` <FONT COLOR="RED">(3)</FONT> `}
+            )
+        }
     } else {
         document.getElementById("chapter").innerHTML = replaceCapsWords(hourData["chapter"], {"TWICE":"", "THRICE":""})
     }
@@ -340,15 +346,25 @@ async function makeKathisma(seasonWeek, dayOfWeek, hour){
 
 async function arrangeLentenReading(additionalElements, full) {
     if (additionalElements === undefined) return "";
-    const troparia = additionalElements["troparion"];
+    var troparia = additionalElements["troparion"];
+    if (troparia[0] === "@") {
+        troparia = (await readFromAddress(troparia))["troparion"];
+    }
     const prokimenon = additionalElements["prokimenon"];
     const readings = additionalElements["readings"];
     const prokimenon2 = additionalElements["second_prokimenon"];
     var text = `
         <div class="subhead">Troparion of the prophecy</div><br>
         ${troparia}<br><br>`
-    if (full === "1") text += `<i>${gloryAndNow}</i><br><br>
+    if (full === "1" && !("rubric" in additionalElements)) text += `<i>${gloryAndNow}</i><br><br>
         ${troparia}<br><br>`
+    else if ("rubric" in additionalElements) {
+        var rubric = additionalElements["rubric"];
+        if (rubric[0] === "@") {
+            rubric = (await readFromAddress(rubric))["rubric"];
+        }
+        text += `<div class="rubric">${rubric}</div>`
+    }
 
     text += `
         <div class="subhead">Prokimenon of the prophecy</div><br>
@@ -699,9 +715,6 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
     For detailed rules, see the troparia function.
     */
 
-    // fallback for now
-    if (!dayData) {dayData = {"class": 0}; hour = "1hour";}
-
     var dayKond;
 
     var prePostFeast = "";
@@ -751,6 +764,13 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         // sat of fathers + feast
         if (hour === "1hour" || hour === "6hour") return dayData["kontakia"];
         else return dayTriodionData["kontakia"];
+    } else if (dayTriodionData != undefined && season === "Lent" && seasonWeek === 4 && dayOfWeek > 0 && dayOfWeek < 6 && dayData["class"] < 8) {
+        // weekdays of the week of Cross veneration
+        dayKond = dayTriodionData["kontakia"];
+        if (dayKond[0] === "@") {
+            dayKond = (await readFromAddress(dayKond))["kontakia"];
+        }
+        return dayKond;
     } else if (dayTriodionData != undefined && "kontakia" in dayTriodionData) {
         // other Triod
         return dayTriodionData["kontakia"];

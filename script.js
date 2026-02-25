@@ -1,6 +1,10 @@
 import {forefeast, postfeast, st, tripleAlleluia, LHM, gloryAndNow} from './text_generation.js';
 var address = `Text\\English`
 
+export async function readFromAddress(addressText) {
+    return (await getData(`${address}\\${addressText.slice(1, addressText.length)}.json`));
+}
+
 export function dateToStr(currentDate){
     const yyyy = currentDate.getFullYear();
     const mm = String(currentDate.getMonth() + 1).padStart(2, "0");
