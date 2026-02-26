@@ -122,7 +122,7 @@ export function giveTheBlessing(withPriest) {
 	};
 }
 
-export function dismissalMajor(dayOfWeek, withPriest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal) {
+export function dismissalMajor(dayOfWeek, withPriest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal, crossDismissal) {
     var text;
     var replacements = {};
     const dismissalDeceased = (dayOfWeek === 6 && !isGreatVespers && !("name" in saintNames) && specialDismissal != "")
@@ -160,6 +160,8 @@ export function dismissalMajor(dayOfWeek, withPriest, isGreatVespers, prePostFea
 	} else {
 	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}${data.dismissalSaintsSolemn}`
 	}
+
+	if (crossDismissal != "") replacements["WEEKDAY"] = data.dismissalsWeekdays[5];
 
 	return `${replaceCapsWords(text, replacements)}<br><br><FONT COLOR="RED">Choir:</FONT> ${amen}`
 }
