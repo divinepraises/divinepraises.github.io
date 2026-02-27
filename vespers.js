@@ -358,7 +358,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
         document.getElementById("ektenia_peace").innerHTML = `${LHM} <FONT COLOR="RED">(12)</FONT><br>${gloryAndNow}`;
     }
 
-    if (isGreatVespers && !isLenten){
+    if (isGreatVespers && (!isLenten || isLenten && dayOfWeek === 1)){
         document.getElementById("kathismaSelector").innerHTML = `
           <label><input type="radio" name="kathismaChoice" value="verses" checked> Only verses</label><br>
           <label><input type="radio" name="kathismaChoice" value="full"> Full psalms</label>
@@ -530,12 +530,15 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
     if (season === "Lent" && seasonWeek === 4 && dayOfWeek > 0 && dayOfWeek <= 5) {
         // Dolnytstly p 410
         const toYourCross = (await getData(`${address}\\triodion\\Lent\\32_6hour.json`))["troparion"];
+        var whoSings;
+        if (priest === "1") whoSings = "by clergy, then by all, then started by clergy and finished by all"
+        else whoSings = "thrice"
         var afterRubric = `
-            <br><div class="rubric">
+            <div class="rubric">
                 The Cross is venerated as on the previous Sunday:
-                 "To Your Cross" is sung by clergy, then by all, then started by clergy and finished by all.
+                 "To Your Cross" is sung ${whoSings}.
                  If more people are present, stichera from veneration at Sunday Matins are sung.
-            </div><br> ${toYourCross}`;
+                 </div>${toYourCross}<br><br>`
         document.getElementById("after_hour_elements").innerHTML = afterRubric;
     } else if (season === "Lent" && seasonWeek === 3 && dayOfWeek === 0) {
         document.getElementById("after_hour_elements").innerHTML = `
@@ -663,21 +666,23 @@ export async function makeEndingBlockMajor(priest, dayOfWeek, isGreatVespers, ve
     if (prePostFeastData && "specialDismissal" in prePostFeastData) specialDismissal = prePostFeastData["specialDismissal"];
 
     if (priest === "1"){
-        if ((dayOfWeek === 6 || isGreatVespers && !isLenten)) res += `
+        if (dayOfWeek === 6 || isGreatVespers && (!isLenten || dayOfWeek === 1)) res += `
             ${priestlyExclamationsData["wisdom"]}<br><br>
             ${giveTheBlessing(priest)}<br><br>
             ${priestlyExclamationsData["blessing"]}<br><br>
             ${amen} ${vespersData["strengthen"]}<br><br>
             ${priestlyExclamationsData["theotokos"]}<br><br>
             `;
-        if (!isLenten || dayOfWeek === 6) res += `${priestlyExclamationsData["wisdom"]}<br><br>${moreHonorable}<br><br>`
+        if (!(isLenten && dayOfWeek != 1 && !isGreatVespers) || dayOfWeek === 6) res += `${priestlyExclamationsData["wisdom"]}<br><br>${moreHonorable}<br><br>`
         res += `${priestlyExclamationsData["Christ"]}<br><br>
             ${gloryAndNow} ${LHM} ${LHM} ${LHM} ${giveTheBlessing(priest)}<br><br>
             ${dismissalMajor(dayOfWeek, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal, crossDismissal)}
             `;
     } else {
-        if ((dayOfWeek === 6 || dayOfWeek === 0 || isGreatVespers && !isLenten)) res += `${vespersData["strengthen"]}<br><br>`
-        if (!isLenten || dayOfWeek === 6) res += `${moreHonorable}<br><br>`
+        if ((dayOfWeek === 6 || dayOfWeek === 0 || isGreatVespers && (!isLenten || dayOfWeek === 1))) {
+            res += `${vespersData["strengthen"]}<br><br>`
+        }
+        if (!(isLenten && dayOfWeek != 1 && !isGreatVespers) || dayOfWeek === 6) res += `${moreHonorable}<br><br>`
         res +=`${gloryAndNow} ${LHM} ${LHM} ${LHM} ${giveTheBlessing(priest)}<br><br>
         ${dismissalMajor(dayOfWeek, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal, crossDismissal)}
         `;
@@ -696,7 +701,7 @@ async function makeLentenEnding(priest, season, seasonWeek, dayOfWeek, dayClass,
 
     // possible cases:
     // 1) full Ephrem and full conclusion (all cases except following)
-    // 2) 3-prostration Ephrem and no conclusion (Sun evenings - Dol p381)
+    // 2) 3-prostration Ephrem and half conclusion (Sun evenings - Dol p381)
     // 3) 3-prostration Ephrem and full conclusion (feasts - p267)
     // 4) no Ephrem nor conclusion (Fri evenings Triodion p149 of pdf/Dol 398, feast on Mon 266)
     // 5) no Ephrem and full conclusion (forelent Thu and Sat p377)
@@ -712,7 +717,7 @@ async function makeLentenEnding(priest, season, seasonWeek, dayOfWeek, dayClass,
     );
 
     var text = "";
-    if (!noEphrem && !smallEphrem || dayOfWeek === 1) {
+    if (!noEphrem && !smallEphrem || dayOfWeek === 1 && dayClass < 8) {
         text += `
             <div class="subhead">Lenten conclusion</div><br>
             ${LHM} <FONT COLOR="RED">(40)</FONT> ${giveTheBlessing(false)}<br><br>
@@ -822,7 +827,7 @@ export async function makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, hai
     }
 }
 
-async function makeGloryAposticha(aposticha, vespersMenaionData, dayOfWeek) {
+async function makeGloryAposticha(aposticha, vespersMenaionData, dayOfWeek, dayClass) {
     var apostMen, apostVerses;
     var additionalVerses = false;
     if ("aposticha" in vespersMenaionData) apostMen = vespersMenaionData["aposticha"];
@@ -860,7 +865,13 @@ async function makeGloryAposticha(aposticha, vespersMenaionData, dayOfWeek) {
         } else if ("theotokion_aposticha" in vespersMenaionData) {
             aposticha += `<i>${andNow}</i><br><br>${vespersMenaionData["theotokion_aposticha"]}<br><br>`
         } else {
-            const theotokion = (await getData(`${address}\\octoechos\\${tone[0]}\\${dayOfWeek}_vespers.json`))["aposticha"][5];
+            var theotokion;
+            if (dayClass < 8) {
+                theotokion = (await getData(`${address}\\octoechos\\${tone[0]}\\${dayOfWeek}_vespers.json`))["aposticha"][5];
+            } else {
+                theotokion = (await getData(`${address}\\octoechos\\${tone[0]}\\0_vespers.json`))["aposticha"][6];
+            }
+
             aposticha += `<i>${andNow}</i><br><br>${theotokion}<br><br>`
         }
     }
@@ -1039,7 +1050,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
                     <i>${andNow}</i><br><br>
                     ${apostMain[7]}<br><br>`;
         } else if ("aposticha" in vespersMenaionData || "additional_aposticha" in vespersMenaionData) {
-            aposticha = await makeGloryAposticha(aposticha, vespersMenaionData, dayOfWeek);
+            aposticha = await makeGloryAposticha(aposticha, vespersMenaionData, dayOfWeek, dayData["class"]);
         } else {
             let i = apostMain.length - 1;
             if (i === 2 && apostMain[1] != "g") {
@@ -1146,7 +1157,7 @@ export function frameReadings(readings) {
 }
 
 function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData) {
-    if (!("readings" in vespersMenaionData)) return "";
+    if (!vespersMenaionData || !("readings" in vespersMenaionData)) return "";
     var text = frameReadings(vespersMenaionData["readings"]);
 
     if ("troparia_and_readings" in vespersMenaionData) {
@@ -1361,6 +1372,14 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         )
         stycheraScheme = Array(10).fill(1);
         numStycheras = 10;
+        forceNumSticheras = 10;
+    } else if (dayOfWeek === 1 && season === "Lent" && dayData["class"] === 8) {
+        // Monday and polyeleos in Lent
+        psalm140tone = vespersTriodionData["ps140"][0][0];
+        stycheras = vespersTriodionData["ps140"].concat(psalm140menaionStycheras)
+        // 4 triodion, 6 feast
+        stycheraScheme = [2, 1, 1, 2, 2, 2];
+        numStycheras = 3+3;
         forceNumSticheras = 10;
     } else if (season === "Lent" && seasonWeek === 1 && dayOfWeek === 6 && dayData["class"] < 8) {
         // 1st Saturday of Lent
@@ -1833,14 +1852,14 @@ async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, priest, ektenia
       return
     }
 
-    if ((dayOfWeek === 1 && dayClass < 12) || omit_kathisma) {
+    if (dayOfWeek === 1 && !(dayClass === 12 || season === "Lent" && dayClass >= 8) || omit_kathisma) {
       document.getElementById("kathisma").innerHTML = `<div class=\"rubric\">No kathisma on Sunday night and after vigil-ranked feasts.</div><br>`;
       document.getElementById("kathismaSelector").innerHTML = "";
       return
     }
 
     var k;
-    const isGreatVespers = (dayClass >= 8 && !(season === "Lent" && dayOfWeek > 0));
+    const isGreatVespers = (dayClass >= 8 && !(season === "Lent" && dayOfWeek > 1));
     const long_scheme = (
         (season === "Lent")
         || (season === "Forelent")
