@@ -372,8 +372,8 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
 
     var omit_kathisma = false;
     if ("no_kathisma" in dayData) omit_kathisma = true;
-    makeKathisma(dayOfWeek, dayData["class"], mm, dd, season, priest, ekteniaData, omit_kathisma);
-    document.getElementById("kathismaSelector").addEventListener("change",() => makeKathisma(dayOfWeek, dayData["class"], mm, dd, season, priest, ekteniaData, omit_kathisma));
+    makeKathisma(dayOfWeek, dayData["class"], mm, dd, season, seasonWeek, priest, ekteniaData, omit_kathisma);
+    document.getElementById("kathismaSelector").addEventListener("change",() => makeKathisma(dayOfWeek, dayData["class"], mm, dd, season, seasonWeek, priest, ekteniaData, omit_kathisma));
 
     await makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers, vespersData, vespersMenaionData, vespersOctoechosData, vespersTriodionData, dayData, specialSundayName);
 
@@ -1835,7 +1835,7 @@ function makeSmallEktenia(priest, ekteniaData){
     document.getElementById("ektenia_small").innerHTML += "<br><br>"
 }
 
-async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, priest, ekteniaData, omit_kathisma){
+async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, seasonWeek, priest, ekteniaData, omit_kathisma){
     var instruction = document.querySelector('input[name="kathismaChoice"]:checked')?.value;
 
     if (instruction === "omit_kathisma"){
@@ -1856,9 +1856,6 @@ async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, priest, ektenia
     }
 
     // TODO: cancel kathisma if yesterday was a vigil
-    // TODO: 5th week of Lent
-    // placeholder, and all teh code is in place:
-    const fifthWeekOfLent = 0;
     // TODO: psalms instead of numbers
 
     // Dol. Typicon does not specify the order of kathismas, but in section on the lowest ranks of days, in a footnote,
@@ -1901,7 +1898,7 @@ async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, priest, ektenia
         )
     );
 
-    if (fifthWeekOfLent) {
+    if (season === "Lent" && seasonWeek === 5) {
         if (dayOfWeek === 0) k = 1;
         else if (dayOfWeek === 2) k = 10;
         else if (dayOfWeek === 3) k = 19;
