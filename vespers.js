@@ -1002,7 +1002,17 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
         ) {
         // triodion weekday
         apostMain = vespersTriodionData["aposticha"];
-        if (apostMain.length > 2) {
+        if (apostMain.length > 2 && (season === "Lent" && seasonWeek === 4 && dayOfWeek === 4)) {
+            aposticha += `
+                <div class="rubric">Tone ${apostMain[0]}</div>
+                ${apostMain[1]}<br><br>
+                <div class="rubric">Tone ${apostMain[2]}</div>
+                <i>${apostVerses[0]}</i><br><br>
+                ${apostMain[3]}<br><br>
+                <i>${apostVerses[1]}</i><br><br>
+                ${apostMain[4]}<br><br>
+                `
+        } else if (apostMain.length > 2) {
             aposticha += `
                 <div class="rubric">Tone ${apostMain[0]}</div>
                 ${apostMain[1]}<br><br>
@@ -1012,6 +1022,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
                 ${apostMain[2]}<br><br>
                 `
         } else {
+            // Sat
              const apostOcto = (await getData(`${address}\\octoechos\\${glas}\\${dayOfWeek}_vespers.json`))["aposticha"];
              aposticha += `
                 <div class="rubric">Tone ${apostMain[0]}</div>
@@ -1059,6 +1070,10 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
                 aposticha += `<i>${gloryAndNow}</i><br><br>${theotokion}<br><br>`
             } else if (i === 2 && apostMain[1] === "g") {
                 const theotokion = (await getData(`${address}\\octoechos\\${apostMain[0][0]}\\${dayOfWeek}_vespers.json`))["aposticha"][5];
+                aposticha += `<i>${andNow}</i><br><br>${theotokion}<br><br>`
+            } else if (season === "Lent" && seasonWeek === 4 && dayOfWeek === 4) {
+                // wed of Cross-veneration week, more apost than usual
+                const theotokion = (await getData(`${address}\\octoechos\\${apostMain[2][0]}\\${dayOfWeek}_vespers.json`))["aposticha"][5];
                 aposticha += `<i>${andNow}</i><br><br>${theotokion}<br><br>`
             } else {
                 let separateGlory = false;
@@ -1391,7 +1406,8 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         // weekday of Lent (Tue-Fri)
         psalm140tone = vespersTriodionData["ps140"][0][0];
         stycheras = vespersTriodionData["ps140"]
-        if (numStycheras > 3) {
+        // the requirement for triodion number comes from cross-veneration week where we don't use menaion stichera here
+        if (numTriodionStycheras < 6 && numStycheras > 3) {
             // 2 saints: one is moved to matins
             // 6-saint: limit to 3 stichera
             if (numSetsMenaionStycheras === 2) {
@@ -1408,7 +1424,20 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
                     .concat(psalm140menaionStycheras.slice(numStycheras+1, numStycheras+5))
                 )
             }
-        } else stycheras = stycheras.concat(psalm140menaionStycheras);
+        } else if (numTriodionStycheras < 6) {
+            // one 4-saint
+            stycheras = stycheras.concat(psalm140menaionStycheras);
+        }
+        if ("theotokion" in vespersTriodionData) {
+            if (stycheras[stycheras.length - 1] === "g") {
+                stycheras = stycheras.concat(["n"]).concat(vespersTriodionData["theotokion"])
+            } else if (stycheras[stycheras.length - 1] === "gn") {
+                stycheras[stycheras.length - 1] = "g";
+                stycheras = stycheras.concat(["n"]).concat(vespersTriodionData["theotokion"])
+            } else {
+                stycheras = stycheras.concat(["gn"]).concat(vespersTriodionData["theotokion"])
+            }
+        }
 
         stycheraScheme = Array(6).fill(1);
         numStycheras = 6;
