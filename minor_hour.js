@@ -67,14 +67,14 @@ export async function minorHour(hour, priest, full, date){
 	${andNow}<br><br>
 	<div id="theotokion"></div><br>
 	<div id="additionalElementsSelector"></div>
-	<div id="additional_elements"></div><br>
+	<div id="additional_elements"></div>
 	<div id="chapter"></div><br>
-	<div class="subhead">Trisagion</div>
+	<div class="subhead">Trisagion</div><br>
 	${trisagionToPater(priest)}
 	<div id="kontakia_header"></div>
 	<div id="kontakia"></div><br>
 	${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
-	<div class="subhead">Prayer of the hours</div>
+	<div class="subhead">Prayer of the hours</div><br>
 	${prayerOfTheHours}<br><br>
 	${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
 	${gloryAndNow}<br><br>
@@ -83,7 +83,7 @@ export async function minorHour(hour, priest, full, date){
 	${prayerBlessingMayGodBeGracious(priest, hour)}<br><br>
 	${amen}<br><br>
     <div id="st_ephrem"></div>
-	<div class="subhead">Prayer of this hour</div>
+	<div class="subhead">Prayer of this hour</div><br>
 	<div id="prayer"></div><br>
 	<div class=rubric>When this hour is followed by another one, switch to the <a href="${linkToNext}">next hour</a>. Otherwise, conclude with the dismissal:</div>
 	<hr>
@@ -295,7 +295,7 @@ async function makeKathisma(seasonWeek, dayOfWeek, hour){
     var full = document.querySelector('input[name="selectKathisma"]:checked')?.value;
     if (full === "0") return " ";
     var k;
-    const no_kath = `<div class="rubric">No kathisma prescribed at this hour.</div>`
+    const no_kath = `<div class="rubric">No kathisma prescribed at this hour.</div><br>`
     if (seasonWeek != 4) {
         if (dayOfWeek === 1) {
             if (hour === "1hour") return no_kath;
@@ -353,7 +353,8 @@ async function makeKathisma(seasonWeek, dayOfWeek, hour){
         }
     }
 
-    var text = `<br><div class="subhead">Kathisma ${k}</div>`
+    var text = `<div class="subhead">Kathisma ${k}</div>`
+    var text = `<div class="subhead">Kathisma ${k}</div>`
     text += await kathismaToText(k, false, dayOfWeek) + "<br>"
     return text
 }
@@ -375,7 +376,7 @@ async function arrangeLentenReading(additionalElements, full) {
 
     text += `
         <div class="subhead">Prokimenon of the prophecy</div><br>
-        ${arrangeProkimenon(prokimenon)}<br><br>
+        ${arrangeProkimenon(prokimenon)}<br>
         ${frameReadings(readings)}<br><br>
         <div class="subhead">Prokimenon of the prophecy</div><br>
         ${arrangeProkimenon(prokimenon2)}
@@ -414,7 +415,7 @@ async function arrangeAdditionalElements(additionalElements, hour, priest, full,
         document.getElementById("additionalElementsSelector").innerHTML = `
           <label><input type="radio" name="selectKathisma" value="1"> Show kathisma indications </label><br>
           <label><input type="radio" name="selectKathisma" value="0" checked> Hide kathisma indications </label>
-          <br>`
+          <br><br>`
         await arrangeLentenElements(additionalElements, full, seasonWeek, dayOfWeek, hour, addKathisma);
         document.getElementById("additionalElementsSelector").addEventListener(
             "change",
