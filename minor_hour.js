@@ -141,7 +141,7 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
     });
 
     var theotokionRubric = "";
-    if (isLenten && dayData["class"] < 8) theotokionRubric = `<div class="rubric">${cross} During the theotokion, three inclinations are made.</div>`
+    if (isLenten && dayData["class"] < 8) theotokionRubric = `<div class="rubric">${cross} During the theotokion, three bows are made.</div>`
     document.getElementById("theotokion").innerHTML = theotokionRubric + hourData["theotokion"]
     await arrangeAdditionalElements(additionalElements, hour, priest, full, season, seasonWeek, dayOfWeek);
     if (isLenten) {
