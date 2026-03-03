@@ -380,7 +380,7 @@ async function arrangeLentenReading(additionalElements, full) {
         ${arrangeProkimenon(prokimenon)}<br>
         ${frameReadings(readings)}<br><br>
         <div class="subhead">Prokimenon of the prophecy</div><br>
-        ${arrangeProkimenon(prokimenon2)}
+        ${arrangeProkimenon(prokimenon2)}<br>
     `
     return text;
 }
