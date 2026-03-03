@@ -1899,6 +1899,7 @@ async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, seasonWeek, pri
     );
 
     if (season === "Lent" && seasonWeek === 5) {
+        // TODO this schedule should be adapted for when Annunciation/forefeast move the Canon
         if (dayOfWeek === 0) k = 1;
         else if (dayOfWeek === 2) k = 10;
         else if (dayOfWeek === 3) k = 19;

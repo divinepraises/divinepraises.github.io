@@ -296,7 +296,7 @@ async function makeKathisma(seasonWeek, dayOfWeek, hour){
     if (full === "0") return " ";
     var k;
     const no_kath = `<div class="rubric">No kathisma prescribed at this hour.</div><br>`
-    if (seasonWeek != 4) {
+    if (seasonWeek != 5) {
         if (dayOfWeek === 1) {
             if (hour === "1hour") return no_kath;
             else if (hour === "3hour") k = 7;
@@ -324,7 +324,8 @@ async function makeKathisma(seasonWeek, dayOfWeek, hour){
             else if (hour === "9hour") return no_kath;
         }
     } else {
-        // 5th week
+        // 5th week.
+        // TODO this schedule should be adapted for when Annunciation/forefeast move the Canon
         if (dayOfWeek === 1) {
             if (hour === "1hour") return no_kath;
             else if (hour === "3hour") k = 7;
