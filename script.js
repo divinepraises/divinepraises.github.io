@@ -178,7 +178,7 @@ function calculateEaster(year) {
 }
 
 function dateDiffInDays(a, b) {
-  const _MS_PER_DAY = 1000* 60* 60* 24;
+  const _MS_PER_DAY = 1000 * 60 * 60 * 24;
   // Discard the time and time-zone information.
   const utcA = Date.UTC(a[0], a[1]-1, a[2]);
   const utcB = Date.UTC(b[0], b[1]-1, b[2]);
@@ -267,9 +267,9 @@ export function parseDate(currentYear, currentMonth, currentDay) {
 
 export function isBetweenDates(month, day, startMonth, startDay, endMonth, endDay) {
   // make it a 4-digit number and compare
-  const md = Number(month)* 100 + Number(day);
-  const start = Number(startMonth)* 100 + Number(startDay);
-  const end = Number(endMonth)* 100 + Number(endDay);
+  const md = Number(month) * 100 + Number(day);
+  const start = Number(startMonth) * 100 + Number(startDay);
+  const end = Number(endMonth) * 100 + Number(endDay);
 
   if (start <= end) {
     // normal case (e.g., March 1 → June 1)
