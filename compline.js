@@ -476,7 +476,7 @@ function constructMenaionCanon(canonData, full, dayOfWeek){
         var n_trop = ode["troparia"].map(element => element.length).reduce((a, b) => a + b, 0);
         var repetition_min = Math.trunc(tropNumOde / n_trop);
         var repetitionScheme = Array(n_trop).fill(repetition_min);
-        if (tropNumOde != 0) var trop_left = tropNumOde - repetition_min * n_trop;
+        if (tropNumOde != 0) var trop_left = tropNumOde - repetition_min* n_trop;
         else var trop_left = n_trop;
         var i = 0;
         while (trop_left > 0) {
