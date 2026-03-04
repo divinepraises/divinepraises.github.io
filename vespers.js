@@ -250,6 +250,17 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
     }
 
     if (season === "Lent" || season === "Forelent") {
+         const isStAndrewCanonMatins = (
+            season === "Lent" && seasonWeek === 5
+            && (
+                dayOfWeek === 4
+                && !(mm === 3 && (dd === 25 || dd === 26))
+            ) // ... unless it's transferred to Tuesday
+            || (
+                dayOfWeek === 2
+                && (mm === 3 && (dd === 24 || dd === 23))
+            )
+        )
         var weekToLookAt = seasonWeek - 1;
         if (dayOfWeek === 0 && season === "Lent") weekToLookAt = seasonWeek;
         try {
@@ -259,6 +270,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
                     (dayOfWeek === 0 && dayData["class"] <= 6 && !(season === "Lent" && seasonWeek === 2))
                     || (dayOfWeek === 6 && seasonWeek === 2 && season === "Forelent")
                     || (dayOfWeek === 6 && seasonWeek === 1 && season === "Lent")
+                    || isStAndrewCanonMatins
                 ) {
                     dayData["day name"] = dayTriodionData["day name"];
                 } else if ("day name" in dayData && dayData["day name"] != dayTriodionData["day name"]) {
@@ -1371,7 +1383,15 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
     var psalm140OctoechosStycheras;
 
     var forceNumSticheras;
-    if (dayOfWeek === 1 && season === "Lent" && dayData["class"] < 8) {
+    if (season === "Lent" && seasonWeek === 5 && dayOfWeek === 4) {
+        // Thu of Great canon. More stichera than ever
+        stycheras = vespersTriodionData["ps140"];
+        psalm140tone = stycheras[0][0];
+        stycheraScheme = Array(numTriodionStycheras).fill(1);
+        psalm116split = psalm116split.slice(0, 2).concat(Array(7).fill(vespersTriodionData["additional_verse"])).concat("");
+        forceNumSticheras = 19;
+        numStycheras = numTriodionStycheras;
+    } else if (dayOfWeek === 1 && season === "Lent" && dayData["class"] < 8) {
         // Monday in Lent
         psalm140tone = glas;
 
@@ -1722,8 +1742,15 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         numVersesLeft = 10;
         currentPsalm = psalm141split;
         nextPsalmList.splice(0, 0, psalm129split);
-    }
-    else {i = 0; numVersesLeft = 8; currentPsalm = psalm129split;}
+    } else if (forceNumSticheras > 10) {
+        // These numbers all depend on 1) how the psalm is divided and 2) how to interpret the rubric.
+        // I choose here to keep the 7 additional refrains, so the starting point of the verses is moved accordingly.
+        // If a translation with a different division of psalms into verses is chosen, these numbers will need adjustment.
+        numVersesLeft = forceNumSticheras;
+        currentPsalm = psalm141split;
+        i = 0;
+        nextPsalmList.splice(0, 0, psalm129split);
+    } else {i = 0; numVersesLeft = 8; currentPsalm = psalm129split;}
     // we'll be joining with no separator, so adding it to the verses with no stychera
     for (let j of Array(i).keys()) {currentPsalm[j] += "•";}
     if (i > 0) currentPsalm[i-1]+="<br><br>"
@@ -1737,12 +1764,11 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
             psalm140etc[5] = currentPsalm.join("");
             currentPsalm = nextPsalmList.shift();
             i = 0;
-            }
-        else if (numVersesLeft === 8 && i > 9) {
+        } else if (numVersesLeft === 8 && i > 9) {
             psalm140etc[3] = currentPsalm.join("");
             currentPsalm = nextPsalmList.shift();
             i = 0;
-            }
+        }
 
         if (!isNaN(parseInt(stychera[0]))){
             // this is tone indication
@@ -1783,7 +1809,11 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
 
         if (ns < numStycheras){
             for (let nRep=0; nRep < stycheraScheme[ns]; nRep++){
-                currentPsalm[i] = `${numVersesLeft}. <i>${currentPsalm[i]}</i><br><br>${stychera}<br><br>`;
+                if (numVersesLeft > 0) {
+                    currentPsalm[i] = `${numVersesLeft}. <i>${currentPsalm[i]}</i><br><br>${stychera}<br><br>`;
+                } else {
+                    currentPsalm[i] = `<i>${currentPsalm[i]}</i><br><br>${stychera}<br><br>`;
+                }
                 numVersesLeft -= 1
                 i += 1
             }
