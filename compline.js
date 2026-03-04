@@ -38,6 +38,19 @@ export async function enhanceCompline(priest, full, date){
         (dayOfWeek === 3 || dayOfWeek === 5)
     )
 
+    const isStAndrewCanonMatins = (
+        // small compline on Thursday of the 5th week of Lent...
+        season === "Lent" && seasonWeek === 5
+        && (
+            dayOfWeek === 4
+            && !(mm === 3 && (dd === 25 || dd === 26))
+        ) // ... unless it's transferred to Tuesday, then small compline is on Tuesday
+        || (
+            dayOfWeek === 2
+            && (mm === 3 && (dd === 24 || dd === 23))
+        )
+    )
+
     var specialDayData;
     if (dayOfWeek === 0 || (mm === 12 && dd === 26 && dayOfWeek === 1)) {
         const specialSundayName = await specialSunday(mm, dd);
@@ -58,7 +71,7 @@ export async function enhanceCompline(priest, full, date){
         const vespersData = await getData(`${address}\\horologion\\general_vespers.json`);
         vespersEnding(vespersData, dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, season, seasonWeek, false);
     } else if (
-            (season === "Lent" && dayOfWeek < 6 && dayOfWeek > 1)
+            (season === "Lent" && dayOfWeek < 6 && dayOfWeek > 1 && !isStAndrewCanonMatins)
             || ((season === "Forelent" && seasonWeek === 3) && (dayOfWeek === 3 || dayOfWeek === 5))
         ) {
         greatComplineBeginning(full, season, seasonWeek, priest, dayOfWeek, dayData, isIncarnationFeast);
