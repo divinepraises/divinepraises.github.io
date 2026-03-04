@@ -393,7 +393,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
     document.getElementById("prokimenon").innerHTML = await makeProkimenon(dayOfWeek, vespersData, priest, dayData, vespersMenaionData, priestlyExclamationsData, vespersTriodionData);
 
     if ("readings" in vespersMenaionData || vespersTriodionData != undefined && "readings" in vespersTriodionData){
-        document.getElementById("readings_selector").innerHTML = `<br>
+        document.getElementById("readings_selector").innerHTML = `
           <label><input type="radio" name="readingsChoice" value="show"> Show the insert with full readings.</label><br>
           <label><input type="radio" name="readingsChoice" value="hide" checked> Hide the insert with full readings.</label>
           <br><br>`
