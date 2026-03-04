@@ -267,6 +267,11 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
                     dayData["day name"] = dayTriodionData["day name"] + ", " + constructDayName(dayData, false);
                 }
             }
+            if ("name" in dayTriodionData && season === "Lent") {
+                // Climacus and Mary
+                dayData["name"] = dayTriodionData["name"];
+                dayData["type"] = dayTriodionData["type"];
+            }
         } catch {}
         try {
             vespersTriodionData = await getData(`${address}\\triodion\\${season}\\${weekToLookAt}${dayOfWeek}_vespers.json`);
