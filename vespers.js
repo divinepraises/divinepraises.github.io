@@ -1007,7 +1007,8 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
         ) {
         // triodion weekday
         apostMain = vespersTriodionData["aposticha"];
-        if (apostMain.length > 2 && (season === "Lent" && seasonWeek === 4 && dayOfWeek === 4)) {
+        if (apostMain.length >= 4 && (season === "Lent" && !isNaN(parseInt(apostMain[2][0])))) {
+            // fist sticheron is not repeated
             aposticha += `
                 <div class="rubric">Tone ${apostMain[0]}</div>
                 ${apostMain[1]}<br><br>
@@ -1087,18 +1088,15 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
                     if (apostMain[i] === "n") separateGlory = true;
                     i -= 1;
                 }
-                if (i === 0) {
-                    i = 4;  // no new tone indication. stichera is at 4
-                } else {
+                if (i != 0) {
                     if (apostMain[i] != apostMain[0]) aposticha += `<div class="rubric">Tone ${apostMain[i]}</div>`;
-                    // i - tone, i+1 - g/gn, i+2 - stichera
-                    i += 2;
                 }
+                i = apostMain.length - 1;
                 if (separateGlory) {
                     aposticha += `<i>${glory}</i><br><br>
-                         ${apostMain[i]}<br><br>
+                         ${apostMain[i-2]}<br><br>
                         <i>${andNow}</i><br><br>
-                        ${apostMain[i+2]}<br><br>`;
+                        ${apostMain[i]}<br><br>`;
                 } else {
                     aposticha += `<i>${gloryAndNow}</i><br><br>
                          ${apostMain[i]}<br><br>`;
