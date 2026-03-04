@@ -62,7 +62,7 @@ export async function minorHour(hour, priest, full, date){
 	<div id="psalms"></div><br>
 	${tripleAlleluia}<br>
 	${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
-	<div class="subhead">Troparia</div>
+	<div class="subhead">Troparia</div><br>
 	<div id="troparia"></div><br>
 	${andNow}<br><br>
 	<div id="theotokion"></div><br>
@@ -71,7 +71,7 @@ export async function minorHour(hour, priest, full, date){
 	<div id="chapter"></div><br>
 	<div class="subhead">Trisagion</div><br>
 	${trisagionToPater(priest)}
-	<div id="kontakia_header"></div>
+	<div id="kontakia_header"></div><br>
 	<div id="kontakia"></div><br>
 	${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
 	<div class="subhead">Prayer of the hours</div><br>
@@ -550,7 +550,7 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
     }
     if (isLenten) {
         dayTrop = hourData["lenten_troparia"];
-        return `<br><div class="rubric">Tone ${dayTrop[0]}</div>
+        return `<div class="rubric">Tone ${dayTrop[0]}</div>
         ${dayTrop[1]} <div class="rubric">${cross} Prostration.</div>
          <FONT COLOR="RED">v.</FONT> ${dayTrop[2]}<br><br>
         ${dayTrop[1]} <div class="rubric">${cross} Prostration.</div>
@@ -782,7 +782,7 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         dayKond = hourData["lenten_kontakion"];
         var i = 0;
         if (hour === "6hour" && (dayOfWeek === 3 || dayOfWeek === 5)) i = 1;
-        return `<br><div class="rubric">Tone ${dayKond[0]}</div>
+        return `<div class="rubric">Tone ${dayKond[0]}</div>
         ${dayKond[1]}<br><br>
         <i>${glory}</i><br><br>
         ${dayKond[2]}<br><br>
