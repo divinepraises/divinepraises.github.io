@@ -713,7 +713,7 @@ async function makeLentenEnding(priest, season, seasonWeek, dayOfWeek, dayClass,
     const lentenPrayer = lentenTexts["O heavenly King"];
     const vesperalPrayer = lentenTexts["prayer"];
 
-    const blessedBe = (await getData(`${address}\\horologion\\vigil_vespers.json`))["blessed_be"];
+    const blessedBe = `${cross} ${(await getData(`${address}\\horologion\\vigil_vespers.json`))["blessed_be"]}`;
     const ps33 = (await readPsalmsFromNumbers(["33vespers"], ["Psalm 33"])).join("")
 
     // possible cases:
@@ -759,7 +759,7 @@ async function makeLentenEnding(priest, season, seasonWeek, dayOfWeek, dayClass,
     if (noConclusion) return text;
     return text +
             `${vesperalPrayer}<br><br>
-            ${blessedBe}<FONT COLOR="RED"><i>(3)</i></FONT><br><br>
+            ${blessedBe} <FONT COLOR="RED">(3)</FONT><br><br>
             ${ps33}<br><br>
             ${itIsTrulyRight}<br><br>`
 }
