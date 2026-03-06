@@ -1404,17 +1404,11 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         psalm140tone = glas;
 
         var matinsStichera = (await getData(`${address}\\octoechos\\${glas}\\1_matins.json`))["aposticha"].slice(1, 3);
-        if (numStycheras > 3) {
-            // 2 saints: one is moved to matins
-            // 6-saint: limit to 3 stichera
-            if (numSetsMenaionStycheras === 2) psalm140menaionStycheras = psalm140menaionStycheras.slice(0, 4).concat(psalm140menaionStycheras.slice(numStycheras+2, numStycheras+6))
-            else if (numSetsMenaionStycheras === 1) psalm140menaionStycheras = psalm140menaionStycheras.slice(0, 4).concat(psalm140menaionStycheras.slice(numStycheras+1, numStycheras+5))
-        }
         stycheras = (
             vespersOctoechosData["aposticha"].slice(0, 3)
             .concat(matinsStichera)
             .concat(vespersTriodionData["ps140"])
-            .concat(psalm140menaionStycheras)
+            .concat(psalm140menaionStycheras.slice(0, 4))
         )
         stycheraScheme = Array(10).fill(1);
         numStycheras = 10;
