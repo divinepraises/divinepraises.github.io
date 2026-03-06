@@ -270,6 +270,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
                     (dayOfWeek === 0 && dayData["class"] <= 6 && !(season === "Lent" && seasonWeek === 2))
                     || (dayOfWeek === 6 && seasonWeek === 2 && season === "Forelent")
                     || (dayOfWeek === 6 && seasonWeek === 1 && season === "Lent")
+                    || (dayOfWeek === 6 && seasonWeek === 5 && season === "Lent")
                     || isStAndrewCanonMatins
                 ) {
                     dayData["day name"] = dayTriodionData["day name"];
@@ -481,7 +482,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
                 dayData["troparia"] = [];
             } else if (season === "Forelent" && dayOfWeek === 0 && "forefeast" in dayData) {
                 dayData["troparia"] = dayData["troparia"][dayData["troparia"].length-1];
-            } else if (season === "Lent" && seasonWeek === 1 && dayOfWeek === 6) {
+            } else if (season === "Lent" && (seasonWeek === 1 || seasonWeek === 5) && dayOfWeek === 6) {
                 Object.assign(dayData, dayTriodionData);
             } else if (season === "Lent" && seasonWeek != 2 && dayOfWeek === 0) {
                 dayData["troparia"] = dayTriodionData["troparia"];
@@ -1391,6 +1392,12 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         psalm116split = psalm116split.slice(0, 2).concat(Array(7).fill(vespersTriodionData["additional_verse"])).concat("");
         forceNumSticheras = 19;
         numStycheras = numTriodionStycheras;
+    } else if (season === "Lent" && seasonWeek === 5 && dayOfWeek === 6) {
+        stycheras = vespersTriodionData["ps140"];
+        psalm140tone = stycheras[0][0];
+        stycheraScheme = [3, 3, 2];
+        forceNumSticheras = 8;
+        numStycheras = 3;
     } else if (dayOfWeek === 1 && season === "Lent" && dayData["class"] < 8) {
         // Monday in Lent
         psalm140tone = glas;
