@@ -1393,6 +1393,7 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         forceNumSticheras = 19;
         numStycheras = numTriodionStycheras;
     } else if (season === "Lent" && seasonWeek === 5 && dayOfWeek === 6) {
+        // Sat of Akathist
         stycheras = vespersTriodionData["ps140"];
         psalm140tone = stycheras[0][0];
         stycheraScheme = [3, 3, 2];
@@ -1437,26 +1438,11 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         psalm140tone = vespersTriodionData["ps140"][0][0];
         stycheras = vespersTriodionData["ps140"]
         // the requirement for triodion number comes from cross-veneration week where we don't use menaion stichera here
-        if (numTriodionStycheras < 6 && numStycheras > 3) {
+        if (numTriodionStycheras < 6) {
             // 2 saints: one is moved to matins
             // 6-saint: limit to 3 stichera
-            if (numSetsMenaionStycheras === 2) {
-                stycheras = (
-                    stycheras
-                    .concat(psalm140menaionStycheras.slice(0, 4))
-                    .concat(psalm140menaionStycheras.slice(numStycheras+2, numStycheras+6))
-                )
-            }
-            else if (numSetsMenaionStycheras === 1) {
-                psalm140menaionStycheras = (
-                    stycheras
-                    .concat(psalm140menaionStycheras.slice(0, 4))
-                    .concat(psalm140menaionStycheras.slice(numStycheras+1, numStycheras+5))
-                )
-            }
-        } else if (numTriodionStycheras < 6) {
-            // one 4-saint
-            stycheras = stycheras.concat(psalm140menaionStycheras);
+            // one 4-saint: not Glory on weekdays
+            stycheras = stycheras.concat(psalm140menaionStycheras.slice(0, 4));
         }
         if ("theotokion" in vespersTriodionData) {
             if (stycheras[stycheras.length - 1] === "g") {
