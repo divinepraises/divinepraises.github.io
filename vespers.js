@@ -271,6 +271,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
                     || (dayOfWeek === 6 && seasonWeek === 2 && season === "Forelent")
                     || (dayOfWeek === 6 && seasonWeek === 1 && season === "Lent")
                     || (dayOfWeek === 6 && seasonWeek === 5 && season === "Lent")
+                    || (dayOfWeek === 6 && seasonWeek === 6 && season === "Lent")
                     || isStAndrewCanonMatins
                 ) {
                     dayData["day name"] = dayTriodionData["day name"];
@@ -482,7 +483,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
                 dayData["troparia"] = [];
             } else if (season === "Forelent" && dayOfWeek === 0 && "forefeast" in dayData) {
                 dayData["troparia"] = dayData["troparia"][dayData["troparia"].length-1];
-            } else if (season === "Lent" && (seasonWeek === 1 || seasonWeek === 5) && dayOfWeek === 6) {
+            } else if (season === "Lent" && (seasonWeek === 1 || seasonWeek === 5 || seasonWeek === 6) && dayOfWeek === 6) {
                 Object.assign(dayData, dayTriodionData);
             } else if (season === "Lent" && seasonWeek != 2 && dayOfWeek === 0) {
                 dayData["troparia"] = dayTriodionData["troparia"];
@@ -530,7 +531,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
 
     document.getElementById("simeon").innerHTML = `<div class="subhead">Song of Simeon</div><br>${vespersData["simeon"]}`;
 
-    document.getElementById("troparia").innerHTML = await makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, haire, specialSundayName, isLenten && dayData["class"] < 8);
+    document.getElementById("troparia").innerHTML = await makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatVespers, dayData, haire, specialSundayName, isLenten && dayData["class"] < 8);
 
     const isSemiLenten = (season === "Forelent" && seasonWeek === 3 && dayOfWeek > 3);
     if (isLenten || isSemiLenten) {
@@ -765,7 +766,7 @@ async function makeLentenEnding(priest, season, seasonWeek, dayOfWeek, dayClass,
             ${itIsTrulyRight}<br><br>`
 }
 
-export async function makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, haire, specialSundayName, isLenten){
+export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatVespers, dayData, haire, specialSundayName, isLenten){
     if (isLenten && dayOfWeek < 6) {
         const lentenTrop = (await getData(`${address}\\horologion\\lenten_vespers.json`))["troparia"];
         return replaceCapsWords(`${lentenTrop[0]}<br>
@@ -813,7 +814,7 @@ export async function makeTroparia(glas, dayOfWeek, isGreatVespers, dayData, hai
     if (
         (specialSundayName === "forefathers")
         || (prePostFeast === "forefeast" || specialSundayName === "fathers")
-        || ("specialDismissal" in dayData && !isGreatVespers && dayOfWeek === 6)  // Sat for dead
+        || ("specialDismissal" in dayData && !isGreatVespers && dayOfWeek === 6)  // Sat for dead/Lazarus
         ) {
         theotokion = dayTrop[dayTrop.length-1];
         dayTrop.pop();
@@ -1399,6 +1400,13 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         stycheraScheme = [3, 3, 2];
         forceNumSticheras = 8;
         numStycheras = 3;
+    } else if (season === "Lent" && seasonWeek === 6 && dayOfWeek === 6) {
+        // Sat of Lazarus
+        stycheras = vespersTriodionData["ps140"];
+        psalm140tone = stycheras[0][0];
+        stycheraScheme = [2, 1, 1, 1, 1];
+        forceNumSticheras = 6;
+        numStycheras = 5;
     } else if (dayOfWeek === 1 && season === "Lent" && dayData["class"] < 8) {
         // Monday in Lent
         psalm140tone = glas;

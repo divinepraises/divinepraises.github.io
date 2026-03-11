@@ -111,8 +111,15 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
             note = `<br><div class="rubric">${dayData["note"]}</div>`
         }
         if (
-            (dayData["class"] <= 6 && season === "Forelent" && (dayOfWeek === 0 || dayOfWeek === 6 && seasonWeek === 2))
-            ||(dayData["class"] <= 6 && season === "Lent" && (dayOfWeek === 0 && seasonWeek != 2 || dayOfWeek === 6 && seasonWeek === 1))
+            dayData["class"] <= 6 && (
+                season === "Forelent" && (dayOfWeek === 0 || dayOfWeek === 6 && seasonWeek === 2)
+                || season === "Lent" && (
+                    dayOfWeek === 0 && seasonWeek != 2
+                    || dayOfWeek === 6 && seasonWeek === 1
+                    || dayOfWeek === 6 && seasonWeek === 5
+                    || dayOfWeek === 6 && seasonWeek === 6
+                )
+            )
         ) {
             dayName = "";
         } else dayName = constructDayName(dayData, false);
