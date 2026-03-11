@@ -69,7 +69,7 @@ export async function enhanceCompline(priest, full, date){
         vespersMenaionData = await getData(`${address}\\menaion\\${dateAddress}_compline.json`)
         greatComplineBeginning(full, season, seasonWeek, priest, dayOfWeek, dayData, isIncarnationFeast);
         const vespersData = await getData(`${address}\\horologion\\general_vespers.json`);
-        vespersEnding(vespersData, dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, season, seasonWeek, false);
+        vespersEnding(vespersData, dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, "", 0, false);
     } else if (
             (season === "Lent" && dayOfWeek < 6 && dayOfWeek > 1 && !isStAndrewCanonMatins)
             || ((season === "Forelent" && seasonWeek === 3) && (dayOfWeek === 3 || dayOfWeek === 5))
@@ -219,7 +219,9 @@ async function greatComplineBeginning(full, season, seasonWeek, priest, dayOfWee
 	const smallComplineData = await getData(`${address}\\horologion\\small_compline.json`);
 
     loadGreatComplineBeginning(smallComplineData, full, season, seasonWeek, dayOfWeek, dayData, isIncarnationFeast);
-	document.getElementById("beginning").innerHTML =  `<h2>Great Compline</h2>
+    var festal = "";
+    if (isIncarnationFeast) festal = "Festive"
+	document.getElementById("beginning").innerHTML =  `<h2>${festal} Great Compline</h2>
 	${usualBeginning(priest, season)}<br><br>
 	${comeLetUs}<br><br>
 	<div id="1_week_of_Lent_intro"></div>
@@ -326,7 +328,7 @@ async function loadGreatComplineBeginning(smallComplineData, full, season, seaso
     });
 
     // section 3
-    lesserDoxology("compline", season === "Lent").then(dox => {
+    lesserDoxology("compline", season === "Lent" && !isIncarnationFeast).then(dox => {
         document.getElementById("lesserDoxology").innerHTML = dox;
     });
 }
