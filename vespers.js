@@ -1099,7 +1099,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
             } else if (season === "Lent" && seasonWeek === 4 && dayOfWeek === 4) {
                 // wed of Cross-veneration week, more apost than usual
                 const theotokion = (await getData(`${address}\\octoechos\\${apostMain[2][0]}\\${dayOfWeek}_vespers.json`))["aposticha"][5];
-                aposticha += `<i>${andNow}</i><br><br>${theotokion}<br><br>`
+                aposticha += `<i>${gloryAndNow}</i><br><br>${theotokion}<br><br>`
             } else {
                 let separateGlory = false;
                 while (i > 0) {
