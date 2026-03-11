@@ -1165,7 +1165,7 @@ export function frameReadings(readings) {
                     <b>${reading}</b>
                 </div>
                 <iframe
-              src="https://www.biblegateway.com/passage/?search=${reading}&version=RSV&interface=mobile"
+              src="https://www.biblegateway.com/passage/?search=${reading}&version=NRSVCE&interface=mobile"
               width="100%"
               height="500"
               style="border: none;">
