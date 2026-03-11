@@ -41,14 +41,14 @@ export async function enhanceCompline(priest, full, date){
     const isStAndrewCanonMatins = (
         // small compline on Thursday of the 5th week of Lent...
         season === "Lent" && seasonWeek === 5
-        && (
+        && ((
             dayOfWeek === 4
             && !(mm === 3 && (dd === 25 || dd === 26))
         ) // ... unless it's transferred to Tuesday, then small compline is on Tuesday
         || (
             dayOfWeek === 2
             && (mm === 3 && (dd === 24 || dd === 23))
-        )
+        ))
     )
 
     var specialDayData;
@@ -133,7 +133,14 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
     document.getElementById("prayers").innerHTML = smallComplineData["prayers"].join("<br><br>");
     document.getElementById("after_prayers").innerHTML =  postComplinePrayers(priest, smallComplineData, ekteniasData, dayOfWeek);
 
-    if (isGreatCompline && !(dayData["class"] >= 8 || "forefeast" in dayData || "postfeast" in dayData || dayTriodionData != undefined && "usual compline troparia" in dayTriodionData)){
+    if (
+        isGreatCompline
+        && !(
+            dayData["class"] >= 8
+            || ("forefeast" in dayData || "postfeast" in dayData) && season === "Forelent"
+            || dayTriodionData != undefined && "usual compline troparia" in dayTriodionData
+        )
+    ) {
 	    const greatComplineData = await getData(`${address}\\horologion\\great_compline.json`);
         makeThirdSectionTroparia(greatComplineData["troparia_3"])
         document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest);

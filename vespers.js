@@ -1417,6 +1417,10 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         // Monday and polyeleos in Lent
         psalm140tone = vespersTriodionData["ps140"][0][0];
         stycheras = vespersTriodionData["ps140"].concat(psalm140menaionStycheras)
+        if (psalm140menaionStycheras[4] === "gn") {
+            // pre/post-feast
+            stycheras = stycheras.concat(psalm140menaionStycheras.slice(4, 7))
+        }
         // 4 triodion, 6 feast
         stycheraScheme = [2, 1, 1, 2, 2, 2];
         numStycheras = 3+3;
@@ -1438,7 +1442,10 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
             // one 4-saint: not Glory on weekdays
             stycheras = stycheras.concat(psalm140menaionStycheras.slice(0, 4));
         }
-        if ("theotokion" in vespersTriodionData) {
+        if (psalm140menaionStycheras[4] === "gn") {
+            // pre/post-feast
+            stycheras = stycheras.concat(psalm140menaionStycheras.slice(4, 7))
+        } else if ("theotokion" in vespersTriodionData) {
             if (stycheras[stycheras.length - 1] === "g") {
                 stycheras = stycheras.concat(["n"]).concat(vespersTriodionData["theotokion"])
             } else if (stycheras[stycheras.length - 1] === "gn") {
