@@ -245,7 +245,7 @@ export function parseDate(currentYear, currentMonth, currentDay) {
 		if (diffFromEaster >= -7) {
 			glas = Math.floor((diffFromLastEaster)/7)%8;
 			if (glas === 0) glas = 8;
-			seasonToShow = `<FONT COLOR="DarkViolet">Holy Week</FONT>`;
+			seasonToShow = `<FONT COLOR="DarkRed">Holy Week</FONT>`;
 		    season = "HolyWeek";
 		    seasonWeek = 0;
 		} else if (diffFromEaster > -49) {
@@ -254,6 +254,7 @@ export function parseDate(currentYear, currentMonth, currentDay) {
 			seasonWeek = 7 + Math.floor(diffFromEaster/7);
 			if (dd === "week") seasonWeek += 1;
 			seasonToShow = `<FONT COLOR="DarkViolet">${seasonWeek} ${dd} of Lent</FONT>`;
+			if (diffFromEaster === -8) seasonToShow = `<FONT COLOR="Gold">Holy Week</FONT>`;
 		    season = "Lent";
 		} else if (diffFromEaster >= -70) {
 			glas = Math.floor((diffFromLastEaster)/7)%8;
