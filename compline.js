@@ -71,14 +71,14 @@ export async function enhanceCompline(priest, full, date){
         const vespersData = await getData(`${address}\\horologion\\general_vespers.json`);
         vespersEnding(vespersData, dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, "", 0, false);
     } else if (
-            (season === "Lent" && dayOfWeek < 6 && dayOfWeek > 1 && !isStAndrewCanonMatins)
+            (season === "Lent" && dayOfWeek < 6 && dayOfWeek > 1 && !isStAndrewCanonMatins && !("no_kathisma" in dayData))
             || ((season === "Forelent" && seasonWeek === 3) && (dayOfWeek === 3 || dayOfWeek === 5))
         ) {
         greatComplineBeginning(full, season, seasonWeek, priest, dayOfWeek, dayData, isIncarnationFeast);
         complineEnding(full, season, seasonWeek, dayOfWeek, priest, glas, dayData, true, specialDayData, dayTriodionData, dateAddress);
     } else {
         smallComplineBeginning(full, season, dayOfWeek, priest, isAlleluiaDay, glas, dayData, dateAddress);
-        complineEnding(full, season, seasonWeek, dayOfWeek, priest, glas, dayData, false, specialDayData, dayTriodionData, dateAddress);
+        complineEnding(full, season, seasonWeek, dayOfWeek, priest, glas, dayData, season==="Lent" && dayOfWeek > 0 && dayOfWeek < 6 && "no_kathisma" in dayData, specialDayData, dayTriodionData, dateAddress);
     }
 
 }
@@ -139,6 +139,7 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
             dayData["class"] >= 8
             || ("forefeast" in dayData || "postfeast" in dayData) && season === "Forelent"
             || dayTriodionData != undefined && "usual compline troparia" in dayTriodionData
+            || "no_kathisma" in dayData
         )
     ) {
 	    const greatComplineData = await getData(`${address}\\horologion\\great_compline.json`);
@@ -180,7 +181,7 @@ async function loadSmallComplineBeginning(smallComplineData, full, season, dayOf
     if (full === "1") {
         var formattedValues = (await readPsalmsFromNumbers(psalmNums)).join("");
         document.getElementById("psalms").innerHTML = `${formattedValues}<br><br><div id="lesserDoxology"></div>`;
-        document.getElementById("lesserDoxology").innerHTML = await lesserDoxology("compline");
+        document.getElementById("lesserDoxology").innerHTML = await lesserDoxology("compline", season==="Lent" && dayOfWeek > 0 && dayOfWeek < 6 && "no_kathisma" in dayData);
     } else if (full === "0") {
         if (dayOfWeek > 0) {
             var i = dayOfWeek%4 - (dayOfWeek < 4)
