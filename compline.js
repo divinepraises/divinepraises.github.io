@@ -1,5 +1,5 @@
 import { theotokionRefrain, letUsBless, wePraise, cross, usualBeginning, comeLetUs , lesserDoxology, itIsTrulyRight, trisagionToPater, tripleAlleluia, glory, andNow, LHM, prayerOfTheHours, gloryAndNow, moreHonorable, inTheName,prayerBlessingMayGodBeGracious, amen, endingBlockMinor, StEphremPrayer } from './text_generation.js';
-import { getDayInfo, getData, readPsalmsFromNumbers, isBetweenDates, specialSunday, cancelPostfeastHypapante  } from './script.js';
+import { replaceCapsWords, getDayInfo, getData, readPsalmsFromNumbers, isBetweenDates, specialSunday, cancelPostfeastHypapante  } from './script.js';
 import { vespersEnding  } from './vespers.js';
 
 var address = `Text\\English`;
@@ -131,7 +131,7 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
     else document.getElementById("itIsTrulyRight").innerHTML = itIsTrulyRight;
 
     document.getElementById("prayers").innerHTML = smallComplineData["prayers"].join("<br><br>");
-    document.getElementById("after_prayers").innerHTML =  postComplinePrayers(priest, smallComplineData, ekteniasData, dayOfWeek);
+    document.getElementById("after_prayers").innerHTML =  postComplinePrayers(priest, smallComplineData, ekteniasData, dayOfWeek, isGreatCompline, dayData["class"]);
 
     if (
         isGreatCompline
@@ -241,12 +241,12 @@ async function greatComplineBeginning(full, season, seasonWeek, priest, dayOfWee
 	${inTheName}<br><br>
 	${prayerBlessingMayGodBeGracious(priest)}<br><br>
 	${amen}<br><br>
-	<div class=subhead>Prayer of saint Basil</div><br>
+	<div class=subhead>Prayer of Saint Basil</div><br>
 	<div id="prayer_1"></div><br><br>
 	<div class=subhead>Section 2</div><br>
 	${comeLetUs}<br><br>
 	<div id="psalms_2"></div>
-	<div class=subhead>Prayer of king Manasses</div>
+	<div class=subhead>Prayer of King Manasses</div>
 	<div id="prayer_manasses"></div><br>
 	${trisagionToPater(priest)}
 	<div class=subhead>Troparia</div><br>
@@ -257,7 +257,7 @@ async function greatComplineBeginning(full, season, seasonWeek, priest, dayOfWee
 	${inTheName}<br><br>
 	${prayerBlessingMayGodBeGracious(priest)}<br><br>
 	${amen}<br><br>
-	<div class=subhead>Prayer of saint Basil</div><br>
+	<div class=subhead>Prayer of Saint Basil</div><br>
 	<div id="prayer_2"></div><br><br>
 	<div class=subhead>Section 3</div><br>
 	${comeLetUs}<br><br>
@@ -427,11 +427,11 @@ function makePetitions(petitions, full, isIncarnationFeast){
         res += `${cross} ${petition} <FONT COLOR="RED">(2)</FONT><br>`
     }
     if (!isIncarnationFeast) {
-        res += `<div class="rubric">If there are two choirs, they chant together, and make inclination every time:</div>`
+        res += `<div class="rubric">If there are two choirs, they chant together, and bow every time:</div>`
     }
     res += `${cross} ${petitions[petitions.length-1]} <FONT COLOR="RED">(3)</FONT> <br>`
     if (!isIncarnationFeast) {
-        res = `<div class="rubric">One choir chants a petition, while the other one makes an inclination.</div>` + res;
+        res = `<div class="rubric">One choir chants a petition, while the other one bows.</div>` + res;
     } else {
         res = `<div class="rubric">If there are two choirs, they chant in turns:</div>` + res;
     }
@@ -820,18 +820,36 @@ function penitentialTroparia(withPriest,  smallComplineData, ekteniasData){
     return trop + "<br><br>";
 }
 
-function  postComplinePrayers(withPriest, data, ekteniasData, dayOfWeek) {
+function  postComplinePrayers(withPriest, data, ekteniasData, dayOfWeek, isGreatCompline, dayClass) {
     // if there is a priest, doing the pomynannia (mentions)
     // if no, the penitential prayer from Typica is used (Dolnytsky prescribes it)
     // in some horologions, it is also followed by a private list of petitions
 	if (withPriest == "1") {
 	    const rub = `<div class="rubric">The following is said everywhere:</div>`
-	    var ektenia = ekteniasData["after_compline"].join("<br>")
-	    if (dayOfWeek > 0){
+	    var ektenia = ekteniasData["after_compline"].join("<br>");
+	    var departed;
+	    if (dayOfWeek > 0 && dayClass < 8){
 	        ektenia +=`<br><div class="rubric">For the departed:</div>` + ekteniasData["after_compline_for_the_dead"].join("<br>")
+	        departed = ""
+	    } else {
+	        departed = data["after_prayers"]["without_priest"][5]
+	    }
+	    if (isGreatCompline) {
+	        ektenia += `
+	            <br><br>
+	            ${data["after_prayers"]["without_priest"][3]}<br>
+	            ${replaceCapsWords(data["after_prayers"]["without_priest"][4], {"DEPARTED": departed})}`
 	    }
 		return data["after_prayers"]["with_priest"].join("") + rub + ektenia;
 	} else {
-		return data["after_prayers"]["without_priest"].join("<br><br>");
+	    var departed;
+	    if (dayOfWeek > 0 && dayClass < 8) departed = data["after_prayers"]["without_priest"][5]
+	    else departed = ""
+	    data["after_prayers"]["without_priest"].splice(5, 1);
+
+	    if (isGreatCompline) data["after_prayers"]["without_priest"].splice(2, 1)
+	    else data["after_prayers"]["without_priest"].splice(3, 1);
+
+		return replaceCapsWords(data["after_prayers"]["without_priest"].join("<br>"), {"DEPARTED": departed});
 	}
 }
