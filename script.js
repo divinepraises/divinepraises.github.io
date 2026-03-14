@@ -247,7 +247,7 @@ export function parseDate(currentYear, currentMonth, currentDay) {
 			if (glas === 0) glas = 8;
 			seasonToShow = `<FONT COLOR="DarkRed">Holy Week</FONT>`;
 		    season = "HolyWeek";
-		    seasonWeek = 0;
+		    seasonWeek = 1;
 		} else if (diffFromEaster > -49) {
 			glas = Math.floor((diffFromLastEaster)/7)%8;
 			if (glas === 0) glas = 8;

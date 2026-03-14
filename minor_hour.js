@@ -25,16 +25,19 @@ export async function minorHour(hour, priest, full, date){
     }
 
     var dayTriodionData;
-    if (season === "Lent" || season === "Forelent") {
+    if (season === "Lent" || season === "Forelent" || season === "HolyWeek") {
         var weekToLookAt = seasonWeek - 1;
         if (dayOfWeek === 0 && season === "Lent") weekToLookAt = seasonWeek;
         try {
             dayTriodionData = await getData(`${address}\\triodion\\${season}\\${weekToLookAt}${dayOfWeek}.json`)
         } catch {}
     }
-    const isLenten = (season === "Lent" && dayOfWeek > 0 && dayOfWeek < 6) || (season === "Forelent" && seasonWeek === 3 && (dayOfWeek === 3 || dayOfWeek === 5));
-    if (isLenten && hour === "6hour") {
-        additionalElements = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}_6hour.json`)
+    const isLenten = (
+        season === "Lent" && dayOfWeek > 0 && dayOfWeek < 6
+        || season === "Forelent" && seasonWeek === 3 && (dayOfWeek === 3 || dayOfWeek === 5)
+        || season === "HolyWeek" && dayOfWeek > 0 && dayOfWeek <= 3);
+    if (isLenten && hour === "6hour" || season === "HolyWeek" && dayOfWeek === 4 && hour === "1hour") {
+        additionalElements = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}_${hour}.json`)
     }
 
 	const numeral = {
@@ -291,12 +294,12 @@ async function arrangeRoyalHours(additionalElements, hour, priest) {
     }
 
 
-async function makeKathisma(seasonWeek, dayOfWeek, hour){
+async function makeKathisma(season, seasonWeek, dayOfWeek, hour){
     var full = document.querySelector('input[name="selectKathisma"]:checked')?.value;
     if (full === "0") return " ";
     var k;
     const no_kath = `<div class="rubric">No kathisma prescribed at this hour.</div><br>`
-    if (seasonWeek != 5) {
+    if (season === "Lent" && seasonWeek != 5) {
         if (dayOfWeek === 1) {
             if (hour === "1hour") return no_kath;
             else if (hour === "3hour") k = 7;
@@ -323,7 +326,7 @@ async function makeKathisma(seasonWeek, dayOfWeek, hour){
             else if (hour === "6hour") k = 20;
             else if (hour === "9hour") return no_kath;
         }
-    } else {
+    } else if (season === "Lent" && seasonWeek === 5) {
         // 5th week.
         // TODO this schedule should be adapted for when Annunciation/forefeast move the Canon
         if (dayOfWeek === 1) {
@@ -352,9 +355,25 @@ async function makeKathisma(seasonWeek, dayOfWeek, hour){
             else if (hour === "6hour") k = 20;
             else if (hour === "9hour") return no_kath;
         }
+    } else if (season === "HolyWeek") {
+        if (dayOfWeek === 1) {
+            if (hour === "1hour") return no_kath;
+            else if (hour === "3hour") k = 7;
+            else if (hour === "6hour") k = 8;
+            else if (hour === "9hour") return no_kath;
+        } else if (dayOfWeek === 2) {
+            if (hour === "1hour") return no_kath;
+            else if (hour === "3hour") k = 12;
+            else if (hour === "6hour") k = 13;
+            else if (hour === "9hour") return no_kath;
+        } else if (dayOfWeek === 3) {
+            if (hour === "1hour") return no_kath;
+            else if (hour === "3hour") k = 19;
+            else if (hour === "6hour") k = 20;
+            else if (hour === "9hour") return no_kath;
+        } else return ""
     }
 
-    var text = `<div class="subhead">Kathisma ${k}</div>`
     var text = `<div class="subhead">Kathisma ${k}</div>`
     text += await kathismaToText(k, false, dayOfWeek) + "<br>"
     return text
@@ -385,16 +404,32 @@ async function arrangeLentenReading(additionalElements, full) {
     return text;
 }
 
-async function arrangeLentenElements(additionalElements, full, seasonWeek, dayOfWeek, hour, addKathisma) {
+async function arrangeLentenElements(additionalElements, full, season, seasonWeek, dayOfWeek, hour, addKathisma) {
     var text = "";
-    if (addKathisma) text = await makeKathisma(seasonWeek, dayOfWeek, hour);
+    if (addKathisma) text = await makeKathisma(season, seasonWeek, dayOfWeek, hour);
     text += await arrangeLentenReading(additionalElements, full);
+    if (season === "HolyWeek") {
+        var author, n0, n1;
+        if (dayOfWeek === 1 && hour === "3hour") [author, n0, n1] = ["Matthew", 1, 14]
+        else if (dayOfWeek === 1 && hour === "6hour") [author, n0, n1] = ["Matthew", 15, 28]
+        else if (dayOfWeek === 1 && hour === "9hour") [author, n0, n1] = ["Mark", 1, 8]
+        else if (dayOfWeek === 2 && hour === "3hour") [author, n0, n1] = ["Mark", 9, 16]
+        else if (dayOfWeek === 2 && hour === "6hour") [author, n0, n1] = ["Luke", 1, 8]
+        else if (dayOfWeek === 2 && hour === "9hour") [author, n0, n1] = ["Luke", 9, 16]
+        else if (dayOfWeek === 3 && hour === "3hour") [author, n0, n1] = ["Luke", 17, 24]
+        else if (dayOfWeek === 3 && hour === "6hour") [author, n0, n1] = ["John", 1, 6]
+        else if (dayOfWeek === 3 && hour === "9hour") [author, n0, n1] = ["John", 7, 13]
+        text += `<div class="rubric">In cathedrals and monastic churches, following chapters of the Gospel of ${author} are read: ${n0} through ${n1}.</div><br>`
+    }
     document.getElementById("additional_elements").innerHTML = text;
 }
 
 async function arrangeAdditionalElements(additionalElements, hour, priest, full, season, seasonWeek, dayOfWeek) {
 
-    const addKathisma = (season === "Lent" && dayOfWeek != 0 && dayOfWeek != 6);
+    const addKathisma = (
+        season === "Lent" && dayOfWeek != 0 && dayOfWeek != 6
+        || season === "HolyWeek" && dayOfWeek > 0 && dayOfWeek <= 3)
+    ;
 
     if (additionalElements === undefined && !addKathisma) {
         document.getElementById("additionalElementsSelector").innerHTML = "";
@@ -417,14 +452,14 @@ async function arrangeAdditionalElements(additionalElements, hour, priest, full,
           <label><input type="radio" name="selectKathisma" value="1"> Show kathisma indications </label><br>
           <label><input type="radio" name="selectKathisma" value="0" checked> Hide kathisma indications </label>
           <br><br>`
-        await arrangeLentenElements(additionalElements, full, seasonWeek, dayOfWeek, hour, addKathisma);
+        await arrangeLentenElements(additionalElements, full, season, seasonWeek, dayOfWeek, hour, addKathisma);
         document.getElementById("additionalElementsSelector").addEventListener(
             "change",
-             async function () {await arrangeLentenElements(additionalElements, full, seasonWeek, dayOfWeek, hour, addKathisma)}
+             async function () {await arrangeLentenElements(additionalElements, full, season, seasonWeek, dayOfWeek, hour, addKathisma)}
         );
     } else {
         document.getElementById("additionalElementsSelector").innerHTML = "";
-        await arrangeLentenElements(additionalElements, full, seasonWeek, dayOfWeek, hour, addKathisma);
+        await arrangeLentenElements(additionalElements, full, season, seasonWeek, dayOfWeek, hour, addKathisma);
     }
 }
 
