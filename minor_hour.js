@@ -419,7 +419,10 @@ async function arrangeLentenElements(additionalElements, full, season, seasonWee
         else if (dayOfWeek === 3 && hour === "3hour") [author, n0, n1] = ["Luke", 17, 24]
         else if (dayOfWeek === 3 && hour === "6hour") [author, n0, n1] = ["John", 1, 6]
         else if (dayOfWeek === 3 && hour === "9hour") [author, n0, n1] = ["John", 7, 13]
-        text += `<div class="rubric">In cathedrals and monastic churches, following chapters of the Gospel of ${author} are read: ${n0} through ${n1}.</div><br>`
+        text += `
+            <div class="rubric">
+                In monastic churches and where it is a tradition, chapters ${n0} through ${n1} of the Gospel of ${author} are read with usual ceremonies.
+            </div><br>`
     }
     document.getElementById("additional_elements").innerHTML = text;
 }
