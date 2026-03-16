@@ -57,7 +57,7 @@ export async function enhanceCompline(priest, full, date){
         if (specialSundayName != undefined) specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
     }
     var dayTriodionData;
-    if (season === "Lent" || season === "Forelent") {
+    if (season === "HolyWeek" || season === "Lent" || season === "Forelent") {
         var weekToLookAt = seasonWeek - 1;
         if (dayOfWeek === 0 && season === "Lent") weekToLookAt = seasonWeek;
         try {
@@ -126,7 +126,7 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
         document.getElementById("penitential_troparia").innerHTML = "";
     }
 
-    var matinslike = await selectCanon(season, seasonWeek, dayOfWeek, glas, full, smallComplineData["canon_refrain"], dateAddress, dayTriodionData);
+    var matinslike = await selectCanon(season, seasonWeek, dayOfWeek, glas, full, smallComplineData["canon_refrain"], dateAddress, dayData, dayTriodionData);
     if (matinslike) document.getElementById("itIsTrulyRight").innerHTML = "";
     else document.getElementById("itIsTrulyRight").innerHTML = itIsTrulyRight;
 
@@ -622,7 +622,12 @@ async function constructCanon(dayOfWeek, glas, full, refrain, dateAddress){
     return matinslike;
 }
 
-async function selectCanon(season, seasonWeek, dayOfWeek, glas, full, refrain, dateAddress, dayTriodionData) {
+async function selectCanon(season, seasonWeek, dayOfWeek, glas, full, refrain, dateAddress, dayData, dayTriodionData) {
+    if (dayData["class"] >= 10 || dayTriodionData && "class" in dayTriodionData && dayTriodionData["class"] >= 10) {
+        document.getElementById("canon").innerHTML = `<div class=rubric>Canon is not said at vigil-ranked feasts<br><br></div>`;
+        document.getElementById("canonSelector").innerHTML = "";
+        return false
+    }
     if (season === "Lent" && seasonWeek === 1 && dayOfWeek >= 2 && dayOfWeek <= 5) {
         document.getElementById("canon").innerHTML = `<div class=rubric>Canon was already said today<br><br></div>`;
         document.getElementById("canonSelector").innerHTML = "";

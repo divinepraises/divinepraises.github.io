@@ -613,6 +613,10 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
                 return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${specialDayData["troparia"]}`
             }
         }
+        if (season === "HolyWeek") {
+            // sunday of the branches
+            return `${dayTriodionData["troparia"][0]}<br><br>${glory}<br><br>${dayTriodionData["troparia"][1]}`
+        }
         if (prePostFeast != ""){
             if (hour === "1hour" || hour === "6hour" || dayTriodionData != undefined){
                 return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${prePostFeastTroparion}`;

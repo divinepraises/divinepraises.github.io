@@ -237,19 +237,10 @@ async function arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionDat
 
 
 async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWeek, mm, dd, season, seasonWeek, glas, dateAddress, dayData, priest, isStBasil, isLenten) {
-    var isGreatVespers = (dayData["class"] >= 8 || dayOfWeek === 0);
-    const isWeekday = (dayOfWeek >= 1 && dayOfWeek <=5);
-
-    var priestlyExclamationsData;
+    var priestlyExclamationsData, vespersTriodionData, dayTriodionData, vespersOctoechosData;
     if (priest === "1") priestlyExclamationsData = await getData(`${address}\\horologion\\priestly_exclamations.json`);
-    var vespersTriodionData, dayTriodionData;
-    const isLytia = ("lytia" in vespersMenaionData && dayData["class"] >= 10);
-    var vespersOctoechosData;
-    if (dayOfWeek === 0 || !isGreatVespers){
-        vespersOctoechosData = await getData(`${address}\\octoechos\\${glas}\\${dayOfWeek}_vespers.json`)
-    }
 
-    if (season === "Lent" || season === "Forelent") {
+    if (season === "HolyWeek" || season === "Lent" || season === "Forelent") {
          const isStAndrewCanonMatins = (
             season === "Lent" && seasonWeek === 5
             && (
@@ -301,8 +292,19 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
             } else if (season === "Forelent" && seasonWeek === 3 && dayOfWeek === 6 && dayData["class"] < 8) {
                 dayData["class"] = 6
                 vespersMenaionData["ps140"] = vespersTriodionData["ps140"];
+            } else if (season === "HolyWeek") {
+                Object.assign(vespersMenaionData, vespersTriodionData);
+                Object.assign(dayData, dayTriodionData);
+                delete vespersMenaionData["readings"];
             }
         } catch {}
+    }
+
+    const isWeekday = (dayOfWeek >= 1 && dayOfWeek <=5);
+    const isLytia = ("lytia" in vespersMenaionData && dayData["class"] >= 10);
+    var isGreatVespers = (dayData["class"] >= 8 || dayOfWeek === 0);
+    if (dayOfWeek === 0 && dayData["class"] < 12 || !isGreatVespers) {
+        vespersOctoechosData = await getData(`${address}\\octoechos\\${glas}\\${dayOfWeek}_vespers.json`)
     }
 
     var dayName = constructDayName(dayData, false);
@@ -451,16 +453,12 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
 
 
 async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek, glas, dayData, vespersMenaionData, priest, isLenten){
-    var isGreatVespers = (dayData["class"] >= 8 || dayOfWeek === 0);
-
     var priestlyExclamationsData;
     if (priest === "1") priestlyExclamationsData = await getData(`${address}\\horologion\\priestly_exclamations.json`);
-    const isLytia = ("lytia" in vespersMenaionData && dayData["class"] >= 10);
-    var dayName = constructDayName(dayData, false);
 
     var vespersOctoechosData = await getData(`${address}\\octoechos\\${glas}\\${dayOfWeek}_vespers.json`);
     var vespersTriodionData, dayTriodionData;
-    if (season === "Lent" || season === "Forelent") {
+    if (season === "HolyWeek" || season === "Lent" || season === "Forelent") {
         var weekToLookAt = seasonWeek - 1;
         if (dayOfWeek === 0 && season === "Lent") weekToLookAt = seasonWeek;
         try {
@@ -491,9 +489,18 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
                     dayData["name"] = []
                     dayData["crossDismissal"] = dayTriodionData["crossDismissal"];
                 }
+            } else if (season === "HolyWeek") {
+                Object.assign(vespersMenaionData, vespersTriodionData);
+                Object.assign(dayData, dayTriodionData);
+                delete vespersMenaionData["readings"];
             }
         } catch {}
     }
+
+
+    var isGreatVespers = (dayData["class"] >= 8 || dayOfWeek === 0);
+    const isLytia = ("lytia" in vespersMenaionData && dayData["class"] >= 10);
+    var dayName = constructDayName(dayData, false);
 
     var specialSundayName;
     if (dayOfWeek === 0 || (mm === 12 && dd === 26 && dayOfWeek === 1)) specialSundayName = await specialSunday(mm, dd);
@@ -793,7 +800,10 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
     if ("forefeast" in dayData) prePostFeast = "forefeast";
     else if ("postfeast" in dayData) prePostFeast = "postfeast";
 
-    if (dayData["class"] > 10){
+    if (dayData["class"] === 12 && dayTrop.length === 2){
+        // sunday of the branches
+        return `${dayTrop[0]} <FONT COLOR="RED"> (2)</FONT><br><br> ${dayTrop[1]}`;
+    } else if (dayData["class"] > 10){
         return dayTrop[0] + `<FONT COLOR="RED"> (3)</FONT>`;
     } else if (dayOfWeek === 0){
         if (dayData["class"] < 10){
@@ -925,6 +935,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
     } else if (vespersTriodionData != undefined) {
         // use weekday if triodion day
         if (dayOfWeek === 6 && season === "Forelent" && seasonWeek < 3) apostVerses = vespersData["aposticha_dead"];
+        else if ("aposticha_verses" in vespersTriodionData) apostVerses = vespersTriodionData["aposticha_verses"];
         else apostVerses = vespersData["aposticha"];
     } else if ("aposticha_verses" in vespersMenaionData && !("additional_aposticha" in vespersMenaionData)) apostVerses = vespersMenaionData["aposticha_verses"];
     else if (prePostFeast != "") {
@@ -1406,7 +1417,13 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
     var psalm140OctoechosStycheras;
 
     var forceNumSticheras;
-    if (season === "Lent" && seasonWeek === 5 && dayOfWeek === 4) {
+    if (dayData["class"] === 12) {
+        stycheras = psalm140menaionStycheras;
+        if (vespersTriodionData != undefined && "lytia" in vespersTriodionData) forceNumSticheras = 10;
+        else forceNumSticheras = 8;
+        stycheraScheme = Array(numStycheras).fill(Math.floor(forceNumSticheras / numStycheras));
+        for (let i=0; i < forceNumSticheras % numStycheras; i++) stycheraScheme[i] += 1;
+    } else if (season === "Lent" && seasonWeek === 5 && dayOfWeek === 4) {
         // Thu of Great canon. More stichera than ever
         stycheras = vespersTriodionData["ps140"];
         stycheraScheme = Array(numTriodionStycheras).fill(1);
