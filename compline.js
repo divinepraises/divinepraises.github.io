@@ -71,8 +71,9 @@ export async function enhanceCompline(priest, full, date){
         const vespersData = await getData(`${address}\\horologion\\general_vespers.json`);
         vespersEnding(vespersData, dayOfWeek, mm, dd, glas, dayData, vespersMenaionData, priest, "", 0, false);
     } else if (
-            (season === "Lent" && dayOfWeek < 6 && dayOfWeek > 1 && !isStAndrewCanonMatins && !("no_kathisma" in dayData))
-            || ((season === "Forelent" && seasonWeek === 3) && (dayOfWeek === 3 || dayOfWeek === 5))
+            season === "HolyWeek" && (dayOfWeek == 2 || dayOfWeek == 3)
+            || season === "Lent" && dayOfWeek < 6 && dayOfWeek > 1 && !isStAndrewCanonMatins && !("no_kathisma" in dayData)
+            || (season === "Forelent" && seasonWeek === 3) && (dayOfWeek === 3 || dayOfWeek === 5)
         ) {
         greatComplineBeginning(full, season, seasonWeek, priest, dayOfWeek, dayData, isIncarnationFeast);
         complineEnding(full, season, seasonWeek, dayOfWeek, priest, glas, dayData, true, specialDayData, dayTriodionData, dateAddress);
@@ -143,7 +144,7 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
         )
     ) {
 	    const greatComplineData = await getData(`${address}\\horologion\\great_compline.json`);
-        makeThirdSectionTroparia(greatComplineData["troparia_3"])
+        makeThirdSectionTroparia(greatComplineData["troparia_3"], dayTriodionData);
         document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest);
     } else {
         var prostrations = "";
@@ -334,9 +335,21 @@ async function loadGreatComplineBeginning(smallComplineData, full, season, seaso
     });
 }
 
-async function makeThirdSectionTroparia(troparia){
+async function makeThirdSectionTroparia(troparia, dayTriodionData) {
     const verses = (await readPsalmsFromNumbers([150]))[1].split("•");
-    var res = `<div class="rubric">Two choirs take turns in chanting<br>Tone 6</div>
+    var res;
+    if (dayTriodionData && "specialDismissal" in dayTriodionData && "kontakia" in dayTriodionData) {
+        res = `
+            <div class="rubric">
+                Before usual lenten tropaia, a kontakion of the day of the Holy Week is inserted.
+                If it is chanted, kontakion tone is used.
+            </div>
+            ${dayTriodionData["kontakia"]}<br><br>
+            `;
+    } else {
+        res = "";
+    }
+    res += `<div class="rubric">Two choirs take turns in chanting<br>Tone 6</div>
         <FONT COLOR="RED">1.</FONT> ${troparia[0]}<br>
         <FONT COLOR="RED">2.</FONT> ${troparia[0]}<br>
         `;
