@@ -36,8 +36,12 @@ export async function minorHour(hour, priest, full, date){
         season === "Lent" && dayOfWeek > 0 && dayOfWeek < 6
         || season === "Forelent" && seasonWeek === 3 && (dayOfWeek === 3 || dayOfWeek === 5)
         || season === "HolyWeek" && dayOfWeek > 0 && dayOfWeek <= 3);
-    if (isLenten && hour === "6hour" || season === "HolyWeek" && dayOfWeek === 4 && hour === "1hour") {
-        additionalElements = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}_${hour}.json`)
+    if (
+        isLenten && hour === "6hour"
+        || season === "HolyWeek" && dayOfWeek === 4 && hour === "1hour"
+        || season === "HolyWeek" && dayOfWeek === 5
+    ) {
+        additionalElements = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}_${hour}.json`);
     }
 
 	const numeral = {
@@ -57,6 +61,7 @@ export async function minorHour(hour, priest, full, date){
 
 	loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas, dateAddress, specialDayData, dayTriodionData, additionalElements, isLenten);
 	return `<h2>The ${numeral[numOhHour]} hour</h2>
+	<div id="note"></div>
 	<div class=rubric>Should this hour be said immediately after the previous one, omit this beginning:</div>
 	<hr>
 	${usualBeginning(priest, season)}
@@ -116,6 +121,9 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
         dayData["troparia"] = []
         dayData["kontakia"] = (await getData(`${address}\\menaion\\02\\02.json`))["kontakia"];
     }
+
+    if (additionalElements && "troparion" in additionalElements && dayTriodionData) dayTriodionData["troparia"] = additionalElements["troparion"];
+    if (additionalElements && "note" in additionalElements) document.getElementById("note").innerHTML = additionalElements["note"];
 
     if (full === "1") {
         document.getElementById("psalms").innerHTML = (await readPsalmsFromNumbers(psalmNums)).join("");
@@ -271,23 +279,30 @@ async function arrangeRoyalHours(additionalElements, hour, priest) {
             }
             res += readingsData[i+1] + "<br><br>";
         }
-
+        var gloryBefore, gloryAfter;
+        if ("gloryGospel" in additionalElements) {
+            gloryBefore = additionalElements["gloryGospel"][0];
+            gloryAfter = additionalElements["gloryGospel"][1];
+        } else {
+            gloryBefore = gloryGospel;
+            gloryAfter = gloryGospel;
+        }
         if (priest === "1") {
             res += `
             ${priestlyExclamationsData["wisdomAttentive"]} ${priestlyExclamationsData["letUsGospel"]}<br><br>
             ${priestlyExclamationsData["peace"]}<br><br>
             ${priestlyExclamationsData["andWith"]}<br><br>
             ${priestlyExclamationsData["deacon"]} ${readingsData[4]}<br><br>
-            ${gloryGospel}<br><br>
+            ${gloryBefore}<br><br>
             ${priestlyExclamationsData["priest"]}
             <b>${readingsData[5]}</b><br><br>
-            ${gloryGospel}<br><br>`
+            ${gloryAfter}<br><br>`
         } else {
             res += `<i>${readingsData[4]}</i><br><br>
-                ${gloryGospel}<br><br>
+                ${gloryBefore}<br><br>
                 <div class="rubric">If Gospel is read by a layman, it is done without any chanting.</div>
                 ${readingsData[5]}<br><br>
-                ${gloryGospel}<br><br>`
+                ${gloryAfter}<br><br>`
         }
 
         return res;
@@ -585,6 +600,8 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
             // fatehrs + polyeleios
             return `${dayData["troparia"]}<br><br>${glory}<br><br>${dayTrop}`
         }
+    } else if (season === "HolyWeek" && dayOfWeek >= 4) {
+        return glory + "<br><br>" + dayTriodionData["troparia"];
     }
     if (isLenten) {
         dayTrop = hourData["lenten_troparia"];
