@@ -46,7 +46,10 @@ export async function enhanceVespers(priest, full, date) {
     }
 
     const isStBasil = (dateAddress === "12\\25" || dateAddress === "01\\06");
-    const isLenten = (season === "Lent" && dayOfWeek > 0) || (season === "Forelent" && seasonWeek === 3 && (dayOfWeek === 3 || dayOfWeek === 5));
+    const isLenten = (season === "Lent" && dayOfWeek > 0
+        || season === "Forelent" && seasonWeek === 3 && (dayOfWeek === 3 || dayOfWeek === 5)
+        || season === "HolyWeek" && dayOfWeek > 0 && dayOfWeek < 5
+        );
 
     await vespersBeginning(
         vespersData, vespersMenaionData, full, dayOfWeek, mm, dd, glas, dayData, dateAddress, priest, season, seasonWeek, isStBasil, isLenten
@@ -558,6 +561,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
 
     document.getElementById("ending_block").innerHTML = await makeEndingBlockMajor(priest, dayOfWeek, dayData["class"]>=8, vespersData, dayData, priestlyExclamationsData, isLenten || isSemiLenten);
 
+    // after ending
     if (season === "Lent" && seasonWeek === 4 && dayOfWeek > 0 && dayOfWeek <= 5) {
         // Dolnytstly p 410
         const toYourCross = (await getData(`${address}\\triodion\\Lent\\32_6hour.json`))["troparion"];
@@ -742,7 +746,7 @@ async function makeLentenEnding(priest, season, seasonWeek, dayOfWeek, dayData, 
         || season === "Lent" && dayOfWeek === 6
         || dayClass >= 8)
     const smallEphrem = (
-        season === "Lent" && dayOfWeek === 1
+        (season === "Lent" || season === "HolyWeek") && dayOfWeek === 1
     )
     const noConclusion = (
         (season === "Lent" && dayOfWeek === 6)
@@ -1033,6 +1037,93 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
             }
         } else {
             aposticha += `<i>${gloryAndNow}</i><br><br>${apostMain[6]}<br><br>`
+        }
+    } else if (season === "HolyWeek" && dayOfWeek > 0) {
+        // weekdays of Holy Week, all their own way
+        apostMain = vespersTriodionData["aposticha"];
+        if (dayOfWeek === 1) {
+            aposticha += `
+                <div class="rubric">Tone ${apostMain[0]}</div>
+                ${apostMain[1]}<br><br>
+                <div class="rubric">Tone ${apostMain[2]}</div>
+                <i>${apostVerses[0]}</i><br><br>
+                ${apostMain[3]}<br><br>
+                <div class="rubric">Tone ${apostMain[4]}</div>
+                <i>${apostVerses[1]}</i><br><br>
+                ${apostMain[5]}<br><br>
+                <div class="rubric">Tone ${apostMain[0]}</div>
+                <i>${glory}</i><br><br>
+                ${apostMain[1]}<br><br>
+                <div class="rubric">Tone ${apostMain[2]}</div>
+                <i>${andNow}</i><br><br>
+                ${apostMain[3]}<br><br>
+                `
+        } else if (dayOfWeek === 2) {
+            aposticha += `
+                <div class="rubric">Tone ${apostMain[0]}</div>
+                ${apostMain[1]}<br><br>
+                <i>${apostVerses[0]}</i><br><br>
+                ${apostMain[1]}<br><br>
+                <div class="rubric">Tone ${apostMain[2]}</div>
+                <i>${apostVerses[1]}</i><br><br>
+                ${apostMain[3]}<br><br>
+                <i>${gloryAndNow}</i><br><br>
+                ${apostMain[5]}<br><br>
+                `
+        } else if (dayOfWeek === 3) {
+            aposticha += `
+                <div class="rubric">Tone ${apostMain[0]}</div>
+                ${apostMain[1]}<br><br>
+                <i>${apostVerses[0]}</i><br><br>
+                ${apostMain[1]}<br><br>
+                <i>${apostVerses[1]}</i><br><br>
+                ${apostMain[2]}<br><br>
+                <div class="rubric">Tone ${apostMain[3]}</div>
+                <i>${gloryAndNow}</i><br><br>
+                ${apostMain[5]}<br><br>
+                `
+        } else if (dayOfWeek === 4) {
+            aposticha += `
+                <div class="rubric">Tone ${apostMain[0]}</div>
+                ${apostMain[1]}<br><br>
+                <i>${apostVerses[0]}</i><br><br>
+                ${apostMain[2]}<br><br>
+                <i>${apostVerses[1]}</i><br><br>
+                ${apostMain[3]}<br><br>
+                <div class="rubric">Tone ${apostMain[4]}</div>
+                <i>${gloryAndNow}</i><br><br>
+                ${apostMain[6]}<br><br>
+                `
+        } else if (dayOfWeek === 5) {
+            aposticha += `
+                <div class="rubric">Tone ${apostMain[0]}</div>
+                ${apostMain[1]}<br><br>
+                <i>${apostVerses[0]}</i><br><br>
+                ${apostMain[2]}<br><br>
+                <i>${apostVerses[1]}</i><br><br>
+                ${apostMain[3]}<br><br>
+                <i>${apostVerses[2]}</i><br><br>
+                ${apostMain[4]}<br><br>
+                <i>${glory}</i><br><br>
+                ${apostMain[3]}<br><br>
+                <div class="rubric">Tone ${apostMain[5]}</div>
+                <i>${andNow}</i><br><br>
+                ${apostMain[7]}<br><br>
+                `
+        } else if (dayOfWeek === 6) {
+            aposticha += `
+                <div class="rubric">Tone ${apostMain[0]}</div>
+                ${apostMain[1]}<br><br>
+                <i>${apostVerses[0]}</i><br><br>
+                ${apostMain[2]}<br><br>
+                <i>${apostVerses[1]}</i><br><br>
+                ${apostMain[3]}<br><br>
+                <i>${apostVerses[2]}</i><br><br>
+                ${apostMain[4]}<br><br>
+                <div class="rubric">Tone ${apostMain[5]}</div>
+                <i>${gloryAndNow}</i><br><br>
+                ${apostMain[7]}<br><br>
+                `
         }
     } else if (
             vespersTriodionData != undefined
@@ -1423,6 +1514,12 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         else forceNumSticheras = 8;
         stycheraScheme = Array(numStycheras).fill(Math.floor(forceNumSticheras / numStycheras));
         for (let i=0; i < forceNumSticheras % numStycheras; i++) stycheraScheme[i] += 1;
+    } else if (season === "HolyWeek") {
+        // this excludes Lazarus (below) and Palms (above)
+        // all day have 6 sticheras, all from one book
+        stycheras = vespersTriodionData["ps140"];
+        stycheraScheme = Array(numStycheras).fill(Math.floor(6 / numStycheras));
+        for (let i=0; i < 6 % numStycheras; i++) stycheraScheme[i] += 1;
     } else if (season === "Lent" && seasonWeek === 5 && dayOfWeek === 4) {
         // Thu of Great canon. More stichera than ever
         stycheras = vespersTriodionData["ps140"];
