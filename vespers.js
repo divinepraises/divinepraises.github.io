@@ -807,6 +807,8 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
     if (dayData["class"] === 12 && dayTrop.length === 2){
         // sunday of the branches
         return `${dayTrop[0]} <FONT COLOR="RED"> (2)</FONT><br><br> ${dayTrop[1]}`;
+    } else if (season === "HolyWeek" && dayOfWeek >= 5) {
+        return dayTrop[0];
     } else if (dayData["class"] > 10){
         return dayTrop[0] + `<FONT COLOR="RED"> (3)</FONT>`;
     } else if (dayOfWeek === 0){
@@ -1307,6 +1309,14 @@ function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData) {
     }
     if ("second_reading" in vespersMenaionData) {
         text += frameReadings(vespersMenaionData["second_reading"])
+    }
+    if ("epistle" in vespersMenaionData) {
+        const epistleData = vespersMenaionData["epistle"];
+        if (epistleData.length === 2) {
+            text += `<div class="subhead">Prokimenon</div><br>
+                ${arrangeProkimenon(epistleData[0])}<br>`
+        }
+        text += frameReadings(epistleData[epistleData.length-1]);
     }
     if ("gospel" in vespersMenaionData) {
         const gospelData = vespersMenaionData["gospel"];
@@ -2122,7 +2132,7 @@ export function makeEktenia(ekteniaData, key=false){
     return ektenia;
 }
 
-async function makePs103(great){
+async function makePs103(great) {
     var instruction = document.querySelector('input[name="psalm103Choice"]:checked')?.value;
     if (!great) instruction = "full";
     if (instruction === "full") {
