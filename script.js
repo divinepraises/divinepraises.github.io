@@ -224,16 +224,12 @@ export function parseDate(currentYear, currentMonth, currentDay) {
 	glas = Math.floor((diffFromEaster)/7)%8;
 	if (glas === 0) glas = 8;
 
-	if (diffFromEaster == 0) {
-		glas = 1;
-		season = "EasterDay";
-		seasonWeek = 0;
-		seasonToShow = "<FONT COLOR=\"gold\">Easter Day</FONT>";
-	} else if (diffFromEaster > 0 & diffFromEaster < 7) {
+	if (diffFromEaster >= 0 & diffFromEaster < 7) {
 		glas = 1;  // TODO: should depend on the day
 		season = "EasterWeek";
 		seasonWeek = 0;
 		seasonToShow = "<FONT COLOR=\"gold\">Easter Week</FONT>";
+		if (diffFromEaster === 0) seasonToShow = "<FONT COLOR=\"gold\">Easter Day</FONT>";
 	} else if (diffFromEaster >= 7 & diffFromEaster <= 56) {
 		seasonToShow = `${glas} week after Easter`;
 		seasonWeek = glas;

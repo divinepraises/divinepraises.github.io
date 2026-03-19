@@ -1,6 +1,7 @@
 import { theotokionRefrain, letUsBless, wePraise, cross, usualBeginning, comeLetUs , lesserDoxology, itIsTrulyRight, trisagionToPater, tripleAlleluia, glory, andNow, LHM, prayerOfTheHours, gloryAndNow, moreHonorable, inTheName,prayerBlessingMayGodBeGracious, amen, endingBlockMinor, StEphremPrayer } from './text_generation.js';
 import { replaceCapsWords, getDayInfo, getData, readPsalmsFromNumbers, isBetweenDates, specialSunday, cancelPostfeastHypapante  } from './script.js';
 import { vespersEnding  } from './vespers.js';
+import { EasterHour  } from './minor_hour.js';
 
 var address = `Text\\English`;
 
@@ -15,6 +16,10 @@ export function renderComplineSkeleton() {
 
 export async function enhanceCompline(priest, full, date){
 	let [year, mm, dd, season, seasonWeek, glas, dayOfWeek, dateAddress] = getDayInfo(date, true);
+	if (season === "EasterWeek" && dayOfWeek > 0) {
+	    document.getElementById("beginning").innerHTML =  await EasterHour("compline", priest, full, date);
+	    return
+	}
 
 	const dd_mm = String(dd).padStart(2, "0") + String(mm).padStart(2, "0");
 

@@ -1,4 +1,4 @@
-import { cross, StEphremPrayer, gloryGospel, usualBeginning, tripleAlleluia, glory, andNow, trisagionToPater, prayerOfTheHours, LHM, comeLetUs, gloryAndNow, moreHonorable, inTheName, prayerBlessingMayGodBeGracious, endingBlockMinor, amen, getCommonText } from './text_generation.js';
+import { getBeginning, cross, StEphremPrayer, gloryGospel, usualBeginning, tripleAlleluia, glory, andNow, trisagionToPater, prayerOfTheHours, LHM, comeLetUs, gloryAndNow, moreHonorable, inTheName, prayerBlessingMayGodBeGracious, endingBlockMinor, amen, getCommonText } from './text_generation.js';
 import { readFromAddress, kathismaToText, getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords, specialSunday, cancelPostfeastHypapante } from './script.js';
 import { arrangeProkimenon, frameReadings } from './vespers.js';
 
@@ -6,6 +6,8 @@ const address = `Text\\English`
 
 export async function minorHour(hour, priest, full, date){
 	let [year, mm, dd, season, seasonWeek, glas, dayOfWeek, dateAddress] = getDayInfo(date, false);
+	if (season === "EasterWeek" && !(dayOfWeek === 6 && hour === "9hour")) return await EasterHour(hour, priest, full, date);
+
 	var numOhHour = hour.charAt(0);
 
     var specialDayData;
@@ -937,4 +939,57 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
     }
     // 3rd or 9th with 1 saint
     return `${dayKond[0]}`;
+}
+
+export async function EasterHour(hour, priest, full, date) {
+    const properTexts = await getData(`${address}\\triodion\\EasterWeek\\00_hour.json`);
+    const specialDismissal = (await getData(`${address}\\triodion\\EasterWeek\\00.json`))["specialDismissal"];
+    var n = "";
+    if (full === "1") n = `<FONT COLOR="RED">(3)</FONT>`
+
+    const linkToNext = `https:\/\/divinepraises.github.io/main.html?hour=${hour}&priest=${priest}&full=${full}&date=${date}#come_let_us`;
+    var next = ""
+    if (hour != "9hour" && hour != "midnight") {
+        next = `
+            As all the hours except Matins and Vespers are same,
+            if you want to say the next hour, recite this Paschal hour <a href="${linkToNext}">again</a>,
+            starting from the Easter troparion (Christ is risen) above.<br><br>
+        `;
+    }
+
+    return `
+        <FONT COLOR="RED"><h2>The Paschal hour</h2></FONT>
+        <div class="rubric">${properTexts["chant note"]}</div><br>
+        ${getBeginning(priest)}<br><br>
+		<FONT COLOR="RED">Choir:</FONT> ${amen}<br><br>
+	    <a id="come_let_us"><div class="subhead">Easter troparion</div></a><br>
+		${properTexts["troparion"]} <FONT COLOR="RED">(3)</FONT><br><br>
+	    <div class="subhead">Stichera of resurrection</div><br>
+	    <div class="rubric">Tone ${properTexts["having_beheld"][0]}</div>
+		${properTexts["having_beheld"][1]} ${n}<br><br>
+	    <div class="subhead">Hypakoe</div><br>
+	    <div class="rubric">Tone ${properTexts["hypakoe"][0]}</div>
+		${properTexts["hypakoe"][1]}<br><br>
+	    <div class="subhead">Easter kontakion</div><br>
+	    <div class="rubric">Tone ${properTexts["kontakion"][0]}</div>
+		${properTexts["kontakion"][1]}<br><br>
+	    <div class="subhead">Troparia</div><br>
+	    <div class="rubric">Tone ${properTexts["troparia"][0]}</div>
+		${properTexts["troparia"][1]}<br><br>
+		<i>${glory}</i><br><br>
+		${properTexts["troparia"][2]}<br><br>
+		<i>${andNow}</i><br><br>
+		${properTexts["troparia"][3]}<br><br>
+	    <div class="subhead">Ending</div><br>
+        ${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
+        ${gloryAndNow}<br><br>
+        ${moreHonorable}<br><br>
+        ${inTheName}<br><br>
+        ${prayerBlessingMayGodBeGracious(priest, "3hour")}<br><br>
+		<FONT COLOR="RED">Choir:</FONT> ${amen}<br><br>
+        <div class="rubric">${next}</div>
+		${properTexts["troparion"]} <FONT COLOR="RED">(3)</FONT><br><br>
+        ${endingBlockMinor(priest, 1, specialDismissal)}<br><br>
+		`
+
 }

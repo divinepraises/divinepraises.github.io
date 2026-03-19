@@ -1,5 +1,6 @@
 import { renderVespersSkeleton, enhanceVespers } from './vespers.js';
 import { renderComplineSkeleton, enhanceCompline } from './compline.js';
+import { renderMidnightSkeleton, enhanceMidnight } from './midnight.js';
 import { matins } from './matins.js';
 import { minorHour } from './minor_hour.js';
 //import { liturgy } from './liturgy.js';
@@ -18,6 +19,9 @@ if (hour === "1hour" || hour === "3hour" || hour === "6hour" || hour === "9hour"
 } else if (hour === "compline"){
     contentDiv.innerHTML = renderComplineSkeleton();
     await enhanceCompline(priest, full, date);
+} else if (hour === "midnight"){
+    contentDiv.innerHTML = renderMidnightSkeleton();
+    await enhanceMidnight(priest, full, date);
 } else if (hour === "vespers"){
     contentDiv.innerHTML = renderVespersSkeleton();
     await enhanceVespers(priest, full, date);
