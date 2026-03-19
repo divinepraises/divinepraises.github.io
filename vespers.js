@@ -299,6 +299,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
                 delete vespersMenaionData["readings"];
+                if (dayOfWeek > 0) dayData["day name"] = dayData["day name vespers"]
             }
         } catch {}
     }
@@ -496,6 +497,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
                 delete vespersMenaionData["readings"];
+                if (dayOfWeek > 0) dayData["day name"] = dayData["day name vespers"]
             }
         } catch {}
     }
@@ -2052,7 +2054,7 @@ async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, seasonWeek, pri
     // in short one, vespers kathisma is variable
     // The long one is used:
     // 1) [Sunday after leave-taking of Exaltation of the Cross, Dec 10] and
-    // 2) [Jan 15, Saturday before the Sunday of Prodigal Som]
+    // 2) [Jan 15, Saturday before the Sunday of Prodigal Son]
     // The short one is used the rest of the Year except Lent and Holy week
     // In Lent and Holy week, kathisma 18 is used too at vespers, except  5th week of Lent, when it's a different
     // schedule
@@ -2063,7 +2065,7 @@ async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, seasonWeek, pri
       return
     }
 
-     if (mm === 3 && dd === 25 && dayOfWeek >= 2) {
+     if (mm === 3 && dd === 25 && dayOfWeek >= 2 || season === "HolyWeek" && dayOfWeek >= 5) {
       document.getElementById("kathisma").innerHTML = `<div class=\"rubric\">No kathisma today.</div><br>`;
       document.getElementById("kathismaSelector").innerHTML = "";
       return
@@ -2078,10 +2080,11 @@ async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, seasonWeek, pri
     var k;
     const isGreatVespers = (dayClass >= 8 && !(season === "Lent" && dayOfWeek > 1));
     const long_scheme = (
-        (season === "Lent")
-        || (season === "Forelent")
+        season === "HolyWeek"
+        || season === "Lent"
+        || season === "Forelent"
         || (
-            (season === "0") && (
+            season === "0" && (
                 isBetweenDates(mm, dd, 9, 28, 12, 10)  // after the week after leave taking of Exaltation
                 ||isBetweenDates(mm, dd, 1, 15, 3, 15)  // from jan 15 to a random date that is surely in Lent
                 ||(isBetweenDates(mm, dd, 9, 22, 9, 27) && dd > dayOfWeek+21)  // after Sun after leave-taking of Exaltation
