@@ -4,9 +4,26 @@ import { arrangeProkimenon, frameReadings } from './vespers.js';
 
 const address = `Text\\English`
 
+const numeral = {
+    1: "First",
+    3: "Third",
+    6: "Sixth",
+    9: "Ninth"
+}
+const nextHour = {
+    "compline": "midnight",  // for the purposes of this script
+    "1hour": "3hour",
+    "3hour": "6hour",
+    "6hour": "9hour",
+    "9hour": "vespers"
+}
+
 export async function minorHour(hour, priest, full, date){
 	let [year, mm, dd, season, seasonWeek, glas, dayOfWeek, dateAddress] = getDayInfo(date, false);
-	if (season === "EasterWeek" && !(dayOfWeek === 6 && hour === "9hour")) return await EasterHour(hour, priest, full, date);
+	if (season === "EasterWeek" && !(dayOfWeek === 6 && hour === "9hour")) {
+	    if (dayOfWeek === 6 && hour === "6hour") hour = "9hour"; // to not put "next hour is same" rubric
+	    return await EasterHour(hour, priest, full, date);
+	}
 
 	var numOhHour = hour.charAt(0);
 
@@ -46,20 +63,7 @@ export async function minorHour(hour, priest, full, date){
         additionalElements = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}_${hour}.json`);
     }
 
-	const numeral = {
-		1: "First",
-		3: "Third",
-		6: "Sixth",
-		9: "Ninth"
-	}
-	const nextHour = {
-		1: "3hour",
-		3: "6hour",
-		6: "9hour",
-		9: "vespers"
-	}
-
-	const linkToNext = `https:\/\/divinepraises.github.io/main.html?hour=${nextHour[numOhHour]}&priest=${priest}&full=${full}&date=${date}#come_let_us`;
+	const linkToNext = `https:\/\/divinepraises.github.io/main.html?hour=${nextHour[hour]}&priest=${priest}&full=${full}&date=${date}#come_let_us`;
 
 	loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas, dateAddress, specialDayData, dayTriodionData, additionalElements, isLenten);
 	return `<h2>The ${numeral[numOhHour]} hour</h2>
@@ -947,7 +951,7 @@ export async function EasterHour(hour, priest, full, date) {
     var n = "";
     if (full === "1") n = `<FONT COLOR="RED">(3)</FONT>`
 
-    const linkToNext = `https:\/\/divinepraises.github.io/main.html?hour=${hour}&priest=${priest}&full=${full}&date=${date}#come_let_us`;
+    const linkToNext = `https:\/\/divinepraises.github.io/main.html?hour=${nextHour[hour]}&priest=${priest}&full=${full}&date=${date}#come_let_us`;
     var next = ""
     if (hour != "9hour" && hour != "midnight") {
         next = `

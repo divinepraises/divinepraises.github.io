@@ -17,6 +17,7 @@ export function renderComplineSkeleton() {
 export async function enhanceCompline(priest, full, date){
 	let [year, mm, dd, season, seasonWeek, glas, dayOfWeek, dateAddress] = getDayInfo(date, true);
 	if (season === "EasterWeek" && dayOfWeek > 0) {
+	    if (dayOfWeek === 1) dayOfWeek = 2; // for correct redirect to midnight hour
 	    document.getElementById("beginning").innerHTML =  await EasterHour("compline", priest, full, date);
 	    return
 	}
