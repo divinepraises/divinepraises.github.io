@@ -95,7 +95,7 @@ export async function minorHour(hour, priest, full, date){
 	<div id="prayer"></div><br>
 	<div class=rubric>When this hour is followed by another one, switch to the <a href="${linkToNext}">next hour</a>. Otherwise, conclude with the dismissal:</div>
 	<hr>
-	${endingBlockMinor(priest)}
+	<div id="dismissal"></div>
 	<div id="after_hour_elements"></div>
 	`;
 }
@@ -172,6 +172,13 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
     }
 
     document.getElementById("prayer").innerHTML = hourData["prayer"];
+
+
+    var specialDismissal = "";
+    if (dayTriodionData && "specialDismissal" in dayTriodionData) specialDismissal = dayTriodionData["specialDismissal"];
+    else if (dayData && "specialDismissal" in dayData) specialDismissal = dayData["specialDismissal"];
+
+    document.getElementById("dismissal").innerHTML = endingBlockMinor(priest, dayOfWeek, specialDismissal);
 
     if (season === "Lent" && seasonWeek === 4 && dayOfWeek > 0 && (dayOfWeek < 5 || dayOfWeek === 5 && hour != "9hour")) {
         // Dolnytstly p 410

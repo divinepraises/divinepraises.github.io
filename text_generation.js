@@ -122,10 +122,10 @@ export function giveTheBlessing(withPriest) {
 	};
 }
 
-export function dismissalMajor(dayOfWeek, withPriest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal, crossDismissal) {
+export function dismissalMajor(dayOfWeek, season, withPriest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal, crossDismissal) {
     var text;
     var replacements = {};
-    const dismissalDeceased = (dayOfWeek === 6 && !isGreatVespers && !("name" in saintNames) && specialDismissal != "")
+    const dismissalDeceased = (season === "Forelent" && dayOfWeek === 6 && !isGreatVespers && !("name" in saintNames) && specialDismissal != "")
 	if (withPriest === "1" && !dismissalDeceased) {
 		text = `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.priestDismissalMajor}</b> `;
 	} else if (withPriest === "0" && !dismissalDeceased) {
@@ -167,18 +167,24 @@ export function dismissalMajor(dayOfWeek, withPriest, isGreatVespers, prePostFea
 }
 
 
-function dismissalMinor(withPriest) {
+function dismissalMinor(withPriest, dayOfWeek, specialDismissal) {
+    var text, replacementDict;
 	if (withPriest == "1") {
-		return `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.priestDismissalMinor}</b> `;
+		text = `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.priestDismissalMinor}</b> `;
 	} else {
-		return `<FONT COLOR="RED">Chariman:</FONT> ${data.layDismissalMinor}`;
-	};
+		text = `<FONT COLOR="RED">Chariman:</FONT> ${data.layDismissalMinor}`;
+	}
+	if (specialDismissal) replacementDict = {"SUNDAY": specialDismissal}
+	else if (dayOfWeek === 0) replacementDict = {"SUNDAY": data.dismissalsWeekdays[0]}
+	else replacementDict = {"SUNDAY": ""}
+
+	return replaceCapsWords(text, replacementDict);
 }
 
-export function endingBlockMinor(withPriest){
+export function endingBlockMinor(withPriest, dayOfWeek, specialDismissal){
     return `${gloryAndNow}
 	        ${LHM} <FONT COLOR="RED">(3)</FONT> ${giveTheBlessing(withPriest)}<br><br>
-	        ${dismissalMinor(withPriest)}<br><br>
+	        ${dismissalMinor(withPriest, dayOfWeek, specialDismissal)}<br><br>
 	        <FONT COLOR="RED">Choir:</FONT> ${data.amen}<br>
 	        `
 }

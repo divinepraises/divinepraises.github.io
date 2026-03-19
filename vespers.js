@@ -79,7 +79,7 @@ async function loadTextBasil(dayOfWeek, dayData, priest, vespersData, priestlyEx
                 or from the 9th ode of the Compline canon that was sung the previous night (as per Dolnytsky). <br>
                  The communion hymn is of Sunday.</div><br>`;
         }
-    return await makeEndingBlockMajor(priest, dayOfWeek, dayData["class"]>=8, vespersData, dayData, priestlyExclamationsData, false);
+    return await makeEndingBlockMajor(priest, season, dayOfWeek, dayData["class"]>=8, vespersData, dayData, priestlyExclamationsData, false);
 }
 
 async function liturgyEnding(dayOfWeek, dayData, priest, vespersData) {
@@ -561,7 +561,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
         }
     }
 
-    document.getElementById("ending_block").innerHTML = await makeEndingBlockMajor(priest, dayOfWeek, dayData["class"]>=8, vespersData, dayData, priestlyExclamationsData, isLenten || isSemiLenten);
+    document.getElementById("ending_block").innerHTML = await makeEndingBlockMajor(priest, season, dayOfWeek, dayData["class"]>=8, vespersData, dayData, priestlyExclamationsData, isLenten || isSemiLenten);
 
     // after ending
     if (season === "Lent" && seasonWeek === 4 && dayOfWeek > 0 && dayOfWeek <= 5) {
@@ -682,7 +682,7 @@ async function makeLytiaPrayers(lytiaPrayers, vigilVespersData, vespersData, day
         document.getElementById("lytia_prayers").innerHTML = lytia;
 }
 
-export async function makeEndingBlockMajor(priest, dayOfWeek, isGreatVespers, vespersData, dayData, priestlyExclamationsData, isLenten){
+export async function makeEndingBlockMajor(priest, season, dayOfWeek, isGreatVespers, vespersData, dayData, priestlyExclamationsData, isLenten){
     var res = `<div class="subhead">Dismissal</div><br>`;
     var saintNames = [constructDayName(dayData)];
 
@@ -690,7 +690,8 @@ export async function makeEndingBlockMajor(priest, dayOfWeek, isGreatVespers, ve
     if ("TheotokosDismissal" in dayData) TheotokosDismissal = dayData["TheotokosDismissal"];
 
     var specialDismissal = "";
-    if ("specialDismissal" in dayData) specialDismissal = dayData["specialDismissal"];
+    if ("specialDismissalVespers" in dayData) specialDismissal = dayData["specialDismissalVespers"];
+    else if ("specialDismissal" in dayData) specialDismissal = dayData["specialDismissal"];
 
     var crossDismissal = dayData["crossDismissal"] ?? "";
 
@@ -713,7 +714,7 @@ export async function makeEndingBlockMajor(priest, dayOfWeek, isGreatVespers, ve
         if (!isLenten || (dayOfWeek === 1 && isGreatVespers) || dayOfWeek === 6 || dayData["class"] >= 11 || "no_kathisma" in dayData) res += `${moreHonorable}<br><br>`
         res += `${priestlyExclamationsData["Christ"]}<br><br>
             ${gloryAndNow} ${LHM} ${LHM} ${LHM} ${giveTheBlessing(priest)}<br><br>
-            ${dismissalMajor(dayOfWeek, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal, crossDismissal)}
+            ${dismissalMajor(dayOfWeek, season, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal, crossDismissal)}
             `;
     } else {
         if (dayOfWeek === 6 || dayOfWeek === 0 || "no_kathisma" in dayData || isGreatVespers && (!isLenten || dayOfWeek === 1 || dayData["class"] >= 11)) {
@@ -721,7 +722,7 @@ export async function makeEndingBlockMajor(priest, dayOfWeek, isGreatVespers, ve
         }
         if (!isLenten || (dayOfWeek === 1 && isGreatVespers) || dayOfWeek === 6 || dayData["class"] >= 11 || "no_kathisma" in dayData) res += `${moreHonorable}<br><br>`
         res +=`${gloryAndNow} ${LHM} ${LHM} ${LHM} ${giveTheBlessing(priest)}<br><br>
-        ${dismissalMajor(dayOfWeek, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal, crossDismissal)}
+        ${dismissalMajor(dayOfWeek, season, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal, crossDismissal)}
         `;
     }
 
