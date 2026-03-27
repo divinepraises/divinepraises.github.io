@@ -225,7 +225,8 @@ export function parseDate(currentYear, currentMonth, currentDay) {
 	if (glas === 0) glas = 8;
 
 	if (diffFromEaster >= 0 & diffFromEaster < 7) {
-		glas = 1;  // TODO: should depend on the day
+		glas = diffFromEaster + 1;
+		if (diffFromEaster > 5) glas += 1; // no tone 7
 		season = "EasterWeek";
 		seasonWeek = 1;
 		seasonToShow = "<FONT COLOR=\"gold\">Easter Week</FONT>";
