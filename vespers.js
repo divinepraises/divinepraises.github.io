@@ -302,7 +302,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
                 delete vespersMenaionData["readings"];
-                if (dayOfWeek > 0) dayData["day name"] = dayData["day name vespers"]
+                if ("day name vespers" in dayData) dayData["day name"] = dayData["day name vespers"]
             }
         } catch {}
     }
@@ -500,7 +500,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
                 delete vespersMenaionData["readings"];
-                if (dayOfWeek > 0) dayData["day name"] = dayData["day name vespers"]
+                if ("day name vespers" in dayData) dayData["day name"] = dayData["day name vespers"]
             }
         } catch {}
     }
