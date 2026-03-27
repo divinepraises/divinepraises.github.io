@@ -79,7 +79,7 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
 	        else specialName = sundayData["name"];
 	    }
 	}
-	if (season === "HolyWeek") {
+	if (season === "HolyWeek" || season === "EasterWeek") {
 	    try {
 	        let dayTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}.json`);
 	        return `${symbolData[dayTriodionData["class"]]} ${dd}/${mm}: ${dayTriodionData["day name"]}`;
@@ -227,7 +227,7 @@ export function parseDate(currentYear, currentMonth, currentDay) {
 	if (diffFromEaster >= 0 & diffFromEaster < 7) {
 		glas = 1;  // TODO: should depend on the day
 		season = "EasterWeek";
-		seasonWeek = 0;
+		seasonWeek = 1;
 		seasonToShow = "<FONT COLOR=\"gold\">Easter Week</FONT>";
 		if (diffFromEaster === 0) seasonToShow = "<FONT COLOR=\"gold\">Easter Day</FONT>";
 	} else if (diffFromEaster >= 7 & diffFromEaster <= 56) {

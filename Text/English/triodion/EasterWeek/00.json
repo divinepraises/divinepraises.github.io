@@ -3,7 +3,7 @@
   "day name vespers": "Holy and Great Saturday evening",
   "name": "",
   "type": "",
-  "class": 12,
+  "class": 14,
   "saint": "",
   "specialDismissal": " risen from the dead, trampling death by death and to those in the tombs giving life, ",
   "specialDismissalVespers": " Who, for the sake of mankind and for our salvation willed to lie in a tomb with His Flesh, and entered hell, ",
@@ -12,5 +12,6 @@
     "<i>(Tone 2)</i> When You went down to death, O Life Immortal,* You struck Hades dead with the blazing light of Your divinity.* When You raised the dead from the nether world,* all powers of heaven cried out:* “O Giver of life, Christ our God, glory be to You!” ",
     "<i>(Tone 2)</i> The angel stood by the tomb and cried out to the women bringing ointment:* Ointments are for the dead,* but Christ has shown Himself not subject to corruption.* So now cry out: The Lord is risen,* bestowing great mercy upon the world."
   ],
-  "kontakia": "<i>(Tone 6)</i> He who closed the depths of the sea* is be held wrapped in linen and embalmed with myrrh;* the Death less One is placed in a tomb like One who is dead.* The women came to embalm him, weeping bitterly and crying:* Be hold the Sabbath transcendent in blessings* in which Christ has slept and will rise on the third day"
+  "kontakia": "<i>(Tone 6)</i> He who closed the depths of the sea* is be held wrapped in linen and embalmed with myrrh;* the Death less One is placed in a tomb like One who is dead.* The women came to embalm him, weeping bitterly and crying:* Be hold the Sabbath transcendent in blessings* in which Christ has slept and will rise on the third day",
+  "no_kathisma": true
 }
