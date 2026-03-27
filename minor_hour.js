@@ -44,7 +44,7 @@ export async function minorHour(hour, priest, full, date){
     }
 
     var dayTriodionData;
-    if (season === "Lent" || season === "Forelent" || season === "HolyWeek") {
+    if (season === "Lent" || season === "Forelent" || season === "HolyWeek" || season === "EasterWeek") {
         var weekToLookAt = seasonWeek - 1;
         if (dayOfWeek === 0 && season === "Lent") weekToLookAt = seasonWeek;
         try {
