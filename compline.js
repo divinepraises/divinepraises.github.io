@@ -63,7 +63,7 @@ export async function enhanceCompline(priest, full, date){
         if (specialSundayName != undefined) specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
     }
     var dayTriodionData;
-    if (season === "HolyWeek" || season === "Lent" || season === "Forelent") {
+    if (season === "EasterWeek" || season === "HolyWeek" || season === "Lent" || season === "Forelent") {
         var weekToLookAt = seasonWeek - 1;
         if (dayOfWeek === 0 && season === "Lent") weekToLookAt = seasonWeek;
         try {
