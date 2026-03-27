@@ -96,11 +96,9 @@ async function vespersBeginning(vespersData, vespersMenaionData, full, dayOfWeek
   <h2>Vespers</h2>
   <h4><div id="day_name"></div></h4>
   <div id="beginning"></div>
-  <a id="#come_let_us">${comeLetUs}<br><br></a>
   <div id="psalm103Selector"></div>
   <div id="psalm103"></div><br>
   <div id="psalm103add"></div>
-  ${tripleAlleluia}
   <div id="priestly_prayers_selector"></div>
   <div id="priestly_prayers"></div>
   <div id="ektenia_peace"></div><br>
@@ -126,9 +124,8 @@ export async function vespersEnding(vespersData, dayOfWeek, mm, dd, glas, dayDat
   <div id="lytia_selector"></div>
   <div id="lytia_prayers"></div>
   <div id="aposticha"></div>
-  <div id="simeon"></div><br>
-  ${trisagionToPater(priest)}
-  <div class="subhead">Troparia</div><br>
+  <div id="simeon"></div>
+  <div id="trisagion"></div>
   <div id="troparia"></div><br>
   <div id="ektenia_augmented_or_ps33"></div>
   <div id="ending_block"></div><br>
@@ -328,16 +325,19 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
         vigilVespersData = await getData(`${address}\\horologion\\vigil_vespers.json`);
         haire = vigilVespersData["haire"];
         if (priest == "1") {
-            document.getElementById("beginning").innerHTML = vigilVespersData["beginning"]+"<br><br>"
+            document.getElementById("beginning").innerHTML = `${vigilVespersData["beginning"]}<br><br>
+                <a id="#come_let_us">${comeLetUs}<br><br></a>`
         } else {
-            document.getElementById("beginning").innerHTML = getBeginning(0)+"<br><br>";
+            document.getElementById("beginning").innerHTML = `${getBeginning(0)}<br><br>
+                <a id="#come_let_us">${comeLetUs}<br><br></a>`;
         }
     } else {
     document.getElementById("beginning").innerHTML = `
       <div class=rubric>Should vespers be said immediately after the ninth hour, omit this beginning:</div>
       <hr>
       ${usualBeginning(priest, season)}
-      <hr>`
+      <hr>
+      <a id="#come_let_us">${comeLetUs}<br><br></a>`
     }
      if (priest === "1" && season === "Lent" && (dayOfWeek === 4 || dayOfWeek === 6)) {
         dayName += `
@@ -368,7 +368,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
     if (priest == "1"){
         ekteniaData = await getData(`${address}\\horologion\\ektenias.json`);
         priestPrayers = await getData(`${address}\\horologion\\vespers_priestly.json`);
-        document.getElementById("priestly_prayers_selector").innerHTML = `<br>
+        document.getElementById("priestly_prayers_selector").innerHTML = `
           <label><input type="radio" name="prayersChoice" value="show"> Show the evening prayers.</label><br>
           <label><input type="radio" name="prayersChoice" value="hide" checked> Hide the evening prayers.</label>
           <br><br>`
@@ -549,7 +549,9 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
 
     document.getElementById("aposticha").innerHTML = await makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreatVespers, dayData, vespersData, vespersMenaionData, vespersOctoechosData, vespersTriodionData);
 
-    document.getElementById("simeon").innerHTML = `<div class="subhead">Song of Simeon</div><br>${vespersData["simeon"]}`;
+    document.getElementById("simeon").innerHTML = `<div class="subhead">Song of Simeon</div><br>${vespersData["simeon"]}<br>`;
+
+    document.getElementById("trisagion").innerHTML = `${trisagionToPater(priest)}<div class="subhead">Troparia</div><br>`;
 
     document.getElementById("troparia").innerHTML = await makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatVespers, dayData, haire, specialSundayName, isLenten && dayData["class"] < 8);
 
@@ -2186,11 +2188,11 @@ async function makePs103(great) {
 
         resp = await fetch(`${address}\\psalms\\103add.txt`);
         psalmData = await resp.text()
-        document.getElementById("psalm103add").innerHTML = psalmData + "<br><br>";
+        document.getElementById("psalm103add").innerHTML = psalmData + "<br><br>" + tripleAlleluia + "<br>";
     } else {
         var resp = await fetch(`${address}\\psalms\\103verses.txt`);
         var psalmData = await resp.text()
         document.getElementById("psalm103").innerHTML = `<div class="subhead">Psalm 103 verses</div>${psalmData}`;
-        document.getElementById("psalm103add").innerHTML = "";
+        document.getElementById("psalm103add").innerHTML = tripleAlleluia + "<br>";
     }
 }
