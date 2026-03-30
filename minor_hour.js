@@ -439,7 +439,7 @@ async function arrangeLentenElements(additionalElements, full, season, seasonWee
     var text = "";
     if (addKathisma) text = await makeKathisma(season, seasonWeek, dayOfWeek, hour);
     text += await arrangeLentenReading(additionalElements, full);
-    if (season === "HolyWeek") {
+    if (season === "HolyWeek" && hour != "1hour") {
         var author, n0, n1;
         if (dayOfWeek === 1 && hour === "3hour") [author, n0, n1] = ["Matthew", 1, 14]
         else if (dayOfWeek === 1 && hour === "6hour") [author, n0, n1] = ["Matthew", 15, 28]
