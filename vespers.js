@@ -569,7 +569,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
         document.getElementById("trisagion").innerHTML = "";
         document.getElementById("troparia").innerHTML = "";
     } else {
-        document.getElementById("simeon").innerHTML = `<div class="subhead">Song of Simeon</div><br>${vespersData["simeon"]}<br>`;
+        document.getElementById("simeon").innerHTML = `<div class="subhead">Song of Simeon</div><br>${vespersData["simeon"]}<br><br>`;
 
         document.getElementById("trisagion").innerHTML = `${trisagionToPater(priest)}<div class="subhead">Troparia</div><br>`;
 
