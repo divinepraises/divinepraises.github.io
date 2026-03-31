@@ -300,7 +300,11 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
             } else if (season === "HolyWeek" || season === "EasterWeek") {
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
+                delete vespersMenaionData["prokimenon"];
                 delete vespersMenaionData["readings"];
+                delete vespersMenaionData["second_prokimenon"];
+                delete vespersMenaionData["second_reading"];
+                delete vespersMenaionData["epistle"];
                 delete vespersMenaionData["gospel"];
                 if ("day name vespers" in dayData) dayData["day name"] = dayData["day name vespers"]
             }
@@ -512,7 +516,11 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
             } else if (season === "HolyWeek" || season === "EasterWeek") {
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
+                delete vespersMenaionData["prokimenon"];
                 delete vespersMenaionData["readings"];
+                delete vespersMenaionData["second_prokimenon"];
+                delete vespersMenaionData["second_reading"];
+                delete vespersMenaionData["epistle"];
                 delete vespersMenaionData["gospel"];
                 if ("day name vespers" in dayData) dayData["day name"] = dayData["day name vespers"]
             }
