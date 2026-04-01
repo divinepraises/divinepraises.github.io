@@ -578,12 +578,14 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
     if (isEasterWeek) {
         document.getElementById("simeon").innerHTML = "";
         document.getElementById("trisagion").innerHTML = "";
-        document.getElementById("troparia").innerHTML = "";
+        if (dayData["class"] < 8) document.getElementById("troparia").innerHTML = "";
+        else document.getElementById("troparia").innerHTML = `
+            <br><div class="subhead">Troparia</div><br>
+            ${await makeTroparia(glas, "0", 0, dayOfWeek, true, dayData, haire, "", false)}
+            `
     } else {
         document.getElementById("simeon").innerHTML = `<div class="subhead">Song of Simeon</div><br>${vespersData["simeon"]}<br><br>`;
-
         document.getElementById("trisagion").innerHTML = `${trisagionToPater(priest)}<div class="subhead">Troparia</div><br>`;
-
         document.getElementById("troparia").innerHTML = await makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatVespers, dayData, haire, specialSundayName, isLenten && dayData["class"] < 8);
     }
 
