@@ -889,6 +889,7 @@ export async function EasterHour(hour, priest, full, date) {
         ${prayerBlessingMayGodBeGracious(priest, "3hour")}<br><br>
 		<FONT COLOR="RED">Choir:</FONT> ${amen}<br><br>
         <div class="rubric">${next}</div>
+        <div class="rubric">${properTexts["ending_note"]}</div>
 		${properTexts["troparion"]} <FONT COLOR="RED">(3)</FONT><br><br>
         ${endingBlockMinor(priest, 1, specialDismissal)}<br><br>
 		`
