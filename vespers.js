@@ -243,7 +243,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
     var priestlyExclamationsData, vespersTriodionData, dayTriodionData, vespersOctoechosData;
     if (priest === "1") priestlyExclamationsData = await getData(`${address}\\horologion\\priestly_exclamations.json`);
 
-    if (season === "EasterWeek" || season === "HolyWeek" || season === "Lent" || season === "Forelent") {
+    if (season === "Pentecost" || season === "EasterWeek" || season === "HolyWeek" || season === "Lent" || season === "Forelent") {
          const isStAndrewCanonMatins = (
             season === "Lent" && seasonWeek === 5
             && (
@@ -297,7 +297,11 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
             } else if (season === "Forelent" && seasonWeek === 3 && dayOfWeek === 6 && dayData["class"] < 8) {
                 dayData["class"] = 6
                 vespersMenaionData["ps140"] = vespersTriodionData["ps140"];
-            } else if (season === "HolyWeek" || (season === "EasterWeek" && (dayOfWeek === 0 || dayData["class"] < 8))) {
+            } else if (
+                season === "HolyWeek"
+                || (season === "EasterWeek" && (dayOfWeek === 0 || dayData["class"] < 8))
+                || season === "Pentecost" && seasonWeek === 1 && dayOfWeek === 0
+            ) {
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
                 delete vespersMenaionData["prokimenon"];
@@ -339,20 +343,26 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
     } else if (dayData["class"] >= 10) {
         vigilVespersData = await getData(`${address}\\horologion\\vigil_vespers.json`);
         haire = vigilVespersData["haire"];
+        var text = "";
         if (priest == "1") {
-            document.getElementById("beginning").innerHTML = `${vigilVespersData["beginning"]}<br><br>
-                <a id="#come_let_us">${comeLetUs}<br><br></a>`
+            text += `${vigilVespersData["beginning"]}<br><br>${amen}<br><br>`
         } else {
-            document.getElementById("beginning").innerHTML = `${getBeginning(0)}<br><br>
-                <a id="#come_let_us">${comeLetUs}<br><br></a>`;
+            text += `${getBeginning(0)}<br><br>${amen}<br><br>`
         }
+        if (season === "Pentecost") {
+            const paschalTroparion = (await getData(`${address}\\triodion\\EasterWeek\\00_hour.json`))["troparion"] + ` <FONT COLOR="RED">(3)</FONT>`;
+            text += `<a id="#come_let_us">${paschalTroparion}<br><br></a>`
+        } else {
+            text += `<a id="#come_let_us">${comeLetUs}<br><br></a>`
+        }
+        document.getElementById("beginning").innerHTML = text;
     } else {
-    document.getElementById("beginning").innerHTML = `
-      <div class=rubric>Should vespers be said immediately after the ninth hour, omit this beginning:</div>
-      <hr>
-      ${usualBeginning(priest, season)}
-      <hr>
-      <a id="#come_let_us">${comeLetUs}<br><br></a>`
+        document.getElementById("beginning").innerHTML = `
+          <div class=rubric>Should vespers be said immediately after the ninth hour, omit this beginning:</div>
+          <hr>
+          ${await usualBeginning(priest, season)}
+          <hr>
+          <a id="#come_let_us">${comeLetUs}<br><br></a>`
     }
      if (priest === "1" && season === "Lent" && (dayOfWeek === 4 || dayOfWeek === 6)) {
         dayName += `
@@ -484,7 +494,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
 
     var vespersOctoechosData = await getData(`${address}\\octoechos\\${glas}\\${dayOfWeek}_vespers.json`);
     var vespersTriodionData, dayTriodionData;
-    if (season === "EasterWeek" || season === "HolyWeek" || season === "Lent" || season === "Forelent") {
+    if (season === "Pentecost" || season === "EasterWeek" || season === "HolyWeek" || season === "Lent" || season === "Forelent") {
         var weekToLookAt = seasonWeek - 1;
         if (dayOfWeek === 0 && season === "Lent") weekToLookAt = seasonWeek;
         try {
@@ -516,7 +526,11 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
                     dayData["name"] = []
                     dayData["crossDismissal"] = dayTriodionData["crossDismissal"];
                 }
-            } else if (season === "HolyWeek" || (season === "EasterWeek" && (dayOfWeek === 0 || dayData["class"] < 8))) {
+            } else if (
+                season === "HolyWeek"
+                || (season === "EasterWeek" && (dayOfWeek === 0 || dayData["class"] < 8))
+                || season === "Pentecost" && seasonWeek === 1 && dayOfWeek === 0
+            ) {
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
                 delete vespersMenaionData["prokimenon"];
@@ -529,7 +543,6 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
             }
         } catch {}
     }
-
 
     var isGreatVespers = (dayData["class"] >= 8 || dayOfWeek === 0);
     const isLytia = ("lytia" in vespersMenaionData && dayData["class"] >= 10);
@@ -638,7 +651,16 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
             ${roles[1]} ${EasterData["troparion"].join("")} <FONT COLOR="RED">(3)</FONT><br><br>
             ${roles[0]} ${EasterData["final"][2]}<br>
             ${roles[1]} ${EasterData["final"][3]}<br><br>
-
+        `;
+    } else if (season === "Pentecost") {
+        var roles;
+        if (priest === "1") roles = [`<FONT COLOR="RED">Priest:</FONT>`, `<FONT COLOR="RED">Choir:</FONT>`]
+        else roles = [`<FONT COLOR="RED">Chairman:</FONT>`, `<FONT COLOR="RED">Choir:</FONT>`]
+        const EasterData = await getData(`${address}\\triodion\\EasterWeek\\00_major.json`);
+        document.getElementById("after_hour_elements").innerHTML = `
+            ${roles[1]} ${EasterData["troparion"].join("")} <FONT COLOR="RED">(3)</FONT><br>
+            ${roles[0]} ${EasterData["final"][2]}<br>
+            ${roles[1]} ${EasterData["final"][3]}<br><br>
         `;
     } else {
         document.getElementById("after_hour_elements").innerHTML = "";
@@ -763,7 +785,8 @@ export async function makeEndingBlockMajor(priest, season, dayOfWeek, isGreatVes
 
     var gloryOrAnesti = gloryAndNow;
     var finalTheotokion = moreHonorable;
-    if (isEasterWeek){
+    if (isEasterWeek || season === "Pentecost"){
+        // for pentecost - Dol 478
         const EasterData = await getData(`${address}\\triodion\\EasterWeek\\00_major.json`);
         finalTheotokion = EasterData["shine"];
         gloryOrAnesti = EasterData["troparion"].join("");
@@ -1406,6 +1429,7 @@ export function frameReadings(readings) {
 
 function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData) {
     var text = "";
+    if (!vespersMenaionData) return text;
     if (vespersMenaionData && ("readings" in vespersMenaionData)) text += frameReadings(vespersMenaionData["readings"]);
 
     if ("second_prokimenon" in vespersMenaionData) {

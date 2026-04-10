@@ -44,7 +44,7 @@ export async function minorHour(hour, priest, full, date){
     }
 
     var dayTriodionData;
-    if (season === "Lent" || season === "Forelent" || season === "HolyWeek" || season === "EasterWeek") {
+    if (season === "Pentecost" || season === "Lent" || season === "Forelent" || season === "HolyWeek" || season === "EasterWeek") {
         var weekToLookAt = seasonWeek - 1;
         if (dayOfWeek === 0 && season === "Lent") weekToLookAt = seasonWeek;
         try {
@@ -70,7 +70,7 @@ export async function minorHour(hour, priest, full, date){
 	<div id="note"></div>
 	<div class=rubric>Should this hour be said immediately after the previous one, omit this beginning:</div>
 	<hr>
-	${usualBeginning(priest, season)}
+	${await usualBeginning(priest, season)}
 	<hr>
 	<a id="come_let_us">${comeLetUs}<br><br></a>
 	<div id="psalms"></div><br>
@@ -187,6 +187,14 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
     if (dayTriodionData && "specialDismissal" in dayTriodionData) specialDismissal = dayTriodionData["specialDismissal"];
     else if (dayData && "specialDismissal" in dayData) specialDismissal = dayData["specialDismissal"];
 
+    if (specialDismissal === "" && season === "Pentecost") {
+        if (seasonWeek === 1) {
+            specialDismissal = (await getData(`${address}\\triodion\\${season}\\00.json`))["specialDismissal"];
+        } else {
+            specialDismissal = (await getData(`${address}\\triodion\\EasterWeek\\00.json`))["specialDismissal"];
+        }
+    }
+
     document.getElementById("dismissal").innerHTML = endingBlockMinor(priest, dayOfWeek, specialDismissal);
 
     if (season === "Lent" && seasonWeek === 4 && dayOfWeek > 0 && (dayOfWeek < 5 || dayOfWeek === 5 && hour != "9hour")) {
@@ -203,6 +211,16 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
         if (dayOfWeek === 5 && hour === "6hour") afterRubric += " The Cross is carried to its usual place afterwards.";
         afterRubric += `</div>${toYourCross}<br><br>`
         document.getElementById("after_hour_elements").innerHTML = afterRubric;
+    } else if (season === "Pentecost") {
+        var roles;
+        if (priest === "1") roles = [`<FONT COLOR="RED">Priest:</FONT>`, `<FONT COLOR="RED">Choir:</FONT>`]
+        else roles = [`<FONT COLOR="RED">Chairman:</FONT>`, `<FONT COLOR="RED">Choir:</FONT>`]
+        const EasterData = await getData(`${address}\\triodion\\EasterWeek\\00_major.json`);
+        document.getElementById("after_hour_elements").innerHTML = `
+            <br>${roles[1]} ${EasterData["troparion"].join("")} <FONT COLOR="RED">(3)</FONT><br>
+            ${roles[0]} ${EasterData["final"][2]}<br>
+            ${roles[1]} ${EasterData["final"][3]}<br><br>
+        `;
     } else {
         document.getElementById("after_hour_elements").innerHTML = "";
     }
@@ -510,6 +528,10 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
     } else if ("postfeast" in dayData) {
         prePostFeast = "postfeast";
         prePostFeastTroparion = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["troparia"];
+    } else if (season === "Pentecost" && dayOfWeek != 0) {
+        prePostFeast = "postfeast";
+        prePostFeastTroparion = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0.json`))["troparia"];
+        dayTriodionData = undefined;
     }
     if (Array.isArray(prePostFeastTroparion)) {
         // we assume that in a list, the kontakion of a pre-feast is the last one
@@ -578,6 +600,9 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
                 return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[1]}`;
             }
         }
+
+        if (season === "Pentecost" && seasonWeek === 1) return `${glory}<br><br>${dayTriodionData["troparia"]}`;
+        else if (season === "Pentecost") return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTriodionData["troparia"]}`;
 
         if (hour === "1hour" && dayData["class"] < 8 && dayTriodionData === undefined
             || dayTriodionData != undefined && season === "Forelent"
@@ -703,6 +728,10 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
     } else if ("postfeast" in dayData) {
         prePostFeast = "postfeast";
         prePostFeastKontakion = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["kontakia"];
+    } else if (season === "Pentecost" && dayOfWeek != 0) {
+        prePostFeast = "postfeast";
+        prePostFeastKontakion = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0.json`))["kontakia"];
+        dayTriodionData = undefined;
     }
     if (Array.isArray(prePostFeastKontakion)) {
         // we assume that in a list, the kontakion of a pre-feast is the last one

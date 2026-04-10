@@ -85,7 +85,7 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
 	        return `${symbolData[dayTriodionData["class"]]} ${dd}/${mm}: ${dayTriodionData["day name"]}`;
 	    } catch {}
 	}
-	if (season === "Forelent" || season === "Lent" && dayOfWeek != 0) {
+	if (season === "Pentecost" || season === "Forelent" || season === "Lent" && dayOfWeek != 0) {
 	    try {
 	        let dayTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}.json`);
 	        specialName = dayTriodionData["day name"] + ". ";
@@ -126,6 +126,7 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
                     || dayOfWeek === 6 && seasonWeek === 5
                     || dayOfWeek === 6 && seasonWeek === 6
                 )
+                || season === "Pentecost" && dayOfWeek === 0
             )
         ) {
             dayName = "";

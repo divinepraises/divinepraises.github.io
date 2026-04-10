@@ -63,12 +63,19 @@ export async function enhanceCompline(priest, full, date){
         if (specialSundayName != undefined) specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
     }
     var dayTriodionData;
-    if (season === "EasterWeek" || season === "HolyWeek" || season === "Lent" || season === "Forelent") {
+    if (season === "Pentecost" || season === "EasterWeek" || season === "HolyWeek" || season === "Lent" || season === "Forelent") {
         var weekToLookAt = seasonWeek - 1;
         if (dayOfWeek === 0 && season === "Lent") weekToLookAt = seasonWeek;
         try {
             dayTriodionData = await getData(`${address}\\triodion\\${season}\\${weekToLookAt}${dayOfWeek}.json`)
         } catch {}
+        if (!dayTriodionData && season === "Pentecost") {
+            try {
+                // generally take kontakion from the previous Sunday
+                dayTriodionData = await getData(`${address}\\triodion\\${season}\\${weekToLookAt}0.json`)
+                dayTriodionData["class"] = 4;
+            } catch {}
+        }
     }
 
     if (isIncarnationFeast) {
@@ -173,7 +180,7 @@ async function smallComplineBeginning(full, season, dayOfWeek, priest, isAllelui
     loadSmallComplineBeginning(smallComplineData, full, season, dayOfWeek, isAlleluiaDay, priest, glas, dayData, dateAddress);
 	document.getElementById("beginning").innerHTML =  `<h2>Small Compline</h2>
 	<div id="switch"></div><br>
-	${usualBeginning(priest, season)}<br><br>
+	<div id="usualBeginning"></div>
 	${comeLetUs}<br><br>
 	<div id="psalms"></div><br>
 	<div class=subhead>The Symbol of Faith</div><br>
@@ -184,6 +191,10 @@ async function smallComplineBeginning(full, season, dayOfWeek, priest, isAllelui
 async function loadSmallComplineBeginning(smallComplineData, full, season, dayOfWeek, isAlleluiaDay, priest, glas, dayData, dateAddress) {
 	const psalmNums =  smallComplineData["psalms"];
 	const psalmPaths = psalmNums.map(n => `${address}\\psalms\\${n}.txt`);
+
+    usualBeginning(priest, season).then(ub => {
+        document.getElementById("usualBeginning").innerHTML = `${ub}<br><br>`;
+    });
 
     if (full === "1") {
         var formattedValues = (await readPsalmsFromNumbers(psalmNums)).join("");
@@ -230,7 +241,7 @@ async function greatComplineBeginning(full, season, seasonWeek, priest, dayOfWee
     var festal = "";
     if (isIncarnationFeast) festal = "Festive"
 	document.getElementById("beginning").innerHTML =  `<h2>${festal} Great Compline</h2>
-	${usualBeginning(priest, season)}<br><br>
+	${await usualBeginning(priest, season)}<br><br>
 	${comeLetUs}<br><br>
 	<div id="1_week_of_Lent_intro"></div>
 	<div id="psalms_1"></div><br>
