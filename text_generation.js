@@ -66,11 +66,10 @@ export async function usualBeginning(priest, season){
  if (season === "Pentecost" || season === "EasterWeek"){
   HK = `${(await getData(`${address}\\triodion\\EasterWeek\\00_major.json`))["troparion"].join("")} <FONT COLOR="RED">(3)</FONT><br><br>`;
  } else {
-  HK = `${data.heavenlyKing}<br><br>`;
+  HK = `${data.gloryBeToYou}<br><br>${data.heavenlyKing}<br><br>`;
  }
  return `${cross} ${getBeginning(priest)}<br><br>
 		<FONT COLOR="RED">Choir:</FONT> ${data.amen}<br><br>
-		${data.gloryBeToYou}<br><br>
 		${HK}
 		${trisagionToPater(priest)}
 		${data.lhm} <FONT COLOR="RED">(12)</FONT><br><br>
