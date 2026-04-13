@@ -530,8 +530,14 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         prePostFeastTroparion = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["troparia"];
     } else if (season === "Pentecost" && dayOfWeek != 0) {
         prePostFeast = "postfeast";
-        prePostFeastTroparion = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0.json`))["troparia"];
         dayTriodionData = undefined;
+        if (seasonWeek === 2 && (hour === "3hour" || hour === "9hour")) {
+            // Dol 484
+            prePostFeastTroparion = (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][glas];
+        } else {
+            prePostFeastTroparion = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0.json`))["troparia"];
+            if (Array.isArray(prePostFeastTroparion)) prePostFeastTroparion = prePostFeastTroparion[0];
+        }
     }
     if (Array.isArray(prePostFeastTroparion)) {
         // we assume that in a list, the kontakion of a pre-feast is the last one
