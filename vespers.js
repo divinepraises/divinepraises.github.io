@@ -783,7 +783,7 @@ export async function makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek
     if (season === "Pentecost" && seasonWeek === 1) {
         prePostFeast = "postfeast";
         prePostFeastData = (await getData(`${address}\\triodion\\Pentecost\\${seasonWeek-1}0.json`));
-    } else if (season === "Pentecost" && seasonWeek > 1 && dayOfWeek === 0) {
+    } else if (season === "Pentecost" && seasonWeek > 1) {
         prePostFeastData = (await getData(`${address}\\triodion\\EasterWeek\\00.json`));
     }
     if (prePostFeastData && "TheotokosDismissal" in prePostFeastData) TheotokosDismissal = prePostFeastData["TheotokosDismissal"];
@@ -949,11 +949,20 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
     } else if (prePostFeast === "postfeast") {
         theotokion = (await getData(`${address}\\menaion\\${dayData[prePostFeast]}.json`))["troparia"];
         if (Array.isArray(theotokion)) theotokion = theotokion[0];
-    } else if (season === "Pentecost" && dayOfWeek > 0) {
+    } else if (season === "Pentecost" && dayOfWeek > 0 && seasonWeek != 2) {
         theotokion = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0.json`))["troparia"];
-    } else if (season === "Pentecost" && seasonWeek === 2) {
+    } else if (season === "Pentecost" && seasonWeek === 2 && dayOfWeek === 0) {
         theotokion = dayTrop[dayTrop.length-1];
         dayTrop.pop();
+    } else if (season === "Pentecost" && seasonWeek === 2 && dayOfWeek > 0) {
+        const troparia = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0.json`))["troparia"];
+        // Dol p 483: we change the first troparion every day
+        if (dayOfWeek % 2 === 0) {
+            dayTrop.splice(0, 0, (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][glas]);
+        } else {
+            dayTrop.splice(0, 0, troparia[0])
+        }
+        theotokion = troparia[1];
     } else {
         // we end up here if it is not a vigil
         let tropGlas  = parseInt(dayTrop[dayTrop.length - 1].match(/\d+/)[0], 10);
