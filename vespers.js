@@ -1074,6 +1074,15 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
             .concat(apostMain["aposticha"][5])
         )
         apostMain[apostMain.length - 1] += ` <FONT COLOR="RED">(1)</FONT>`
+    } else if (season === "Pentecost" && dayOfWeek > 0 && dayData["class"] >= 8) {
+        // feast on weekday of Pentecost
+        apostMain = vespersMenaionData["aposticha"].concat(vespersTriodionData["aposticha"][2]);
+        apostVerses = vespersMenaionData["aposticha_verses"].concat(
+            [`<div class="rubric">Tone ${apostMain[4]}</div>${glory}`,
+            `<div class="rubric">Tone ${vespersTriodionData["aposticha"][0]}</div>${andNow}`]
+        );
+        apostMain.splice(4, 2); // rm glory and tone
+
     } else if (season === "Pentecost" && !(seasonWeek === 1 && dayOfWeek === 0)) {
         apostVerses = vespersData["aposticha"];
         apostMain = vespersOctoechosData["aposticha"];
@@ -1789,6 +1798,18 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         );
         numStycheras = 10;
         stycheraScheme = Array(numStycheras).fill(1);
+    } else if (season === "Pentecost" && dayOfWeek != 0 && dayData["class"] >= 8) {
+        stycheras = (
+            vespersTriodionData["ps140"].slice(0, 4)
+            .concat(psalm140menaionStycheras)
+            .concat(vespersTriodionData["ps140"].slice(4, 7))
+        );
+        forceNumSticheras = 5; // for meanaion only
+        stycheraScheme =  Array(numStycheras).fill(Math.floor(forceNumSticheras / numStycheras));
+        for (let i=0; i < forceNumSticheras % numStycheras; i++) stycheraScheme[i] += 1;
+        numStycheras += 3;
+        forceNumSticheras += 3;
+        stycheraScheme = Array(3).fill(1).concat(stycheraScheme);
     } else if (season === "Pentecost" && dayOfWeek != 0) {
         if (dayOfWeek === 6) {
             vespersTriodionData = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0_vespers.json`))["ps140"];
