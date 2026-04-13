@@ -578,7 +578,19 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
             vespersMenaionData["lytia"].splice(4, 3);
             vespersMenaionData["lytia"][5] = "gn";
         }
-        makeLytia(vespersMenaionData["lytia"], priest, vespersData, vigilVespersData, dayData, priestlyExclamationsData);
+        var lytiaData = vespersMenaionData["lytia"];
+        if (season === "Pentecost" && mm === 4 && dd === 23) {
+            // st George: add a stichera to Lytia
+            var prevSundayData = await getData(`${address}\\triodion\\Pentecost\\${seasonWeek-1}0_vespers.json`);
+            if (seasonWeek === 1) {
+                lytiaData.concat([prevSundayData["lytia"][2], "n", prevSundayData["lytia"][5]])
+            } else {
+                // it should be from lytia but it's not used so not added
+                prevSundayData = prevSundayData["ps140"];
+                lytiaData = lytiaData.concat([prevSundayData[prevSundayData.length-2], "n", prevSundayData[prevSundayData.length-1]])
+            }
+        }
+        makeLytia(lytiaData, priest, vespersData, vigilVespersData, dayData, priestlyExclamationsData);
         makePs33(priest, vigilVespersData);
     } else {
         document.getElementById("lytia_stychera").innerHTML = "";
@@ -1076,6 +1088,9 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
         apostMain[apostMain.length - 1] += ` <FONT COLOR="RED">(1)</FONT>`
     } else if (season === "Pentecost" && dayOfWeek > 0 && dayData["class"] >= 8) {
         // feast on weekday of Pentecost
+        if (dayOfWeek === 6) {
+            vespersTriodionData = (await getData(`${address}\\triodion\\Pentecost\\${seasonWeek-1}0_vespers.json`));
+        }
         apostMain = vespersMenaionData["aposticha"].concat(vespersTriodionData["aposticha"][2]);
         apostVerses = vespersMenaionData["aposticha_verses"].concat(
             [`<div class="rubric">Tone ${apostMain[4]}</div>${glory}`,
@@ -1799,11 +1814,16 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         numStycheras = 10;
         stycheraScheme = Array(numStycheras).fill(1);
     } else if (season === "Pentecost" && dayOfWeek != 0 && dayData["class"] >= 8) {
+        if (dayOfWeek === 6) {
+            vespersTriodionData = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0_vespers.json`));
+        }
         stycheras = (
             vespersTriodionData["ps140"].slice(0, 4)
             .concat(psalm140menaionStycheras)
-            .concat(vespersTriodionData["ps140"].slice(4, 7))
         );
+        if (dayOfWeek != 6) {
+            stycheras = stycheras.concat(vespersTriodionData["ps140"].slice(4, 7))
+        }
         forceNumSticheras = 5; // for meanaion only
         stycheraScheme =  Array(numStycheras).fill(Math.floor(forceNumSticheras / numStycheras));
         for (let i=0; i < forceNumSticheras % numStycheras; i++) stycheraScheme[i] += 1;
