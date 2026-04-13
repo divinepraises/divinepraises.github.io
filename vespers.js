@@ -82,7 +82,7 @@ async function loadTextBasil(season, dayOfWeek, dayData, priest, vespersData, pr
     if (priest === "1") {
         return `<div class="rubric">The Liturgy of st. Basil is celebrated with Holy Saturday parts.<br><br>`;
     }
-    return await makeEndingBlockMajor(priest, season, dayOfWeek, dayData["class"]>=8, vespersData, dayData, priestlyExclamationsData, false, false);
+    return await makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek, dayData["class"]>=8, vespersData, dayData, priestlyExclamationsData, false, false);
 }
 
 async function liturgyEnding(season, dayOfWeek, dayData, priest, vespersData) {
@@ -615,7 +615,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
         }
     }
 
-    document.getElementById("ending_block").innerHTML = await makeEndingBlockMajor(priest, season, dayOfWeek, dayData["class"]>=8, vespersData, dayData, priestlyExclamationsData, isLenten || isSemiLenten, isEasterWeek);
+    document.getElementById("ending_block").innerHTML = await makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek, dayData["class"]>=8, vespersData, dayData, priestlyExclamationsData, isLenten || isSemiLenten, isEasterWeek);
 
     // after ending
     if (season === "Lent" && seasonWeek === 4 && dayOfWeek > 0 && dayOfWeek <= 5) {
@@ -762,7 +762,7 @@ async function makeLytiaPrayers(lytiaPrayers, vigilVespersData, vespersData, day
         document.getElementById("lytia_prayers").innerHTML = lytia;
 }
 
-export async function makeEndingBlockMajor(priest, season, dayOfWeek, isGreatVespers, vespersData, dayData, priestlyExclamationsData, isLenten, isEasterWeek) {
+export async function makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek, isGreatVespers, vespersData, dayData, priestlyExclamationsData, isLenten, isEasterWeek) {
     var res = `<div class="subhead">Dismissal</div><br>`;
     var saintNames = [constructDayName(dayData)];
 
@@ -779,6 +779,10 @@ export async function makeEndingBlockMajor(priest, season, dayOfWeek, isGreatVes
     if (dayOfWeek != 0 && "postfeast" in dayData) {
         prePostFeast = "postfeast";
         prePostFeastData = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`));
+    }
+    if (season === "Pentecost") {
+        prePostFeast = "postfeast";
+        prePostFeastData = (await getData(`${address}\\triodion\\Pentecost\\${seasonWeek-1}0.json`));
     }
     if (prePostFeastData && "TheotokosDismissal" in prePostFeastData) TheotokosDismissal = prePostFeastData["TheotokosDismissal"];
     if (prePostFeastData && "specialDismissal" in prePostFeastData) specialDismissal = prePostFeastData["specialDismissal"];
