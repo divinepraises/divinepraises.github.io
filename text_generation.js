@@ -137,7 +137,7 @@ export function dismissalMajor(dayOfWeek, season, withPriest, isGreatVespers, pr
 	if (TheotokosDismissal != "") TheotokosDismissal = replaceCapsWords(data.dismissalTheotokos, {"SAINT":TheotokosDismissal});
 	else TheotokosDismissal = ";";
 
-	if (dayOfWeek === 0 && !isGreatVespers) replacements = {"SUNDAY": data.dismissalsWeekdays[0], "WEEKDAY": "", "THURSDAY": "", "CHURCH": data.dismissalChurch, "THEOTOKOS": TheotokosDismissal};
+	if (dayOfWeek === 0 && !isGreatVespers && !(season === "Pentecost")) replacements = {"SUNDAY": data.dismissalsWeekdays[0], "WEEKDAY": "", "THURSDAY": "", "CHURCH": data.dismissalChurch, "THEOTOKOS": TheotokosDismissal};
 	else if (specialDismissal != "") replacements = {"SUNDAY": specialDismissal, "WEEKDAY": "", "THURSDAY": "", "CHURCH": "", "THEOTOKOS": TheotokosDismissal};
 	else if (dayOfWeek === 0 && isGreatVespers) replacements = {"SUNDAY": data.dismissalsWeekdays[0], "WEEKDAY": "", "THURSDAY": "", "CHURCH": "", "THEOTOKOS": TheotokosDismissal};
 	else if (isGreatVespers || prePostFeast === "postfeast") replacements = {"SUNDAY": specialDismissal, "WEEKDAY": "", "THURSDAY": "", "CHURCH": "", "THEOTOKOS": TheotokosDismissal};

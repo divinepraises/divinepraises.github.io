@@ -529,7 +529,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
             } else if (
                 season === "HolyWeek"
                 || (season === "EasterWeek" && (dayOfWeek === 0 || dayData["class"] < 8))
-                || season === "Pentecost" && seasonWeek === 1 && dayOfWeek === 0
+                || season === "Pentecost" && dayOfWeek === 0
             ) {
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
@@ -780,9 +780,11 @@ export async function makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek
         prePostFeast = "postfeast";
         prePostFeastData = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`));
     }
-    if (season === "Pentecost") {
+    if (season === "Pentecost" && seasonWeek === 1) {
         prePostFeast = "postfeast";
         prePostFeastData = (await getData(`${address}\\triodion\\Pentecost\\${seasonWeek-1}0.json`));
+    } else if (season === "Pentecost" && seasonWeek > 1 && dayOfWeek === 0) {
+        prePostFeastData = (await getData(`${address}\\triodion\\EasterWeek\\00.json`));
     }
     if (prePostFeastData && "TheotokosDismissal" in prePostFeastData) TheotokosDismissal = prePostFeastData["TheotokosDismissal"];
     if (prePostFeastData && "specialDismissal" in prePostFeastData) specialDismissal = prePostFeastData["specialDismissal"];
@@ -949,6 +951,9 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
         if (Array.isArray(theotokion)) theotokion = theotokion[0];
     } else if (season === "Pentecost" && dayOfWeek > 0) {
         theotokion = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0.json`))["troparia"];
+    } else if (season === "Pentecost" && seasonWeek === 2) {
+        theotokion = dayTrop[dayTrop.length-1];
+        dayTrop.pop();
     } else {
         // we end up here if it is not a vigil
         let tropGlas  = parseInt(dayTrop[dayTrop.length - 1].match(/\d+/)[0], 10);
@@ -1034,7 +1039,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
     if ("forefeast" in dayData) prePostFeast = "forefeast";
     else if ("postfeast" in dayData) prePostFeast = "postfeast";
 
-    var useSunday = (dayOfWeek === 0 && dayData["class"] != 12 && !("label" in dayData && dayData["label"] === "24"));
+    var useSunday = (dayOfWeek === 0 && dayData["class"] != 12 && !("label" in dayData && dayData["label"] === "24") && season != "Pentecost");
     if (useSunday) {
         const versesMaterial = vespersData["prokimenon"][0];
         apostVerses = [
@@ -1042,6 +1047,24 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
             versesMaterial[4],
             versesMaterial[5]
         ]
+    } else if (season === "Pentecost" && seasonWeek >= 2 && dayOfWeek === 0) {
+        apostMain = await getData(`${address}\\triodion\\EasterWeek\\00_major.json`);
+        const apostOcto = (await getData(`${address}\\octoechos\\${glas}\\0_vespers.json`))["aposticha"][1];
+        const apostMen = vespersTriodionData["aposticha"];
+
+        apostVerses = apostMain["aposticha_verses"].concat(
+            [`<div class="rubric">Tone ${apostMen[0]}</div>${glory}`,
+            `<div class="rubric">Tone ${apostMain["aposticha"][0]}</div>${andNow}`]
+        );
+        apostVerses[0] = `<div class="rubric">Tone ${apostMain["aposticha"][0]}</div>${apostVerses[0]}`;
+
+        apostMain = (
+            [glas, apostOcto]
+            .concat(apostMain["aposticha"].slice(1, 5))
+            .concat(apostMen[2])
+            .concat(apostMain["aposticha"][5])
+        )
+        apostMain[apostMain.length - 1] += ` <FONT COLOR="RED">(1)</FONT>`
     } else if (season === "Pentecost" && !(seasonWeek === 1 && dayOfWeek === 0)) {
         apostVerses = vespersData["aposticha"];
         apostMain = vespersOctoechosData["aposticha"];
@@ -1116,7 +1139,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
         }
         aposticha += ` <FONT COLOR="RED">(3)</FONT><br><br>`
         if (vespersTriodionData && "aposticha_rubric" in vespersTriodionData) aposticha += `<div class="rubric">${vespersTriodionData["aposticha_rubric"]}</div>`
-    } else if (season === "Pentecost" && dayOfWeek > 0) {
+    } else if (season === "Pentecost" && !(seasonWeek===1 && dayOfWeek===0)) {
         aposticha += `
             <div class="rubric">Tone ${apostMain[0]}</div>
             `
@@ -1713,7 +1736,7 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
     var psalm140OctoechosStycheras;
 
     var forceNumSticheras;
-    if (season === "EasterWeek" && dayOfWeek === 0) {
+    if (season === "EasterWeek" && seasonWeek === 1 && dayOfWeek === 0) {
         // holy Sat
         forceNumSticheras = 8;
 
@@ -1749,6 +1772,14 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         else forceNumSticheras = 8;
         stycheraScheme = Array(numStycheras).fill(Math.floor(forceNumSticheras / numStycheras));
         for (let i=0; i < forceNumSticheras % numStycheras; i++) stycheraScheme[i] += 1;
+    } else if (season === "Pentecost" && seasonWeek === 2 && dayOfWeek === 0) {
+        // myrrh bearers kinda unique
+        stycheras = (
+            vespersOctoechosData["ps140"].slice(0, 5)
+            .concat(vespersTriodionData["ps140"])
+        );
+        numStycheras = 10;
+        stycheraScheme = Array(numStycheras).fill(1);
     } else if (season === "Pentecost" && dayOfWeek != 0) {
         if (dayOfWeek === 6) {
             vespersTriodionData = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0_vespers.json`))["ps140"];
