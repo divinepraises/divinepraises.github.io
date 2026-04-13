@@ -602,6 +602,7 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         }
 
         if (season === "Pentecost" && seasonWeek === 1) return `${glory}<br><br>${dayTriodionData["troparia"]}`;
+        if (season === "Pentecost" && seasonWeek === 2) return `${glory}<br><br>${dayTriodionData["troparia"][0]}`;
         else if (season === "Pentecost") return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTriodionData["troparia"]}`;
 
         if (hour === "1hour" && dayData["class"] < 8 && dayTriodionData === undefined
