@@ -807,7 +807,7 @@ export async function makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek
         // for pentecost - Dol 478
         const EasterData = await getData(`${address}\\triodion\\EasterWeek\\00_major.json`);
         finalTheotokion = EasterData["shine"];
-        gloryOrAnesti = EasterData["troparion"].join("");
+        gloryOrAnesti = EasterData["troparion"].join("* ");
     }
 
     if (priest === "1"){
@@ -828,7 +828,7 @@ export async function makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek
             res += `${vespersData["strengthen"]}<br><br>`
         }
         if (!isLenten || (dayOfWeek === 1 && isGreatVespers) || dayOfWeek === 6 || dayData["class"] >= 11 || "no_kathisma" in dayData) res += `${finalTheotokion}<br><br>`
-        res +=`${gloryOrAnesti} ${LHM} ${LHM} ${LHM} ${giveTheBlessing(priest)}<br><br>
+        res +=`${gloryOrAnesti}* ${LHM} ${LHM} ${LHM}* ${giveTheBlessing(priest)}<br><br>
         ${dismissalMajor(dayOfWeek, season, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal, crossDismissal)}
         `;
     }
