@@ -2486,7 +2486,7 @@ async function makePs103(great, isEasterWeek, priest) {
         var verses = EasterData["verses"];
         verses = verses.concat([glory, andNow]);
         for (let [i, verse] of verses.entries()) {
-            res += `${roles[0]} ${verse}<br><br> ${roles[1]} ${troparion.join("")} <FONT COLOR="RED">(1 or 3)</FONT> <br><br>`
+            res += `${roles[0]} ${verse}<br><br> ${roles[1]} ${troparion.join(" ")} <FONT COLOR="RED">(1 or 3)</FONT> <br><br>`
         }
         res += `${roles[0]} ${troparion[0]}<br><br>
                 ${roles[1]} ${troparion[1]}<br>`

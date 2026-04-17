@@ -123,7 +123,7 @@ async function complineEnding(full, season, seasonWeek, dayOfWeek, priest, glas,
     <div id="prayers"></div><br>
     <div id="penitential_troparia"></div>
 	<div class=subhead>Dismissal</div><br>
-	${endingBlockMinor(priest)}<br>
+	${await endingBlockMinor(priest, dayOfWeek, "", season === "Pentecost")}<br>
 	<div class=subhead>Prayers after dismissal</div><br>
 	<div id="after_prayers"></div><br>
 	`;

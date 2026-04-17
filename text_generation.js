@@ -180,9 +180,17 @@ function dismissalMinor(withPriest, dayOfWeek, specialDismissal) {
 	return replaceCapsWords(text, replacementDict);
 }
 
-export function endingBlockMinor(withPriest, dayOfWeek, specialDismissal){
-    return `${gloryAndNow}
-	        ${LHM} <FONT COLOR="RED">(3)</FONT> ${giveTheBlessing(withPriest)}<br><br>
+export async function endingBlockMinor(withPriest, dayOfWeek, specialDismissal, isPentecost=false) {
+    var gn;
+    if (isPentecost) {
+        const troparion =
+        gn = `${(await getData(`${address}\\triodion\\EasterWeek\\00_major.json`))["troparion"].join("* ")}`;
+    } else {
+        gn = `${glory}* ${andNow}`
+    }
+
+    return `${gn}*
+	        ${LHM} ${LHM} ${LHM}* ${giveTheBlessing(withPriest)}<br><br>
 	        ${dismissalMinor(withPriest, dayOfWeek, specialDismissal)}<br><br>
 	        <FONT COLOR="RED">Choir:</FONT> ${data.amen}<br>
 	        `

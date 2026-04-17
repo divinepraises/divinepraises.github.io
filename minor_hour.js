@@ -195,7 +195,7 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
         }
     }
 
-    document.getElementById("dismissal").innerHTML = endingBlockMinor(priest, dayOfWeek, specialDismissal);
+    document.getElementById("dismissal").innerHTML = await endingBlockMinor(priest, dayOfWeek, specialDismissal, season === "Pentecost" || season === "EasterWeek");
 
     if (season === "Lent" && seasonWeek === 4 && dayOfWeek > 0 && (dayOfWeek < 5 || dayOfWeek === 5 && hour != "9hour")) {
         // Dolnytstly p 410
@@ -927,7 +927,7 @@ export async function EasterHour(hour, priest, full, date) {
         <div class="rubric">${next}</div>
         <div class="rubric">${properTexts["ending_note"]}</div>
 		${properTexts["troparion"]} <FONT COLOR="RED">(3)</FONT><br><br>
-        ${endingBlockMinor(priest, 1, specialDismissal)}<br><br>
+        ${await endingBlockMinor(priest, 1, specialDismissal, false)}<br><br>
 		`
 
 }
