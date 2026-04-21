@@ -583,11 +583,10 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
             // st George: add a stichera to Lytia
             var prevSundayData = await getData(`${address}\\triodion\\Pentecost\\${seasonWeek-1}0_vespers.json`);
             if (seasonWeek === 1) {
-                lytiaData.concat([prevSundayData["lytia"][2], "n", prevSundayData["lytia"][5]])
+                // tone in an unusual place
+                lytiaData = lytiaData.concat([prevSundayData["lytia"][2], "n", prevSundayData["lytia"][5]]);
             } else {
-                // it should be from lytia but it's not used so not added
-                prevSundayData = prevSundayData["ps140"];
-                lytiaData = lytiaData.concat([prevSundayData[prevSundayData.length-2], "n", prevSundayData[prevSundayData.length-1]])
+                lytiaData = lytiaData.concat([prevSundayData["lytia"][0], "n", prevSundayData["lytia"][2]]);
             }
         }
         makeLytia(lytiaData, priest, vespersData, vigilVespersData, dayData, priestlyExclamationsData);
