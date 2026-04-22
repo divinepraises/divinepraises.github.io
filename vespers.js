@@ -974,6 +974,11 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
             dayTrop.splice(0, 0, troparia[0])
         }
         theotokion = troparia[1];
+    } else if (season === "Pentecost" && seasonWeek === 3 && dayOfWeek > 0 && dayOfWeek <= 2) {
+        // outside of mid-pentecost
+        dayTrop.splice(0, 0, (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][glas]);
+        let tropGlas = parseInt(dayTrop[dayTrop.length - 1].match(/\d+/)[0], 10);
+        theotokion = (await getData(`${address}\\octoechos\\${tropGlas}\\troparia_theotokia.json`))[0];
     } else {
         // we end up here if it is not a vigil
         let tropGlas  = parseInt(dayTrop[dayTrop.length - 1].match(/\d+/)[0], 10);
