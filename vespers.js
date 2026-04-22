@@ -960,7 +960,7 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
     } else if (prePostFeast === "postfeast") {
         theotokion = (await getData(`${address}\\menaion\\${dayData[prePostFeast]}.json`))["troparia"];
         if (Array.isArray(theotokion)) theotokion = theotokion[0];
-    } else if (season === "Pentecost" && dayOfWeek > 0 && seasonWeek != 2) {
+    } else if (season === "Pentecost" && seasonWeek === 1 && dayOfWeek > 0) {
         theotokion = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0.json`))["troparia"];
     } else if (season === "Pentecost" && seasonWeek === 2 && dayOfWeek === 0) {
         theotokion = dayTrop[dayTrop.length-1];

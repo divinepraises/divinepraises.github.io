@@ -528,7 +528,7 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
     } else if ("postfeast" in dayData) {
         prePostFeast = "postfeast";
         prePostFeastTroparion = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["troparia"];
-    } else if (season === "Pentecost" && dayOfWeek != 0) {
+    } else if (season === "Pentecost" && seasonWeek <= 2 && dayOfWeek != 0) {
         prePostFeast = "postfeast";
         dayTriodionData = undefined;
         if (seasonWeek === 2 && (hour === "3hour" || hour === "9hour")) {
@@ -609,7 +609,7 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
 
         if (season === "Pentecost" && seasonWeek === 1) return `${glory}<br><br>${dayTriodionData["troparia"]}`;
         if (season === "Pentecost" && seasonWeek === 2) return `${glory}<br><br>${dayTriodionData["troparia"][0]}`;
-        else if (season === "Pentecost") return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTriodionData["troparia"]}`;
+        else if (season === "Pentecost") return `${glory}<br><br>${sundayTrop["troparia"][glas]}`;
 
         if (hour === "1hour" && dayData["class"] < 8 && dayTriodionData === undefined
             || dayTriodionData != undefined && season === "Forelent"
