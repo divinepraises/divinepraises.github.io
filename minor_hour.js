@@ -30,7 +30,7 @@ export function renderHourSkeleton(hour, priest, full, date) {
 	<div id="note"></div>
 	<div class=rubric>Should this hour be said immediately after the previous one, omit this beginning:</div>
 	<hr>
-	<a id="beginning">
+	<div id="beginning"></div><br>
 	<hr>
 	<a id="come_let_us">${comeLetUs}<br><br></a>
 	<div id="psalms"></div><br>
@@ -66,7 +66,7 @@ export function renderHourSkeleton(hour, priest, full, date) {
 	`;
 }
 
-export async function enhanceMinorHour(hour, priest, full, date){
+export async function enhanceMinorHour(hour, priest, full, date) {
 	let [year, mm, dd, season, seasonWeek, glas, dayOfWeek, dateAddress] = getDayInfo(date, false);
 	if (season === "EasterWeek" && !(dayOfWeek === 6 && hour === "9hour")) {
 	    if (dayOfWeek === 6 && hour === "6hour") hour = "9hour"; // to not put "next hour is same" rubric
@@ -111,11 +111,8 @@ export async function enhanceMinorHour(hour, priest, full, date){
     ) {
         additionalElements = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}_${hour}.json`);
     }
+    const linkToNext = `https:\/\/divinepraises.github.io/main.html?hour=${nextHour[hour]}&priest=${priest}&full=${full}&date=${date}#come_let_us`;
 
-	loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas, dateAddress, specialDayData, dayTriodionData, additionalElements, isLenten);
-}
-
-async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas, date, specialDayData, dayTriodionData, additionalElements, isLenten) {
 	const hourData = await getData(`${address}\\horologion\\${hour}.json`);
 	let psalmNums;
 	if (additionalElements != undefined && "psalms" in additionalElements) psalmNums = additionalElements["psalms"]
@@ -124,14 +121,14 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
     var dayData;
 	try{
         var err = ""
-        dayData = await getData(`${address}\\menaion\\${date}.json`);
+        dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
     } catch (error) {
         console.log("No data for the day! Using the weekday troparia.")
         dayData = {"class": 0}
     }
-    if ("postfeast" in dayData && dayData["postfeast"]==="02//02" && cancelPostfeastHypapante(date.slice(4, 6), season, seasonWeek, dayOfWeek)) {
+    if ("postfeast" in dayData && dayData["postfeast"]==="02//02" && cancelPostfeastHypapante(dateAddress.slice(4, 6), season, seasonWeek, dayOfWeek)) {
         delete dayData["postfeast"];
-    } else if ("postfeast" in dayData && dayData["postfeast"]==="02//02"  && cancelPostfeastHypapante(Number(date.slice(4, 6))+1, season, seasonWeek+(dayOfWeek===6), (dayOfWeek+1)%7)) {
+    } else if ("postfeast" in dayData && dayData["postfeast"]==="02//02"  && cancelPostfeastHypapante(Number(dateAddress.slice(4, 6))+1, season, seasonWeek+(dayOfWeek===6), (dayOfWeek+1)%7)) {
         // leave-taking is moved to today
         dayData["troparia"] = []
         dayData["kontakia"] = (await getData(`${address}\\menaion\\02\\02.json`))["kontakia"];
@@ -205,7 +202,6 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
         }
     }
 
-    const linkToNext = `https:\/\/divinepraises.github.io/main.html?hour=${nextHour[hour]}&priest=${priest}&full=${full}&date=${date}#come_let_us`;
     document.getElementById("rubric_next").innerHTML = `
         <div class=rubric>
             When this hour is followed by another one, switch to the <a href="${linkToNext}">next hour</a>.
