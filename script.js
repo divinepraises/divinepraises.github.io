@@ -127,6 +127,7 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
                     || dayOfWeek === 6 && seasonWeek === 6
                 )
                 || season === "Pentecost" && dayOfWeek === 0
+                || season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3
             )
         ) {
             dayName = "";
