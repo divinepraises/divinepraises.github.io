@@ -1516,6 +1516,7 @@ export function frameReadings(readings) {
               height="500"
               style="border: none;">
             </iframe>
+            <br><br>
             `
         }
     } else if (instruction === "hide" && Array.isArray(readings)) {
@@ -1647,7 +1648,6 @@ function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData) {
         } else {
             text += frameReadings(moreReadings[i][1]);
         }
-        text += "<br><br>"
     }
     return text;
 }
