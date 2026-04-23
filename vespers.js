@@ -1818,14 +1818,15 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         numStycheras = 10;
         stycheraScheme = Array(numStycheras).fill(1);
     } else if (season === "Pentecost" && dayOfWeek != 0 && dayData["class"] >= 8) {
-        if (dayOfWeek === 6) {
+        const isLeaveTaking = (seasonWeek != 3 && dayOfWeek === 6 || seasonWeek === 3 && dayOfWeek === 2);
+        if (isLeaveTaking) {
             vespersTriodionData = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0_vespers.json`));
         }
         stycheras = (
             vespersTriodionData["ps140"].slice(0, 4)
             .concat(psalm140menaionStycheras)
         );
-        if (dayOfWeek != 6) {
+        if (!isLeaveTaking) {
             stycheras = stycheras.concat(vespersTriodionData["ps140"].slice(4, 7))
         }
         forceNumSticheras = 5; // for meanaion only
@@ -1835,7 +1836,8 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         forceNumSticheras += 3;
         stycheraScheme = Array(3).fill(1).concat(stycheraScheme);
     } else if (season === "Pentecost" && dayOfWeek != 0) {
-        if (dayOfWeek === 6) {
+        const isLeaveTaking = (seasonWeek != 3 && dayOfWeek === 6 || seasonWeek === 3 && dayOfWeek === 2);
+        if (isLeaveTaking) {
             vespersTriodionData = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0_vespers.json`))["ps140"];
             if (numStycheras === 3) {
                 stycheras = (
