@@ -932,21 +932,21 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
             dayTrop.splice(0, 0, (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][glas]);
         } else if (dayData["class"] < 12 && !("specialDismissal" in dayData)) {
             // vigil on Sunday that does not replace it
-            dayTrop.splice(0, 0, `${haire}<i><FONT COLOR="RED">(${3 - dayTrop.length})</FONT></i>`);
+            dayTrop.splice(0, 0, `${haire}<FONT COLOR="RED"> (${3 - dayTrop.length})</FONT>`);
             return dayTrop.join("<br><br>")
         } else {
             // st Basil. Dol. prescribes replacing festal troparion with Haire here because that's what menaion says
-            return dayTrop[0] + `<i><FONT COLOR="RED">(2)</FONT></i><br><br>${haire}`;
+            return dayTrop[0] + `<FONT COLOR="RED"> (2)</FONT><br><br>${haire}`;
         }
     } else if (dayData["class"] === 10){
         // vigil of a saint not on Sunday
-        if (dayTrop.length === 1) return dayTrop[0] + `<i><FONT COLOR="RED">(2)</FONT></i><br><br>${haire}`
-        else if ("specialDismissal" in dayData) return dayTrop[0] + `<i><FONT COLOR="RED">(2)</FONT></i><br><br>${dayTrop[1]}`;
+        if (dayTrop.length === 1) return dayTrop[0] + `<FONT COLOR="RED"> (2)</FONT><br><br>${haire}`
+        else if ("specialDismissal" in dayData) return dayTrop[0] + `<FONT COLOR="RED"> (2)</FONT><br><br>${dayTrop[1]}`;
         dayTrop.push(haire);
         return dayTrop.join("<br><br>")
     } else if (dayData["class"] > 10) {
         // higher vigil
-        return dayTrop[0] + `<i><FONT COLOR="RED">(3)</FONT></i><br><br>`
+        return dayTrop[0] + `<FONT COLOR="RED"> (3)</FONT><br><br>`
     }
 
     var theotokion;
@@ -1089,7 +1089,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
             .concat(apostMen[2])
             .concat(apostMain["aposticha"][5])
         )
-        apostMain[apostMain.length - 1] += ` <FONT COLOR="RED">(1)</FONT>`
+        apostMain[apostMain.length - 1] += `<FONT COLOR="RED"> (1)</FONT>`
     } else if (season === "Pentecost" && dayOfWeek > 0 && dayData["class"] >= 8) {
         // feast on weekday of Pentecost
         if (dayOfWeek === 6) {
