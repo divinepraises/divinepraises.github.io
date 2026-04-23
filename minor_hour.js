@@ -18,11 +18,60 @@ const nextHour = {
     "9hour": "vespers"
 }
 
-export async function minorHour(hour, priest, full, date){
+export function renderHourSkeleton(hour, priest, full, date) {
+    let [year, mm, dd, season, seasonWeek, glas, dayOfWeek, dateAddress] = getDayInfo(date, false);
+	if (season === "EasterWeek" && !(dayOfWeek === 6 && hour === "9hour")) {
+	    if (dayOfWeek === 6 && hour === "6hour") hour = "9hour"; // to not put "next hour is same" rubric
+	    return `<div id="EasterHour"></div>`
+	}
+
+    return `<div id="header"></div>
+    <h2>The ${numeral[hour.charAt(0)]} hour</h2>
+	<div id="note"></div>
+	<div class=rubric>Should this hour be said immediately after the previous one, omit this beginning:</div>
+	<hr>
+	<a id="beginning">
+	<hr>
+	<a id="come_let_us">${comeLetUs}<br><br></a>
+	<div id="psalms"></div><br>
+	${tripleAlleluia}<br>
+	${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
+	<div class="subhead">Troparia</div><br>
+	<div id="troparia"></div><br>
+	${andNow}<br><br>
+	<div id="theotokion"></div><br>
+	<div id="additionalElementsSelector"></div>
+	<div id="additional_elements"></div>
+	<div id="chapter"></div><br>
+	<div class="subhead">Trisagion</div><br>
+	${trisagionToPater(priest)}
+	<div id="kontakia_header"></div><br>
+	<div id="kontakia"></div><br>
+	${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
+	<div class="subhead">Prayer of the hours</div><br>
+	${prayerOfTheHours}<br><br>
+	${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
+	${gloryAndNow}<br><br>
+	${moreHonorable}<br><br>
+	${inTheName}<br><br>
+	${prayerBlessingMayGodBeGracious(priest, hour)}<br><br>
+	${amen}<br><br>
+    <div id="st_ephrem"></div>
+	<div class="subhead">Prayer of this hour</div><br>
+	<div id="prayer"></div><br>
+	<div id="rubric_next"></div><br>
+	<hr>
+	<div id="dismissal"></div>
+	<div id="after_hour_elements"></div>
+	`;
+}
+
+export async function enhanceMinorHour(hour, priest, full, date){
 	let [year, mm, dd, season, seasonWeek, glas, dayOfWeek, dateAddress] = getDayInfo(date, false);
 	if (season === "EasterWeek" && !(dayOfWeek === 6 && hour === "9hour")) {
 	    if (dayOfWeek === 6 && hour === "6hour") hour = "9hour"; // to not put "next hour is same" rubric
-	    return await EasterHour(hour, priest, full, date);
+	    document.getElementById("EasterHour").innerHTML = await EasterHour(hour, priest, full, date);
+	    return;
 	}
 
 	var numOhHour = hour.charAt(0);
@@ -63,47 +112,7 @@ export async function minorHour(hour, priest, full, date){
         additionalElements = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}_${hour}.json`);
     }
 
-	const linkToNext = `https:\/\/divinepraises.github.io/main.html?hour=${nextHour[hour]}&priest=${priest}&full=${full}&date=${date}#come_let_us`;
-
 	loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas, dateAddress, specialDayData, dayTriodionData, additionalElements, isLenten);
-	return `<h2>The ${numeral[numOhHour]} hour</h2>
-	<div id="note"></div>
-	<div class=rubric>Should this hour be said immediately after the previous one, omit this beginning:</div>
-	<hr>
-	${await usualBeginning(priest, season)}
-	<hr>
-	<a id="come_let_us">${comeLetUs}<br><br></a>
-	<div id="psalms"></div><br>
-	${tripleAlleluia}<br>
-	${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
-	<div class="subhead">Troparia</div><br>
-	<div id="troparia"></div><br>
-	${andNow}<br><br>
-	<div id="theotokion"></div><br>
-	<div id="additionalElementsSelector"></div>
-	<div id="additional_elements"></div>
-	<div id="chapter"></div><br>
-	<div class="subhead">Trisagion</div><br>
-	${trisagionToPater(priest)}
-	<div id="kontakia_header"></div><br>
-	<div id="kontakia"></div><br>
-	${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
-	<div class="subhead">Prayer of the hours</div><br>
-	${prayerOfTheHours}<br><br>
-	${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
-	${gloryAndNow}<br><br>
-	${moreHonorable}<br><br>
-	${inTheName}<br><br>
-	${prayerBlessingMayGodBeGracious(priest, hour)}<br><br>
-	${amen}<br><br>
-    <div id="st_ephrem"></div>
-	<div class="subhead">Prayer of this hour</div><br>
-	<div id="prayer"></div><br>
-	<div class=rubric>When this hour is followed by another one, switch to the <a href="${linkToNext}">next hour</a>. Otherwise, conclude with the dismissal:</div>
-	<hr>
-	<div id="dismissal"></div>
-	<div id="after_hour_elements"></div>
-	`;
 }
 
 async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas, date, specialDayData, dayTriodionData, additionalElements, isLenten) {
@@ -131,9 +140,10 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
     if (additionalElements && "troparion" in additionalElements && dayTriodionData) dayTriodionData["troparia"] = additionalElements["troparion"];
     if (additionalElements && "note" in additionalElements) document.getElementById("note").innerHTML = additionalElements["note"];
 
+    document.getElementById("beginning").innerHTML = await usualBeginning(priest, season);
+
     if (full === "1") {
         document.getElementById("psalms").innerHTML = (await readPsalmsFromNumbers(psalmNums)).join("");
-
     } else if (full === "0") {
         var i = dayOfWeek%4 - (dayOfWeek < 4)
         if (dayOfWeek === 0){
@@ -194,6 +204,13 @@ async function loadText(hour, full, priest, season, seasonWeek, dayOfWeek, glas,
             specialDismissal = (await getData(`${address}\\triodion\\EasterWeek\\00.json`))["specialDismissal"];
         }
     }
+
+    const linkToNext = `https:\/\/divinepraises.github.io/main.html?hour=${nextHour[hour]}&priest=${priest}&full=${full}&date=${date}#come_let_us`;
+    document.getElementById("rubric_next").innerHTML = `
+        <div class=rubric>
+            When this hour is followed by another one, switch to the <a href="${linkToNext}">next hour</a>.
+            Otherwise, conclude with the dismissal:
+        </div>`;
 
     document.getElementById("dismissal").innerHTML = await endingBlockMinor(priest, dayOfWeek, specialDismissal, season === "Pentecost" || season === "EasterWeek");
 
