@@ -30,7 +30,7 @@ export function renderHourSkeleton(hour, priest, full, date) {
 	<div id="note"></div>
 	<div class=rubric>Should this hour be said immediately after the previous one, omit this beginning:</div>
 	<hr>
-	<div id="beginning"></div><br>
+	<div id="beginning"></div>
 	<hr>
 	<a id="come_let_us">${comeLetUs}<br><br></a>
 	<div id="psalms"></div><br>
