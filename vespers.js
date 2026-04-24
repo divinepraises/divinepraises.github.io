@@ -1131,7 +1131,12 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
             apostMain = [apostMain[0], apostSun["aposticha"][1], apostMain[1], apostMain[3]].concat(vespersTriodionData["aposticha"][2])
             apostVerses = apostVerses.concat(`<div class="rubric">Tone ${vespersTriodionData["aposticha"][0]}</div>${gloryAndNow}`)
         } else if (dayOfWeek === 5) {
-            apostMain = [apostMain[0], apostMain[2], apostSun["ps140"][1], apostMain[3]].concat(vespersTriodionData["aposticha"][2])
+            if (seasonWeek === 3) {
+                const apostAdd = (await getData(`${address}\\octoechos\\${glas}\\3_vespers.json`))["aposticha"];
+                apostMain = [apostMain[0], apostAdd[2], apostSun["ps140"][1], apostMain[3]].concat(vespersTriodionData["aposticha"][2])
+            } else {
+                apostMain = [apostMain[0], apostMain[2], apostSun["ps140"][1], apostMain[3]].concat(vespersTriodionData["aposticha"][2])
+            }
             apostVerses = apostVerses.concat(`<div class="rubric">Tone ${vespersTriodionData["aposticha"][0]}</div>${gloryAndNow}`)
         } else if (dayOfWeek === 6) {
             const versesMaterial = vespersData["prokimenon"][0];
