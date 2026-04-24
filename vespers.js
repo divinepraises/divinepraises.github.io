@@ -301,6 +301,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
                 season === "HolyWeek"
                 || (season === "EasterWeek" && (dayOfWeek === 0 || dayData["class"] < 8))
                 || season === "Pentecost" && seasonWeek === 1 && dayOfWeek === 0
+                || season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3
             ) {
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
@@ -810,24 +811,26 @@ export async function makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek
         gloryOrAnesti = EasterData["troparion"].join("* ");
     }
 
+    const greatDismissal = (dayOfWeek === 6 || "no_kathisma" in dayData || isGreatVespers || dayData["class"] > 6 || isEasterWeek && (!isLenten || dayOfWeek === 1 || dayData["class"] >= 11));
+    const addFinalTheotokion = !isLenten || (dayOfWeek === 1 && isGreatVespers) || dayOfWeek === 6 || dayData["class"] >= 11 || "no_kathisma" in dayData;
     if (priest === "1"){
-        if (dayOfWeek === 6 || "no_kathisma" in dayData || isGreatVespers || isEasterWeek && (!isLenten || dayOfWeek === 1 || dayData["class"] >= 11)) res += `
+        if (greatDismissal) res += `
             ${priestlyExclamationsData["wisdom"]}<br><br>
             ${giveTheBlessing(priest)}<br><br>
             ${priestlyExclamationsData["blessing"]}<br><br>
             ${amen} ${vespersData["strengthen"]}<br><br>
             ${priestlyExclamationsData["theotokos"]}<br><br>
             `;
-        if (!isLenten || (dayOfWeek === 1 && isGreatVespers) || dayOfWeek === 6 || dayData["class"] >= 11 || "no_kathisma" in dayData) res += `${finalTheotokion}<br><br>`
+        if (addFinalTheotokion) res += `${finalTheotokion}<br><br>`
         res += `${priestlyExclamationsData["Christ"]}<br><br>
-            ${gloryOrAnesti} ${LHM} ${LHM} ${LHM} ${giveTheBlessing(priest)}<br><br>
+            ${gloryOrAnesti}* ${LHM} ${LHM} ${LHM}* ${giveTheBlessing(priest)}<br><br>
             ${dismissalMajor(dayOfWeek, season, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal, crossDismissal)}
             `;
     } else {
-        if (dayOfWeek === 6 || dayOfWeek === 0 || "no_kathisma" in dayData || isGreatVespers || isEasterWeek && (!isLenten || dayOfWeek === 1 || dayData["class"] >= 11)) {
+        if (greatDismissal) {
             res += `${vespersData["strengthen"]}<br><br>`
         }
-        if (!isLenten || (dayOfWeek === 1 && isGreatVespers) || dayOfWeek === 6 || dayData["class"] >= 11 || "no_kathisma" in dayData) res += `${finalTheotokion}<br><br>`
+        if (addFinalTheotokion) res += `${finalTheotokion}<br><br>`
         res +=`${gloryOrAnesti}* ${LHM} ${LHM} ${LHM}* ${giveTheBlessing(priest)}<br><br>
         ${dismissalMajor(dayOfWeek, season, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal, crossDismissal)}
         `;
