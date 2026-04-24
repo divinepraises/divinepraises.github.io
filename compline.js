@@ -128,7 +128,7 @@ async function complineEnding(full, season, seasonWeek, dayOfWeek, priest, glas,
     <div id="prayers"></div><br>
     <div id="penitential_troparia"></div>
 	<div class=subhead>Dismissal</div><br>
-	${await endingBlockMinor(priest, dayOfWeek, "", season === "Pentecost")}<br>
+    <div id="endingBlock"></div>
 	<div class=subhead>Prayers after dismissal</div><br>
 	<div id="after_prayers"></div><br>
 	`;
@@ -177,6 +177,8 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
             document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest, false, dayData["class"] >= 8);
         } else document.getElementById("st_ephrem").innerHTML = "";
     }
+
+	document.getElementById("endingBlock").innerHTML = `${await endingBlockMinor(priest, dayOfWeek, "", season === "Pentecost")}<br>`;
 }
 
 async function smallComplineBeginning(full, season, dayOfWeek, priest, isAlleluiaDay, glas, dayData, dateAddress) {
@@ -242,11 +244,11 @@ async function loadSmallComplineBeginning(smallComplineData, full, season, dayOf
 async function greatComplineBeginning(full, season, seasonWeek, priest, dayOfWeek, dayData, isIncarnationFeast) {
 	const smallComplineData = await getData(`${address}\\horologion\\small_compline.json`);
 
-    loadGreatComplineBeginning(smallComplineData, full, season, seasonWeek, dayOfWeek, dayData, isIncarnationFeast);
+    loadGreatComplineBeginning(priest, smallComplineData, full, season, seasonWeek, dayOfWeek, dayData, isIncarnationFeast);
     var festal = "";
     if (isIncarnationFeast) festal = "Festive"
 	document.getElementById("beginning").innerHTML =  `<h2>${festal} Great Compline</h2>
-	${await usualBeginning(priest, season)}<br><br>
+	<div id="usualBeginning"></div>
 	${comeLetUs}<br><br>
 	<div id="1_week_of_Lent_intro"></div>
 	<div id="psalms_1"></div><br>
@@ -290,8 +292,10 @@ async function greatComplineBeginning(full, season, seasonWeek, priest, dayOfWee
 	`;
 }
 
-async function loadGreatComplineBeginning(smallComplineData, full, season, seasonWeek, dayOfWeek, dayData, isIncarnationFeast) {
+async function loadGreatComplineBeginning(priest, smallComplineData, full, season, seasonWeek, dayOfWeek, dayData, isIncarnationFeast) {
     const greatComplineData = await getData(`${address}\\horologion\\great_compline.json`);
+
+	document.getElementById("usualBeginning").innerHTML = `${await usualBeginning(priest, season)}<br><br>`
 
     const alleluiaUnit = `<br><br>${tripleAlleluia} ${LHM} <FONT COLOR="RED">(3)</FONT><br>${gloryAndNow}`
     if (season === "Lent" && seasonWeek === 1 && dayOfWeek >= 2 && dayOfWeek <= 5) {
