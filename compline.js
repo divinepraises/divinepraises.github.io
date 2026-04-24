@@ -71,9 +71,14 @@ export async function enhanceCompline(priest, full, date){
         } catch {}
         if (!dayTriodionData && season === "Pentecost") {
             try {
-                // generally take kontakion from the previous Sunday
-                dayTriodionData = await getData(`${address}\\triodion\\${season}\\${weekToLookAt}0.json`)
-                dayTriodionData["class"] = 4;
+                if (seasonWeek === 3 && dayOfWeek >= 3 || seasonWeek === 4 && dayOfWeek <= 3) {
+                    // mid-Pentecost
+                    dayTriodionData = await getData(`${address}\\triodion\\${season}\\23.json`)
+                } else {
+                    // generally take kontakion from the previous Sunday
+                    dayTriodionData = await getData(`${address}\\triodion\\${season}\\${weekToLookAt}0.json`)
+                }
+                dayTriodionData["class"] = dayTriodionData["class"] ?? 4;
             } catch {}
         }
     }

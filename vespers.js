@@ -986,6 +986,8 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
     } else if (season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3) {
         theotokion = dayTrop[0];
         dayTrop = [];
+    } else if (season === "Pentecost" && seasonWeek === 3 && dayOfWeek > 3) {
+        theotokion = (await getData(`${address}\\triodion\\${season}\\23.json`))["troparia"];
     } else {
         // we end up here if it is not a vigil
         let tropGlas  = parseInt(dayTrop[dayTrop.length - 1].match(/\d+/)[0], 10);
@@ -1841,6 +1843,7 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         );
         if (!isLeaveTaking) {
             stycheras = stycheras.concat(vespersTriodionData["ps140"].slice(4, 7))
+            stycheras.splice(stycheras.length-3, 1, "n"); // replace gn by g
         }
         forceNumSticheras = 5; // for meanaion only
         stycheraScheme =  Array(numStycheras).fill(Math.floor(forceNumSticheras / numStycheras));
