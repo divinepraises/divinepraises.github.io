@@ -1140,7 +1140,9 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
             apostVerses = apostVerses.concat(`<div class="rubric">Tone ${vespersTriodionData["aposticha"][0]}</div>${gloryAndNow}`)
         } else if (dayOfWeek === 6) {
             const versesMaterial = vespersData["prokimenon"][0];
-            const vespersTriodionGN = (await getData(`${address}\\triodion\\Pentecost\\${seasonWeek-1}0_vespers.json`))["aposticha"];
+            var vespersTriodionGN;
+            if (vespersTriodionData) vespersTriodionGN = vespersTriodionData["aposticha"];
+            else vespersTriodionGN = (await getData(`${address}\\triodion\\Pentecost\\${seasonWeek-1}0_vespers.json`))["aposticha"];
             apostVerses = [
                 `${versesMaterial[1]} ${versesMaterial[2]} ${versesMaterial[3]}`,
                 versesMaterial[4],
@@ -1883,6 +1885,7 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
                 stycheras = psalm140menaionStycheras.slice(0, 8);
             }
             if (stycheras[stycheras.length - 3] === "g" || stycheras[stycheras.length - 4] === "g") stycheras = stycheras.concat("n")
+            else if (vespersTriodionData["ps140"][4] === "g") stycheras = stycheras.concat("g") // Fri after mid
             else stycheras = stycheras.concat("gn")
             stycheras = stycheras.concat(vespersTriodionData["ps140"].slice(5, 7))
         }
