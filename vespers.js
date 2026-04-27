@@ -986,7 +986,7 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
     } else if (season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3) {
         theotokion = dayTrop[0];
         dayTrop = [];
-    } else if (season === "Pentecost" && seasonWeek === 3 && dayOfWeek > 3) {
+    } else if (season === "Pentecost" && (seasonWeek === 3 && dayOfWeek > 3 || seasonWeek === 4 && dayOfWeek <= 3)) {
         theotokion = (await getData(`${address}\\triodion\\${season}\\23.json`))["troparia"];
     } else {
         // we end up here if it is not a vigil
@@ -1835,6 +1835,16 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         // myrrh bearers kinda unique
         stycheras = (
             vespersOctoechosData["ps140"].slice(0, 5)
+            .concat(vespersTriodionData["ps140"])
+        );
+        numStycheras = 10;
+        stycheraScheme = Array(numStycheras).fill(1);
+    } else if (season === "Pentecost" && seasonWeek === 4 && dayOfWeek === 0) {
+        // samaritan is within mid-Pentecost
+        const prePostFeastData = (await getData(`${address}\\triodion\\${season}\\23_vespers.json`));
+        stycheras = (
+            vespersOctoechosData["ps140"].slice(0, 5)
+            .concat(prePostFeastData["ps140"].slice(0, 4))
             .concat(vespersTriodionData["ps140"])
         );
         numStycheras = 10;
