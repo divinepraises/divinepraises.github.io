@@ -978,7 +978,7 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
             dayTrop.splice(0, 0, troparia[0])
         }
         theotokion = troparia[1];
-    } else if (season === "Pentecost" && seasonWeek === 3 && dayOfWeek > 0 && dayOfWeek <= 2) {
+    } else if (season === "Pentecost" && (seasonWeek === 3 && dayOfWeek > 0 && dayOfWeek <= 2 || seasonWeek === 4 && dayOfWeek > 3)) {
         // outside of mid-pentecost
         dayTrop.splice(0, 0, (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][glas]);
         let tropGlas = parseInt(dayTrop[dayTrop.length - 1].match(/\d+/)[0], 10);
@@ -1146,14 +1146,17 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
             apostMain = [apostMain[0], apostMain[1], apostSun["ps140"][dayOfWeek], apostMain[3]].concat(vespersTriodionData["aposticha"][2])
             apostVerses = apostVerses.concat(`<div class="rubric">Tone ${vespersTriodionData["aposticha"][0]}</div>${gloryAndNow}`)
         } else if (dayOfWeek === 4) {
-            apostMain = [apostMain[0], apostSun["aposticha"][1], apostMain[1], apostMain[3]].concat(vespersTriodionData["aposticha"][2])
+            if (seasonWeek != 4) apostMain = [apostMain[0], apostSun["aposticha"][1], apostMain[1], apostMain[3]].concat(vespersTriodionData["aposticha"][2])
+            if (seasonWeek === 4) { // mid-pentecost week shifts things from Wed
+                apostMain = [apostMain[0], apostSun["ps140"][3], apostMain[1], (await getData(`${address}\\octoechos\\${glas}\\3_vespers.json`))["aposticha"][3]].concat(vespersTriodionData["aposticha"][2])
+            }
             apostVerses = apostVerses.concat(`<div class="rubric">Tone ${vespersTriodionData["aposticha"][0]}</div>${gloryAndNow}`)
         } else if (dayOfWeek === 5) {
             if (seasonWeek === 3) {
                 const apostAdd = (await getData(`${address}\\octoechos\\${glas}\\3_vespers.json`))["aposticha"];
                 apostMain = [apostMain[0], apostAdd[2], apostSun["ps140"][1], apostMain[3]].concat(vespersTriodionData["aposticha"][2])
-            } else {
-                apostMain = [apostMain[0], apostMain[2], apostSun["ps140"][1], apostMain[3]].concat(vespersTriodionData["aposticha"][2])
+            } else if (seasonWeek === 4) {
+                apostMain = [apostMain[0], apostMain[2], apostSun["aposticha"][1], (await getData(`${address}\\octoechos\\${glas}\\4_vespers.json`))["aposticha"][3]].concat(vespersTriodionData["aposticha"][2])
             }
             apostVerses = apostVerses.concat(`<div class="rubric">Tone ${vespersTriodionData["aposticha"][0]}</div>${gloryAndNow}`)
         } else if (dayOfWeek === 6) {
@@ -1880,18 +1883,21 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         stycheraScheme = Array(6).fill(1).concat([2, 1, 1]);
     } else if (season === "Pentecost" && dayOfWeek != 0 && dayData["class"] >= 8) {
         const isLeaveTaking = (seasonWeek != 3 && dayOfWeek === 6 || seasonWeek === 3 && dayOfWeek === 2);
+        var lastidx = 4; // how many triodion elements to take in
         if (isLeaveTaking) {
             vespersTriodionData = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0_vespers.json`));
         }
+        if (isLeaveTaking && seasonWeek === 4) lastidx += 1; // 2 tones
         stycheras = (
-            vespersTriodionData["ps140"].slice(0, 4)
+            vespersTriodionData["ps140"].slice(0, lastidx)
             .concat(psalm140menaionStycheras)
         );
         if (!isLeaveTaking) {
             stycheras = stycheras.concat(vespersTriodionData["ps140"].slice(4, 7))
             stycheras.splice(stycheras.length-3, 1, "n"); // replace gn by g
         }
-        forceNumSticheras = 5; // for meanaion only
+        if (numStycheras === 6 && numSetsMenaionStycheras === 2) forceNumSticheras = 7;
+        else forceNumSticheras = 5; // for meanaion only
         stycheraScheme =  Array(numStycheras).fill(Math.floor(forceNumSticheras / numStycheras));
         for (let i=0; i < forceNumSticheras % numStycheras; i++) stycheraScheme[i] += 1;
         numStycheras += 3;
@@ -1909,9 +1915,11 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         const isLeaveTaking = (seasonWeek != 3 && dayOfWeek === 6 || seasonWeek === 3 && dayOfWeek === 2);
         if (isLeaveTaking) {
             vespersTriodionData = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0_vespers.json`))["ps140"];
+            var lastidx = 4;
+            if (seasonWeek === 4) lastidx += 1; // 2 tones
             if (numStycheras === 3) {
                 stycheras = (
-                    vespersTriodionData.slice(0, 4)
+                    vespersTriodionData.slice(0, lastidx)
                     .concat(psalm140menaionStycheras.slice(0, 4))
                 )
             } else if (numStycheras === 6) {
