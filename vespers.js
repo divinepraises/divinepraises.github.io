@@ -984,10 +984,13 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
         let tropGlas = parseInt(dayTrop[dayTrop.length - 1].match(/\d+/)[0], 10);
         theotokion = (await getData(`${address}\\octoechos\\${tropGlas}\\troparia_theotokia.json`))[0];
     } else if (season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3) {
+        // mid-pentecost
         theotokion = dayTrop[0];
         dayTrop = [];
     } else if (season === "Pentecost" && (seasonWeek === 3 && dayOfWeek > 3 || seasonWeek === 4 && dayOfWeek <= 3)) {
+        // mid-pentecost post-feast
         theotokion = (await getData(`${address}\\triodion\\${season}\\23.json`))["troparia"];
+        if (dayOfWeek === 3) dayTrop = [];
     } else {
         // we end up here if it is not a vigil
         let tropGlas  = parseInt(dayTrop[dayTrop.length - 1].match(/\d+/)[0], 10);
@@ -1124,8 +1127,9 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
             `<div class="rubric">Tone ${vespersTriodionData["aposticha"][0]}</div>${andNow}`]
         );
         apostMain.splice(4, 2); // rm glory and tone
-    } else if (season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3) {
-        // mi-pentecost
+    } else if (season === "Pentecost" && (seasonWeek === 3 && dayOfWeek === 3 || seasonWeek === 4 && dayOfWeek === 3)) {
+        // mi-pentecost or Leave-taking
+        if (seasonWeek === 4) vespersTriodionData = (await getData(`${address}\\triodion\\Pentecost\\23_vespers.json`));
         apostMain = vespersTriodionData["aposticha"];
         apostVerses = vespersTriodionData["aposticha_verses"].concat(
             `<div class="rubric">Tone ${vespersTriodionData["aposticha"][4]}</div>${gloryAndNow}`
@@ -1893,8 +1897,12 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         numStycheras += 3;
         forceNumSticheras += 3;
         stycheraScheme = Array(3).fill(1).concat(stycheraScheme);
-    } else if (season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3) {
-        stycheras = vespersTriodionData["ps140"];
+    } else if (season === "Pentecost" && (seasonWeek === 3 && dayOfWeek === 3 || seasonWeek === 4 && dayOfWeek === 3)) {
+        // mid-Pentecost or leave-taking
+        if (seasonWeek === 3) stycheras = vespersTriodionData["ps140"];
+        else {
+            stycheras = (await getData(`${address}\\triodion\\${season}\\23_vespers.json`))["ps140"];
+        }
         numStycheras = 3;
         stycheraScheme = Array(3).fill(2);
     } else if (season === "Pentecost" && dayOfWeek != 0) {
