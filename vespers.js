@@ -1863,14 +1863,17 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
                 .concat(vespersTriodionData["ps140"])
             );
         } else {
+            // Dol prescribes to double Triodion stichera instaead of using Sunday.
+            // Menaion (May 8) says to use Sunday + triodion. This is the way here.
             stycheras = (
-                vespersTriodionData["ps140"].slice(0, 5)  // 5 because there is extra tone
+                vespersOctoechosData["ps140"].slice(0, 4)
+                .concat(vespersTriodionData["ps140"].slice(0, 5))  // 5 because there is extra tone
                 .concat(vespersMenaionData["ps140"].slice(0, 4))
-                .concat(vespersTriodionData["ps140"].slice(6, 10))
+                .concat(vespersTriodionData["ps140"].slice(5, 8))
             );
         }
-        numStycheras = 6;
-        stycheraScheme = Array(3).fill(2).concat([2, 1, 1]);
+        numStycheras = 3+3+3;
+        stycheraScheme = Array(6).fill(1).concat([2, 1, 1]);
     } else if (season === "Pentecost" && dayOfWeek != 0 && dayData["class"] >= 8) {
         const isLeaveTaking = (seasonWeek != 3 && dayOfWeek === 6 || seasonWeek === 3 && dayOfWeek === 2);
         if (isLeaveTaking) {
