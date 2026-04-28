@@ -69,6 +69,12 @@ export async function enhanceCompline(priest, full, date){
         try {
             dayTriodionData = await getData(`${address}\\triodion\\${season}\\${weekToLookAt}${dayOfWeek}.json`)
         } catch {}
+        if (season === "Pentecost" && seasonWeek === 4 && dayOfWeek === 0) {
+            dayTriodionData["kontakia"] = [
+                dayTriodionData["kontakia"],
+                (await getData(`${address}\\triodion\\${season}\\23.json`))["kontakia"]
+                ]
+        }
         if (!dayTriodionData && season === "Pentecost") {
             try {
                 if (seasonWeek === 3 && dayOfWeek >= 3 || seasonWeek === 4 && dayOfWeek <= 3) {
@@ -763,9 +769,12 @@ async function selectTropar(dayOfWeek, hourData, glas, dayData, specialDayData, 
         if (kontakion != "") {
             return `<div class="rubric">Kontakia:</div>
                 ${kontakion}<br><br><i>${gloryAndNow}</i><br><br>${dayTriodionData["kontakia"]}`
-        } else {
+        } else if (!Array.isArray(dayTriodionData["kontakia"]) || dayTriodionData["kontakia"].length === 1) {
             return `<div class="rubric">Triodion kontakion:</div>
                 ${dayTriodionData["kontakia"]}`
+        } else {
+            return `<div class="rubric">Triodion kontakia:</div>
+                ${dayTriodionData["kontakia"][0]}<br><br><i>${gloryAndNow}</i><br><br>${dayTriodionData["kontakia"][1]}`
         }
 
     }
