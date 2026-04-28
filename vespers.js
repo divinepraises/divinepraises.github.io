@@ -1906,7 +1906,9 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
             } else if (numStycheras === 6) {
                 stycheras = psalm140menaionStycheras.slice(0, 8);
             }
-            stycheras = stycheras.concat("g").concat(vespersTriodionData.slice(vespersTriodionData.length-2, vespersTriodionData.length));
+            if (dayOfWeek === 6) stycheras = stycheras.concat("g");
+            else stycheras = stycheras.concat("gn");
+            stycheras = stycheras.concat(vespersTriodionData.slice(vespersTriodionData.length-2, vespersTriodionData.length));
         } else {
             if (numStycheras === 3) {
                 stycheras = (
