@@ -987,7 +987,7 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
         // mid-pentecost
         theotokion = dayTrop[0];
         dayTrop = [];
-    } else if (season === "Pentecost" && (seasonWeek === 3 && dayOfWeek > 3 || seasonWeek === 4 && dayOfWeek <= 3)) {
+    } else if (season === "Pentecost" && (seasonWeek === 3 && dayOfWeek > 3 || seasonWeek === 4 && dayOfWeek <= 3) && !(dayOfWeek === 0 && dayData["class"]>=8)) {
         // mid-pentecost post-feast
         theotokion = (await getData(`${address}\\triodion\\${season}\\23.json`))["troparia"];
         if (dayOfWeek === 3) dayTrop = [];
