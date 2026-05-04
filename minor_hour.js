@@ -138,7 +138,7 @@ export async function enhanceMinorHour(hour, priest, full, date) {
     if (additionalElements && "note" in additionalElements) document.getElementById("note").innerHTML = additionalElements["note"];
     if ("hours note" in dayTriodionData) document.getElementById("note").innerHTML += `<div class="rubric"> ${dayTriodionData["hours note"]}</div><br>`;
 
-    document.getElementById("beginning").innerHTML = await usualBeginning(priest, season);
+    document.getElementById("beginning").innerHTML = await usualBeginning(priest, season, seasonWeek, dayOfWeek);
 
     if (full === "1") {
         document.getElementById("psalms").innerHTML = (await readPsalmsFromNumbers(psalmNums)).join("");
@@ -195,7 +195,8 @@ export async function enhanceMinorHour(hour, priest, full, date) {
     if (dayTriodionData && "specialDismissal" in dayTriodionData) specialDismissal = dayTriodionData["specialDismissal"];
     else if (dayData && "specialDismissal" in dayData) specialDismissal = dayData["specialDismissal"];
 
-    if (specialDismissal === "" && season === "Pentecost") {
+    const isPentecost = (season === "Pentecost" && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4));
+    if (specialDismissal === "" && isPentecost) {
         if (seasonWeek === 1) {
             specialDismissal = (await getData(`${address}\\triodion\\${season}\\00.json`))["specialDismissal"];
         } else {
@@ -209,7 +210,7 @@ export async function enhanceMinorHour(hour, priest, full, date) {
             Otherwise, conclude with the dismissal:
         </div>`;
 
-    document.getElementById("dismissal").innerHTML = await endingBlockMinor(priest, dayOfWeek, specialDismissal, season === "Pentecost" || season === "EasterWeek");
+    document.getElementById("dismissal").innerHTML = await endingBlockMinor(priest, dayOfWeek, specialDismissal, isPentecost || season === "EasterWeek");
 
     if (season === "Lent" && seasonWeek === 4 && dayOfWeek > 0 && (dayOfWeek < 5 || dayOfWeek === 5 && hour != "9hour")) {
         // Dolnytstly p 410
@@ -225,7 +226,7 @@ export async function enhanceMinorHour(hour, priest, full, date) {
         if (dayOfWeek === 5 && hour === "6hour") afterRubric += " The Cross is carried to its usual place afterwards.";
         afterRubric += `</div>${toYourCross}<br><br>`
         document.getElementById("after_hour_elements").innerHTML = afterRubric;
-    } else if (season === "Pentecost") {
+    } else if (isPentecost) {
         var roles;
         if (priest === "1") roles = [`<FONT COLOR="RED">Priest:</FONT>`, `<FONT COLOR="RED">Choir:</FONT>`]
         else roles = [`<FONT COLOR="RED">Chairman:</FONT>`, `<FONT COLOR="RED">Choir:</FONT>`]

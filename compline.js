@@ -75,7 +75,7 @@ export async function enhanceCompline(priest, full, date){
                 (await getData(`${address}\\triodion\\${season}\\23.json`))["kontakia"]
                 ]
         }
-        if (!("kontakion" in dayTriodionData)) dayTriodionData = undefined;
+        if (dayTriodionData && !("kontakion" in dayTriodionData)) dayTriodionData = undefined;
         if (!dayTriodionData && season === "Pentecost") {
             try {
                 if (seasonWeek === 3 && dayOfWeek >= 3 || seasonWeek === 4 && dayOfWeek <= 3) {
@@ -103,7 +103,7 @@ export async function enhanceCompline(priest, full, date){
         greatComplineBeginning(full, season, seasonWeek, priest, dayOfWeek, dayData, isIncarnationFeast);
         complineEnding(full, season, seasonWeek, dayOfWeek, priest, glas, dayData, true, specialDayData, dayTriodionData, dateAddress);
     } else {
-        smallComplineBeginning(full, season, dayOfWeek, priest, isAlleluiaDay, glas, dayData, dateAddress);
+        smallComplineBeginning(full, season, seasonWeek, dayOfWeek, priest, isAlleluiaDay, glas, dayData, dateAddress);
         complineEnding(full, season, seasonWeek, dayOfWeek, priest, glas, dayData, season==="Lent" && dayOfWeek > 0 && dayOfWeek < 6 && "no_kathisma" in dayData, specialDayData, dayTriodionData, dateAddress);
     }
 
@@ -154,7 +154,9 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
 
     var matinslike = await selectCanon(season, seasonWeek, dayOfWeek, glas, full, smallComplineData["canon_refrain"], dateAddress, dayData, dayTriodionData);
     if (matinslike) document.getElementById("itIsTrulyRight").innerHTML = "";
-    else document.getElementById("itIsTrulyRight").innerHTML = itIsTrulyRight;
+    else if (season === "Pentecost" && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4)) {
+        document.getElementById("itIsTrulyRight").innerHTML = (await getData(`${address}\\triodion\\EasterWeek\\00_major.json`))["shine"];
+    } else document.getElementById("itIsTrulyRight").innerHTML = itIsTrulyRight;
 
     document.getElementById("prayers").innerHTML = smallComplineData["prayers"].join("<br><br>");
     document.getElementById("after_prayers").innerHTML =  postComplinePrayers(priest, smallComplineData, ekteniasData, dayOfWeek, isGreatCompline, dayData["class"]);
@@ -188,10 +190,10 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
 	document.getElementById("endingBlock").innerHTML = `${await endingBlockMinor(priest, dayOfWeek, "", season === "Pentecost")}<br>`;
 }
 
-async function smallComplineBeginning(full, season, dayOfWeek, priest, isAlleluiaDay, glas, dayData, dateAddress) {
+async function smallComplineBeginning(full, season, seasonWeek, dayOfWeek, priest, isAlleluiaDay, glas, dayData, dateAddress) {
 	const smallComplineData = await getData(`${address}\\horologion\\small_compline.json`);
 
-    loadSmallComplineBeginning(smallComplineData, full, season, dayOfWeek, isAlleluiaDay, priest, glas, dayData, dateAddress);
+    loadSmallComplineBeginning(smallComplineData, full, season, seasonWeek, dayOfWeek, isAlleluiaDay, priest, glas, dayData, dateAddress);
 	document.getElementById("beginning").innerHTML =  `<h2>Small Compline</h2>
 	<div id="switch"></div><br>
 	<div id="usualBeginning"></div>
@@ -202,11 +204,11 @@ async function smallComplineBeginning(full, season, dayOfWeek, priest, isAllelui
 	`;
 }
 
-async function loadSmallComplineBeginning(smallComplineData, full, season, dayOfWeek, isAlleluiaDay, priest, glas, dayData, dateAddress) {
+async function loadSmallComplineBeginning(smallComplineData, full, season, seasonWeek, dayOfWeek, isAlleluiaDay, priest, glas, dayData, dateAddress) {
 	const psalmNums =  smallComplineData["psalms"];
 	const psalmPaths = psalmNums.map(n => `${address}\\psalms\\${n}.txt`);
 
-    usualBeginning(priest, season).then(ub => {
+    usualBeginning(priest, season, seasonWeek, dayOfWeek).then(ub => {
         document.getElementById("usualBeginning").innerHTML = `${ub}<br><br>`;
     });
 
@@ -234,10 +236,10 @@ async function loadSmallComplineBeginning(smallComplineData, full, season, dayOf
 
 	if (isAlleluiaDay){
         document.getElementById("switch").innerHTML =`
-          <div class=rubric>There is an option in Typicon for this day to be according to a penitential rite.
-          This means one can pray a much longer Great Compline
-          (other hours are also supposed to be changed, but this is not yet implemented).
-          If you want to undo it later, just reload the page.</div>
+          <div class=rubric>The Typicon provides an option for this day to follow a penitential order.
+           This means one may pray a much longer Great Compline
+           (the other Hours are also to be modified, though this has not yet been implemented).
+           If you wish to revert this later, simply reload the page.</div>
           <label><input type="checkbox" name="greatCompline"> Use Great Compline instead.</label><br>
             `;
         document.getElementById("switch").addEventListener("change", () => {
@@ -302,7 +304,7 @@ async function greatComplineBeginning(full, season, seasonWeek, priest, dayOfWee
 async function loadGreatComplineBeginning(priest, smallComplineData, full, season, seasonWeek, dayOfWeek, dayData, isIncarnationFeast) {
     const greatComplineData = await getData(`${address}\\horologion\\great_compline.json`);
 
-	document.getElementById("usualBeginning").innerHTML = `${await usualBeginning(priest, season)}<br><br>`
+	document.getElementById("usualBeginning").innerHTML = `${await usualBeginning(priest, season, seasonWeek, dayOfWeek)}<br><br>`
 
     const alleluiaUnit = `<br><br>${tripleAlleluia} ${LHM} <FONT COLOR="RED">(3)</FONT><br>${gloryAndNow}`
     if (season === "Lent" && seasonWeek === 1 && dayOfWeek >= 2 && dayOfWeek <= 5) {
@@ -695,8 +697,11 @@ async function selectCanon(season, seasonWeek, dayOfWeek, glas, full, refrain, d
 	    } else {
             matinslike = await constructCanon(dayOfWeek, glas, "0", refrain, dateAddress);
 	    }
-        if (!matinslike) document.getElementById("itIsTrulyRight").innerHTML = itIsTrulyRight;
-        else document.getElementById("itIsTrulyRight").innerHTML = "";
+        if (matinslike) document.getElementById("itIsTrulyRight").innerHTML = "";
+        else if (season === "Pentecost" && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4)) {
+            document.getElementById("itIsTrulyRight").innerHTML = (await getData(`${address}\\triodion\\EasterWeek\\00_major.json`))["shine"];
+        }
+        else document.getElementById("itIsTrulyRight").innerHTML = itIsTrulyRight;
     });
     return matinslike;
 }

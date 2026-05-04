@@ -361,7 +361,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
         document.getElementById("beginning").innerHTML = `
           <div class=rubric>Should vespers be said immediately after the ninth hour, omit this beginning:</div>
           <hr>
-          ${await usualBeginning(priest, season)}
+          ${await usualBeginning(priest, season, seasonWeek, dayOfWeek)}
           <hr>
           <a id="#come_let_us">${comeLetUs}<br><br></a>`
     }
@@ -665,7 +665,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
             ${roles[0]} ${EasterData["final"][2]}<br>
             ${roles[1]} ${EasterData["final"][3]}<br><br>
         `;
-    } else if (season === "Pentecost") {
+    } else if (season === "Pentecost" && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4)) {
         var roles;
         if (priest === "1") roles = [`<FONT COLOR="RED">Priest:</FONT>`, `<FONT COLOR="RED">Choir:</FONT>`]
         else roles = [`<FONT COLOR="RED">Chairman:</FONT>`, `<FONT COLOR="RED">Choir:</FONT>`]
@@ -804,7 +804,7 @@ export async function makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek
 
     var gloryOrAnesti = gloryAndNow;
     var finalTheotokion = moreHonorable;
-    if (isEasterWeek || season === "Pentecost"){
+    if (isEasterWeek || season === "Pentecost" && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4)) {
         // for pentecost - Dol 478
         const EasterData = await getData(`${address}\\triodion\\EasterWeek\\00_major.json`);
         finalTheotokion = EasterData["shine"];
