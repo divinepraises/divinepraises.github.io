@@ -1106,7 +1106,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
             const apostMen = vespersMenaionData["aposticha"];
             apostVerses = apostMain["aposticha_verses"].concat(
                 [`<div class="rubric">Tone ${apostTriod[0]}</div>${glory}`,
-                `<div class="rubric">Tone ${apostMen[5]}</div>${andNow}`]
+                `<div class="rubric">Tone ${apostMen[4]}</div>${andNow}`]
             );
             apostVerses[0] = `<div class="rubric">Tone ${apostMain["aposticha"][0]}</div>${apostVerses[0]}`;
             apostMain = (
@@ -1879,6 +1879,17 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
                 .concat(vespersTriodionData["ps140"].slice(5, 8))
             );
         }
+        numStycheras = 3+3+3;
+        stycheraScheme = Array(6).fill(1).concat([2, 1, 1]);
+    } else if (season === "Pentecost" && dayOfWeek === 0 && dayData["class"] >= 8) {
+        // Dol prescribes to double Triodion stichera instaead of using Sunday.
+        // Menaion (May 8) says to use Sunday + triodion. This is the way here.
+        stycheras = (
+            vespersOctoechosData["ps140"].slice(0, 4)
+            .concat(vespersTriodionData["ps140"].slice(0, 4))
+            .concat(vespersMenaionData["ps140"].slice(0, 4))
+            .concat(vespersTriodionData["ps140"].slice(4, 7))
+        );
         numStycheras = 3+3+3;
         stycheraScheme = Array(6).fill(1).concat([2, 1, 1]);
     } else if (season === "Pentecost" && dayOfWeek != 0 && dayData["class"] >= 8) {

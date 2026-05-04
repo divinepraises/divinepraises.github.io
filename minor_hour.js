@@ -615,13 +615,15 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
             // sunday of the branches
             return `${dayTriodionData["troparia"][0]}<br><br>${glory}<br><br>${dayTriodionData["troparia"][1]}`
         }
+
+        if ("troparia" in dayData) dayTrop = dayData["troparia"];
+        else dayTrop = await getCommonText("troparia", dayData);
+        if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
+
         if (prePostFeast != ""){
             if (hour === "1hour" || hour === "6hour" || dayTriodionData != undefined){
                 return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${prePostFeastTroparion}`;
             }
-            if ("troparia" in dayData) dayTrop = dayData["troparia"];
-            else dayTrop = await getCommonText("troparia", dayData);
-            if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
             if (hour === "3hour") return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[0]}`;
             // 9th
             if (dayTrop.length === 1 && prePostFeast === "postfeast" || dayTrop.length === 2 && prePostFeast === "forefeast"){
@@ -631,11 +633,11 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
             }
         }
 
-        if (season === "Pentecost" && dayData["class"] >= 8) {
+        if (season === "Pentecost" && seasonWeek >= 3 && dayData["class"] >= 8) {
             return `
             ${sundayTrop["troparia"][glas]}<br><br>
             ${glory}<br><br>
-            ${dayData["troparia"]}
+            ${dayTrop[0]}
             `;
         }
         if (season === "Pentecost" && seasonWeek === 1) return `${glory}<br><br>${dayTriodionData["troparia"]}`;
