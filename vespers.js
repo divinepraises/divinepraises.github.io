@@ -978,8 +978,16 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
             dayTrop.splice(0, 0, troparia[0])
         }
         theotokion = troparia[1];
-    } else if (season === "Pentecost" && (seasonWeek === 3 && dayOfWeek > 0 && dayOfWeek <= 2 || seasonWeek === 4 && dayOfWeek > 3)) {
+    } else if (
+        season === "Pentecost" && (
+            seasonWeek === 3 && dayOfWeek > 0 && dayOfWeek <= 2
+            || seasonWeek === 4 && dayOfWeek > 3
+            || seasonWeek === 5 && dayOfWeek <= 3
+            )
+        ) {
         // outside of mid-pentecost
+        // leave-taking: remove the saint
+        if (seasonWeek === 5 && dayOfWeek === 3 && dayData["class"] < 8) dayTrop = []
         dayTrop.splice(0, 0, (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][glas]);
         let tropGlas = parseInt(dayTrop[dayTrop.length - 1].match(/\d+/)[0], 10);
         theotokion = (await getData(`${address}\\octoechos\\${tropGlas}\\troparia_theotokia.json`))[0];
@@ -1135,6 +1143,14 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
             `<div class="rubric">Tone ${vespersTriodionData["aposticha"][4]}</div>${gloryAndNow}`
         );
         apostMain.splice(4, 2); // rm glory and tone
+    } else if (season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 3) {
+        // leave-taking of the Easter
+        apostMain = await getData(`${address}\\triodion\\EasterWeek\\00_major.json`);
+        const apostOcto = (await getData(`${address}\\octoechos\\${glas}\\0_vespers.json`))["aposticha"][1];
+        apostVerses = apostMain["aposticha_verses"].concat(gloryAndNow);
+        apostVerses[0] = `<div class="rubric">Tone ${apostMain["aposticha"][0]}</div>${apostVerses[0]}`;
+        apostMain = [glas, apostOcto].concat(apostMain["aposticha"].slice(1, 6));
+        apostMain[apostMain.length - 1] += `<FONT COLOR="RED"> (1)</FONT>`;
     } else if (season === "Pentecost" && !(seasonWeek === 1 && dayOfWeek === 0)) {
         apostVerses = vespersData["aposticha"];
         apostMain = vespersOctoechosData["aposticha"];
@@ -1922,6 +1938,11 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         }
         numStycheras = 3;
         stycheraScheme = Array(3).fill(2);
+    } else if (season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 3) {
+        // leave-taking of Easter
+        stycheras = vespersTriodionData["ps140"];
+        numStycheras = 6;
+        stycheraScheme = Array(numStycheras).fill(1);
     } else if (season === "Pentecost" && dayOfWeek != 0) {
         const isLeaveTaking = (seasonWeek != 3 && dayOfWeek === 6 || seasonWeek === 3 && dayOfWeek === 2);
         if (isLeaveTaking) {

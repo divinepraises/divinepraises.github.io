@@ -71,6 +71,7 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
    const symbolData = await getData(`${address}\\menaion\\feasts_symbols.json`);
 
     var specialName = "";
+    var note = "";
 	if ((new Date(`${yyyy}-${mm}-${dd}`)).getUTCDay() === 0) {
 	    const specialSundayName = await specialSunday(mm, dd);
 	    if (specialSundayName != undefined) {
@@ -89,6 +90,10 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
 	    try {
 	        let dayTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}.json`);
 	        specialName = dayTriodionData["day name"] + ". ";
+	        if ("note" in dayTriodionData) note += `<br><div class="rubric">${dayTriodionData["note"]}</div>`
+	        if ("class" in dayTriodionData && dayTriodionData["class"] === 12) {
+	            return `${symbolData[dayTriodionData["class"]]} ${dd}/${mm}: ${specialName} ${note}`;
+	        }
 	    } catch {}
 	} else if (season === "Lent" && dayOfWeek === 0) {
 	    try {
@@ -99,7 +104,6 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
     try {
         const dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
         var feastName = "";
-        var note = "";
         var dayName;
 
         if ("forefeast" in dayData) {
@@ -128,6 +132,7 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
                 )
                 || season === "Pentecost" && dayOfWeek === 0
                 || season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3
+                || season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 3
             )
         ) {
             dayName = "";
