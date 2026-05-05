@@ -75,7 +75,7 @@ export async function enhanceCompline(priest, full, date){
                 (await getData(`${address}\\triodion\\${season}\\23.json`))["kontakia"]
                 ]
         }
-        if (dayTriodionData && !("kontakion" in dayTriodionData)) dayTriodionData = undefined;
+        if (dayTriodionData && !("kontakia" in dayTriodionData)) dayTriodionData = undefined;
         if (!dayTriodionData && season === "Pentecost") {
             try {
                 if (seasonWeek === 3 && dayOfWeek >= 3 || seasonWeek === 4 && dayOfWeek <= 3) {
@@ -159,7 +159,9 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
     } else document.getElementById("itIsTrulyRight").innerHTML = itIsTrulyRight;
 
     document.getElementById("prayers").innerHTML = smallComplineData["prayers"].join("<br><br>");
-    document.getElementById("after_prayers").innerHTML =  postComplinePrayers(priest, smallComplineData, ekteniasData, dayOfWeek, isGreatCompline, dayData["class"]);
+    var dayClass = dayData["class"]
+    if (dayTriodionData && "class" in dayTriodionData && dayTriodionData["class"] > dayClass) dayClass = dayTriodionData["class"];
+    document.getElementById("after_prayers").innerHTML = postComplinePrayers(priest, smallComplineData, ekteniasData, dayOfWeek, isGreatCompline, dayClass);
 
     if (
         isGreatCompline
