@@ -1982,7 +1982,7 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         numStycheras = 6;
         stycheraScheme = Array(numStycheras).fill(1);
     } else if (season === "Pentecost" && dayOfWeek != 0) {
-        const isLeaveTaking = (seasonWeek != 3 && dayOfWeek === 6 || seasonWeek === 3 && dayOfWeek === 2);
+        const isLeaveTaking = seasonWeek != 5 && (seasonWeek != 3 && dayOfWeek === 6 || seasonWeek === 3 && dayOfWeek === 2);
         if (isLeaveTaking) {
             vespersTriodionData = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0_vespers.json`))["ps140"];
             var lastidx = 4;
