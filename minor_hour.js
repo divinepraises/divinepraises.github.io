@@ -234,7 +234,7 @@ export async function enhanceMinorHour(hour, priest, full, date) {
         else roles = [`<FONT COLOR="RED">Chairman:</FONT>`, `<FONT COLOR="RED">Choir:</FONT>`]
         const EasterData = await getData(`${address}\\triodion\\EasterWeek\\00_major.json`);
         document.getElementById("after_hour_elements").innerHTML = `
-            <br>${roles[1]} ${EasterData["troparion"].join("")} <FONT COLOR="RED">(3)</FONT><br>
+            <br>${roles[1]} ${EasterData["troparion"].join(" ")} <FONT COLOR="RED">(3)</FONT><br>
             ${roles[0]} ${EasterData["final"][2]}<br>
             ${roles[1]} ${EasterData["final"][3]}<br><br>
         `;

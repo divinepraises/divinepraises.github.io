@@ -665,7 +665,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
             ${roles[1]} ${EasterData["final"][1]}<br><br>
             ${roles[0]} ${EasterData["final"][0]}<br>
             ${roles[1]} ${EasterData["final"][1]}<br><br>
-            ${roles[1]} ${EasterData["troparion"].join("")} <FONT COLOR="RED">(3)</FONT><br><br>
+            ${roles[1]} ${EasterData["troparion"].join(" ")} <FONT COLOR="RED">(3)</FONT><br><br>
             ${roles[0]} ${EasterData["final"][2]}<br>
             ${roles[1]} ${EasterData["final"][3]}<br><br>
         `;
@@ -675,7 +675,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
         else roles = [`<FONT COLOR="RED">Chairman:</FONT>`, `<FONT COLOR="RED">Choir:</FONT>`]
         const EasterData = await getData(`${address}\\triodion\\EasterWeek\\00_major.json`);
         document.getElementById("after_hour_elements").innerHTML = `
-            ${roles[1]} ${EasterData["troparion"].join("")} <FONT COLOR="RED">(3)</FONT><br>
+            ${roles[1]} ${EasterData["troparion"].join(" ")} <FONT COLOR="RED">(3)</FONT><br>
             ${roles[0]} ${EasterData["final"][2]}<br>
             ${roles[1]} ${EasterData["final"][3]}<br><br>
         `;
@@ -2633,8 +2633,8 @@ async function makePs103(great, isEasterWeek, priest) {
         const troparion = EasterData["troparion"];
         var res = `
              <div class="rubric">${EasterData["rubric_troparion"][priest]}</div>
-            ${roles[0]} ${troparion.join("")}<br>
-            ${roles[1]} ${troparion.join("")}<br>
+            ${roles[0]} ${troparion.join(" ")}<br>
+            ${roles[1]} ${troparion.join(" ")}<br>
             ${roles[0]} ${troparion[0]}<br>
             ${roles[1]} ${troparion[1]}<br><br>`;
 
