@@ -543,8 +543,14 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
     } else if ("postfeast" in dayData) {
         prePostFeast = "postfeast";
         prePostFeastTroparion = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["troparia"];
-    } else if (season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3) {
-        // mid-Pentecost
+    } else if (
+        season === "Pentecost"
+        && (
+            seasonWeek === 3 && dayOfWeek === 3
+            || dayTriodionData && "class" in dayTriodionData && dayTriodionData["class"] >= 8
+            )
+        ) {
+        // mid-Pentecost, Ascension
         return glory + "<br><br>" + dayTriodionData["troparia"];
     } else if (season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 3) {
         // leave-taking of Easter
@@ -780,7 +786,13 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
     } else if ("postfeast" in dayData) {
         prePostFeast = "postfeast";
         prePostFeastKontakion = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["kontakia"];
-    } else if (season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3) {
+    } else if (
+        season === "Pentecost"
+        && (
+            seasonWeek === 3 && dayOfWeek === 3
+            || dayTriodionData && "class" in dayTriodionData && dayTriodionData["class"] >= 8
+            )
+        ) {
         // mid-Pentecost
         return dayTriodionData["kontakia"];
     } else if (season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 3) {

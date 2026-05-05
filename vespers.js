@@ -302,6 +302,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
                 || (season === "EasterWeek" && (dayOfWeek === 0 || dayData["class"] < 8))
                 || season === "Pentecost" && seasonWeek === 1 && dayOfWeek === 0
                 || season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3
+                || season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 4
             ) {
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
@@ -350,7 +351,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
         } else {
             text += `${getBeginning(0)}<br><br>${amen}<br><br>`
         }
-        if (season === "Pentecost") {
+        if (season === "Pentecost" && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4)) {
             const paschalTroparion = (await getData(`${address}\\triodion\\EasterWeek\\00_hour.json`))["troparion"] + ` <FONT COLOR="RED">(3)</FONT>`;
             text += `<a id="#come_let_us">${paschalTroparion}<br><br></a>`
         } else {
@@ -416,7 +417,9 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
         document.getElementById("ektenia_peace").innerHTML = `${LHM} <FONT COLOR="RED">(12)</FONT><br>${gloryAndNow}`;
     }
 
-    if (isGreatVespers && (!isLenten || isLenten && dayOfWeek === 1) && !(season === "EasterWeek")){
+    if (dayData["class"] === 12 && dayOfWeek >= 2) {
+        document.getElementById("kathismaSelector").innerHTML = "";
+    } else if (isGreatVespers && (!isLenten || isLenten && dayOfWeek === 1) && !(season === "EasterWeek")){
         document.getElementById("kathismaSelector").innerHTML = `
           <label><input type="radio" name="kathismaChoice" value="verses" checked> Only verses</label><br>
           <label><input type="radio" name="kathismaChoice" value="full"> Full psalms</label>
@@ -532,6 +535,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
                 || (season === "EasterWeek" && (dayOfWeek === 0 || dayData["class"] < 8))
                 || season === "Pentecost" && dayOfWeek === 0 && dayData["class"] < 8
                 || season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3
+                || season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 4
             ) {
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
@@ -796,7 +800,7 @@ export async function makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek
     if (season === "Pentecost" && seasonWeek === 1) {
         prePostFeast = "postfeast";
         prePostFeastData = (await getData(`${address}\\triodion\\Pentecost\\${seasonWeek-1}0.json`));
-    } else if (season === "Pentecost" && seasonWeek > 1) {
+    } else if (season === "Pentecost" && seasonWeek > 1 && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4)) {
         prePostFeastData = (await getData(`${address}\\triodion\\EasterWeek\\00.json`));
     }
     if (prePostFeastData && "TheotokosDismissal" in prePostFeastData) TheotokosDismissal = prePostFeastData["TheotokosDismissal"];
@@ -1124,6 +1128,14 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
                 .concat(apostTriod[2])
             )
         }
+    } else if (season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 4) {
+        // Ascension
+        apostMain = vespersTriodionData["aposticha"];
+        apostVerses = vespersTriodionData["aposticha_verses"].concat(
+            [`<div class="rubric">Tone ${apostMain[4]}</div>${glory}`,
+            `<div class="rubric">Tone ${vespersTriodionData["aposticha"][0]}</div>${andNow}`]
+        );
+        apostMain.splice(4, 2); // rm glory and tone
     } else if (season === "Pentecost" && dayOfWeek > 0 && dayData["class"] >= 8) {
         // feast on weekday of Pentecost
         if (dayOfWeek === 6) {
@@ -2511,7 +2523,6 @@ async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, seasonWeek, pri
 
     if (dayClass === 12 && dayOfWeek >= 2) {
       document.getElementById("kathisma").innerHTML = `<div class=\"rubric\">No kathisma on Lord's feasts.</div><br>`;
-      document.getElementById("kathismaSelector").innerHTML = "";
       return
     }
 
