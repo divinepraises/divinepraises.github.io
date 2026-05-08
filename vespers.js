@@ -585,7 +585,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
             vespersMenaionData["lytia"][5] = "gn";
         }
         var lytiaData = vespersMenaionData["lytia"];
-        if (season === "Pentecost" && !(seasonWeek === 1 && dayOfWeek === 0) && dayData["class"] >= 10) {
+        if (season === "Pentecost" && !(seasonWeek === 1 && dayOfWeek === 0) && dayData["class"] >= 10 && dayData["class"] < 12) {
             // st George: add a stichera to Lytia
             var prevSundayData = await getData(`${address}\\triodion\\Pentecost\\${seasonWeek-1}0_vespers.json`);
             if (seasonWeek === 1) {
