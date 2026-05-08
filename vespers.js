@@ -988,7 +988,7 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
         season === "Pentecost" && (
             seasonWeek === 3 && dayOfWeek > 0 && dayOfWeek <= 2
             || seasonWeek === 4 && dayOfWeek > 3
-            || seasonWeek === 5 && dayOfWeek <= 3
+            || seasonWeek === 5 && dayOfWeek <= 3 && dayOfWeek > 0
             )
         ) {
         // outside of mid-pentecost
