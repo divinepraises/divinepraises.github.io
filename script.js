@@ -40,15 +40,15 @@ export async function displayCurrentDay(currentDate){
     var season, seasonWeek, seasonToShow, glas, dayOfWeek;
     let [year, month, day] = currentDate.split("-").map(Number);
 	[season, seasonWeek, seasonToShow, glas] = parseDate(year, month, day);
-	let thisDate = new Date(year, month - 1, day);
+	let thisDate = new Date(Date.UTC(year, month - 1, day));
 	dayOfWeek = thisDate.getDay();
 	document.getElementById("date-container").innerHTML = seasonToShow;
     document.getElementById("date-name").innerHTML = await showMenaionDate(year, month, day, season, seasonWeek, dayOfWeek);
     
-    thisDate.setDate(thisDate.getDate() + 1);
+    thisDate.setUTCDate(thisDate.getUTCDate() + 1);
     let [next_year, next_mm, next_dd] = thisDate.toISOString().slice(0, 10).split("-").map(Number);
     let [next_season, next_seasonWeek, next_seasonToShow, next_glas] = parseDate(next_year, next_mm, next_dd);
-    let next_dayOfWeek = thisDate.getDay();
+    let next_dayOfWeek = thisDate.getUTCDay();
     document.getElementById("next-date-name").innerHTML = await showMenaionDate(next_year, next_mm, next_dd, next_season, next_seasonWeek, next_dayOfWeek);
 }
 
@@ -210,14 +210,13 @@ function dateDiffInDays(a, b) {
 
 export function getDayInfo(date, evening){
     let [year, mm, dd] = date.split("-").map(Number);
-    // we pass it like this, to avoid the date being created at UTC time
-    let thisDay = new Date(year, mm-1, dd);
+    let thisDay = new Date(Date.UTC(year, mm - 1, dd));
     // shift the day in the evening
-    if (evening) thisDay.setDate(thisDay.getDate() + 1);
+    if (evening) thisDay.setUTCDate(thisDay.getUTCDate() + 1);
     [year, mm, dd] = thisDay.toISOString().slice(0, 10).split("-").map(Number);
 
 	let [season, seasonWeek, seasonToShow, glas] = parseDate(year, mm, dd);
-	var dayOfWeek = thisDay.getDay();
+	var dayOfWeek = thisDay.getUTCDay();
 
 	const dateAddress = `${String(mm).padStart(2, "0")}\\${String(dd).padStart(2, "0")}`
 	return [year, mm, dd, season, seasonWeek, glas, dayOfWeek, dateAddress];
