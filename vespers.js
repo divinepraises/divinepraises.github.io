@@ -2397,6 +2397,8 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
     for (let j of Array(i).keys()) {currentPsalm[j] += "•";}
     if (i > 0) currentPsalm[i-1]+="<br><br>"
 
+    numStycheras = expandStycheraInPlace(stycheras, stycheraScheme, numStycheras);
+
     var ns = 0;
     var lastTone = -1;
     var theotokionWasAdded = false;
@@ -2450,15 +2452,13 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         }
 
         if (ns < numStycheras){
-            for (let nRep=0; nRep < stycheraScheme[ns]; nRep++){
-                if (numVersesLeft > 0) {
-                    currentPsalm[i] = `${numVersesLeft}. <i>${currentPsalm[i]}</i><br><br>${stychera}<br><br>`;
-                } else {
-                    currentPsalm[i] = `<i>${currentPsalm[i]}</i><br><br>${stychera}<br><br>`;
-                }
-                numVersesLeft -= 1
-                i += 1
+            if (numVersesLeft > 0) {
+                currentPsalm[i] = `${numVersesLeft}. <i>${currentPsalm[i]}</i><br><br>${stychera}<br><br>`;
+            } else {
+                currentPsalm[i] = `<i>${currentPsalm[i]}</i><br><br>${stychera}<br><br>`;
             }
+            numVersesLeft -= 1;
+            i += 1;
             ns += 1;
         } else {
             // glory, now
@@ -2490,6 +2490,46 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
 
     psalm140etc.splice(1, 0, `<div class="rubric">The following two verses are chanted in Tone ${stycheras[0][0]}</div>`)
     document.getElementById("psalms").innerHTML = psalm140etc.join("");
+}
+
+function expandStycheraInPlace(stycheras, scheme, numStycheras) {
+    let expanded = [];
+    let ns = 0;
+    let total = 0
+
+    for (let s of stycheras) {
+
+        // tone → keep as is
+        if (/^\d/.test(s)) {
+            expanded.push(s);
+            continue;
+        }
+
+        // gloria / special → keep as is
+        if (Object.hasOwn(gloriaDict, s)) {
+            expanded.push(s);
+            continue;
+        }
+
+        // regular stychera → expand
+        if (ns < numStycheras) {
+            let count = scheme[ns];
+
+            for (let i = 0; i < count; i++) {
+                expanded.push(s);
+            }
+
+            ns++;
+            total += count;
+        } else {
+            expanded.push(s);
+        }
+    }
+
+    // mutate original array in place
+    stycheras.length = 0;
+    stycheras.push(...expanded);
+    return total;
 }
 
 function makePrayers(prayersList, full, glas){
