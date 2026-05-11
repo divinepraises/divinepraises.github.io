@@ -701,8 +701,8 @@ export async function makePs33(priest, vigilVespersData){
 }
 
 export async function makeLytia(lytiaData, priest, vespersData, vigilVespersData, dayData, priestlyExclamationsData){
-    var lytia = `<div class="subhead">Lytia</div><br>
-    <div class="rubric">The first stichera is supposed to be from the lytia of the parish feast.
+    var lytia = `<div class="subhead">Lytia</div><br>`
+    if (dayData["class"] < 11) lytia += `<div class="rubric">The first stichera is supposed to be from the lytia of the parish feast.
     Then the following sticheras are sung:</div><br>`
 
     var tone;
