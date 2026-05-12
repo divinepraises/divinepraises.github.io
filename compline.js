@@ -74,6 +74,11 @@ export async function enhanceCompline(priest, full, date){
                 dayTriodionData["kontakia"],
                 (await getData(`${address}\\triodion\\${season}\\23.json`))["kontakia"]
                 ]
+        } else if (season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 0) {
+            dayTriodionData["kontakia"] = [
+                dayTriodionData["kontakia"],
+                (await getData(`${address}\\triodion\\${season}\\44.json`))["kontakia"]
+                ]
         }
         if (dayTriodionData && !("kontakia" in dayTriodionData)) dayTriodionData = undefined;
         if (!dayTriodionData && season === "Pentecost") {

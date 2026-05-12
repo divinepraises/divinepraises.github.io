@@ -650,7 +650,7 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
             }
         }
 
-        if (season === "Pentecost" && seasonWeek >= 3 && dayData["class"] >= 8) {
+        if (season === "Pentecost" && seasonWeek >= 3 && seasonWeek <6 && dayData["class"] >= 8) {
             return `
             ${sundayTrop["troparia"][glas]}<br><br>
             ${glory}<br><br>
@@ -658,11 +658,21 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
             `;
         }
         if (season === "Pentecost" && seasonWeek === 1) return `${glory}<br><br>${dayTriodionData["troparia"]}`;
-        if (season === "Pentecost" && seasonWeek === 2) return `${glory}<br><br>${dayTriodionData["troparia"][0]}`;
-        if (season === "Pentecost" && seasonWeek === 4) return `
+        else if (season === "Pentecost" && seasonWeek === 2) return `${glory}<br><br>${dayTriodionData["troparia"][0]}`;
+        else if (season === "Pentecost" && seasonWeek === 4) return `
             ${sundayTrop["troparia"][glas]}<br><br>
             ${glory}<br><br>
             ${(await getData(`${address}\\triodion\\${season}\\23.json`))["troparia"]}
+            `;
+        else if (season === "Pentecost" && seasonWeek === 6 && (hour === "1hour" || hour === "6hour")) return `
+            ${sundayTrop["troparia"][glas]}<br><br>
+            ${glory}<br><br>
+            ${(await getData(`${address}\\triodion\\${season}\\44.json`))["troparia"]}
+            `;
+        else if (season === "Pentecost" && seasonWeek === 6 && (hour === "3hour" || hour === "9hour")) return `
+            ${sundayTrop["troparia"][glas]}<br><br>
+            ${glory}<br><br>
+            ${dayTriodionData["troparia"]}
             `;
         else if (season === "Pentecost") return `${glory}<br><br>${sundayTrop["troparia"][glas]}`;
 
