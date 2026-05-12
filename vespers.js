@@ -1139,8 +1139,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
         // Ascension
         apostMain = vespersTriodionData["aposticha"];
         apostVerses = vespersTriodionData["aposticha_verses"].concat(
-            [`<div class="rubric">Tone ${apostMain[4]}</div>${glory}`,
-            `<div class="rubric">Tone ${vespersTriodionData["aposticha"][0]}</div>${andNow}`]
+            `<div class="rubric">Tone ${apostMain[4]}</div>${gloryAndNow}`
         );
         apostMain.splice(4, 2); // rm glory and tone
     } else if (season === "Pentecost" && seasonWeek == 6 && dayOfWeek === 0) {
