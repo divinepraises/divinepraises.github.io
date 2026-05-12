@@ -566,6 +566,7 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
            if (dayOfWeek === 3) return glory + "<br><br>" + prePostFeastTroparion;
         } else if (seasonWeek === 5 && dayOfWeek > 4 || seasonWeek === 6 && dayOfWeek < 6) {
             prePostFeastTroparion = (await getData(`${address}\\triodion\\${season}\\44.json`))["troparia"];
+           if (seasonWeek === 6 && dayOfWeek === 5) return glory + "<br><br>" + prePostFeastTroparion;
         } else if (
             seasonWeek === 2 && (hour === "3hour" || hour === "9hour")
             || seasonWeek > 2
@@ -817,6 +818,7 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         // Ascension postfeast
         prePostFeast = "postfeast";
         prePostFeastKontakion = (await getData(`${address}\\triodion\\${season}\\44.json`))["kontakia"];
+        if (seasonWeek === 6 && dayOfWeek === 5) return prePostFeastKontakion;
     } else if (season === "Pentecost" && dayData["class"] < 8 && (seasonWeek === 3 && dayOfWeek > 3 || seasonWeek === 4 && dayOfWeek <= 3)) {
         prePostFeast = "postfeast";
         prePostFeastKontakion = (await getData(`${address}\\triodion\\${season}\\23.json`))["kontakia"];

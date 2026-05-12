@@ -1187,6 +1187,14 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
         apostVerses[0] = `<div class="rubric">Tone ${apostMain["aposticha"][0]}</div>${apostVerses[0]}`;
         apostMain = [glas, apostOcto].concat(apostMain["aposticha"].slice(1, 6));
         apostMain[apostMain.length - 1] += `<FONT COLOR="RED"> (1)</FONT>`;
+    } else if (season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 5) {
+        // Leave-taking of Ascension
+        vespersTriodionData = (await getData(`${address}\\triodion\\Pentecost\\44_vespers.json`));
+        apostMain = vespersTriodionData["aposticha"];
+        apostVerses = vespersTriodionData["aposticha_verses"].concat(
+            `<div class="rubric">Tone ${vespersTriodionData["aposticha"][4]}</div>${gloryAndNow}`
+        );
+        apostMain.splice(4, 2); // rm glory and tone
     } else if (
             season === "Pentecost" && !(seasonWeek === 1 && dayOfWeek === 0)
             && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4)
