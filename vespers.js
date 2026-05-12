@@ -1009,6 +1009,7 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
         // Ascension post-feast
         theotokion = (await getData(`${address}\\triodion\\${season}\\44.json`))["troparia"];
         if (dayOfWeek === 3) dayTrop = [];
+        if (dayOfWeek === 1) dayTrop.splice(0, 0, (await getData(`${address}\\triodion\\${season}\\50.json`))["troparia"]);
     } else {
         // we end up here if it is not a vigil
         let tropGlas  = parseInt(dayTrop[dayTrop.length - 1].match(/\d+/)[0], 10);
@@ -1225,8 +1226,9 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
             );
         }
     } else if (
-        season === "Pentecost" && !(seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4) && dayData["class"] < 8
+        season === "Pentecost" && (seasonWeek >= 5 && !(seasonWeek === 5 && dayOfWeek < 4)) && dayData["class"] < 8
     ) {
+         // ostfeast Ascension
          apostMain = vespersTriodionData["aposticha"].slice(0, 4);
          apostVerses = vespersTriodionData["aposticha_verses"];
          if ("aposticha" in vespersMenaionData) {
@@ -1235,11 +1237,18 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
                 [`<div class="rubric">Tone ${vespersMenaionData["aposticha"][0]}</div>${glory}`,
                 `<div class="rubric">Tone ${vespersTriodionData["aposticha"][4]}</div>${andNow}`]
             );
-         } else {
+         } else if (dayOfWeek != 1) {
             apostMain = apostMain.concat(vespersTriodionData["aposticha"][6])
             apostVerses = apostVerses.concat(
                 `<div class="rubric">Tone ${vespersTriodionData["aposticha"][4]}</div>${gloryAndNow}`
             );
+         } else {
+            // Sun of Fathers evening
+            apostMain = apostMain.concat([vespersTriodionData["aposticha"][6], vespersTriodionData["aposticha"][9]])
+            apostVerses = apostVerses.concat([
+                `<div class="rubric">Tone ${vespersTriodionData["aposticha"][4]}</div>${glory}`,
+                `<div class="rubric">Tone ${vespersTriodionData["aposticha"][7]}</div>${andNow}`
+            ]);
          }
     } else if (vespersTriodionData != undefined) {
         // use weekday if triodion day
