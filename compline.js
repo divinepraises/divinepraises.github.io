@@ -90,6 +90,14 @@ export async function enhanceCompline(priest, full, date){
                     // Ascension
                     dayTriodionData = {};
                     dayTriodionData["kontakia"] = (await getData(`${address}\\triodion\\${season}\\44.json`))["kontakia"];
+                } else if (seasonWeek === 5 && dayOfWeek === 3) {
+                    // Leave-taking of Easter
+                    dayTriodionData = {};
+                    const paschalKontakion = (await getData(`${address}\\triodion\\EasterWeek\\00_hour.json`))["kontakion"];
+                    dayTriodionData["kontakia"] = [
+                        (await getData(`${address}\\triodion\\${season}\\40.json`))["kontakia"],
+                        `<i>(Tone ${paschalKontakion[0]})</i> ${paschalKontakion[1]}`
+                    ];
                 } else {
                     // generally take kontakion from the previous Sunday
                     dayTriodionData = await getData(`${address}\\triodion\\${season}\\${weekToLookAt}0.json`)
