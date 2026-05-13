@@ -95,7 +95,8 @@ export async function enhanceCompline(priest, full, date){
                     dayTriodionData = {};
                     const paschalKontakion = (await getData(`${address}\\triodion\\EasterWeek\\00_hour.json`))["kontakion"];
                     dayTriodionData["kontakia"] = [
-                        (await getData(`${address}\\triodion\\${season}\\40.json`))["kontakia"],
+                        `${(await getData(`${address}\\triodion\\${season}\\40.json`))["kontakia"]}<br><br>
+                        <i><FONT COLOR="RED">According to Pentecostarion, one may add:</FONT></i>`,
                         `<i>(Tone ${paschalKontakion[0]})</i> ${paschalKontakion[1]}`
                     ];
                 } else {

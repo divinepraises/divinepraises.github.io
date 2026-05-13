@@ -136,7 +136,7 @@ export async function enhanceMinorHour(hour, priest, full, date) {
 
     if (additionalElements && "troparion" in additionalElements && dayTriodionData) dayTriodionData["troparia"] = additionalElements["troparion"];
     if (additionalElements && "note" in additionalElements) document.getElementById("note").innerHTML = additionalElements["note"];
-    if (dayTriodionData && "hours note" in dayTriodionData) document.getElementById("note").innerHTML += `<div class="rubric"> ${dayTriodionData["hours note"]}</div><br>`;
+    if (dayTriodionData && "hours note" in dayTriodionData && hour != "1hour") document.getElementById("note").innerHTML += `<div class="rubric"> ${dayTriodionData["hours note"]}</div><br>`;
 
     document.getElementById("beginning").innerHTML = await usualBeginning(priest, season, seasonWeek, dayOfWeek);
 
