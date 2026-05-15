@@ -41,7 +41,7 @@ export async function displayCurrentDay(currentDate){
     let [year, month, day] = currentDate.split("-").map(Number);
 	[season, seasonWeek, seasonToShow, glas] = parseDate(year, month, day);
 	let thisDate = new Date(Date.UTC(year, month - 1, day));
-	dayOfWeek = thisDate.getDay();
+	dayOfWeek = thisDate.getUTCDay();
 	document.getElementById("date-container").innerHTML = seasonToShow;
     document.getElementById("date-name").innerHTML = await showMenaionDate(year, month, day, season, seasonWeek, dayOfWeek);
     
