@@ -305,6 +305,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
                 || season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 4
                 || season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6
                 || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 0
+                || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 1
             ) {
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
@@ -544,6 +545,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
                 || season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3
                 || season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 4
                 || season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6
+                || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 0
                 || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 0
             ) {
                 Object.assign(vespersMenaionData, vespersTriodionData);

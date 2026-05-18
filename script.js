@@ -103,6 +103,7 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
 	}
     try {
         const dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
+        var dayClass = dayData["class"];
         var feastName = "";
         var dayName;
 
@@ -123,23 +124,30 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
         }
         if (
             dayData["class"] <= 6 && (
-                season === "Forelent" && (dayOfWeek === 0 || dayOfWeek === 6 && seasonWeek === 2)
+                season === "Forelent" && dayOfWeek === 0
                 || season === "Lent" && (
                     dayOfWeek === 0 && seasonWeek != 2
                     || dayOfWeek === 6 && seasonWeek === 1
                     || dayOfWeek === 6 && seasonWeek === 5
                     || dayOfWeek === 6 && seasonWeek === 6
+                    )
+                || season === "Pentecost" && (
+                    dayOfWeek === 0
+                    || seasonWeek === 3 && dayOfWeek === 3  // mid-pentecost
+                    || seasonWeek === 5 && dayOfWeek === 3  // leave-taking of Easter
                 )
-                || season === "Pentecost" && dayOfWeek === 0
-                || season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3  // mid-pentecost
-                || season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 3  // leave-taking of Easter
-                || season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6  // all souls
+            ) || (
+                // saint does not matter
+                season === "Forelent"  && seasonWeek === 2 && dayOfWeek === 6  // all souls in forelent
+                season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6  // all souls in Pentecost
+                || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 1  // Pent. Monday
             )
         ) {
             dayName = "";
+            dayClass = 4;
         } else dayName = constructDayName(dayData, false);
 
-        return `${symbolData[dayData["class"]]} ${dd}/${mm}: ${feastName} ${specialName} ${dayName}${note}`;
+        return `${symbolData[dayClass]} ${dd}/${mm}: ${feastName} ${specialName} ${dayName}${note}`;
     } catch (error) {
          return `No data for this day at ${address}\\menaion\\${dateAddress}.json`
     }
