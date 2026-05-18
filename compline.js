@@ -101,7 +101,8 @@ export async function enhanceCompline(priest, full, date){
                     ];
                 } else {
                     // generally take kontakion from the previous Sunday
-                    dayTriodionData = await getData(`${address}\\triodion\\${season}\\${weekToLookAt}0.json`)
+                    dayTriodionData = {};
+                    dayTriodionData["kontakia"] = (await getData(`${address}\\triodion\\${season}\\${weekToLookAt}0.json`))["kontakia"];
                 }
                 dayTriodionData["class"] = dayTriodionData["class"] ?? 4;
             } catch {}
@@ -701,7 +702,10 @@ async function selectCanon(season, seasonWeek, dayOfWeek, glas, full, refrain, d
         document.getElementById("canonSelector").innerHTML = "";
         return true
     }
-    if (dayTriodionData != undefined && "omit compline canon" in dayTriodionData) {
+    if (
+        dayTriodionData != undefined && "omit compline canon" in dayTriodionData
+        || season === "Pentecost" && seasonWeek === 7 && dayOfWeek > 1
+       ) {
         document.getElementById("canon").innerHTML = `<div class=rubric>No canon today<br><br></div>`;
         document.getElementById("canonSelector").innerHTML = "";
         return false;

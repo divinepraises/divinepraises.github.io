@@ -575,17 +575,18 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
             prePostFeastTroparion = (await getData(`${address}\\triodion\\${season}\\44.json`))["troparia"];
            if (seasonWeek === 6 && dayOfWeek === 5) return glory + "<br><br>" + prePostFeastTroparion;
         } else if (
+            seasonWeek === 2 && !(hour === "3hour" || hour === "9hour")
+            || seasonWeek === 1
+            || seasonWeek === 7
+        ) {
+            prePostFeastTroparion = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0.json`))["troparia"];
+            if (Array.isArray(prePostFeastTroparion)) prePostFeastTroparion = prePostFeastTroparion[0];
+        } else if (
             seasonWeek === 2 && (hour === "3hour" || hour === "9hour")
             || seasonWeek > 2
         ) {
             // Dol 484 for week 2
             prePostFeastTroparion = (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][glas];
-        } else if (
-            seasonWeek === 2 && !(hour === "3hour" || hour === "9hour")
-            || seasonWeek === 1
-        ) {
-            prePostFeastTroparion = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0.json`))["troparia"];
-            if (Array.isArray(prePostFeastTroparion)) prePostFeastTroparion = prePostFeastTroparion[0];
         }
     }
     if (Array.isArray(prePostFeastTroparion)) {

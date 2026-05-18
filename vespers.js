@@ -861,9 +861,11 @@ export async function makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek
         prePostFeastData = (await getData(`${address}\\triodion\\EasterWeek\\00.json`));
     } else if (season === "Pentecost" && (seasonWeek === 5 && dayOfWeek > 4 || seasonWeek === 6 && dayOfWeek < 6)) {
         prePostFeastData = (await getData(`${address}\\triodion\\${season}\\44.json`));
+    } else if (season === "Pentecost" && seasonWeek === 7) {
+        prePostFeastData = (await getData(`${address}\\triodion\\${season}\\60.json`));
     }
-    if (prePostFeastData && "TheotokosDismissal" in prePostFeastData) TheotokosDismissal = prePostFeastData["TheotokosDismissal"];
-    if (prePostFeastData && "specialDismissal" in prePostFeastData) specialDismissal = prePostFeastData["specialDismissal"];
+    if (specialDismissal === "" && prePostFeastData && "TheotokosDismissal" in prePostFeastData) TheotokosDismissal = prePostFeastData["TheotokosDismissal"];
+    if (specialDismissal === "" && prePostFeastData && "specialDismissal" in prePostFeastData) specialDismissal = prePostFeastData["specialDismissal"];
 
     var gloryOrAnesti = `${glory}* ${andNow}`;
     var finalTheotokion = moreHonorable;

@@ -373,6 +373,10 @@ export function isImpotrantTriodionDay(season, seasonWeek, dayOfWeek, dayClass) 
     ) return true;
     return false;
 }
+//
+//export function dayTransfer(season, seasonWeek, dayOfWeek, dd, mm) {
+//
+//}
 
 export async function kathismaToText(k, isGreatVespers, dayOfWeek) {
     // replace with readPsalmsFromNumbers when psalms are here
