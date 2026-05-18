@@ -68,7 +68,7 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
     dd = String(dd).padStart(2, "0");
 	const dateAddress = `${mm}\\${dd}`;
 
-   const symbolData = await getData(`${address}\\menaion\\feasts_symbols.json`);
+    const symbolData = await getData(`${address}\\menaion\\feasts_symbols.json`);
 
     var specialName = "";
     var note = "";
@@ -102,10 +102,19 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
 	    } catch {}
 	}
     try {
-        const dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
-        var dayClass = dayData["class"];
+        var dayData;
         var feastName = "";
         var dayName;
+
+        let transfer = dayTransfer(season, seasonWeek, dayOfWeek, dd, mm);
+        if (transfer) {
+            [dd, mm] = transfer;
+            dayData = await getData(`${address}\\menaion\\${mm}\\${dd}.json`);
+            if ("day name" in dayData) dayData["day name"] += " (transferred)"
+        } else {
+            dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
+        }
+        var dayClass = dayData["class"];
 
         if ("forefeast" in dayData) {
             let feast = await getData(`${address}\\menaion\\${dayData["forefeast"]}.json`);
@@ -149,6 +158,7 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
 
         return `${symbolData[dayClass]} ${dd}/${mm}: ${feastName} ${specialName} ${dayName}${note}`;
     } catch (error) {
+         console.info(error)
          return `No data for this day at ${address}\\menaion\\${dateAddress}.json`
     }
 }
@@ -375,11 +385,11 @@ export function isImpotrantTriodionDay(season, seasonWeek, dayOfWeek, dayClass) 
 }
 
 export function dayTransfer(season, seasonWeek, dayOfWeek, dd, mm) {
-    if (dd === 26 && mm === 5 && season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 2) {
+    if (dd == 26 && mm == 5 && season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 2) {
         // Finding of the Head on Pentecost Mon -> Tue
         return ["25", "05"]
     }
-    if ((dd === 21 || dd === 22) && mm === 5 && season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 4) {
+    if ((dd == 21 || dd == 22) && mm === 5 && season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 4) {
         // Finding of the Head on Pentecost Sun or Sat before -> Thu before
         return ["25", "05"]
     }
