@@ -139,7 +139,7 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
             ) || (
                 // saint does not matter
                 season === "Forelent"  && seasonWeek === 2 && dayOfWeek === 6  // all souls in forelent
-                season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6  // all souls in Pentecost
+                || season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6  // all souls in Pentecost
                 || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 1  // Pent. Monday
             )
         ) {
