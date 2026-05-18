@@ -2079,6 +2079,10 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
             else if (vespersTriodionData["ps140"][4] === "g") stycheras = stycheras.concat("g") // Fri after mid
             else stycheras = stycheras.concat("gn")
             stycheras = stycheras.concat(vespersTriodionData["ps140"].slice(5, 7))
+            if (seasonWeek === 6 && dayOfWeek === 1) {
+                // on fathers of Nicaea day, there is an additional one
+                stycheras = stycheras.concat(["n", vespersTriodionData["ps140"][vespersTriodionData["ps140"].length-1]])
+            }
         }
         numStycheras = 6;
         stycheraScheme = Array(numStycheras).fill(1);
