@@ -2117,6 +2117,10 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         stycheras = vespersTriodionData["ps140"];
         numStycheras = 6;
         stycheraScheme = Array(numStycheras).fill(1);
+    } else if (season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6) {
+        // all souls
+        stycheras = vespersTriodionData["ps140"];
+        stycheraScheme = Array(numStycheras).fill(1);
     } else if (season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 1) {
         // Pentecost Monday
         stycheras = vespersTriodionData["ps140"];
