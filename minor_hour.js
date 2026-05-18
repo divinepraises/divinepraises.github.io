@@ -1,5 +1,5 @@
 import { getBeginning, cross, StEphremPrayer, gloryGospel, usualBeginning, tripleAlleluia, glory, andNow, trisagionToPater, prayerOfTheHours, LHM, comeLetUs, gloryAndNow, moreHonorable, inTheName, prayerBlessingMayGodBeGracious, endingBlockMinor, amen, getCommonText } from './text_generation.js';
-import { readFromAddress, kathismaToText, getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords, specialSunday, cancelPostfeastHypapante, isImpotrantTriodionDay } from './script.js';
+import { readFromAddress, kathismaToText, getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords, specialSunday, cancelPostfeastHypapante, isImpotrantTriodionDay, dayTransfer } from './script.js';
 import { arrangeProkimenon, frameReadings } from './vespers.js';
 
 const address = `Text\\English`
@@ -126,6 +126,13 @@ export async function enhanceMinorHour(hour, priest, full, date) {
         console.log("No data for the day! Using the weekday troparia.")
         dayData = {"class": 0}
     }
+
+    let transfer = dayTransfer(season, seasonWeek, dayOfWeek, dd, mm);
+    if (transfer) {
+        [dd, mm] = transfer;
+        dayData = await getData(`${address}\\menaion\\${mm}\\${dd}.json`);
+    }
+
     if ("postfeast" in dayData && dayData["postfeast"]==="02//02" && cancelPostfeastHypapante(dateAddress.slice(4, 6), season, seasonWeek, dayOfWeek)) {
         delete dayData["postfeast"];
     } else if ("postfeast" in dayData && dayData["postfeast"]==="02//02"  && cancelPostfeastHypapante(Number(dateAddress.slice(4, 6))+1, season, seasonWeek+(dayOfWeek===6), (dayOfWeek+1)%7)) {

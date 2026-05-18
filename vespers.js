@@ -1,5 +1,5 @@
 import { StEphremPrayer, itIsTrulyRight, prayerBlessingMayGodBeGracious, inTheName, HeWhoIs, getBeginning, usualBeginning, comeLetUs ,tripleAlleluia, lesserDoxology, trisagionToPater, glory, andNow, LHM, GTL, TYL, gloryAndNow, getCommonText, moreHonorable, amen, giveTheBlessing, dismissalMajor, cross } from './text_generation.js';
-import { kathismaToText, cancelPostfeastHypapante, getDayInfo, getData, isBetweenDates, readPsalmsFromNumbers, constructDayName, replaceCapsWords, specialSunday } from './script.js';
+import { kathismaToText, cancelPostfeastHypapante, getDayInfo, getData, isBetweenDates, readPsalmsFromNumbers, constructDayName, replaceCapsWords, specialSunday, dayTransfer } from './script.js';
 var address = `Text\\English`
 
 // TODO readings
@@ -20,10 +20,9 @@ export function renderVespersSkeleton() {
 }
 
 export async function enhanceVespers(priest, full, date) {
-    const [year, mm, dd, season, seasonWeek, glas, dayOfWeek, dateAddress] =
-        getDayInfo(date, true);
+    let [year, mm, dd, season, seasonWeek, glas, dayOfWeek, dateAddress] = getDayInfo(date, true);
 
-    const dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
+    var dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
     const vespersData = await getData(`${address}\\horologion\\general_vespers.json`);
     var vespersMenaionData = await getData(`${address}\\menaion\\${dateAddress}_vespers.json`)
     if ("postfeast" in dayData && dayData["postfeast"]==="02//02" && cancelPostfeastHypapante(dd, season, seasonWeek, dayOfWeek)) {
@@ -50,6 +49,14 @@ export async function enhanceVespers(priest, full, date) {
         || season === "Forelent" && seasonWeek === 3 && (dayOfWeek === 3 || dayOfWeek === 5)
         || season === "HolyWeek" && dayOfWeek > 0 && dayOfWeek < 5
         );
+
+    let transfer = dayTransfer(season, seasonWeek, dayOfWeek, dd, mm);
+    if (transfer) {
+        [dd, mm] = transfer;
+        dayData = await getData(`${address}\\menaion\\${mm}\\${dd}.json`);
+        if ("day name" in dayData) dayData["day name"] += " (transferred)"
+        vespersMenaionData = await getData(`${address}\\menaion\\${mm}\\${dd}_vespers.json`)
+    }
 
     await vespersBeginning(
         vespersData, vespersMenaionData, full, dayOfWeek, mm, dd, glas, dayData, dateAddress, priest, season, seasonWeek, isStBasil, isLenten

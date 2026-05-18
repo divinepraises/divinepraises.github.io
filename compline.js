@@ -1,5 +1,5 @@
 import { theotokionRefrain, letUsBless, wePraise, cross, usualBeginning, comeLetUs , lesserDoxology, itIsTrulyRight, trisagionToPater, tripleAlleluia, glory, andNow, LHM, prayerOfTheHours, gloryAndNow, moreHonorable, inTheName,prayerBlessingMayGodBeGracious, amen, endingBlockMinor, StEphremPrayer } from './text_generation.js';
-import { replaceCapsWords, getDayInfo, getData, readPsalmsFromNumbers, isBetweenDates, specialSunday, cancelPostfeastHypapante, isImpotrantTriodionDay  } from './script.js';
+import { replaceCapsWords, getDayInfo, getData, readPsalmsFromNumbers, isBetweenDates, specialSunday, cancelPostfeastHypapante, isImpotrantTriodionDay, dayTransfer  } from './script.js';
 import { vespersEnding  } from './vespers.js';
 import { EasterHour  } from './minor_hour.js';
 
@@ -35,6 +35,13 @@ export async function enhanceCompline(priest, full, date){
     if ("postfeast" in dayData && dayData["postfeast"]==="02//02" && cancelPostfeastHypapante(dd, season, seasonWeek, dayOfWeek)) {
         delete dayData["postfeast"];
     }
+
+    let transfer = dayTransfer(season, seasonWeek, dayOfWeek, dd, mm);
+    if (transfer) {
+        [dd, mm] = transfer;
+        dayData = await getData(`${address}\\menaion\\${mm}\\${dd}.json`);
+    }
+
     const isIncarnationFeast = (dd_mm === "2512" || dd_mm === "0601" || dd_mm === "2503");
     const isAlleluiaDay = (
         isBetweenDates(mm, dd, 11, 15, 12, 19) &&

@@ -373,10 +373,18 @@ export function isImpotrantTriodionDay(season, seasonWeek, dayOfWeek, dayClass) 
     ) return true;
     return false;
 }
-//
-//export function dayTransfer(season, seasonWeek, dayOfWeek, dd, mm) {
-//
-//}
+
+export function dayTransfer(season, seasonWeek, dayOfWeek, dd, mm) {
+    if (dd === 26 && mm === 5 && season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 2) {
+        // Finding of the Head on Pentecost Mon -> Tue
+        return ["25", "05"]
+    }
+    if ((dd === 21 || dd === 22) && mm === 5 && season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 4) {
+        // Finding of the Head on Pentecost Sun or Sat before -> Thu before
+        return ["25", "05"]
+    }
+    return false
+}
 
 export async function kathismaToText(k, isGreatVespers, dayOfWeek) {
     // replace with readPsalmsFromNumbers when psalms are here
