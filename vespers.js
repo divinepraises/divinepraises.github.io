@@ -815,7 +815,7 @@ export async function makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek
     if (prePostFeastData && "TheotokosDismissal" in prePostFeastData) TheotokosDismissal = prePostFeastData["TheotokosDismissal"];
     if (prePostFeastData && "specialDismissal" in prePostFeastData) specialDismissal = prePostFeastData["specialDismissal"];
 
-    var gloryOrAnesti = gloryAndNow;
+    var gloryOrAnesti = `${glory}* ${andNow}`;
     var finalTheotokion = moreHonorable;
     if (isEasterWeek || season === "Pentecost" && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4)) {
         // for pentecost - Dol 478
