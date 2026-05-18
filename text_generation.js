@@ -61,15 +61,17 @@ export function trisagionToPater(priest){
 export const tripleAlleluia = `${glory} ${andNow}<br>
 	${cross} ${data.tripleAlleluia} <FONT COLOR="RED">(3)</FONT><br>`;
 
-export async function usualBeginning(priest, season, seasonWeek, dayOfWeek) {
+export async function usualBeginning(priest, season, seasonWeek, dayOfWeek, vespers=false) {
  var HK;
  if (
     season === "EasterWeek"
     || season === "Pentecost" && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4)
  ) {
     HK = `${(await getData(`${address}\\triodion\\EasterWeek\\00_major.json`))["troparion"].join("")} <FONT COLOR="RED">(3)</FONT><br><br>`;
- } else if (season === "Pentecost" && (seasonWeek > 5 || seasonWeek === 5 && dayOfWeek >= 4)) {
+ } else if (season === "Pentecost" && (seasonWeek > 5  && seasonWeek < 7 || seasonWeek === 5 && dayOfWeek >= 4)) {
     HK = "";
+ } else if (season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 1 && vespers) {
+    HK = `<div class="rubric">All kneel for the following prayer:</div>${data.heavenlyKing}<br><br>`;
  } else {
     HK = `${data.gloryBeToYou}<br><br>${data.heavenlyKing}<br><br>`;
  }

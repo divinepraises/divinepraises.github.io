@@ -1,5 +1,5 @@
 import { theotokionRefrain, letUsBless, wePraise, cross, usualBeginning, comeLetUs , lesserDoxology, itIsTrulyRight, trisagionToPater, tripleAlleluia, glory, andNow, LHM, prayerOfTheHours, gloryAndNow, moreHonorable, inTheName,prayerBlessingMayGodBeGracious, amen, endingBlockMinor, StEphremPrayer } from './text_generation.js';
-import { replaceCapsWords, getDayInfo, getData, readPsalmsFromNumbers, isBetweenDates, specialSunday, cancelPostfeastHypapante  } from './script.js';
+import { replaceCapsWords, getDayInfo, getData, readPsalmsFromNumbers, isBetweenDates, specialSunday, cancelPostfeastHypapante, isImpotrantTriodionDay  } from './script.js';
 import { vespersEnding  } from './vespers.js';
 import { EasterHour  } from './minor_hour.js';
 
@@ -197,7 +197,7 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
         var prostrations = "";
         // in forelent if pre/post feast, we make 3 prostrations with no words after kontakion: Dol p242 (case 4, paragraph 1)
         if (isGreatCompline && season === "Forelent" && ("forefeast" in dayData || "postfeast" in dayData)) prostrations = `<br><br> <div class="rubric">${cross} Three prostrations with no words are made here instead of the prayer of st. Ephrem later.</div>`
-        selectTropar(dayOfWeek,  smallComplineData, glas, dayData, specialDayData, dayTriodionData).then(tropar => {
+        selectTropar(season, seasonWeek, dayOfWeek,  smallComplineData, glas, dayData, specialDayData, dayTriodionData).then(tropar => {
             document.getElementById("troparia").innerHTML = tropar + prostrations;
         });
         if ((season === "Lent" || season === "HolyWeek") && dayOfWeek === 1 || isGreatCompline && !(season === "Forelent" && ("forefeast" in dayData || "postfeast" in dayData))) {
@@ -726,7 +726,7 @@ async function selectCanon(season, seasonWeek, dayOfWeek, glas, full, refrain, d
     return matinslike;
 }
 
-async function selectTropar(dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData) {
+async function selectTropar(season, seasonWeek, dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData) {
    /*
         - В п’ять перших днів тижня беруться наступних шість тропарів,
         >тобто спочатку храму, якщо він господній або богородичний,
@@ -782,7 +782,7 @@ async function selectTropar(dayOfWeek, hourData, glas, dayData, specialDayData, 
         prePostFeastKontakion = prePostFeastKontakion[prePostFeastKontakion.length-1]
     }
 
-    if (dayClass >= 8) {
+    if (dayClass >= 8 && !isImpotrantTriodionDay(season, seasonWeek, dayOfWeek, dayClass)) {
         if ("kontakia" in dayData) kontakion = dayData["kontakia"];
         else kontakion = (await getCommonText("kontakia", dayData));
         if (Array.isArray(kontakion)) {

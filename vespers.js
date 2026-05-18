@@ -326,6 +326,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
     const isWeekday = (dayOfWeek >= 1 && dayOfWeek <=5);
     const isLytia = ("lytia" in vespersMenaionData && dayData["class"] >= 10);
     const isEasterWeek = season === "EasterWeek" && dayOfWeek > 0;
+    const isPentecostMonday = (vespersTriodionData && "kneeling_prayers" in vespersTriodionData)
     var isGreatVespers = (dayData["class"] >= 8 || dayOfWeek === 0);
     if (isEasterWeek) {
         vespersOctoechosData = await getData(`${address}\\octoechos\\${glas}\\0_vespers.json`);
@@ -370,7 +371,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
         document.getElementById("beginning").innerHTML = `
           <div class=rubric>Should vespers be said immediately after the ninth hour, omit this beginning${alternative}:</div>
           <hr>
-          ${await usualBeginning(priest, season, seasonWeek, dayOfWeek)}
+          ${await usualBeginning(priest, season, seasonWeek, dayOfWeek, true)}
           <hr>
           <a id="#come_let_us">${comeLetUs}<br><br></a>`
     }
@@ -408,6 +409,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
           <label><input type="radio" name="prayersChoice" value="show"> Show the evening prayers.</label><br>
           <label><input type="radio" name="prayersChoice" value="hide" checked> Hide the evening prayers.</label>
           <br><br>`
+        if (isPentecostMonday) {priestPrayers["light"].splice(7, 1);}
         document.getElementById("priestly_prayers_selector").addEventListener("change",() => makePrayers(priestPrayers["light"], full, glas));
         document.getElementById("priestly_prayers").innerHTML = makePrayers(priestPrayers["light"], full, glas);
         } else {
@@ -416,6 +418,14 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
         }
         if ("special_prokimenon_index" in vespersMenaionData && vespersMenaionData["special_prokimenon_index"] === "deceased") {
             document.getElementById("ektenia_peace").innerHTML = makeEktenia(ekteniaData["deceased"]);
+        } else if (isPentecostMonday) {
+            var ektenia_peace = ekteniaData["peace"];
+            ektenia_peace = (
+                ektenia_peace.slice(0, ektenia_peace.length - 4)
+                .concat(vespersTriodionData["ektenia_peace"])
+                .concat(ektenia_peace.slice(ektenia_peace.length - 4, ektenia_peace.length))
+            );
+            document.getElementById("ektenia_peace").innerHTML = makeEktenia(ektenia_peace);
         } else {
             document.getElementById("ektenia_peace").innerHTML = makeEktenia(ekteniaData["peace"]);
         }
@@ -427,7 +437,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
 
     var omit_kathisma = false;
     if ("no_kathisma" in dayData || vespersTriodionData && "no_kathisma" in vespersTriodionData) omit_kathisma = true;
-    if (dayData["class"] === 12 && dayOfWeek >= 2 || omit_kathisma) {
+    if (dayData["class"] === 12 && dayOfWeek >= 2 || omit_kathisma || dayOfWeek === 1) {
         document.getElementById("kathismaSelector").innerHTML = "";
     } else if (isGreatVespers && (!isLenten || isLenten && dayOfWeek === 1) && !(season === "EasterWeek")){
         document.getElementById("kathismaSelector").innerHTML = `
@@ -452,9 +462,20 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
         wisdom = "";
     }
 
-    makeHymnOfLight(priest, isGreatVespers || (vespersTriodionData != undefined && "special_prokimenon_index" in vespersTriodionData), priestPrayers, wisdom, vespersData);
+    makeHymnOfLight(priest, isGreatVespers || (vespersTriodionData != undefined && "special_prokimenon_index" in vespersTriodionData || "special_prokimenon_index" in vespersMenaionData), priestPrayers, wisdom, vespersData);
 
-    document.getElementById("prokimenon").innerHTML = await makeProkimenon(dayOfWeek, vespersData, priest, dayData, vespersMenaionData, priestlyExclamationsData, vespersTriodionData, isEasterWeek);
+    var prokimenon = await makeProkimenon(dayOfWeek, vespersData, priest, dayData, vespersMenaionData, priestlyExclamationsData, vespersTriodionData, isEasterWeek);
+    if (priest === "1" && isPentecostMonday) {
+        var ektenia_small = ekteniaData["small"];
+        ektenia_small[3] = vespersTriodionData["kneeling_prayers"][4];
+        prokimenon += `
+            <br>${vespersTriodionData["kneeling_prayers"][0]}<br><br>
+            <span style="color:red;">Choir:</span> ${LHM} <span style="color:red;">(3)</span><br><br>
+            ${vespersTriodionData["kneeling_prayers"][1]}<br><br>
+            ${makeEktenia(ektenia_small)}
+            `
+    }
+    document.getElementById("prokimenon").innerHTML = prokimenon;
 
     if ("readings" in vespersMenaionData || vespersTriodionData != undefined && ("readings" in vespersTriodionData || "gospel" in vespersTriodionData)){
         document.getElementById("readings_selector").innerHTML = `
@@ -469,14 +490,38 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
     if (isStBasil && priest === "1" && (isWeekday || season === "EasterWeek")) {
         document.getElementById("lesserDoxology").innerHTML = "";
     } else {
-        document.getElementById("lesserDoxology").innerHTML = await lesserDoxology("vespers", season === "Lent" && dayOfWeek != 0 && dayOfWeek < 6 && dayData["class"] < 8);
+        var doxology = await lesserDoxology("vespers", season === "Lent" && dayOfWeek != 0 && dayOfWeek < 6 && dayData["class"] < 8);
+        if (priest === "1" && isPentecostMonday) {
+            var ektenia_small = ekteniaData["small"];
+            ektenia_small[3] = vespersTriodionData["kneeling_prayers"][6];
+            doxology += `
+                <br><br>${vespersTriodionData["kneeling_prayers"][0]}<br><br>
+                <span style="color:red;">Choir:</span> ${LHM} <span style="color:red;">(3)</span><br><br>
+                ${vespersTriodionData["kneeling_prayers"][3]}<br><br>
+                ${makeEktenia(ektenia_small)}
+                `
+        }
+        document.getElementById("lesserDoxology").innerHTML = doxology;
     }
 
-    if (isGreatVespers) {
+    if (isGreatVespers || isPentecostMonday) {
         if (isStBasil && priest === "1" && (isWeekday || season === "EasterWeek") || isLenten) {
             document.getElementById("ektenia_augmented_great").innerHTML = "";
         } else if (priest === "1") {
-            document.getElementById("ektenia_augmented_great").innerHTML = makeEktenia(ekteniaData["pre_augmented"], "short") + makeEktenia(ekteniaData["augmented"], "augmented") + "<br><br>";
+            var augmented = `
+                ${makeEktenia(ekteniaData["pre_augmented"], "short") + makeEktenia(ekteniaData["augmented"], "augmented")}
+                <br><br>`
+            if (isPentecostMonday) {
+                var ektenia_small = ekteniaData["small"];
+                ektenia_small[3] = vespersTriodionData["kneeling_prayers"][5];
+                augmented += `
+                    ${vespersTriodionData["kneeling_prayers"][0]}<br><br>
+                    <span style="color:red;">Choir:</span> ${LHM} <span style="color:red;">(3)</span><br><br>
+                    ${vespersTriodionData["kneeling_prayers"][2]}<br><br>
+                    ${makeEktenia(ektenia_small)}<br><br>
+                `
+            }
+            document.getElementById("ektenia_augmented_great").innerHTML = augmented;
         } else {
             document.getElementById("ektenia_augmented_great").innerHTML = `${LHM} <FONT COLOR="RED">(40)</FONT><br>${gloryAndNow}<br><br>`
         }
@@ -546,7 +591,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
                 || season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 4
                 || season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6
                 || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 0
-                || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 0
+                || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 1
             ) {
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
@@ -631,11 +676,12 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
     }
 
     const isSemiLenten = (season === "Forelent" && seasonWeek === 3 && dayOfWeek > 3);
+    const isPentecostMonday = (vespersTriodionData && "kneeling_prayers" in vespersTriodionData);
     if (isLenten || isSemiLenten) {
         document.getElementById("ektenia_augmented_or_ps33").innerHTML = await makeLentenEnding(priest, season, seasonWeek, dayOfWeek, dayData, ekteniaData);
     } else if (isEasterWeek) {
         document.getElementById("ektenia_augmented_or_ps33").innerHTML = "";
-    } else if (!isGreatVespers && !isLenten) {
+    } else if (!isGreatVespers && !isLenten && !isPentecostMonday) {
         if (priest == "1"){
             document.getElementById("ektenia_augmented_or_ps33").innerHTML = makeEktenia(ekteniaData["augmented"], "augmented") + "<br><br>";
         } else {
@@ -643,7 +689,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
         }
     }
 
-    document.getElementById("ending_block").innerHTML = await makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek, dayData["class"]>=8, vespersData, dayData, priestlyExclamationsData, isLenten || isSemiLenten, isEasterWeek);
+    document.getElementById("ending_block").innerHTML = await makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek, dayData["class"]>=8 || isPentecostMonday, vespersData, dayData, priestlyExclamationsData, isLenten || isSemiLenten, isEasterWeek);
 
     // after ending
     if (season === "Lent" && seasonWeek === 4 && dayOfWeek > 0 && dayOfWeek <= 5) {
@@ -1021,6 +1067,10 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
         theotokion = (await getData(`${address}\\triodion\\${season}\\44.json`))["troparia"];
         if (dayOfWeek === 5) dayTrop = [];
         if (dayOfWeek === 1) dayTrop.splice(0, 0, (await getData(`${address}\\triodion\\${season}\\50.json`))["troparia"]);
+    } else if (season === "Pentecost" && seasonWeek === 7) {
+        // Pentecost post-feast
+        theotokion = (await getData(`${address}\\triodion\\${season}\\60.json`))["troparia"];
+        if (dayOfWeek === 6) dayTrop = [];
     } else {
         // we end up here if it is not a vigil
         let tropGlas  = parseInt(dayTrop[dayTrop.length - 1].match(/\d+/)[0], 10);
@@ -1265,27 +1315,27 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
     } else if (
         season === "Pentecost" && (seasonWeek >= 5 && !(seasonWeek === 5 && dayOfWeek < 4)) && dayData["class"] < 8
     ) {
-         // postfeast Ascension
+         // postfeasts of Ascension and Pentecost
          apostMain = vespersTriodionData["aposticha"].slice(0, 4);
          apostVerses = vespersTriodionData["aposticha_verses"];
-         if ("aposticha" in vespersMenaionData) {
+         if ("aposticha" in vespersMenaionData && !(seasonWeek === 7 && dayOfWeek === 1)) {
             apostMain = apostMain.concat([vespersMenaionData["aposticha"][2], vespersTriodionData["aposticha"][6]])
             apostVerses = apostVerses.concat(
                 [`<div class="rubric">Tone ${vespersMenaionData["aposticha"][0]}</div>${glory}`,
                 `<div class="rubric">Tone ${vespersTriodionData["aposticha"][4]}</div>${andNow}`]
             );
-         } else if (dayOfWeek != 1) {
-            apostMain = apostMain.concat(vespersTriodionData["aposticha"][6])
-            apostVerses = apostVerses.concat(
-                `<div class="rubric">Tone ${vespersTriodionData["aposticha"][4]}</div>${gloryAndNow}`
-            );
-         } else {
+         } else if (seasonWeek === 6 && dayOfWeek === 1) {
             // Sun of Fathers evening
             apostMain = apostMain.concat([vespersTriodionData["aposticha"][6], vespersTriodionData["aposticha"][9]])
             apostVerses = apostVerses.concat([
                 `<div class="rubric">Tone ${vespersTriodionData["aposticha"][4]}</div>${glory}`,
                 `<div class="rubric">Tone ${vespersTriodionData["aposticha"][7]}</div>${andNow}`
             ]);
+         } else {
+            apostMain = apostMain.concat(vespersTriodionData["aposticha"][6])
+            apostVerses = apostVerses.concat(
+                `<div class="rubric">Tone ${vespersTriodionData["aposticha"][4]}</div>${gloryAndNow}`
+            );
          }
     } else if (vespersTriodionData != undefined) {
         // use weekday if triodion day
@@ -1854,8 +1904,8 @@ async function makeProkimenon(dayOfWeek, vespersData, priest, dayData, vespersMe
     return prokimenon;
 }
 
-function makeHymnOfLight(priest, isGreatVespers, priestPrayers, wisdom, vespersData){
-    if (!isGreatVespers || priest === "0") {
+function makeHymnOfLight(priest, isEntrance, priestPrayers, wisdom, vespersData){
+    if (!isEntrance || priest === "0") {
         document.getElementById("hymn_of_light").innerHTML = `
         <div class="subhead">Hymn of light</div><br>
         ${vespersData["hymn_of_light"]}`;
@@ -2058,6 +2108,10 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         stycheras = vespersTriodionData["ps140"];
         numStycheras = 6;
         stycheraScheme = Array(numStycheras).fill(1);
+    } else if (season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 1) {
+        // Pentecost Monday
+        stycheras = vespersTriodionData["ps140"];
+        stycheraScheme = Array(numStycheras).fill(2);
     } else if (season === "Pentecost" && dayOfWeek != 0) {
         const isLeaveTaking = seasonWeek != 5 && (seasonWeek != 3 && dayOfWeek === 6 || seasonWeek === 3 && dayOfWeek === 2);
         if (isLeaveTaking) {

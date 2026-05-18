@@ -1,5 +1,5 @@
 import { getBeginning, cross, StEphremPrayer, gloryGospel, usualBeginning, tripleAlleluia, glory, andNow, trisagionToPater, prayerOfTheHours, LHM, comeLetUs, gloryAndNow, moreHonorable, inTheName, prayerBlessingMayGodBeGracious, endingBlockMinor, amen, getCommonText } from './text_generation.js';
-import { readFromAddress, kathismaToText, getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords, specialSunday, cancelPostfeastHypapante } from './script.js';
+import { readFromAddress, kathismaToText, getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords, specialSunday, cancelPostfeastHypapante, isImpotrantTriodionDay } from './script.js';
 import { arrangeProkimenon, frameReadings } from './vespers.js';
 
 const address = `Text\\English`
@@ -150,8 +150,6 @@ export async function enhanceMinorHour(hour, priest, full, date) {
         const n = psalmNums[i];
         const resp = await fetch(psalmPaths[i]);
         const psalmData = await resp.text();
-        console.log(i, dayOfWeek)
-
         document.getElementById("psalms").innerHTML = `<div class="subhead">Psalm ${n}</div>${psalmData}`;
     }
     selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas, dayData, specialDayData, dayTriodionData, isLenten && dayData["class"] < 8).then(tropar => {
@@ -205,6 +203,8 @@ export async function enhanceMinorHour(hour, priest, full, date) {
         }
     } else if (season === "Pentecost" && (seasonWeek === 5 && dayOfWeek > 4 || seasonWeek === 6 && dayOfWeek < 6)) {
         specialDismissal = (await getData(`${address}\\triodion\\${season}\\44.json`))["specialDismissal"];
+    } else if (season === "Pentecost" && seasonWeek === 7) {
+        specialDismissal = (await getData(`${address}\\triodion\\${season}\\60.json`))["specialDismissal"];
     }
 
     document.getElementById("rubric_next").innerHTML = `
@@ -562,6 +562,9 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         // leave-taking of Easter
         const sundayTrop = (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][5];
         return glory + "<br><br>" + sundayTrop;
+    } else if (season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 1) {
+        // Pentecost mon
+        return glory + "<br><br>" + (await getData(`${address}\\triodion\\${season}\\60.json`))["troparia"];;
     } else if (season === "Pentecost" && dayOfWeek != 0) {
         prePostFeast = "postfeast";
         dayTriodionData = undefined;
@@ -811,9 +814,10 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
             seasonWeek === 3 && dayOfWeek === 3
             || dayTriodionData && "class" in dayTriodionData && dayTriodionData["class"] >= 8
             || seasonWeek === 6 && dayOfWeek === 6
+            || isImpotrantTriodionDay(season, seasonWeek, dayOfWeek, dayData["class"])
             )
         ) {
-        // mid-Pentecost, Ascension, All souls
+        // mid-Pentecost, Ascension, All souls, Pentecost Sun and Mon
         return dayTriodionData["kontakia"];
     } else if (season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 3) {
         // leave-taking of Easter

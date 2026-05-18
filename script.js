@@ -360,6 +360,20 @@ export function cancelPostfeastHypapante(dd_str, season, seasonWeek, dayOfWeek) 
     return false
 }
 
+export function isImpotrantTriodionDay(season, seasonWeek, dayOfWeek, dayClass) {
+    // when polyeleoses are transferred
+    if (
+        season === "Forelent" && seasonWeek === 2 && dayOfWeek === 6
+        || season === "HolyWeek" && dayClass < 11 // Annunciation on HW is ok
+        || season === "EasterWeek" // this will not happen here
+        || season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6
+        || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 0
+        || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 1
+        || season === "Pentecost" && seasonWeek === 8 && dayOfWeek === 0
+    ) return true;
+    return false;
+}
+
 export async function kathismaToText(k, isGreatVespers, dayOfWeek) {
     // replace with readPsalmsFromNumbers when psalms are here
     var kathPsalms = await getData(`${address}\\psalms\\kathismas.json`);
