@@ -304,6 +304,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
                 || season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3
                 || season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 4
                 || season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6
+                || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 0
             ) {
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
@@ -543,6 +544,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
                 || season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3
                 || season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 4
                 || season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6
+                || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 0
             ) {
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
@@ -1142,7 +1144,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
                 .concat(apostTriod[2])
             )
         }
-    } else if (season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 4) {
+    } else if (season === "Pentecost" && (seasonWeek === 5 && dayOfWeek === 4 || seasonWeek === 7 && dayOfWeek === 0)) {
         // Ascension
         apostMain = vespersTriodionData["aposticha"];
         apostVerses = vespersTriodionData["aposticha_verses"].concat(
@@ -1952,6 +1954,11 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         stycheras.splice(7, 0, "g")
         numStycheras = 6;
         stycheraScheme = Array(numStycheras).fill(1);
+    } else if (season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 0) {
+        // Pentecost Sunday
+        stycheras = psalm140menaionStycheras;
+        forceNumSticheras = 10;
+        stycheraScheme = [2, 1, 1, 2, 1, 1, 1, 1];
     } else if (dayData["class"] === 12) {
         stycheras = psalm140menaionStycheras;
         if (vespersTriodionData != undefined && "lytia" in vespersTriodionData) forceNumSticheras = 10;
