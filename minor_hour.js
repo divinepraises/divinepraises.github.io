@@ -192,7 +192,8 @@ export async function enhanceMinorHour(hour, priest, full, date) {
 
 
     var specialDismissal = "";
-    if (dayTriodionData && "specialDismissal" in dayTriodionData) specialDismissal = dayTriodionData["specialDismissal"];
+    const isDeceased = (season === "Pentecost" && seasonWeek === 6 || season === "Forelent" && seasonWeek === 2) && dayOfWeek === 6;
+    if (dayTriodionData && "specialDismissal" in dayTriodionData && !isDeceased) specialDismissal = dayTriodionData["specialDismissal"];
     else if (dayData && "specialDismissal" in dayData) specialDismissal = dayData["specialDismissal"];
 
     const isPentecost = (season === "Pentecost" && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4));
@@ -554,6 +555,9 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         ) {
         // mid-Pentecost, Ascension
         return glory + "<br><br>" + dayTriodionData["troparia"];
+    } else if (season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6) {
+        // all souls
+        return glory + "<br><br>" + dayTriodionData["troparia"][0];
     } else if (season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 3) {
         // leave-taking of Easter
         const sundayTrop = (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][5];
@@ -806,9 +810,10 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         && (
             seasonWeek === 3 && dayOfWeek === 3
             || dayTriodionData && "class" in dayTriodionData && dayTriodionData["class"] >= 8
+            || seasonWeek === 6 && dayOfWeek === 6
             )
         ) {
-        // mid-Pentecost
+        // mid-Pentecost, Ascension, All souls
         return dayTriodionData["kontakia"];
     } else if (season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 3) {
         // leave-taking of Easter

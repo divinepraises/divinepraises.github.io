@@ -303,6 +303,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
                 || season === "Pentecost" && seasonWeek === 1 && dayOfWeek === 0
                 || season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3
                 || season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 4
+                || season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6
             ) {
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
@@ -541,6 +542,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
                 || season === "Pentecost" && dayOfWeek === 0 && dayData["class"] < 8
                 || season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3
                 || season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 4
+                || season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6
             ) {
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
@@ -835,7 +837,7 @@ export async function makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek
         if (addFinalTheotokion) res += `${finalTheotokion}<br><br>`
         res += `${priestlyExclamationsData["Christ"]}<br><br>
             ${gloryOrAnesti}* ${LHM} ${LHM} ${LHM}* ${giveTheBlessing(priest)}<br><br>
-            ${dismissalMajor(dayOfWeek, season, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal, crossDismissal)}
+            ${dismissalMajor(dayOfWeek, seasonWeek, season, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal, crossDismissal)}
             `;
     } else {
         if (greatDismissal) {
@@ -843,7 +845,7 @@ export async function makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek
         }
         if (addFinalTheotokion) res += `${finalTheotokion}<br><br>`
         res +=`${gloryOrAnesti}* ${LHM} ${LHM} ${LHM}* ${giveTheBlessing(priest)}<br><br>
-        ${dismissalMajor(dayOfWeek, season, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal, crossDismissal)}
+        ${dismissalMajor(dayOfWeek, seasonWeek, season, priest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal, crossDismissal)}
         `;
     }
 
@@ -1245,10 +1247,21 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
                 .concat(vespersTriodionGN[vespersTriodionGN.length-1])
             );
         }
+    } else if (season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6) {
+        // all souls
+        apostMain = vespersTriodionData["aposticha"];
+        apostVerses = vespersData["aposticha_dead"].concat(
+            [
+                `<div class="rubric">Tone ${vespersTriodionData["aposticha"][4]}</div>${glory}`,
+                andNow
+            ]
+        );
+        apostMain.splice(7, 1);
+        apostMain.splice(4, 2);
     } else if (
         season === "Pentecost" && (seasonWeek >= 5 && !(seasonWeek === 5 && dayOfWeek < 4)) && dayData["class"] < 8
     ) {
-         // ostfeast Ascension
+         // postfeast Ascension
          apostMain = vespersTriodionData["aposticha"].slice(0, 4);
          apostVerses = vespersTriodionData["aposticha_verses"];
          if ("aposticha" in vespersMenaionData) {

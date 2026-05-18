@@ -126,10 +126,10 @@ export function giveTheBlessing(withPriest) {
 	};
 }
 
-export function dismissalMajor(dayOfWeek, season, withPriest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal, crossDismissal) {
+export function dismissalMajor(dayOfWeek, seasonWeek, season, withPriest, isGreatVespers, prePostFeast, saintNames, TheotokosDismissal, specialDismissal, crossDismissal) {
     var text;
     var replacements = {};
-    const dismissalDeceased = (season === "Forelent" && dayOfWeek === 6 && !isGreatVespers && !("name" in saintNames) && specialDismissal != "")
+    const dismissalDeceased = (season === "Forelent" && seasonWeek === 2 || season === "Pentecost" && seasonWeek === 6) && dayOfWeek === 6
 	if (withPriest === "1" && !dismissalDeceased) {
 		text = `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.priestDismissalMajor}</b> `;
 	} else if (withPriest === "0" && !dismissalDeceased) {

@@ -131,8 +131,9 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
                     || dayOfWeek === 6 && seasonWeek === 6
                 )
                 || season === "Pentecost" && dayOfWeek === 0
-                || season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3
-                || season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 3
+                || season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3  // mid-pentecost
+                || season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 3  // leave-taking of Easter
+                || season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6  // all souls
             )
         ) {
             dayName = "";
