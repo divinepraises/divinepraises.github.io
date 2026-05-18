@@ -154,9 +154,8 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
 }
 
 export function constructDayName(dayData, forDismissal=true){
-    var saint;
-    if ("saint" in dayData) saint = dayData["saint"];
-    else saint = st;
+    var saint = dayData["saint"] ?? st;
+    var title = dayData["title"] ?? "";
 
     if (!forDismissal && "day name" in dayData) {
         var dayNames = dayData["day name"];
@@ -167,7 +166,7 @@ export function constructDayName(dayData, forDismissal=true){
             if (!Array.isArray(saint)) {saint = Array(dayNames.length).fill(saint)}
             for (let [i, name] of dayNames.entries()){
                 if (name != "") {dateInfo += `${name}`; continue;}
-                dateInfo += `${saint[i]} ${dayData["type"][i]} ${dayData["name"][i]}`
+                dateInfo += `${saint[i]} ${dayData["type"][i]} ${dayData["name"][i]} ${title[i]}`
                 if (i != dayNames.length-1) dateInfo += `, `
             }
             return dateInfo;
@@ -177,13 +176,14 @@ export function constructDayName(dayData, forDismissal=true){
         // no saints
         if (dayData["type"] === "" && dayData["name"] === "") return "";
         // one saint
-        return `${saint} ${dayData["type"]} ${dayData["name"]}`
+        return `${saint} ${dayData["type"]} ${dayData["name"]}${title}`
     } else {
         // list of saints
         var dateInfo = ``;
         if (!Array.isArray(saint)) {saint = Array(dayData["name"].length).fill(saint)}
+        if (!Array.isArray(title)) {title = Array(dayData["name"].length).fill(title)}
         for (let [i, name] of dayData["name"].entries()){
-            dateInfo += ` ${saint[i]} ${dayData["type"][i]} ${name},`
+            dateInfo += ` ${saint[i]} ${dayData["type"][i]} ${name}${title[i]},`
         }
         return dateInfo.slice(0, -1);
     }
