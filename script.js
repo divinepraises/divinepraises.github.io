@@ -389,9 +389,17 @@ export function dayTransfer(season, seasonWeek, dayOfWeek, dd, mm) {
         // Finding of the Head on Pentecost Mon -> Tue
         return ["25", "05"]
     }
-    if ((dd == 21 || dd == 22) && mm === 5 && season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 4) {
+    if ((dd == 23 || dd == 22) && mm === 5 && season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 4) {
         // Finding of the Head on Pentecost Sun or Sat before -> Thu before
         return ["25", "05"]
+    }
+    if (dd == 22 && mm == 5 && season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 2) {
+        // Constantine&Helen on Pentecost Mon -> Tue
+        return ["21", "05"]
+    }
+    if ((dd == 19 || dd == 20) && mm === 5 && season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 4) {
+        // Constantine&Helen on Pentecost Sun or Sat before -> Thu before
+        return ["21", "05"]
     }
     return false
 }
