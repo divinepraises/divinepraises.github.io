@@ -557,7 +557,7 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         season === "Pentecost"
         && (
             seasonWeek === 3 && dayOfWeek === 3
-            || dayTriodionData && "class" in dayTriodionData && dayTriodionData["class"] >= 8
+            || dayTriodionData && "class" in dayTriodionData && dayTriodionData["class"] >= 8 && !(seasonWeek === 8 && dayOfWeek === 0)
             )
         ) {
         // mid-Pentecost, Ascension
@@ -686,6 +686,11 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
             ${(await getData(`${address}\\triodion\\${season}\\44.json`))["troparia"]}
             `;
         else if (season === "Pentecost" && seasonWeek === 6 && (hour === "3hour" || hour === "9hour")) return `
+            ${sundayTrop["troparia"][glas]}<br><br>
+            ${glory}<br><br>
+            ${dayTriodionData["troparia"]}
+            `;
+        else if (season === "Pentecost" && seasonWeek === 8) return `
             ${sundayTrop["troparia"][glas]}<br><br>
             ${glory}<br><br>
             ${dayTriodionData["troparia"]}

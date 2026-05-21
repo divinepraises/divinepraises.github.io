@@ -801,8 +801,11 @@ async function selectTropar(season, seasonWeek, dayOfWeek, hourData, glas, dayDa
             else kontakion = `${kontakion[0]}<br><br><i>${gloryAndNow}</i><br><br>${kontakion[1]}`;
         }
     }
-    if (dayTriodionData != undefined && "kontakia" in dayTriodionData && !(dayOfWeek === 0 && (dayTriodionData["name"] ?? "") != "")) {
+    if (
+        dayTriodionData != undefined && "kontakia" in dayTriodionData
         // Sundays of ascetic saints treated like normal Sundays
+        && !(season === "Lent" && (seasonWeek === 4 || seasonWeek === 5) && dayOfWeek === 0)
+    ) {
         if (kontakion != "") {
             return `<div class="rubric">Kontakia:</div>
                 ${kontakion}<br><br><i>${gloryAndNow}</i><br><br>${dayTriodionData["kontakia"]}`
