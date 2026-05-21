@@ -144,6 +144,7 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
                     dayOfWeek === 0
                     || seasonWeek === 3 && dayOfWeek === 3  // mid-pentecost
                     || seasonWeek === 5 && dayOfWeek === 3  // leave-taking of Easter
+                    || seasonWeek === 7 && dayOfWeek === 6  // leave-taking of Easter
                 )
             ) || (
                 // saint does not matter
