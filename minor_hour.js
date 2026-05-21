@@ -569,8 +569,8 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         // leave-taking of Easter
         const sundayTrop = (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][5];
         return glory + "<br><br>" + sundayTrop;
-    } else if (season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 1) {
-        // Pentecost mon
+    } else if (season === "Pentecost" && seasonWeek === 7 && (dayOfWeek === 1 || dayOfWeek === 6)) {
+        // Pentecost mon / sat
         return glory + "<br><br>" + (await getData(`${address}\\triodion\\${season}\\60.json`))["troparia"];;
     } else if (season === "Pentecost" && dayOfWeek != 0) {
         prePostFeast = "postfeast";
@@ -844,6 +844,7 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         prePostFeast = "postfeast";
         prePostFeastKontakion = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0.json`))["kontakia"];
         dayTriodionData = undefined;
+        if (seasonWeek === 7 && dayOfWeek === 6) return prePostFeastKontakion;
     }
     if (Array.isArray(prePostFeastKontakion)) {
         // we assume that in a list, the kontakion of a pre-feast is the last one

@@ -1265,6 +1265,14 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
             `<div class="rubric">Tone ${vespersTriodionData["aposticha"][4]}</div>${gloryAndNow}`
         );
         apostMain.splice(4, 2); // rm glory and tone
+    } else if (season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 6) {
+        // Leave-taking of Ascension
+        vespersTriodionData = (await getData(`${address}\\triodion\\Pentecost\\60_vespers.json`));
+        apostMain = vespersTriodionData["aposticha"];
+        apostVerses = vespersTriodionData["aposticha_verses"].concat(
+            `<div class="rubric">Tone ${vespersTriodionData["aposticha"][4]}</div>${gloryAndNow}`
+        );
+        apostMain.splice(4, 2); // rm glory and tone
     } else if (
             season === "Pentecost" && !(seasonWeek === 1 && dayOfWeek === 0)
             && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4)
@@ -2125,6 +2133,12 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         // Pentecost Monday
         stycheras = vespersTriodionData["ps140"];
         stycheraScheme = Array(numStycheras).fill(2);
+    } else if (season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 6) {
+        // Pentecost Saturday
+        stycheras = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0_vespers.json`))["ps140"];
+        stycheras.splice(8, 2)
+        numStycheras = 6;
+        stycheraScheme = Array(6).fill(1);
     } else if (season === "Pentecost" && dayOfWeek != 0) {
         const isLeaveTaking = seasonWeek != 5 && (seasonWeek != 3 && dayOfWeek === 6 || seasonWeek === 3 && dayOfWeek === 2);
         if (isLeaveTaking) {
