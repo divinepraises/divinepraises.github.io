@@ -215,7 +215,7 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
         } else document.getElementById("st_ephrem").innerHTML = "";
     }
 
-	document.getElementById("endingBlock").innerHTML = `${await endingBlockMinor(priest, dayOfWeek, "", season === "Pentecost")}<br>`;
+	document.getElementById("endingBlock").innerHTML = `${await endingBlockMinor(priest, dayOfWeek, "", season === "Pentecost" && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4))}<br>`;
 }
 
 async function smallComplineBeginning(full, season, seasonWeek, dayOfWeek, priest, isAlleluiaDay, glas, dayData, dateAddress) {
