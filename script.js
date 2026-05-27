@@ -86,10 +86,10 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
 	        return `${symbolData[dayTriodionData["class"]]} ${dd}/${mm}: ${dayTriodionData["day name"]}`;
 	    } catch {}
 	}
-	if (season === "Pentecost" || season === "Forelent" || season === "Lent" && dayOfWeek != 0) {
+	if (season === "Pentecost" || season === "Forelent" || season === "Lent" && dayOfWeek != 0 || (season === "PostPentecost" && isTriodionFeastAfterPentecost(seasonWeek, dayOfWeek))) {
 	    try {
 	        let dayTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}.json`);
-	        specialName = dayTriodionData["day name"] + ". ";
+	        if (dayTriodionData["day name"] != "") specialName = dayTriodionData["day name"] + ". ";
 	        if ("note" in dayTriodionData) note += `<br><div class="rubric">${dayTriodionData["note"]}</div>`
 	        if ("class" in dayTriodionData && dayTriodionData["class"] === 12) {
 	            return `${symbolData[dayTriodionData["class"]]} ${dd}/${mm}: ${specialName} ${note}`;
@@ -261,12 +261,11 @@ export function parseDate(currentYear, currentMonth, currentDay) {
 		seasonToShow = `${glas} week after Easter`;
 		seasonWeek = glas;
 		season = "Pentecost";
-	} else if (diffFromEaster > 56 & diffFromEaster < 365+34) {  
-		// TODO: account for post-Union feasts that are in Triodion but after 8 weeks
+	} else if (diffFromEaster > 56 & diffFromEaster < 365+34) {
 		seasonToShow = `Week of tone ${glas}`;
-		seasonWeek = glas;
-		season = "0";
-	} else {  // TODO: break into cases
+		seasonWeek = Math.floor((diffFromEaster - 56)/7) + 1;
+		season = "PostPentecost";
+	} else {
 		[lastEasterMonth, lastEasterDay] = calculateEaster(currentYear-1);
 		const diffFromLastEaster = dateDiffInDays([currentYear, currentMonth, currentDay], [currentYear-1,lastEasterMonth,lastEasterDay]);
 		var dd;
@@ -296,8 +295,8 @@ export function parseDate(currentYear, currentMonth, currentDay) {
 			glas = Math.floor((diffFromLastEaster)/7)%8;
 			if (glas === 0) glas = 8;
             seasonToShow = `Week of tone ${glas}`;
-            season = "0";
-            seasonWeek = glas;
+            season = "PostPentecost";
+            seasonWeek = Math.floor((diffFromLastEaster - 56)/7) + 1;
 		}
 	}
 	return [season, seasonWeek, seasonToShow, glas];
@@ -359,7 +358,7 @@ export async function readPsalmsFromNumbers(psalmNums, psalmHeaders){
 export function cancelPostfeastHypapante(dd_str, season, seasonWeek, dayOfWeek) {
     const dd = Number(dd_str);
     /// explore all options and return a bool that tells whether the postfeast of hypapante should be cancelled
-    if (season === "0") return false
+    if (season === "PostPentecost") return false
     if (season === "Lent") return true
     if (
         (seasonWeek === 2 && dayOfWeek === 6) ||  // meatfare sat no matter what calendar date
@@ -385,7 +384,14 @@ export function isImpotrantTriodionDay(season, seasonWeek, dayOfWeek, dayClass) 
     return false;
 }
 
+export async function isTriodionFeastAfterPentecost(seasonWeek, dayOfWeek) {
+    if (seasonWeek > 2) return false
+    let daysToCheck = await getData(`${address}\\triodion\\PostPentecost\\existing_days.json`)
+    return !!daysToCheck?.[seasonWeek-1]?.includes(dayOfWeek);
+}
+
 export function dayTransfer(season, seasonWeek, dayOfWeek, dd, mm) {
+    // TODO: refactor: if (today a possible transfer day in triodion) { look if menaion day to transfer from has class>=8 }
     if (dd == 26 && mm == 5 && season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 2) {
         // Finding of the Head on Pentecost Mon -> Tue
         return ["25", "05"]

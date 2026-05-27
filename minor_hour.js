@@ -1,5 +1,5 @@
 import { getBeginning, cross, StEphremPrayer, gloryGospel, usualBeginning, tripleAlleluia, glory, andNow, trisagionToPater, prayerOfTheHours, LHM, comeLetUs, gloryAndNow, moreHonorable, inTheName, prayerBlessingMayGodBeGracious, endingBlockMinor, amen, getCommonText } from './text_generation.js';
-import { readFromAddress, kathismaToText, getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords, specialSunday, cancelPostfeastHypapante, isImpotrantTriodionDay, dayTransfer } from './script.js';
+import { readFromAddress, kathismaToText, getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords, specialSunday, cancelPostfeastHypapante, isImpotrantTriodionDay, dayTransfer, isTriodionFeastAfterPentecost } from './script.js';
 import { arrangeProkimenon, frameReadings } from './vespers.js';
 
 const address = `Text\\English`
@@ -93,7 +93,7 @@ export async function enhanceMinorHour(hour, priest, full, date) {
     }
 
     var dayTriodionData;
-    if (season === "Pentecost" || season === "Lent" || season === "Forelent" || season === "HolyWeek" || season === "EasterWeek") {
+    if (season === "PostPentecost" && await isTriodionFeastAfterPentecost(seasonWeek, dayOfWeek) || season === "Pentecost" || season === "Lent" || season === "Forelent" || season === "HolyWeek" || season === "EasterWeek") {
         var weekToLookAt = seasonWeek - 1;
         if (dayOfWeek === 0 && season === "Lent") weekToLookAt = seasonWeek;
         try {
@@ -602,7 +602,9 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         prePostFeastTroparion = prePostFeastTroparion[prePostFeastTroparion.length-1]
     }
 
-    if (dayTriodionData != undefined && "troparia" in dayTriodionData && dayOfWeek === 6) {
+    if (season === "PostPentecost" && dayTriodionData != undefined && "class" in dayTriodionData && "troparia" in dayTriodionData && dayTriodionData["class"] >= 8) {
+        return glory + "<br><br>" + dayTriodionData["troparia"];
+    } else if (dayTriodionData != undefined && "troparia" in dayTriodionData && dayOfWeek === 6) {
         var dayTrop = dayTriodionData["troparia"];
         if (Array.isArray(dayTrop) && dayTrop.length === 1
             || season === "Forelent" && seasonWeek === 2 && dayOfWeek === 6) dayTrop = dayTrop[0];

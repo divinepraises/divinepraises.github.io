@@ -1,5 +1,5 @@
 import { StEphremPrayer, itIsTrulyRight, prayerBlessingMayGodBeGracious, inTheName, HeWhoIs, getBeginning, usualBeginning, comeLetUs ,tripleAlleluia, lesserDoxology, trisagionToPater, glory, andNow, LHM, GTL, TYL, gloryAndNow, getCommonText, moreHonorable, amen, giveTheBlessing, dismissalMajor, cross } from './text_generation.js';
-import { kathismaToText, cancelPostfeastHypapante, getDayInfo, getData, isBetweenDates, readPsalmsFromNumbers, constructDayName, replaceCapsWords, specialSunday, dayTransfer } from './script.js';
+import { kathismaToText, cancelPostfeastHypapante, getDayInfo, getData, isBetweenDates, readPsalmsFromNumbers, constructDayName, replaceCapsWords, specialSunday, dayTransfer, isTriodionFeastAfterPentecost } from './script.js';
 var address = `Text\\English`
 
 // TODO readings
@@ -250,7 +250,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
     var priestlyExclamationsData, vespersTriodionData, dayTriodionData, vespersOctoechosData;
     if (priest === "1") priestlyExclamationsData = await getData(`${address}\\horologion\\priestly_exclamations.json`);
 
-    if (season === "Pentecost" || season === "EasterWeek" || season === "HolyWeek" || season === "Lent" || season === "Forelent") {
+    if (season === "PostPentecost" && await isTriodionFeastAfterPentecost(seasonWeek, dayOfWeek) || season === "Pentecost" || season === "EasterWeek" || season === "HolyWeek" || season === "Lent" || season === "Forelent") {
          const isStAndrewCanonMatins = (
             season === "Lent" && seasonWeek === 5
             && (
@@ -277,9 +277,9 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
                     || (season === "EasterWeek" && (dayOfWeek === 0 ||dayData["class"] < 8))
                 ) {
                     dayData["day name"] = dayTriodionData["day name"];
-                } else if ("day name" in dayData && dayData["day name"] != dayTriodionData["day name"]) {
+                } else if ("day name" in dayData && dayData["day name"] != dayTriodionData["day name"] && dayTriodionData["day name"] != "") {
                     dayData["day name"] = dayTriodionData["day name"] + ", " + dayData["day name"];
-                } else {
+                } else if (dayTriodionData["day name"] != "") {
                     dayData["day name"] = dayTriodionData["day name"] + ", " + constructDayName(dayData, false);
                 }
             }
@@ -313,6 +313,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
                 || season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6
                 || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 0
                 || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 1
+                || season === "PostPentecost" && dayTriodionData?.class >= 8
             ) {
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
@@ -558,7 +559,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
 
     var vespersOctoechosData = await getData(`${address}\\octoechos\\${glas}\\${dayOfWeek}_vespers.json`);
     var vespersTriodionData, dayTriodionData;
-    if (season === "Pentecost" || season === "EasterWeek" || season === "HolyWeek" || season === "Lent" || season === "Forelent") {
+    if (season === "PostPentecost" && await isTriodionFeastAfterPentecost(seasonWeek, dayOfWeek) || season === "Pentecost" || season === "EasterWeek" || season === "HolyWeek" || season === "Lent" || season === "Forelent") {
         var weekToLookAt = seasonWeek - 1;
         if (dayOfWeek === 0 && season === "Lent") weekToLookAt = seasonWeek;
         try {
@@ -2786,7 +2787,7 @@ async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, seasonWeek, pri
         || season === "Lent"
         || season === "Forelent"
         || (
-            season === "0" && (
+            season === "PostPentecost" && (
                 isBetweenDates(mm, dd, 9, 28, 12, 10)  // after the week after leave taking of Exaltation
                 ||isBetweenDates(mm, dd, 1, 15, 3, 15)  // from jan 15 to a random date that is surely in Lent
                 ||(isBetweenDates(mm, dd, 9, 22, 9, 27) && dd > dayOfWeek+21)  // after Sun after leave-taking of Exaltation

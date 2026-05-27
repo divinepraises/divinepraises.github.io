@@ -1,5 +1,5 @@
 import { theotokionRefrain, letUsBless, wePraise, cross, usualBeginning, comeLetUs , lesserDoxology, itIsTrulyRight, trisagionToPater, tripleAlleluia, glory, andNow, LHM, prayerOfTheHours, gloryAndNow, moreHonorable, inTheName,prayerBlessingMayGodBeGracious, amen, endingBlockMinor, StEphremPrayer } from './text_generation.js';
-import { replaceCapsWords, getDayInfo, getData, readPsalmsFromNumbers, isBetweenDates, specialSunday, cancelPostfeastHypapante, isImpotrantTriodionDay, dayTransfer  } from './script.js';
+import { replaceCapsWords, getDayInfo, getData, readPsalmsFromNumbers, isBetweenDates, specialSunday, cancelPostfeastHypapante, isImpotrantTriodionDay, dayTransfer, isTriodionFeastAfterPentecost  } from './script.js';
 import { vespersEnding  } from './vespers.js';
 import { EasterHour  } from './minor_hour.js';
 
@@ -70,7 +70,7 @@ export async function enhanceCompline(priest, full, date){
         if (specialSundayName != undefined) specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
     }
     var dayTriodionData;
-    if (season === "Pentecost" || season === "EasterWeek" || season === "HolyWeek" || season === "Lent" || season === "Forelent") {
+    if (season === "PostPentecost" && await isTriodionFeastAfterPentecost(seasonWeek, dayOfWeek) || season === "Pentecost" || season === "EasterWeek" || season === "HolyWeek" || season === "Lent" || season === "Forelent") {
         var weekToLookAt = seasonWeek - 1;
         if (dayOfWeek === 0 && season === "Lent") weekToLookAt = seasonWeek;
         try {
