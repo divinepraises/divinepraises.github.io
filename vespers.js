@@ -323,6 +323,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
                 delete vespersMenaionData["second_reading"];
                 delete vespersMenaionData["epistle"];
                 delete vespersMenaionData["gospel"];
+                delete dayData["title"];
                 if ("day name vespers" in dayData) dayData["day name"] = dayData["day name vespers"]
             } else if (season === "EasterWeek" && dayOfWeek != 0 && dayData["class"] >= 8) {
                 vespersTriodionData["readings"] = vespersMenaionData["readings"];
@@ -609,6 +610,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
                 delete vespersMenaionData["second_reading"];
                 delete vespersMenaionData["epistle"];
                 delete vespersMenaionData["gospel"];
+                delete dayData["title"]
                 if ("day name vespers" in dayData) dayData["day name"] = dayData["day name vespers"]
             }
         } catch {}
@@ -1472,7 +1474,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
                 }
                 if (foundGloria) aposticha += stychera + "<br><br>";
             }
-            if (!foundNow && vespersTriodionData === undefined) {
+            if (!foundNow && (vespersTriodionData === undefined || vespersMenaionData["aposticha"][2] === vespersTriodionData["aposticha"][2])) {
                 const theotokion = (await getData(`${address}\\octoechos\\${tone}\\0_vespers.json`))["aposticha"][6];
                 aposticha += `<i>${andNow}</i><br><br>${theotokion}<br><br>`
             } else if (!foundNow && vespersTriodionData != undefined) {
@@ -2284,6 +2286,11 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         stycheraScheme = Array(3).fill(1).concat([2, 1, 1, 1]);
         numStycheras += numTriodionStycheras;
         forceNumSticheras = 8;
+    } else if (season === "PostPentecost" && dayOfWeek === 0 && vespersTriodionData != undefined) {
+        // all saints of Rus
+        stycheras = vespersOctoechosData["ps140"].slice(0, 5).concat(psalm140menaionStycheras);
+        stycheraScheme = Array(4).fill(1).concat([2, 2, 2])
+        numStycheras = 4+3;
     } else if (dayOfWeek === 0 && vespersTriodionData != undefined) {
         // Sun in Triodion
         psalm140OctoechosStycheras = vespersOctoechosData["ps140"];
