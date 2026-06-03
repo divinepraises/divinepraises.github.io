@@ -2038,7 +2038,7 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         stycheraScheme = [2, 1, 1, 2, 1, 1, 1, 1];
     } else if (dayData["class"] === 12) {
         stycheras = psalm140menaionStycheras;
-        if (vespersTriodionData != undefined && "lytia" in vespersTriodionData) forceNumSticheras = 10;
+        if (vespersTriodionData != undefined && "lytia" in vespersTriodionData && season != "PostPentecost") forceNumSticheras = 10;
         else forceNumSticheras = 8;
         stycheraScheme = Array(numStycheras).fill(Math.floor(forceNumSticheras / numStycheras));
         for (let i=0; i < forceNumSticheras % numStycheras; i++) stycheraScheme[i] += 1;
