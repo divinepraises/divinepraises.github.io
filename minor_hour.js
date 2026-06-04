@@ -987,8 +987,9 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
     else dayKond = await getCommonText("kontakia", dayData);
     if (!Array.isArray(dayKond)) dayKond = [dayKond];
 
-    if (dayData["class"] >= 8){
-        return `${dayKond[0]}`;
+    if (dayData["class"] >= 8) {
+        if (dayKond.length === 1 || hour === "1hour" || hour === "6hour") return `${dayKond[0]}`;
+        else return `${dayKond[1]}`;
     }
 
     if (hour === "6hour"){
