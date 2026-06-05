@@ -601,6 +601,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
                 || season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6
                 || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 0
                 || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 1
+                || season === "PostPentecost" && dayTriodionData?.class >= 8
             ) {
                 Object.assign(vespersMenaionData, vespersTriodionData);
                 Object.assign(dayData, dayTriodionData);
@@ -2039,6 +2040,13 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
     } else if (dayData["class"] === 12) {
         stycheras = psalm140menaionStycheras;
         if (vespersTriodionData != undefined && "lytia" in vespersTriodionData && season != "PostPentecost") forceNumSticheras = 10;
+        else forceNumSticheras = 8;
+        stycheraScheme = Array(numStycheras).fill(Math.floor(forceNumSticheras / numStycheras));
+        for (let i=0; i < forceNumSticheras % numStycheras; i++) stycheraScheme[i] += 1;
+    } else if (season === "PostPentecost" && dayData["class"] === 11) {
+        // compassion
+        stycheras = psalm140menaionStycheras;
+        if (vespersTriodionData != undefined && "six stichera" in vespersTriodionData) forceNumSticheras = 6;
         else forceNumSticheras = 8;
         stycheraScheme = Array(numStycheras).fill(Math.floor(forceNumSticheras / numStycheras));
         for (let i=0; i < forceNumSticheras % numStycheras; i++) stycheraScheme[i] += 1;

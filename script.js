@@ -404,9 +404,21 @@ export function dayTransfer(season, seasonWeek, dayOfWeek, dd, mm) {
         // Constantine&Helen on Pentecost Mon -> Tue
         return ["21", "05"]
     }
-    if ((dd == 19 || dd == 20) && mm === 5 && season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 4) {
+    if ((dd == 19 || dd == 18) && mm === 5 && season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 4) {
         // Constantine&Helen on Pentecost Sun or Sat before -> Thu before
         return ["21", "05"]
+    }
+    if (dd == 12 && mm == 6 && season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 2) {
+        // Bartholomew&Barnabas on Pentecost Mon -> Tue
+        return ["11", "06"]
+    }
+    if ((dd == 9 || dd == 8) && mm === 6 && season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 4) {
+        // Bartholomew&Barnabas on Pentecost Sun or Sat before -> Thu before
+        return ["11", "06"]
+    }
+    if (dd == 9 && mm == 6 && season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 5) {
+        // Bartholomew&Barnabas on All saints -> Fri before
+        return ["11", "06"]
     }
     return false
 }
