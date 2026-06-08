@@ -1138,7 +1138,7 @@ async function makeGloryAposticha(aposticha, vespersMenaionData, dayOfWeek, dayC
             if (stychera === "gn" || stychera === "n") foundNow = true;
             continue
         }
-        if (foundGloria && additionalVerses && i < apostVerses.length) {aposticha += `<i>${apostVerses[i]}</i><br><br>`; i+=1;}
+        if (!foundGloria && additionalVerses && i < apostVerses.length) {aposticha += `<div class="rubric">Tone ${tone}</div><i>${apostVerses[i]}</i><br><br>${stychera}<br><br>`; i+=1;}
         else if (foundGloria) aposticha += stychera + "<br><br>";
     }
     if (!foundNow){
