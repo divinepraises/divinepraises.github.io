@@ -634,7 +634,8 @@ function constructMenaionCanon(canonData, full, dayOfWeek){
 async function constructCanon(dayOfWeek, glas, full, refrain, dateAddress){
     // 1. try to find a canon in menaion
     // 2. if absent, try octoechos
-    // 3. use the default one otherwise (it's from tuesday of the tone 8)
+    // 3. use the default one otherwise (it's from tuesday evening of the tone 8)
+    // TODO: now default canon has rubrics (do this if..). This should be done programmatically
 
     var intro = "";
     var matinslike = false;
