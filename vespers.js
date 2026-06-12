@@ -1592,6 +1592,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
         }
     } else if (
             vespersTriodionData != undefined
+            && season != "PostPentecost"
         ) {
         // triodion weekday
         apostMain = vespersTriodionData["aposticha"];
