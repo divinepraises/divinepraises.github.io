@@ -635,10 +635,11 @@ async function constructCanon(dayOfWeek, glas, full, refrain, dateAddress){
     // 1. try to find a canon in menaion
     // 2. if absent, try octoechos
     // 3. use the default one otherwise (it's from tuesday evening of the tone 8)
-    // TODO: now default canon has rubrics (do this if..). This should be done programmatically
 
     var intro = "";
     var matinslike = false;
+    var defaultCanon = false;
+    var octoechosCanon = false;
     try {
         var canonData = await getData(`${address}\\menaion\\${dateAddress}_compline.json`);
         var canon;
@@ -648,10 +649,13 @@ async function constructCanon(dayOfWeek, glas, full, refrain, dateAddress){
     } catch (error) {
         try{
             canonData = await getData(`${address}\\octoechos\\${glas}\\${dayOfWeek}_compline.json`);
+            octoechosCanon = true;
         } catch (error) {
             intro = `The proper canon for today is not yet added, using the default canon from the horologion.<br>
              Besides, the Church grants full indulgence for reciting this canon in a group or in a church (under normal conditions).<br><br>`
             canonData = await getData(`${address}\\octoechos\\8\\3_compline.json`);
+            defaultCanon = true;
+            octoechosCanon = true;
         }
     }
     var allowedOdes;
@@ -676,8 +680,15 @@ async function constructCanon(dayOfWeek, glas, full, refrain, dateAddress){
     // The penultimate and the last tropars will need "glory" and "now".
     for (const ode of canonData) {
         var ode_n = ode[0]
-        if ((ode_n === "3a" && allowedOdes.has("3")) || (ode_n === "6a" && allowedOdes.has("6"))){
-            canon += `${LHM} <FONT COLOR="RED">(3)</FONT><br><br>${gloryAndNow}<br><br>${ode.slice(1).join("")}<br><br>`;
+        if (ode_n === "3a" && allowedOdes.has("3") || ode_n === "6a" && allowedOdes.has("6")){
+            if (ode_n === "3a" && octoechosCanon && !defaultCanon) continue;
+            if (ode_n === "6a" && octoechosCanon && defaultCanon) {
+                canon += `${LHM} <FONT COLOR="RED">(3)</FONT><br><br>${gloryAndNow}<br><br>${ode.slice(2).join("")}<br><br>`;
+            } else if (ode_n === "6a" && octoechosCanon && glas === 8 && dayOfWeek === 3) {
+                canon += `${LHM} <FONT COLOR="RED">(3)</FONT><br><br>${gloryAndNow}<br><br>${ode[1]}<br><br>`;
+            } else {
+                canon += `${LHM} <FONT COLOR="RED">(3)</FONT><br><br>${gloryAndNow}<br><br>${ode.slice(1).join("")}<br><br>`;
+            }
             continue;
         }
         if (!allowedOdes.has(ode_n)) continue;
