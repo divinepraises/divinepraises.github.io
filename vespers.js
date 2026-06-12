@@ -1500,6 +1500,8 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
                     aposticha += `<i>${andNow}</i><br><br>${apostMen[apostMen.length-1]}<br><br>`
                 }
             }
+        } else if ("additional_aposticha" in vespersMenaionData) {
+            aposticha = await makeGloryAposticha(aposticha, vespersMenaionData, dayOfWeek);
         } else {
             aposticha += `<i>${gloryAndNow}</i><br><br>${apostMain[6]}<br><br>`
         }
