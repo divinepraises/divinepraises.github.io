@@ -446,7 +446,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
 
     var omit_kathisma = false;
     if ("no_kathisma" in dayData || vespersTriodionData && "no_kathisma" in vespersTriodionData) omit_kathisma = true;
-    if (dayData["class"] === 12 && dayOfWeek >= 2 || omit_kathisma || dayOfWeek === 1) {
+    if (dayData["class"] === 12 && dayOfWeek >= 2 || omit_kathisma || dayOfWeek === 1 && dayData["class"] < 8) {
         document.getElementById("kathismaSelector").innerHTML = "";
     } else if (isGreatVespers && (!isLenten || isLenten && dayOfWeek === 1) && !(season === "EasterWeek")){
         document.getElementById("kathismaSelector").innerHTML = `
@@ -2792,7 +2792,7 @@ async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, seasonWeek, pri
       return
     }
 
-    if (dayOfWeek === 1 && !(dayClass === 12 || season === "Lent" && dayClass >= 8) || omit_kathisma) {
+    if (dayOfWeek === 1 && dayClass < 8 && !(dayClass === 12 || season === "Lent" && dayClass >= 8) || omit_kathisma) {
       document.getElementById("kathisma").innerHTML = `<div class=\"rubric\">No kathisma on Sunday night and after vigil-ranked feasts.</div><br>`;
       document.getElementById("kathismaSelector").innerHTML = "";
       return
