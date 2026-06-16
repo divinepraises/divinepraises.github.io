@@ -1501,6 +1501,8 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
                 }
             }
         } else if ("additional_aposticha" in vespersMenaionData) {
+            // assume that additional aposticha is extension of Glory rather than contraction of aposticha =>
+            // say them also on Sunday
             aposticha = await makeGloryAposticha(aposticha, vespersMenaionData, dayOfWeek);
         } else {
             aposticha += `<i>${gloryAndNow}</i><br><br>${apostMain[6]}<br><br>`
