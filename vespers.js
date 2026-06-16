@@ -1084,6 +1084,10 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
         // Pentecost post-feast
         theotokion = (await getData(`${address}\\triodion\\${season}\\60.json`))["troparia"];
         if (dayOfWeek === 6) dayTrop = [];
+    } else if ("TheotokosDismissal" in dayData) {
+        // a feast of the Mother of God that is not a vigil
+        theotokion = dayTrop[dayTrop.length-1];
+        dayTrop.pop();
     } else {
         // we end up here if it is not a vigil
         let tropGlas  = parseInt(dayTrop[dayTrop.length - 1].match(/\d+/)[0], 10);
@@ -2424,6 +2428,10 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
             }
             // adding all the stycheas
             stycheras = psalm140OctoechosStycheras.concat(psalm140menaionStycheras)
+            if (stycheras[stycheras.length-3]==="gn" && "TheotokosDismissal" in dayData) {
+                // small feasts of Mother of God (Dol. 346)
+                stycheras[stycheras.length-3]="g";
+            }
             if (numStycheras === 3){
                 stycheraScheme = Array(4).fill(1).concat([2, 2, 2])
             } else if (numStycheras === 4){

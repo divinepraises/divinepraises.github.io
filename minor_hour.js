@@ -853,7 +853,7 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         prePostFeastKontakion = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0.json`))["kontakia"];
         dayTriodionData = undefined;
         if (seasonWeek === 7 && dayOfWeek === 6) return prePostFeastKontakion;
-    } else if (season === "PostPentecost" && dayTriodionData != undefined && "class" in dayTriodionData && "troparia" in dayTriodionData && dayTriodionData["class"] >= 8 || dayOfWeek === 0) {
+    } else if (season === "PostPentecost" && dayTriodionData != undefined && "class" in dayTriodionData && "troparia" in dayTriodionData && dayTriodionData["class"] >= 8 && dayOfWeek === 0) {
         // all saints of Rus' - treat as a menaion feast on Sunday
         dayData["kontakia"] = dayTriodionData["kontakia"];
         dayData["class"] = dayTriodionData["class"];
