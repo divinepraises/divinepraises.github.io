@@ -942,7 +942,7 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
 
         if (prePostFeast != "" && dayData["class"] >= 8 && hour === "3hour") {
             return prePostFeastKontakion;
-        } else if (prePostFeast != "" && dayData["class"] < 8 && (hour === "1hour") || (hour === "6hour")) {
+        } else if (prePostFeast != "" && dayData["class"] < 8 && (hour === "1hour" || hour === "6hour")) {
             return prePostFeastKontakion;
         }
 
