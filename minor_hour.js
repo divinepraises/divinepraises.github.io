@@ -81,6 +81,7 @@ export async function enhanceMinorHour(hour, priest, full, date) {
     if (dayOfWeek === 0  || (mm === 12 && dd === 26 && dayOfWeek === 1)) {
         const specialSundayName = await specialSunday(mm, dd);
         if (specialSundayName != undefined) {
+            mm = String(mm).padStart(2, "0");
             specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
             specialDayData["label"] = specialSundayName;
         }
@@ -125,6 +126,11 @@ export async function enhanceMinorHour(hour, priest, full, date) {
     } catch (error) {
         console.log("No data for the day! Using the weekday troparia.")
         dayData = {"class": 0}
+    }
+
+    if (specialDayData && "class" in specialDayData && specialDayData["class"] >= 11) {
+        Object.assign(dayData, specialDayData);
+        specialDayData = undefined;
     }
 
     let transfer = dayTransfer(season, seasonWeek, dayOfWeek, dd, mm);

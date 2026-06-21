@@ -144,6 +144,7 @@ export async function vespersEnding(vespersData, dayOfWeek, mm, dd, glas, dayDat
 }
 
 async function arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionData, dayData, dayName, dayOfWeek) {
+    mm = String(mm).padStart(2, "0");
     const specialVespersData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}_vespers.json`);
     const specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
     if (specialSundayName === "forefathers") {
@@ -241,6 +242,11 @@ async function arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionDat
             dayData["troparia"] = [specialDayData["troparia"]];
             dayData["label"] = "31";
         }
+    } else if (specialSundayName === "perpetual_help") {
+         dayName = specialDayData["day name"];
+         Object.assign(dayData, specialDayData);
+         Object.assign(vespersMenaionData, specialVespersData);
+         // dayData["label"] = "perpetual_help";
     }
     return dayName;
 }
@@ -332,6 +338,15 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
         } catch {}
     }
 
+    var dayName = constructDayName(dayData, false);
+
+    var specialSundayName;
+    if (dayOfWeek === 0 || (mm === 12 && dd === 26 && dayOfWeek === 1)) specialSundayName = await specialSunday(mm, dd);
+    if (specialSundayName != undefined) {
+        // rewrite day data
+        dayName = await arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionData, dayData, dayName, dayOfWeek);
+    }
+
     const isWeekday = (dayOfWeek >= 1 && dayOfWeek <=5);
     const isLytia = ("lytia" in vespersMenaionData && dayData["class"] >= 10);
     const isEasterWeek = season === "EasterWeek" && dayOfWeek > 0;
@@ -341,15 +356,6 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
         vespersOctoechosData = await getData(`${address}\\octoechos\\${glas}\\0_vespers.json`);
     } else if (dayOfWeek === 0 && dayData["class"] != 12 || !isGreatVespers) {
         vespersOctoechosData = await getData(`${address}\\octoechos\\${glas}\\${dayOfWeek}_vespers.json`);
-    }
-
-    var dayName = constructDayName(dayData, false);
-
-    var specialSundayName;
-    if (dayOfWeek === 0 || (mm === 12 && dd === 26 && dayOfWeek === 1)) specialSundayName = await specialSunday(mm, dd);
-    if (specialSundayName != undefined) {
-        // rewrite day data
-        dayName = await arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionData, dayData, dayName, dayOfWeek);
     }
 
     var vigilVespersData, haire;
@@ -616,10 +622,6 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
             }
         } catch {}
     }
-
-    var isGreatVespers = (dayData["class"] >= 8 || dayOfWeek === 0);
-    const isLytia = ("lytia" in vespersMenaionData && dayData["class"] >= 10);
-    const isEasterWeek = (season === "EasterWeek" && dayOfWeek > 0);
     var dayName = constructDayName(dayData, false);
 
     var specialSundayName;
@@ -628,6 +630,10 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
         // rewrite day data
         dayName = await arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionData, dayData, dayName, dayOfWeek);
     }
+
+    var isGreatVespers = (dayData["class"] >= 8 || dayOfWeek === 0);
+    const isLytia = ("lytia" in vespersMenaionData && dayData["class"] >= 10);
+    const isEasterWeek = (season === "EasterWeek" && dayOfWeek > 0);
 
     var vigilVespersData, haire;
     if (dayData["class"] >= 10) {
@@ -2052,7 +2058,7 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         else forceNumSticheras = 8;
         stycheraScheme = Array(numStycheras).fill(Math.floor(forceNumSticheras / numStycheras));
         for (let i=0; i < forceNumSticheras % numStycheras; i++) stycheraScheme[i] += 1;
-    } else if (season === "PostPentecost" && dayData["class"] === 11) {
+    } else if (season === "PostPentecost" && dayData["class"] === 11 && dayOfWeek != 0) {
         // compassion
         stycheras = psalm140menaionStycheras;
         if (vespersTriodionData != undefined && "six stichera" in vespersTriodionData) forceNumSticheras = 6;

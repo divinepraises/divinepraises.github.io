@@ -1,5 +1,6 @@
 {
   "month": {"name": ["first possible occurrence", "last possible occurrence"]},
+  "07": {"perpetual_help": [1, 7]},
   "12": {
     "forefathers": [11, 17],
     "fathers": [18, 24],

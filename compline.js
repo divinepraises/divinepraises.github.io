@@ -67,7 +67,12 @@ export async function enhanceCompline(priest, full, date){
     var specialDayData;
     if (dayOfWeek === 0 || (mm === 12 && dd === 26 && dayOfWeek === 1)) {
         const specialSundayName = await specialSunday(mm, dd);
+        mm = String(mm).padStart(2, "0");
         if (specialSundayName != undefined) specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
+        if (specialDayData && "class" in specialDayData && specialDayData["class"] >= 11) {
+            Object.assign(dayData, specialDayData);
+            specialDayData = undefined;
+        }
     }
     var dayTriodionData;
     if (season === "PostPentecost" && await isTriodionFeastAfterPentecost(seasonWeek, dayOfWeek) || season === "Pentecost" || season === "EasterWeek" || season === "HolyWeek" || season === "Lent" || season === "Forelent") {

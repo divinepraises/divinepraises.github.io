@@ -54,6 +54,7 @@ export async function displayCurrentDay(currentDate){
 
 export async function specialSunday(month, day){
     const specialSundays = await getData(`${address}\\menaion\\special_sundays.json`);
+    month = String(month).padStart(2, "0");
     if (!(month in specialSundays)) return;
     for (let [specialName, [first, last]] of Object.entries(specialSundays[month])){
         if (isBetweenDates(month, day, month, first, month, last)){
@@ -72,12 +73,14 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
 
     var specialName = "";
     var note = "";
+    var specialClass = 4;
 	if ((new Date(`${yyyy}-${mm}-${dd}`)).getUTCDay() === 0) {
 	    const specialSundayName = await specialSunday(mm, dd);
 	    if (specialSundayName != undefined) {
 	        const sundayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
 	        if ("day name" in sundayData) specialName = sundayData["day name"];
 	        else specialName = sundayData["name"];
+	        if ("class" in sundayData) specialClass = sundayData["class"];
 	    }
 	}
 	if (season === "HolyWeek" || season === "EasterWeek") {
@@ -110,7 +113,12 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
         if (transfer) {
             [dd, mm] = transfer;
             dayData = await getData(`${address}\\menaion\\${mm}\\${dd}.json`);
-            if ("day name" in dayData) dayData["day name"] += " (transferred)"
+            const tr = " (transferred)";
+            if ("day name" in dayData) dayData["day name"] += tr;
+            else if ("title" in dayData && Array.isArray(dayData["title"])) dayData["title"][dayData["title"].length-1] += tr;
+            else if ("title" in dayData) dayData["title"] += tr;
+            else if ("name" in dayData && Array.isArray(dayData["name"])) dayData["name"][dayData["name"].length-1] += tr;
+            else if ("name" in dayData) dayData["name"] += tr;
         } else {
             dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
         }
@@ -151,12 +159,14 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
                 season === "Forelent"  && seasonWeek === 2 && dayOfWeek === 6  // all souls in forelent
                 || season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6  // all souls in Pentecost
                 || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 1  // Pent. Monday
+                || specialClass === 11 // OL of Perpetual help
             )
         ) {
             dayName = "";
             dayClass = 4;
         } else dayName = constructDayName(dayData, false);
 
+        dayClass = Math.max(dayClass, specialClass);
         return `${symbolData[dayClass]} ${dd}/${mm}: ${feastName} ${specialName} ${dayName}${note}`;
     } catch (error) {
          console.info(error)
@@ -419,6 +429,11 @@ export function dayTransfer(season, seasonWeek, dayOfWeek, dd, mm) {
     if (dd == 9 && mm == 6 && season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 5) {
         // Bartholomew&Barnabas on All saints -> Fri before
         return ["11", "06"]
+    }
+    if ((dd == 6 || dd == 3) && mm == 7 && dayOfWeek == 1) {
+        // Transfer polyeleos feasts that can happen on 1st Sun of July to Monday.
+        // There is no rubric what to do, this is my hunch
+        return [String(Number(dd)-1).padStart(2, "0"), "07"]
     }
     return false
 }
