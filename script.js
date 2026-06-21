@@ -111,8 +111,8 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
 
         let transfer = dayTransfer(season, seasonWeek, dayOfWeek, dd, mm);
         if (transfer) {
-            [dd, mm] = transfer;
-            dayData = await getData(`${address}\\menaion\\${mm}\\${dd}.json`);
+            let [dd_t, mm_t] = transfer;
+            dayData = await getData(`${address}\\menaion\\${mm_t}\\${dd_t}.json`);
             const tr = " (transferred)";
             if ("day name" in dayData) dayData["day name"] += tr;
             else if ("title" in dayData && Array.isArray(dayData["title"])) dayData["title"][dayData["title"].length-1] += tr;
