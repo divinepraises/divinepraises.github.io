@@ -881,7 +881,7 @@ async function selectTropar(season, seasonWeek, dayOfWeek, hourData, glas, dayDa
 
     // Friday is special: using Saturday troparion and less of proper compline ones
     if (dayOfWeek === 6){
-        return `<div class=rubric>If compline is said in a church dedicated to Our Lord or Our Lady, a troparion of the titular feast of the church is said here.</div><br>
+        return `<div class=rubric>If compline is said in a church dedicated to Our Lord or Our Lady, the troparion of the titular feast is said here.</div><br>
         ${daily_troparia["troparia"]["6"][0]}<br><br>
         <i>${glory}</i><br><br>
         ${hourData["daily_troparia"][2]}<br><br>
@@ -904,12 +904,12 @@ async function selectTropar(season, seasonWeek, dayOfWeek, hourData, glas, dayDa
     }
     if (dayOfWeek === 3) {
         // don't forget the church
-        const temple = `<div class=rubric>If compline is said in a church dedicated to Our Lord or Our Lady, a troparion of the titular feast of the church is said here.</div><br>`
-        const templeS = `<br><br><div class=rubric>If compline is said in a church dedicated to a saint, a troparion of this saint is said here.</div><br>`
+        const temple = `<div class=rubric>If Compline is said in a church dedicated to Our Lord or to Our Lady, the troparion of the titular feast is said here.</div><br>`
+        const templeS = `<br><br><div class=rubric>If Compline is said in a church dedicated to a saint, the troparion of this saint is said here.</div><br>`
         thisDayTropars.splice(1, 0, templeS)
         thisDayTropars.splice(0, 0, temple)
     } else {
-        const temple = `<div class=rubric>If compline is said in a church, a troparion of the titular feast of the church is said here.</div><br>`;
+        const temple = `<div class=rubric>If Compline is said in a church, the troparion of the titular feast is said here.</div><br>`;
         thisDayTropars.splice(0, 0, temple);
         thisDayTropars.push("<br><br>");
     }

@@ -738,7 +738,7 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
             // In footnotes he quotes Greek practice, but I disagree with him that it matters.
             // In "Око Церковное" the order is different, but in its spirit,
             // the day's saint seems like the best choice.
-            return `${sundayTrop["troparia"][glas]}<br><br>${glory}<div class="rubric">In a church, a troparion of the titular feast of the church. Otherwise:</div>${dayTrop[0]}`;
+            return `${sundayTrop["troparia"][glas]}<br><br>${glory}<div class="rubric">In a church: the troparion of the titular feast. Otherwise:</div>${dayTrop[0]}`;
         }
         if (hour === "3hour"){
             return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[0]}`;
@@ -807,7 +807,7 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
     // weekday
     if (hour === "6hour"){
         // see Sun for comment
-        return `${glory}<div class="rubric">In a church, a troparion of the titular feast of the church. Otherwise:</div>${dayTrop[0]}`;
+        return `${glory}<div class="rubric">In a church: the troparion of the titular feast. Otherwise:</div>${dayTrop[0]}`;
     }
     if (hour === "3hour"){
         return `${glory}<br><br>${dayTrop[0]}`;
@@ -959,7 +959,7 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
             // So I am just balancing it out: as much Sunday as saints.
             // For weekdays, taking the first saint, inspiring a bit from Oko.
             // For polyeleos and higher that is actually the rubric.
-            return `<div class="rubric">In a church, a kontakion of the titular feast of the church. Otherwise:</div>${sundayKond["kontakia"][glas]}`;
+            return `<div class="rubric">In a church: the kontakion of the titular feast. Otherwise:</div>${sundayKond["kontakia"][glas]}`;
         }
 
         if ("kontakia" in dayData) dayKond = dayData["kontakia"];
@@ -999,7 +999,7 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
     }
 
     if (hour === "6hour"){
-        return `<div class="rubric">In a church, a kontakion of the titular feast of the church. Otherwise:</div>${dayKond[0]}`;
+        return `<div class="rubric">In a church: the kontakion of the titular feast. Otherwise:</div>${dayKond[0]}`;
     }
 
     // 9th hour: check if two saints
