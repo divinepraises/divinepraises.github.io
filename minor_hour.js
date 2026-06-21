@@ -839,7 +839,7 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         // leave-taking of Easter
         prePostFeastKontakion = (await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}0.json`))["kontakia"];
         return prePostFeastKontakion;
-    } else if (seasonWeek === 5 && dayOfWeek > 4 || seasonWeek === 6 && dayOfWeek < 6) {
+    } else if (season === "Pentecost" && (seasonWeek === 5 && dayOfWeek > 4 || seasonWeek === 6 && dayOfWeek < 6)) {
         // Ascension postfeast
         prePostFeast = "postfeast";
         prePostFeastKontakion = (await getData(`${address}\\triodion\\${season}\\44.json`))["kontakia"];
