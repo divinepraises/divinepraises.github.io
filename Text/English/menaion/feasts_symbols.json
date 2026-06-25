@@ -1,11 +1,11 @@
 {
   "4": "",
   "5": "",
-  "6": "\uD83D\uDD43",
-  "7": "<span style=\"color:red\">\uD83D\uDD43</span>",
-  "8": "<span style=\"color:red\">\uD83D\uDD42</span>",
-  "10": "<span style=\"color:red\">\uD83D\uDD41</span>",
-  "11": "<span style=\"color:red\">&#x1F540;&#xFE0E;</span>",
-  "12": "<span style=\"color:red\">&#x1F540;&#xFE0E;</span>",
+  "6": "<img src=\"/images/6.svg\" class=\"rubric-icon\">",
+  "7": "<img src=\"/images/7.svg\" class=\"rubric-icon\">",
+  "8": "<img src=\"/images/8.svg\" class=\"rubric-icon\">",
+  "10": "<img src=\"/images/10.svg\" class=\"rubric-icon\">",
+  "11": "<img src=\"/images/11.svg\" class=\"rubric-icon\">",
+  "12": "<img src=\"/images/11.svg\" class=\"rubric-icon\">",
   "14": "<img src=\"/images/11.svg\" class=\"rubric-icon\">"
 }
