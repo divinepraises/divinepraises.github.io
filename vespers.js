@@ -451,7 +451,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
     }
 
     var omit_kathisma = false;
-    if ("no_kathisma" in dayData || vespersTriodionData && "no_kathisma" in vespersTriodionData) omit_kathisma = true;
+    if (dayOfWeek > 0 && ("no_kathisma" in dayData || vespersTriodionData && "no_kathisma" in vespersTriodionData)) omit_kathisma = true;
     if (dayData["class"] === 12 && dayOfWeek >= 2 || omit_kathisma || dayOfWeek === 1 && dayData["class"] < 8) {
         document.getElementById("kathismaSelector").innerHTML = "";
     } else if (isGreatVespers && (!isLenten || isLenten && dayOfWeek === 1) && !(season === "EasterWeek")){
