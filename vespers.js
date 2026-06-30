@@ -379,7 +379,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
         document.getElementById("beginning").innerHTML = text;
     } else {
         let alternative = ""
-        if (seasonWeek === 5 && dayOfWeek === 3) {
+        if (season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 3) {
             alternative = `. Newer Pentecostarions suggest to replace this beginning by the Paschal Troparion with <a href=\"https://divinepraises.github.io/main.html?hour=vespers&priest=${priest}&full=${full}&date=2026-04-05\"> its verses</a>`
         }
 
