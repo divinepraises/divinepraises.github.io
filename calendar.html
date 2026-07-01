@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 
-<html lang="en"> <head> <meta charset="UTF-8"> <title>Calendar</title> <style> body { font-family: sans-serif; padding: 20px; }
+<html lang="en">
+<head
+<meta charset="UTF-8">
+<title>Calendar</title>
+
+<style>
+body {
+  font-family: sans-serif;
+  padding: 20px;
+}
 
 table {
   border-collapse: collapse;
@@ -22,10 +31,19 @@ th {
 }
 
 .controls input,
-.controls select,
-.controls button {
+.controls select {
   font-size: 1rem;
-  padding: 6px 10px;
+  padding: 6px 6px;
+}
+
+.office {
+  margin-bottom: 15px;
+  font-size: .7rem;
+}
+.office select,
+.office button {
+  font-size: .7rem;
+  padding: 6px 3px;
 }
 
 </style>
@@ -51,14 +69,16 @@ th {
 <input type="submit" id="buildBtn">
 </div>
 
-<select class="full">
+<div class="office">
+<label> Office options <select id="full" class="full">
     <option value="1">Full version</option>
     <option value="0">Shortenings by Lviv synod 1891</option>
 </select>
-<select class="priest">
+<select id="priest" class="priest">
     <option value="0">No priest</option>
     <option value="1">With clergy</option>
-</select>
+</select> </label>
+</div>
 
 <table> <thead> <tr> <th>Date</th> <th>Day of Week</th> <th>Feast</th> <th>Office selection</th> </tr> </thead> <tbody id="calendarBody"></tbody> </table>
 
@@ -112,10 +132,11 @@ async function buildCalendar(year, month) {
     const row = document.createElement("tr");
 
     row.innerHTML = `
-      <td>${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}</td>
+      <td>${day}</td>
       <td>${[`<b>Sun</b>, tone ${glas}`,"Mon","Tue","Wed","Thu","Fri","Sat"][dayOfWeek]}</td>
       <td>${name}</td>
       <td>
+          <div class="office">
           <select class="hour">
             <option value="vespers">Vespers</option>
             <option value="compline">Compline</option>
@@ -125,6 +146,7 @@ async function buildCalendar(year, month) {
             <option value="9hour">Ninth Hour</option>
           </select>
           <button class="open">Open</button>
+          </div>
         </td>
     `;
 
