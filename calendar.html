@@ -145,10 +145,8 @@ async function buildCalendar(year, month) {
 const now = new Date();
 const currentYear = now.getFullYear();
 const currentMonth = now.getMonth() + 1;
-const currentDate = now.getDate();
 document.getElementById("yearInput").value = currentYear;
 document.getElementById("monthInput").value = currentMonth;
-
 // Initial build
 await buildCalendar(currentYear, currentMonth);
 // Button handler
