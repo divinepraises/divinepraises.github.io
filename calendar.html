@@ -83,6 +83,7 @@ async function buildCalendar(year, month) {
   tbody.innerHTML = "";
 
   const days = getDaysInMonth(year, month);
+  var glasRubric = "";
 
   // Step 1: build all promises
   const promises = [];
@@ -96,7 +97,8 @@ async function buildCalendar(year, month) {
         .then(name => ({
           day,
           dayOfWeek,
-          name
+          name,
+          glas
         }))
     );
   }
@@ -105,12 +107,12 @@ async function buildCalendar(year, month) {
   const results = await Promise.all(promises);
 
   // Step 3: render
-  for (let { day, dayOfWeek, name } of results) {
+  for (let { day, dayOfWeek, name, glas } of results) {
     const row = document.createElement("tr");
 
     row.innerHTML = `
       <td>${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}</td>
-      <td>${["<b>Sun</b>","Mon","Tue","Wed","Thu","Fri","Sat"][dayOfWeek]}</td>
+      <td>${[`<b>Sun</b>, tone ${glas}`,"Mon","Tue","Wed","Thu","Fri","Sat"][dayOfWeek]}</td>
       <td>${name}</td>
       <td>
           <select class="hour">
