@@ -63,13 +63,15 @@ export async function specialSunday(month, day){
     }
 }
 
-async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
+export async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek, include_date=true){
     yyyy = String(yyyy);
     mm = String(mm).padStart(2, "0");
     dd = String(dd).padStart(2, "0");
 	const dateAddress = `${mm}\\${dd}`;
 
     const symbolData = await getData(`${address}\\menaion\\feasts_symbols.json`);
+    var ddmm = "";
+    if (include_date) ddmm = `${dd}/${mm}:`;
 
     var specialName = "";
     var note = "";
@@ -86,7 +88,7 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
 	if (season === "HolyWeek" || season === "EasterWeek") {
 	    try {
 	        let dayTriodionData = await getData(`${address}\\triodion\\${season}\\${seasonWeek-1}${dayOfWeek}.json`);
-	        return `${symbolData[dayTriodionData["class"]]} ${dd}/${mm}: ${dayTriodionData["day name"]}`;
+	        return `${symbolData[dayTriodionData["class"]]} ${ddmm} ${dayTriodionData["day name"]}`;
 	    } catch {}
 	}
 	if (season === "Pentecost" || season === "Forelent" || season === "Lent" && dayOfWeek != 0 || (season === "PostPentecost" && isTriodionFeastAfterPentecost(seasonWeek, dayOfWeek))) {
@@ -95,7 +97,7 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
 	        if (dayTriodionData["day name"] != "") specialName = dayTriodionData["day name"] + ". ";
 	        if ("note" in dayTriodionData) note += `<br><div class="rubric">${dayTriodionData["note"]}</div>`
 	        if ("class" in dayTriodionData && dayTriodionData["class"] === 12) {
-	            return `${symbolData[dayTriodionData["class"]]} ${dd}/${mm}: ${specialName} ${note}`;
+	            return `${symbolData[dayTriodionData["class"]]} ${ddmm} ${specialName} ${note}`;
 	        }
 	    } catch {}
 	} else if (season === "Lent" && dayOfWeek === 0) {
@@ -167,7 +169,7 @@ async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWeek){
         } else dayName = constructDayName(dayData, false);
 
         dayClass = Math.max(dayClass, specialClass);
-        return `${symbolData[dayClass]} ${dd}/${mm}: ${feastName} ${specialName} ${dayName}${note}`;
+        return `${symbolData[dayClass]} ${ddmm} ${feastName} ${specialName} ${dayName}${note}`;
     } catch (error) {
          console.info(error)
          return `No data for this day at ${address}\\menaion\\${dateAddress}.json`

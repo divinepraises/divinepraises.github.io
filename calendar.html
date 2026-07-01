@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<html lang="en"> <head> <meta charset="UTF-8"> <title>Calendar</title> <style> body { font-family: sans-serif; padding: 20px; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #f0f0f0;
+}
+
+.controls {
+  margin-bottom: 15px;
+}
+
+.controls input,
+.controls select,
+.controls button {
+  font-size: 1rem;
+  padding: 6px 10px;
+}
+
+</style>
+<link rel="stylesheet" href="/style.css">
+</head> <body>
+
+<h2>Calendar</h2>
+
+<p>
+    <div class="rubric">
+        Notes:<br><br>
+        So far, Triodion is implemented correctly only for 2026.
+        Other years are not guaranteed to have correct results for all dates.<br><br>
+        Any day is assumed to start at vespers.
+    </div>
+</p>
+
+<div class="controls"> <label> Year: <input type="number" id="yearInput" min="1900" max="2100"> </label>
+
+<label> Month: <select id="monthInput"> <option value="1">January</option> <option value="2">February</option> <option value="3">March</option> <option value="4">April</option> <option value="5">May</option> <option value="6">June</option> <option value="7">July</option> <option value="8">August</option> <option value="9">September</option> <option value="10">October</option> <option value="11">November</option> <option value="12">December</option> </select> </label>
+
+<button id="buildBtn">Build</button>
+</div>
+
+<select class="full">
+    <option value="1">Full version</option>
+    <option value="0">Shortenings by Lviv synod 1891</option>
+</select>
+<select class="priest">
+    <option value="0">No priest</option>
+    <option value="1">With clergy</option>
+</select>
+
+<table> <thead> <tr> <th>Date</th> <th>Day of Week</th> <th>Feast</th> <th>Office selection</th> </tr> </thead> <tbody id="calendarBody"></tbody> </table>
+
+<a href="index.html">Go to the main Page</a>
+<script type="module">
+import { showMenaionDate, parseDate } from "./script.js";
+
+// Helpers
+// Get number of days in month
+function getDaysInMonth(year, month) { return new Date(year, month, 0).getDate(); }
+// Get day of week (0 = Sunday)
+function getDayOfWeek(year, month, day) { return new Date(Date.UTC(year, month - 1, day)).getUTCDay(); }
+// Get previous day
+function getPreviousDay(year, month, day) {
+    let date = new Date(Date.UTC(year, month - 1, day))
+    date.setUTCDate(date.getUTCDate() - 1);
+    return date.toISOString().slice(0, 10).split("-").map(Number);
+}
+
+// Build calendar
+async function buildCalendar(year, month) {
+  const tbody = document.getElementById("calendarBody");
+  tbody.innerHTML = "";
+
+  const days = getDaysInMonth(year, month);
+
+  // Step 1: build all promises
+  const promises = [];
+
+  for (let day = 1; day <= days; day++) {
+    const dayOfWeek = getDayOfWeek(year, month, day);
+    const [season, seasonWeek, seasonToShow, glas] = parseDate(year, month, day);
+
+    promises.push(
+      showMenaionDate(year, month, day, season, seasonWeek, dayOfWeek, false)
+        .then(name => ({
+          day,
+          dayOfWeek,
+          name
+        }))
+    );
+  }
+
+  // Step 2: wait for all
+  const results = await Promise.all(promises);
+
+  // Step 3: render
+  for (let { day, dayOfWeek, name } of results) {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}</td>
+      <td>${["<b>Sun</b>","Mon","Tue","Wed","Thu","Fri","Sat"][dayOfWeek]}</td>
+      <td>${name}</td>
+      <td>
+          <select class="hour">
+            <option value="vespers">Vespers</option>
+            <option value="compline">Compline</option>
+            <option value="1hour">First Hour</option>
+            <option value="3hour">Third Hour</option>
+            <option value="6hour">Sixth Hour</option>
+            <option value="9hour">Ninth Hour</option>
+          </select>
+          <button class="open">Open</button>
+        </td>
+    `;
+
+    row.querySelector(".open").addEventListener("click", () => {
+        const priest = document.querySelector(".priest")?.value;
+        const full = document.querySelector(".full")?.value;
+        const hour = row.querySelector(".hour").value;
+
+        if (hour === "vespers" || hour === "compline") {
+            [year, month, day] = getPreviousDay(year, month, day)
+        }
+
+        window.location.href = `main.html?hour=${encodeURIComponent(hour)}&priest=${encodeURIComponent(priest)}&full=${encodeURIComponent(full)}&date=${encodeURIComponent(`${year}-${month}-${day}`)}`;
+    });
+
+    tbody.appendChild(row);
+  }
+}
+
+// Init with current date
+const now = new Date();
+const currentYear = now.getFullYear();
+const currentMonth = now.getMonth() + 1;
+const currentDate = now.getDate();
+document.getElementById("yearInput").value = currentYear;
+document.getElementById("monthInput").value = currentMonth;
+
+// Initial build
+await buildCalendar(currentYear, currentMonth);
+// Button handler
+document.getElementById("buildBtn").addEventListener("click", () => { const year = parseInt(document.getElementById("yearInput").value, 10);
+const month = parseInt(document.getElementById("monthInput").value, 10);
+buildCalendar(year, month);
+});
+</script>
+
+</body> </html>
