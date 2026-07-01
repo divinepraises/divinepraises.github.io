@@ -37,8 +37,9 @@ th {
 <p>
     <div class="rubric">
         Notes:<br><br>
+        So far, only the dates between November and now are added.<br><br>
         So far, Triodion is implemented correctly only for 2026.
-        Other years are not guaranteed to have correct results for all dates.<br><br>
+        Other years are not guaranteed to have correct results for all dates within Triodion.<br><br>
         Any day is assumed to start at vespers.
     </div>
 </p>
@@ -47,7 +48,7 @@ th {
 
 <label> Month: <select id="monthInput"> <option value="1">January</option> <option value="2">February</option> <option value="3">March</option> <option value="4">April</option> <option value="5">May</option> <option value="6">June</option> <option value="7">July</option> <option value="8">August</option> <option value="9">September</option> <option value="10">October</option> <option value="11">November</option> <option value="12">December</option> </select> </label>
 
-<button id="buildBtn">Build</button>
+<input type="submit" id="buildBtn">
 </div>
 
 <select class="full">
@@ -152,9 +153,10 @@ document.getElementById("monthInput").value = currentMonth;
 // Initial build
 await buildCalendar(currentYear, currentMonth);
 // Button handler
-document.getElementById("buildBtn").addEventListener("click", () => { const year = parseInt(document.getElementById("yearInput").value, 10);
-const month = parseInt(document.getElementById("monthInput").value, 10);
-buildCalendar(year, month);
+document.getElementById("buildBtn").addEventListener("click", () => {
+    const year = parseInt(document.getElementById("yearInput").value, 10);
+    const month = parseInt(document.getElementById("monthInput").value, 10);
+    buildCalendar(year, month);
 });
 </script>
 
