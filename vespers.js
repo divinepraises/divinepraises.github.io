@@ -2446,7 +2446,7 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         } else if (dayData["class"] >= 8) {
             // polyeleos/vigil on Sunday
             // in the current data format, 0th stychera is tone
-            if (specialSundayName === "forefathers" || specialSundayName === "six_councils") {
+            if (specialSundayName === "forefathers" || specialSundayName === "six_councils" && dayData["class"] > 8) {
                 psalm140OctoechosStycheras = psalm140OctoechosStycheras.slice(0, 4);
             } else {
                 psalm140OctoechosStycheras = psalm140OctoechosStycheras.slice(0, 5);
