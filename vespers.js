@@ -251,25 +251,23 @@ async function arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionDat
         // St Volodymyr + Six Councils
         // (according to rubric that is in Dol in the calendar, apostle John + 1st council rules apply)
         // 3 sun, 4 fathers, 3 saint, g fathers
-        if (vespersMenaionData["readings"].length < 6) {
-            const fathers = specialVespersData["ps140"];
-            vespersMenaionData["ps140"] = (
-                 fathers.slice(0, 4)
-                 .concat(vespersMenaionData["ps140"].slice(0, 4))
-                 .concat(fathers.slice(4, fathers.length))
-            );
-            // repeat the 1st stichera
-            vespersMenaionData["ps140"].splice(1, 0, vespersMenaionData["ps140"][1]);
+        const fathers = specialVespersData["ps140"];
+        vespersMenaionData["ps140"] = (
+             fathers.slice(0, 4)
+             .concat(vespersMenaionData["ps140"].slice(0, 4))
+             .concat(fathers.slice(4, fathers.length))
+        );
+        // repeat the 1st stichera
+        vespersMenaionData["ps140"].splice(1, 0, vespersMenaionData["ps140"][1]);
 
-            vespersMenaionData["readings"] = specialVespersData["readings"].concat(vespersMenaionData["readings"]);
-            dayData["name"] = dayData["name"].concat(specialDayData["name"]);
-            dayData["type"] = dayData["type"].concat(specialDayData["type"]);
-            dayData["title"] = dayData["title"].concat(specialDayData["title"]);
-            dayName = specialDayData["day name"] + " " + dayName;
-        }
+        vespersMenaionData["readings"] = specialVespersData["readings"].concat(vespersMenaionData["readings"]);
+        dayData["name"] = dayData["name"].concat(specialDayData["name"]);
+        dayData["type"] = dayData["type"].concat(specialDayData["type"]);
+        dayData["title"] = dayData["title"].concat(specialDayData["title"]);
+        dayName = specialDayData["day name"] + " " + dayName;
         vespersMenaionData["aposticha"] = specialVespersData["aposticha"];
     }
-    return dayName;
+    return [dayName, vespersMenaionData];
 }
 
 
@@ -365,7 +363,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
     if (dayOfWeek === 0 || (mm === 12 && dd === 26 && dayOfWeek === 1)) specialSundayName = await specialSunday(mm, dd);
     if (specialSundayName != undefined) {
         // rewrite day data
-        dayName = await arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionData, dayData, dayName, dayOfWeek);
+        [dayName, vespersMenaionData] = await arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionData, dayData, dayName, dayOfWeek);
     }
 
     const isWeekday = (dayOfWeek >= 1 && dayOfWeek <=5);
@@ -649,7 +647,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
     if (dayOfWeek === 0 || (mm === 12 && dd === 26 && dayOfWeek === 1)) specialSundayName = await specialSunday(mm, dd);
     if (specialSundayName != undefined) {
         // rewrite day data
-        dayName = await arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionData, dayData, dayName, dayOfWeek);
+        [dayName, vespersMenaionData] = await arrangeSpecialSunday(specialSundayName, mm, dd, structuredClone(vespersMenaionData), dayData, dayName, dayOfWeek);
     }
 
     var isGreatVespers = (dayData["class"] >= 8 || dayOfWeek === 0);
