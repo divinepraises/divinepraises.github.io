@@ -128,7 +128,9 @@ export async function enhanceMinorHour(hour, priest, full, date) {
         dayData = {"class": 0}
     }
 
-    if (specialDayData && "class" in specialDayData && specialDayData["class"] >= 11) {
+    if (specialDayData && "class" in specialDayData &&
+            (specialDayData["class"] >= 11 || specialDayData["class"] >= 8 && dayData["class"] < 10)
+    ) {
         Object.assign(dayData, specialDayData);
         specialDayData = undefined;
     }
@@ -649,6 +651,10 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
                 } else {
                     return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${specialDayData["troparia"]}`;
                 }
+            } else if (dayData["class"] === 10 && specialDayData["class"] === 8) {
+                // fathers of 6 councils + Volodymyr
+                if (hour === "1hour" || hour === "6hour") return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${specialDayData["troparia"]}`
+                else return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayData["troparia"]}`
             } else if (hour === "1hour" || hour === "6hour" || specialDayData["label"] === "fathers") {
                 return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${specialDayData["troparia"]}`
             }

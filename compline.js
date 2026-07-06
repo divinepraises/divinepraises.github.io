@@ -69,7 +69,14 @@ export async function enhanceCompline(priest, full, date){
         const specialSundayName = await specialSunday(mm, dd);
         mm = String(mm).padStart(2, "0");
         if (specialSundayName != undefined) specialDayData = await getData(`${address}\\menaion\\${mm}\\${specialSundayName}.json`);
-        if (specialDayData && "class" in specialDayData && specialDayData["class"] >= 11) {
+        if (specialDayData && "class" in specialDayData &&
+            (specialDayData["class"] >= 11 || specialDayData["class"] >= 8 && dayData["class"] < 10)
+        ) {
+            Object.assign(dayData, specialDayData);
+            specialDayData = undefined;
+        } else if (specialDayData && "class" in specialDayData && specialDayData["class"] >= 8 && dayData["class"] === 10) {
+            specialDayData["kontakia"] = dayData["kontakia"].concat(specialDayData["kontakia"]);
+            specialDayData["class"] = Math.max(dayData["class"], specialDayData["class"]);
             Object.assign(dayData, specialDayData);
             specialDayData = undefined;
         }

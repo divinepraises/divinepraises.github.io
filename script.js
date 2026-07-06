@@ -161,7 +161,7 @@ export async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWee
                 season === "Forelent"  && seasonWeek === 2 && dayOfWeek === 6  // all souls in forelent
                 || season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 6  // all souls in Pentecost
                 || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 1  // Pent. Monday
-                || specialClass === 11 // OL of Perpetual help
+                || specialClass >= 8 // OL of Perpetual help, Saints of 6 or 7th council
             )
         ) {
             dayName = "";

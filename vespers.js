@@ -242,11 +242,32 @@ async function arrangeSpecialSunday(specialSundayName, mm, dd, vespersMenaionDat
             dayData["troparia"] = [specialDayData["troparia"]];
             dayData["label"] = "31";
         }
-    } else if (specialSundayName === "perpetual_help") {
+    } else if (specialDayData["class"] >= 11 || specialDayData["class"] >= 8 && dayData["class"] < 10) {
+         // not Christmas-related Sundays
          dayName = specialDayData["day name"];
          Object.assign(dayData, specialDayData);
          Object.assign(vespersMenaionData, specialVespersData);
-         // dayData["label"] = "perpetual_help";
+    } else if (specialDayData["class"] >= 8 && dayData["class"] === 10) {
+        // St Volodymyr + Six Councils
+        // (according to rubric that is in Dol in the calendar, apostle John + 1st council rules apply)
+        // 3 sun, 4 fathers, 3 saint, g fathers
+        if (vespersMenaionData["readings"].length < 6) {
+            const fathers = specialVespersData["ps140"];
+            vespersMenaionData["ps140"] = (
+                 fathers.slice(0, 4)
+                 .concat(vespersMenaionData["ps140"].slice(0, 4))
+                 .concat(fathers.slice(4, fathers.length))
+            );
+            // repeat the 1st stichera
+            vespersMenaionData["ps140"].splice(1, 0, vespersMenaionData["ps140"][1]);
+
+            vespersMenaionData["readings"] = specialVespersData["readings"].concat(vespersMenaionData["readings"]);
+            dayData["name"] = dayData["name"].concat(specialDayData["name"]);
+            dayData["type"] = dayData["type"].concat(specialDayData["type"]);
+            dayData["title"] = dayData["title"].concat(specialDayData["title"]);
+            dayName = specialDayData["day name"] + " " + dayName;
+        }
+        vespersMenaionData["aposticha"] = specialVespersData["aposticha"];
     }
     return dayName;
 }
@@ -2427,7 +2448,7 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         } else if (dayData["class"] >= 8) {
             // polyeleos/vigil on Sunday
             // in the current data format, 0th stychera is tone
-            if (specialSundayName === "forefathers") {
+            if (specialSundayName === "forefathers" || specialSundayName === "six_councils") {
                 psalm140OctoechosStycheras = psalm140OctoechosStycheras.slice(0, 4);
             } else {
                 psalm140OctoechosStycheras = psalm140OctoechosStycheras.slice(0, 5);
