@@ -1,12 +1,15 @@
 {
   "at_compline": [
     "<b>Have mercy on us, O God, in the greatness of Your compassion, we pray You, hear us and have mercy.</b>",
-    "Lord have mercy. <FONT COLOR=\"RED\">(3)</FONT>",
-    "(a couple more petitions)"
+    "<FONT COLOR=\"RED\">Choir:</FONT> Lord have mercy. <FONT COLOR=\"RED\">(3)</FONT><br>",
+    "<b>Again, let us pray that He may preserve this city and this holy church and every city, town, and country from famine, plague, earthquake, flood, hail, fire, civil war, riot, and foreign invasion; and that our God Who is kind and the Lover of mankind may forgive our sins and hold back His just wrath, and that He may have mercy on us.</b>",
+    "<FONT COLOR=\"RED\">Choir:</FONT> Lord have mercy. <FONT COLOR=\"RED\">(12)</FONT><br>",
+    "<b>Hear us, O God our Savior, Hope of all those who live at the far ends of the earth, and of those traveling by sea, air or land; be kind to us, O Master, forgive us our sins and have mercy on us, for You are a gracious Lord Who loves mankind, and we glorify You, Father, Son, and Holy Spirit, now and for ever and ever.</b>",
+    "<FONT COLOR=\"RED\">Choir:</FONT> Amen.<br><br>"
   ],
   "after_compline": [
     "<b>Let us pray for our most holy universal Pontiff <FONT COLOR=\"RED\">N.</FONT>, Pope of Rome.</b>",
-    "May God save him and give him mercy.",
+    "<FONT COLOR=\"RED\">Choir:</FONT> May God save him and give him mercy.",
     "<b>For our civil authorities.</b>",
     "May God save them and give them mercy.",
     "<b>For our most blessed Patriarch <FONT COLOR=\"RED\">N.</FONT>, for our most reverend Metropolitan <FONT COLOR=\"RED\">N.</FONT>; for our God-loving Bishop <FONT COLOR=\"RED\">N.</FONT>.</b>",
@@ -34,7 +37,7 @@
     "<b>For all orthodox Christians.</b>",
     "May God save them and give them mercy.",
     "<b>For an abundance of the fruits of the earth.</b>",
-    "May God grant an increase of the friuts of the earth."
+    "May God grant an increase of the fruits of the earth."
   ],
   "after_compline_for_the_dead": [
     "<b>For the benefactors of this holy church [monastery].</b>",

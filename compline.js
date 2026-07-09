@@ -184,7 +184,7 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
 
     if (full === "1") {
         document.getElementById("full_canon").checked = true;
-        document.getElementById("penitential_troparia").innerHTML = penitentialTroparia(priest,  smallComplineData, ekteniasData);
+        document.getElementById("penitential_troparia").innerHTML = await penitentialTroparia(priest,  smallComplineData, ekteniasData);
     } else if (full === "0") {
         document.getElementById("shorten_canon").checked = true;
         document.getElementById("penitential_troparia").innerHTML = "";
@@ -926,14 +926,16 @@ async function selectTropar(season, seasonWeek, dayOfWeek, hourData, glas, dayDa
     return `${thisDayTropars.join("")}${complineTroparia.join("<br><br>")}`
 }
 
-function penitentialTroparia(withPriest,  smallComplineData, ekteniasData){
+async function penitentialTroparia(withPriest,  smallComplineData, ekteniasData){
     var tropList =  smallComplineData["penitential_troparia"]
     tropList.splice(2,0, `${andNow}`);
     tropList.splice(1,0, `${glory}`);
     const trop = `
         <div class=subhead>Penitential troparia</div><br>` + tropList.join("<br><br>");
+
     if (withPriest == 1){
-        return trop + "<br><br>" + ekteniasData["at_compline"].join("<br>");
+        const beforeGlory = (await getData(`${address}\\horologion\\priestly_exclamations.json`))["Christ"];
+        return trop + "<br><br>" + ekteniasData["at_compline"].join("<br>") + beforeGlory + "<br><br>";
     }
     return trop + "<br><br>";
 }
@@ -952,6 +954,7 @@ function  postComplinePrayers(withPriest, data, ekteniasData, dayOfWeek, isGreat
 	    } else {
 	        departed = data["after_prayers"]["without_priest"][5]
 	    }
+	    ektenia += `<br>${prayerBlessingMayGodBeGracious(withPriest, "compline")}<br>${amen}`;
 	    if (isGreatCompline) {
 	        ektenia += `
 	            <br><br>
