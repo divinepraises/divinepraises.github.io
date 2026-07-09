@@ -184,7 +184,7 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
 
     if (full === "1") {
         document.getElementById("full_canon").checked = true;
-        document.getElementById("penitential_troparia").innerHTML = await penitentialTroparia(priest,  smallComplineData, ekteniasData);
+        document.getElementById("penitential_troparia").innerHTML = penitentialTroparia(priest,  smallComplineData, ekteniasData);
     } else if (full === "0") {
         document.getElementById("shorten_canon").checked = true;
         document.getElementById("penitential_troparia").innerHTML = "";
@@ -226,8 +226,11 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
             document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest, false, dayData["class"] >= 8);
         } else document.getElementById("st_ephrem").innerHTML = "";
     }
-
-	document.getElementById("endingBlock").innerHTML = `${await endingBlockMinor(priest, dayOfWeek, "", season === "Pentecost" && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4))}<br>`;
+    var beforeGlory = ""
+    if (priest === "1") {
+        beforeGlory = (await getData(`${address}\\horologion\\priestly_exclamations.json`))["Christ"] + "<br><br>";
+    }
+	document.getElementById("endingBlock").innerHTML = `${beforeGlory}${await endingBlockMinor(priest, dayOfWeek, "", season === "Pentecost" && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4))}<br>`;
 }
 
 async function smallComplineBeginning(full, season, seasonWeek, dayOfWeek, priest, isAlleluiaDay, glas, dayData, dateAddress) {
@@ -926,7 +929,7 @@ async function selectTropar(season, seasonWeek, dayOfWeek, hourData, glas, dayDa
     return `${thisDayTropars.join("")}${complineTroparia.join("<br><br>")}`
 }
 
-async function penitentialTroparia(withPriest,  smallComplineData, ekteniasData){
+function penitentialTroparia(withPriest,  smallComplineData, ekteniasData){
     var tropList =  smallComplineData["penitential_troparia"]
     tropList.splice(2,0, `${andNow}`);
     tropList.splice(1,0, `${glory}`);
@@ -934,8 +937,7 @@ async function penitentialTroparia(withPriest,  smallComplineData, ekteniasData)
         <div class=subhead>Penitential troparia</div><br>` + tropList.join("<br><br>");
 
     if (withPriest == 1){
-        const beforeGlory = (await getData(`${address}\\horologion\\priestly_exclamations.json`))["Christ"];
-        return trop + "<br><br>" + ekteniasData["at_compline"].join("<br>") + beforeGlory + "<br><br>";
+        return trop + "<br><br>" + ekteniasData["at_compline"].join("<br>");
     }
     return trop + "<br><br>";
 }
