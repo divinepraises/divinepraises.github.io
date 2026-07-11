@@ -1,0 +1,22 @@
+{
+  "notes on sources": "class should be 6, but for 2 saints the algo needs 5. TODO",
+  "class": 5,
+  "day name":["", "Return of the Relics of the Hieromartyr Phocas"],
+  "title": [" Magdalene", ""],
+  "name": [
+    "Mary",
+    "Phocas"
+  ],
+  "type": [
+    "myrrhbearer and equal-to-the-Apostles",
+    "hieromartyr"
+  ],
+  "troparia": [
+    "<i>(Tone 1)</i> The honourable Mary Magdalen followed after Christ,* who for our sake was born of the Virgin,* keeping His precepts and laws.* Wherefore, celebrating your most holy memory today,* through your supplications we receive remission of sins.",
+    "<i>(Tone 4)</i> Having shared the way of life of the apostles,* and having become a successor to their thrones,* labouring you found the divinely inspired way to contemplation.* Therefore, forthrightly ministering the word of truth,* you shed your blood for the faith, O hieromartyr Phocas.** Intercede with Christ our God for the salvation of our souls."
+  ],
+  "kontakia": [
+    "<i>(Tone 3)</i> You stood before the Cross of the Saviour with many others, O glorious one,* and you cried as you suffered there with the Mother of the Lord.* You offered the words of praise, saying:* What a strange wonder!* He who upholds all creation has deigned to suffer.* Glory to your power!",
+    "<i>(Tone 6)</i> As a hierarch offering sacrifices,* in the end you offered yourself as a living sacrifice.* You bore just witness to Christ God,* strengthened by angels, and permitting for your death.* You are with those who cry out to you:* Come to us, O Phocas, that none may stand against us."
+  ]
+}
