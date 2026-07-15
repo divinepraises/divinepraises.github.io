@@ -1059,6 +1059,7 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
         (specialSundayName === "forefathers")
         || (prePostFeast === "forefeast" || specialSundayName === "fathers")
         || ("specialDismissal" in dayData && !isGreatVespers && dayOfWeek === 6)  // Sat for dead/Lazarus
+        || ("as theotokion" in dayData) // july 25
         ) {
         theotokion = dayTrop[dayTrop.length-1];
         dayTrop.pop();
@@ -2664,7 +2665,7 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
                 if (lastLine.endsWith("div>")) {currentPsalm.pop();}
                 break
             }
-            if (prePostFeast != "" && stychera === "gn" && dayOfWeek === 0){
+            if (stychera === "gn" && dayOfWeek === 0 && (prePostFeast != "" || dayData["class"] <= 10) && !gloryWasAdded){
                 // add festal theotokion as glory, if it is a Sunday
                 stychera = "g"
             }
