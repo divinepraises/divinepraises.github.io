@@ -643,6 +643,7 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         ${glory}
         `
     }
+    if (dayData["class"] === 12) return glory + "<br><br>" + dayData["troparia"];
 
     // Sunday
     if (dayOfWeek === 0){
@@ -940,6 +941,8 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         ${dayKond[3+i]}
         `
     }
+
+    if (dayData["class"] === 12) return dayData["kontakia"][0];
 
     if (dayData["class"] === 10 && dayData["kontakia"].length === 2 && prePostFeast === "") {
         // st Basil
