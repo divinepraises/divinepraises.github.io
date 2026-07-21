@@ -2672,7 +2672,10 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
                 if (lastLine.endsWith("div>")) {currentPsalm.pop();}
                 break
             }
-            if (stychera === "gn" && dayOfWeek === 0 && (prePostFeast != "" || dayData["class"] <= 10) && !gloryWasAdded){
+            if (stychera === "gn" && !gloryWasAdded && (
+                dayOfWeek === 0 && (prePostFeast != "" || dayData["class"] <= 10))
+                || dayOfWeek === 6 && prePostFeast != ""
+            ) {
                 // add festal theotokion as glory, if it is a Sunday
                 stychera = "g"
             }
