@@ -772,6 +772,10 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
             ${roles[0]} ${EasterData["final"][2]}<br>
             ${roles[1]} ${EasterData["final"][3]}<br><br>
         `;
+    } else if ("after_hour_elements" in vespersMenaionData && "crossDismissal" in dayData) {
+        // mini-procession with the Cross
+        const troparia = `<br>${dayData["troparia"][0]}<br><br><i>${gloryAndNow}</i><br><br>${dayData["kontakia"][0]}<br>`
+        document.getElementById("after_hour_elements").innerHTML = replaceCapsWords(vespersMenaionData["after_hour_elements"], {"TROPARIA": troparia});
     } else {
         document.getElementById("after_hour_elements").innerHTML = "";
     }
@@ -2501,7 +2505,7 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
             stycheras = psalm140OctoechosStycheras.slice(0, 4).concat(psalm140menaionStycheras);
             stycheraScheme = Array(10).fill(1);
             numStycheras = 10;
-        } else if (dayData["class"] === 6){
+        } else if (dayData["class"] === 6 || dayData["class"] === 7){
             if (numStycheras === 3){
                 // in the current data format, 0th stychera is tone
                 stycheras = psalm140OctoechosStycheras.slice(0, 7);
@@ -2653,7 +2657,10 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         }
         if (stychera in gloriaDict) {
             if (
-                stychera === "n" && dayOfWeek === 0 && dayData["class"]<=10
+                stychera === "n" && (
+                    dayOfWeek === 0 && dayData["class"]<=10
+                    // july 31
+                    || dayOfWeek === 6 && "crossDismissal" in dayData && dayData["class"] < 7)
                 && !(specialSundayName === "fathers" && prePostFeast != "")
                 && !(specialSundayName === "after_nativity" && "label" in dayData)
             ){

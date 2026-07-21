@@ -813,6 +813,9 @@ async function selectTropar(season, seasonWeek, dayOfWeek, hourData, glas, dayDa
         } else {
             prePostFeastKontakion = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["kontakia"];
         }
+    } else if ("crossDismissal" in dayData && !dayTriodionData) {
+        // for the days of the Cross kontakion of the Cross happens to be last in our lists
+        kontakion = dayData["kontakia"][dayData["kontakia"].length-1];
     }
     if (Array.isArray(prePostFeastKontakion)) {
         // we assume that in a list, the kontakion of a pre-feast is the last one
