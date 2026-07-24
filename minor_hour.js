@@ -644,6 +644,10 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         `
     }
     if (dayData["class"] === 12) return glory + "<br><br>" + dayData["troparia"];
+    if (prePostFeast === "postfeast" && "troparia" in dayData && dayData["troparia"].length === 0 && dayOfWeek > 0) {
+        // leave-taking
+        return glory + "<br><br>" + prePostFeastTroparion;
+    }
 
     // Sunday
     if (dayOfWeek === 0){
@@ -674,7 +678,7 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
 
         if (prePostFeast != ""){
-            if (hour === "1hour" || hour === "6hour" || dayTriodionData != undefined){
+            if (hour === "1hour" || hour === "6hour" || dayTriodionData != undefined || dayTrop.length === 0){
                 return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${prePostFeastTroparion}`;
             }
             if (hour === "3hour") return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[0]}`;
@@ -957,15 +961,21 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         if (
             (prePostFeast === "" && hour === "1hour")
             || (prePostFeast != "" && dayData["class"] >= 8 && (hour === "1hour" || hour === "9hour" ))
-            || (prePostFeast != "" && dayData["class"] < 8 && (hour === "3hour" || hour === "9hour" ))
+            // leave-takings
+            || (prePostFeast === "postfeast" && dayData["class"] < 8 && "troparia" in dayData && dayData["troparia"].length === 0 && (hour === "1hour" || hour === "6hour" ))
+            // pre/post-feast but not leave-taking
+            || (prePostFeast != "" && dayData["class"] < 8 && !("troparia" in dayData && dayData["troparia"].length === 0) && (hour === "3hour" || hour === "9hour" ))
             || (prePostFeast === "" && hour === "6hour" && dayData["class"] >= 8)
         ){
             return `${sundayKond["kontakia"][glas]}`;
         }
 
-        if (prePostFeast != "" && dayData["class"] >= 8 && hour === "3hour") {
-            return prePostFeastKontakion;
-        } else if (prePostFeast != "" && dayData["class"] < 8 && (hour === "1hour" || hour === "6hour")) {
+        if (
+            prePostFeast != "" && dayData["class"] >= 8 && hour === "3hour"
+            || prePostFeast != "" && dayData["class"] < 8 && (hour === "1hour" || hour === "6hour")
+            // leave-taking
+            || prePostFeast === "postfeast" && dayData["class"] < 8 && "troparia" in dayData && dayData["troparia"].length === 0 && (hour === "3hour" || hour === "9hour" )
+        ) {
             return prePostFeastKontakion;
         }
 
