@@ -916,7 +916,7 @@ export async function makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek
         gloryOrAnesti = EasterData["troparion"].join("* ");
     }
 
-    const greatDismissal = (dayOfWeek === 6 || "no_kathisma" in dayData || isGreatVespers || dayData["class"] > 6 || isEasterWeek && (!isLenten || dayOfWeek === 1 || dayData["class"] >= 11));
+    const greatDismissal = (dayOfWeek === 0 || dayOfWeek === 6 || "no_kathisma" in dayData || isGreatVespers || dayData["class"] > 6 || isEasterWeek && (!isLenten || dayOfWeek === 1 || dayData["class"] >= 11));
     const addFinalTheotokion = !isLenten || (dayOfWeek === 1 && isGreatVespers) || dayOfWeek === 6 || dayData["class"] >= 11 || "no_kathisma" in dayData;
     if (priest === "1"){
         if (greatDismissal) res += `
