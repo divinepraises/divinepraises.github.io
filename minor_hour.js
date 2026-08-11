@@ -681,6 +681,13 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
 
         if (prePostFeast != ""){
+            if (prePostFeast === "postfeast" && dayData[prePostFeast] === "08//15" && "no_kathisma" in dayData) {
+                // aug 16
+                if (hour === "1hour" || hour === "6hour") {
+                    return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[0]}`;
+                }
+                return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${prePostFeastTroparion}`;
+            }
             if (hour === "1hour" || hour === "6hour" || dayTriodionData != undefined || dayTrop.length === 0){
                 return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${prePostFeastTroparion}`;
             }
@@ -788,6 +795,10 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
     }
 
     if (prePostFeast != ""){
+        if (prePostFeast === "postfeast" && dayData[prePostFeast] === "08//15" && "no_kathisma" in dayData) {
+            return `${dayTrop[0]}<br><br>${glory}<br><br>${prePostFeastTroparion}`;
+        }
+
         if (hour === "1hour" || hour === "6hour"){
             return `${glory}<br><br>${prePostFeastTroparion}`;
         }
@@ -961,6 +972,13 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
     if (dayOfWeek === 0){
         const sundayKond = await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`);
 
+        if (prePostFeast === "postfeast" && dayData[prePostFeast] === "08//15" && "no_kathisma" in dayData) {
+            // aug 16
+            if (hour === "1hour" || hour === "9hour") return sundayKond["kontakia"][glas];
+            if (hour === "3hour") return dayData["kontakia"][0];
+            return prePostFeastKontakion;
+        }
+
         if (
             (prePostFeast === "" && hour === "1hour")
             || (prePostFeast != "" && dayData["class"] >= 8 && (hour === "1hour" || hour === "9hour" ))
@@ -1006,6 +1024,11 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         }
         // 3rd or 9th with 1 saint
         return `${dayKond[0]}`;
+    }
+
+    if (prePostFeast === "postfeast" && dayData[prePostFeast] === "08//15" && "no_kathisma" in dayData) {
+        if (hour === "3hour" || hour === "9hour") return prePostFeastKontakion;
+        return dayData["kontakia"][0];
     }
 
     if (prePostFeast != ""){

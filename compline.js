@@ -737,7 +737,8 @@ async function selectCanon(season, seasonWeek, dayOfWeek, glas, full, refrain, d
         return true
     }
     if (
-        dayTriodionData != undefined && "omit compline canon" in dayTriodionData
+        dayData != undefined && "omit compline canon" in dayData
+        || dayTriodionData != undefined && "omit compline canon" in dayTriodionData
         || season === "Pentecost" && seasonWeek === 7 && dayOfWeek > 1
        ) {
         document.getElementById("canon").innerHTML = `<div class=rubric>No canon today<br><br></div>`;
@@ -803,11 +804,12 @@ async function selectTropar(season, seasonWeek, dayOfWeek, hourData, glas, dayDa
         if ("TheotokosDismissal" in dayData && dayData["postfeast"] === "12//25" && "troparia" in dayData && "kontakia" in dayData) {
             // a case of Dec 26
             prePostFeastKontakion = dayData["kontakia"][0];
-        } else if (dayData["postfeast"] === "01//06" && "troparia" in dayData && "no_kathisma" in dayData) {
-            // Jan 7.
+        } else if ((dayData["postfeast"] === "01//06" || dayData["postfeast"] === "08//15") && "troparia" in dayData && "no_kathisma" in dayData) {
+            // 1) Jan 7.
             // Menaion requires only the day kont, but Dol wants both here. He cites "our and Russian typicons" as a
             // justification, so let's go with it.
             // Also, in "if it falls on Sunday" section, menaion does prescribe this order.
+            // 2) Aug 16
             prePostFeastKontakion = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["kontakia"];
             kontakion = dayData["kontakia"][0];
         } else {
@@ -853,6 +855,10 @@ async function selectTropar(season, seasonWeek, dayOfWeek, hourData, glas, dayDa
     if (kontakion != "" && prePostFeast === "" && specialDayData == undefined) {
         // even on Sun
         return `<div class="rubric">Festal kontakion:</div> ${kontakion}`;
+    } else if (kontakion != "" && prePostFeast === "postfeast" && dayData[prePostFeast] === "08//15" && "no_kathisma" in dayData){
+        // aug 16
+        return `<div class="rubric">Festal kontakia:</div>
+            ${kontakion}<br><br><i>${gloryAndNow}</i><br><br>${prePostFeastKontakion}`;
     } else if (kontakion != "" && prePostFeast != "" && dayOfWeek != 0){
         return `<div class="rubric">Festal kontakion:</div> ${prePostFeastKontakion}`;
     } else if (kontakion != "" && prePostFeast === "forefeast" && dayOfWeek != 0){

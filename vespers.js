@@ -2448,6 +2448,12 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
             // 3 + 4 + 3
             stycheraScheme = Array(3).fill(1).concat([2]).concat(Array(6).fill(1))
             numStycheras = 9
+        } else if (prePostFeast === "postfeast" && dayData["postfeast"] == "08//15" && "no_kathisma" in dayData) {
+            // Aug 16
+            stycheras = psalm140OctoechosStycheras.slice(0, 4).concat(psalm140menaionStycheras)
+            // 3 + 3 + 4
+            stycheraScheme = Array(6).fill(1).concat([2]).concat(Array(2).fill(1))
+            numStycheras = 9
         } else if (dayData["class"] >= 8) {
             // polyeleos/vigil on Sunday
             // in the current data format, 0th stychera is tone
