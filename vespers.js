@@ -2658,9 +2658,11 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         if (stychera in gloriaDict) {
             if (
                 stychera === "n" && (
-                    dayOfWeek === 0 && dayData["class"]<=10
+                    dayOfWeek === 0 && dayData["class"] <= 10
+                    || dayOfWeek === 6 && dayData["class"] < 8 && prePostFeast != ""
                     // july 31
-                    || dayOfWeek === 6 && "crossDismissal" in dayData && dayData["class"] < 7)
+                    || dayOfWeek === 6 && "crossDismissal" in dayData && dayData["class"] < 7
+                    )
                 && !(specialSundayName === "fathers" && prePostFeast != "")
                 && !(specialSundayName === "after_nativity" && "label" in dayData)
             ){
