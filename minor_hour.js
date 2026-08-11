@@ -208,6 +208,9 @@ export async function enhanceMinorHour(hour, priest, full, date) {
     const isDeceased = (season === "Pentecost" && seasonWeek === 6 || season === "Forelent" && seasonWeek === 2) && dayOfWeek === 6;
     if (dayTriodionData && "specialDismissal" in dayTriodionData && !isDeceased) specialDismissal = dayTriodionData["specialDismissal"];
     else if (dayData && "specialDismissal" in dayData) specialDismissal = dayData["specialDismissal"];
+    else if (specialDismissal === "" && dayOfWeek != 0 && dayData && "postfeast" in dayData && dayTriodionData === undefined) {
+        specialDismissal = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["specialDismissal"];
+    }
 
     const isPentecost = (season === "Pentecost" && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4));
     if (specialDismissal === "" && isPentecost) {
