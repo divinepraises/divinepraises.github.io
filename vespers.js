@@ -2659,7 +2659,7 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
             if (
                 stychera === "n" && (
                     dayOfWeek === 0 && dayData["class"] <= 10
-                    || dayOfWeek === 6 && dayData["class"] < 8 && prePostFeast != ""
+                    || dayOfWeek === 6 && dayData["class"] < 11 && prePostFeast != ""
                     // july 31
                     || dayOfWeek === 6 && "crossDismissal" in dayData && dayData["class"] < 7
                     )

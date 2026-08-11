@@ -875,9 +875,9 @@ async function selectTropar(season, seasonWeek, dayOfWeek, hourData, glas, dayDa
         return data["hypakoe"][glas];
     } else if (dayOfWeek === 0 && prePostFeast === "forefeast") {
         // The case with feast + pre-feast is not specified in Donlytsky,
-        // but now it happens with Bl. Josaphata. I infered it should be just the post-feast kontakion
-        // by analogy with Sundays.
-        return prePostFeastKontakion;
+        // but now it happens with Bl. Josaphata and st. Theodosius.
+        // I inferred it should be just the post-feast kontakion by analogy with Sundays.
+        return `<div class="rubric">Forefeast kontakion:</div> ${prePostFeastKontakion}`;
     } else if (dayOfWeek === 0 && prePostFeast === "postfeast" && kontakion === "") {
         const data = await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`);
         return `${data["hypakoe"][glas]}<br><br>${gloryAndNow}<br><br>${prePostFeastKontakion}`;
