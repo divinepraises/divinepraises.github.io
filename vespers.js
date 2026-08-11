@@ -2458,7 +2458,7 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
             }
             // adding all the stycheas
             stycheras = psalm140OctoechosStycheras.concat(psalm140menaionStycheras)
-            if (stycheras[stycheras.length-3]==="gn" && "TheotokosDismissal" in dayData) {
+            if (stycheras[stycheras.length-3]==="gn" && "TheotokosDismissal" in dayData && dayData["class"] < 11) {
                 // small feasts of Mother of God (Dol. 346)
                 stycheras[stycheras.length-3]="g";
             }
