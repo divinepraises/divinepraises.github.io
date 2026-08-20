@@ -2599,9 +2599,13 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         forceNumSticheras = 6;
     } else {
          // great vespers not on Sunday
-         if ("six stichera" in vespersMenaionData) forceNumSticheras = 6;
          stycheras = psalm140menaionStycheras;
-         if (numStycheras === 2) stycheraScheme = Array(2).fill(4);
+         if ("six stichera" in vespersMenaionData) {
+            forceNumSticheras = 6;
+            stycheraScheme = Array(numStycheras).fill(Math.floor(forceNumSticheras / numStycheras));
+            for (let i=0; i < forceNumSticheras % numStycheras; i++) stycheraScheme[i] += 1;
+         }
+         else if (numStycheras === 2) stycheraScheme = Array(2).fill(4);
          else if (numStycheras === 3) stycheraScheme = [3, 3, 2];
          else if (numStycheras === 4) stycheraScheme = Array(4).fill(2);
          else if (numStycheras === 5) stycheraScheme = [2, 2, 2, 1, 1];
