@@ -884,9 +884,11 @@ async function selectTropar(season, seasonWeek, dayOfWeek, hourData, glas, dayDa
         // but now it happens with Bl. Josaphata and st. Theodosius.
         // I inferred it should be just the post-feast kontakion by analogy with Sundays.
         return `<div class="rubric">Forefeast kontakion:</div> ${prePostFeastKontakion}`;
+    } else if (dayOfWeek === 0 && prePostFeast === "postfeast" && kontakion === "" && "troparia" in dayData && dayData["troparia"].length === 0 && !("no_kathisma" in dayData)) {
+        return `<div class="rubric">Festal kontakion:</div> ${prePostFeastKontakion}`;
     } else if (dayOfWeek === 0 && prePostFeast === "postfeast" && kontakion === "") {
         const data = await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`);
-        return `${data["hypakoe"][glas]}<br><br>${gloryAndNow}<br><br>${prePostFeastKontakion}`;
+        return `${data["hypakoe"][glas]}<br><br><div class="rubric">Festal kontakion:</div>${gloryAndNow}<br><br>${prePostFeastKontakion}`;
     } else if (dayOfWeek === 0 && prePostFeast === "postfeast" && kontakion != "") {
         // yeah, it is inconsistent, but that's what we have in the menaions and hence typicon
         return `<div class="rubric">Festal kontakia:</div>
