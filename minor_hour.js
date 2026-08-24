@@ -746,6 +746,8 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         else dayTrop = await getCommonText("troparia", dayData);
         if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
 
+        if ("invert kontakia at compline" in dayData) dayTrop = [dayTrop[1], dayTrop[0]]; // sep 1
+
         if (dayData["class"] >= 8){
             // Sunday and polyeleos
             if (dayTrop.length === 1 || hour === "3hour" || hour === "9hour") {
@@ -783,6 +785,7 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
     if (dayData["class"] >= 8) {
         if (prePostFeast === ""){
             if (dayTrop.length === 1) return `${glory}<br><br>${dayTrop[0]}`;
+            else if ("invert kontakia at compline" in dayData) return `${dayTrop[0]}<br><br>${glory}<br><br>${dayTrop[1]}`; // sep 1
             else return `${dayTrop[1]}<br><br>${glory}<br><br>${dayTrop[0]}`;
         } else {
             // pre post feast
@@ -979,6 +982,13 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
             return prePostFeastKontakion;
         }
 
+        if ("invert kontakia at compline" in dayData) {
+            // Sep 1
+            if (hour === "1hour" || hour === "9hour") return sundayKond["kontakia"][glas];
+            if (hour === "3hour") return dayData["kontakia"][0];
+            if (hour === "6hour") return dayData["kontakia"][1];
+        }
+
         if (
             (prePostFeast === "" && hour === "1hour")
             || (prePostFeast != "" && dayData["class"] >= 8 && (hour === "1hour" || hour === "9hour" ))
@@ -988,7 +998,7 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
             || (prePostFeast != "" && dayData["class"] < 8 && !("troparia" in dayData && dayData["troparia"].length === 0) && (hour === "3hour" || hour === "9hour" ))
             || (prePostFeast === "" && hour === "6hour" && dayData["class"] >= 8)
         ){
-            return `${sundayKond["kontakia"][glas]}`;
+            return sundayKond["kontakia"][glas];
         }
 
         if (

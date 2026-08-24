@@ -830,6 +830,7 @@ async function selectTropar(season, seasonWeek, dayOfWeek, hourData, glas, dayDa
         else kontakion = (await getCommonText("kontakia", dayData));
         if (Array.isArray(kontakion)) {
             if (kontakion.length === 1) kontakion = kontakion[0];
+            else if ("invert kontakia at compline" in dayData) kontakion = `${kontakion[1]}<br><br><i>${gloryAndNow}</i><br><br>${kontakion[0]}`; // sep 1
             else kontakion = `${kontakion[0]}<br><br><i>${gloryAndNow}</i><br><br>${kontakion[1]}`;
         }
     }

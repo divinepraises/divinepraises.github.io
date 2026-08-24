@@ -1036,8 +1036,12 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
     } else if (dayData["class"] > 10){
         return dayTrop[0] + `<FONT COLOR="RED"> (3)</FONT>`;
     } else if (dayOfWeek === 0){
-        if (dayData["class"] < 10){
-            // Sunday
+        if ("invert kontakia at compline" in dayData) {
+            // Sep 1 on Sun
+            dayTrop = [dayTrop[1], dayTrop[0]];
+            dayTrop.splice(0, 0, (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][glas]);
+        } else if (dayData["class"] < 10){
+            // non vigil on Sunday
             dayTrop.splice(0, 0, (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][glas]);
         } else if (dayData["class"] < 12 && !("specialDismissal" in dayData)) {
             // vigil on Sunday that does not replace it
@@ -2487,6 +2491,11 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
                     stycheras.splice(4, 1); // remove last Sunday st.
                     stycheraScheme = Array(3).fill(1).concat([2, 1, 2, 1, 1])
                 } else stycheraScheme = Array(4).fill(1).concat([2, 1, 1, 1, 1])
+            } else if (numStycheras === 10) {
+                // Sep 1
+                stycheras.splice(13, 5);
+                numStycheras = 6;
+                stycheraScheme = Array(10).fill(1)
             } else if (numStycheras >= 6) {
                 stycheraScheme = Array(10).fill(1)
             }
@@ -2619,7 +2628,8 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
             }
             else {stycheraScheme = [2, 2, 1, 1, 1, 1];}
          }
-         else if (numStycheras === 7) {stycheraScheme = [1, 1, 1, 1, 2, 1, 1];}
+         else if (numStycheras === 7) stycheraScheme = [1, 1, 1, 1, 2, 1, 1];
+         else if (numStycheras === 10) {stycheraScheme = Array(10).fill(1); forceNumSticheras = 10;}  // Sep 1
          else if (numStycheras > 7) stycheraScheme = Array(8).fill(1);
     }
 
