@@ -9,7 +9,6 @@ dateInput.addEventListener("change", () => {
 	displayCurrentDay(dateInput.value);
 });
 
-document.getElementById("midnight").disabled = true;
 document.getElementById("matins").disabled = true;
 
 // read choices and use button

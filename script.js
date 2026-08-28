@@ -16,7 +16,7 @@ export function setDefaultHour(currentDate) {
 	var currentTime = currentDate.getHours();
 	var DefaultHour;
 	if (currentTime < 3){
-		DefaultHour = document.getElementById('midnight');
+		DefaultHour = document.getElementById('nocturn');
 	} else if (currentTime < 6) {
 		DefaultHour = document.getElementById('matins');
 	} else if (currentTime < 8) {

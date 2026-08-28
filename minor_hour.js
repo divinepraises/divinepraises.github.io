@@ -11,7 +11,7 @@ const numeral = {
     9: "Ninth"
 }
 const nextHour = {
-    "compline": "midnight",  // for the purposes of this script
+    "compline": "nocturn",  // for the purposes of this script
     "1hour": "3hour",
     "3hour": "6hour",
     "6hour": "9hour",
@@ -1081,7 +1081,7 @@ export async function EasterHour(hour, priest, full, date) {
 
     const linkToNext = `https:\/\/divinepraises.github.io/main.html?hour=${nextHour[hour]}&priest=${priest}&full=${full}&date=${date}#come_let_us`;
     var next = ""
-    if (hour != "9hour" && hour != "midnight") {
+    if (hour != "9hour" && hour != "nocturn") {
         next = `
             As all the hours except Matins and Vespers are same,
             if you want to say the next hour, recite this Paschal hour <a href="${linkToNext}">again</a>,
