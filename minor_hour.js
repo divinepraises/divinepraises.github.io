@@ -460,7 +460,7 @@ async function makeKathisma(season, seasonWeek, dayOfWeek, hour){
     }
 
     var text = `<div class="subhead">Kathisma ${k}</div>`
-    text += await kathismaToText(k, false, dayOfWeek) + "<br>"
+    text += await kathismaToText(k, false, dayOfWeek, false) + "<br>"
     return text
 }
 

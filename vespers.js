@@ -2906,7 +2906,7 @@ async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, seasonWeek, pri
         else if (dayOfWeek === 5) k = 15;
     }
 
-    const kathPsalmsToText = await kathismaToText(k, isGreatVespers, dayOfWeek);
+    const kathPsalmsToText = await kathismaToText(k, isGreatVespers, dayOfWeek, false);
     if (isGreatVespers && dayOfWeek != 0){
       document.getElementById("kathisma").innerHTML = `<div class="subhead">First stasis of Kathisma ${k}</div>${kathPsalmsToText}<br>`
     } else {

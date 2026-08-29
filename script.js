@@ -441,8 +441,8 @@ export function dayTransfer(season, seasonWeek, dayOfWeek, dd, mm) {
     return false
 }
 
-export async function kathismaToText(k, isGreatVespers, dayOfWeek) {
-    // replace with readPsalmsFromNumbers when psalms are here
+export async function kathismaToText(k, isGreatVespers, dayOfWeek, nocturn=false) {
+    // TODO: replace with readPsalmsFromNumbers when psalms are here
     var kathPsalms = await getData(`${address}\\psalms\\kathismas.json`);
     var fistStasisOnly = (isGreatVespers && dayOfWeek != 0);
     var kathPsalmsToText = `
@@ -452,9 +452,9 @@ export async function kathismaToText(k, isGreatVespers, dayOfWeek) {
     if (fistStasisOnly) kathPsalmsToText += ` (today only the first stasis is said)`
     kathPsalmsToText += ` or take psalms as given below from your psalter.</div><br>`
     for (const [i, stasis] of kathPsalms[k].entries()){
-        kathPsalmsToText += `
-        <div class="rubric">Psalms ${stasis} (in traditional/LXX numeration)</div>
-        ${tripleAlleluia}`
+        kathPsalmsToText += `<div class="rubric">Psalms ${stasis} (in traditional/LXX numeration)</div>`
+        if (i < 2 || !nocturn) kathPsalmsToText += tripleAlleluia
+        else kathPsalmsToText += tripleAlleluia.split("<br>")[0];
         if (fistStasisOnly) break;
         if (i < 2) kathPsalmsToText += `${LHM} <FONT COLOR="RED">(3)</FONT><br>${gloryAndNow}`
     }

@@ -113,7 +113,7 @@ function getOurFatherEnding(withPriest) {
 export function prayerBlessingMayGodBeGracious(withPriest, hour="") {
 	if (withPriest === "0") {
 		return `<FONT COLOR="RED">Chariman:</FONT> ${data.zamolytv} `;
-	} else if (hour === "1hour" || hour === "9hour") {
+	} else if (hour === "1hour" || hour === "9hour" || hour === "nocturn") {
 		return `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.mayGodBeGracious}</b> `;
 	} else {
 		return `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.zamolytv}</b> `;
