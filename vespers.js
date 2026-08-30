@@ -2496,6 +2496,11 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
                 stycheras.splice(13, 5);
                 numStycheras = 6;
                 stycheraScheme = Array(10).fill(1)
+            } else if (dayData["class"] === 11 && numStycheras === 8) {
+                // Nativity of the BVM
+                stycheras.splice(4+5, 2);
+                numStycheras = 6;
+                stycheraScheme = Array(10).fill(1)
             } else if (numStycheras >= 6) {
                 stycheraScheme = Array(10).fill(1)
             }
