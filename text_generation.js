@@ -142,7 +142,6 @@ export function dismissalMajor(dayOfWeek, seasonWeek, season, withPriest, isGrea
 	    text = `<FONT COLOR="RED">Chariman:</FONT> ${data.layDismissalDeceased}`;
 	};
 	if (TheotokosDismissal != "") TheotokosDismissal = replaceCapsWords(data.dismissalTheotokos, {"SAINT":TheotokosDismissal});
-	else TheotokosDismissal = ";";
 
 	if (dayOfWeek === 0 && !isGreatVespers && !(season === "Pentecost")) replacements = {"SUNDAY": data.dismissalsWeekdays[0], "WEEKDAY": "", "THURSDAY": "", "CHURCH": data.dismissalChurch, "THEOTOKOS": TheotokosDismissal};
 	else if (specialDismissal != "") replacements = {"SUNDAY": specialDismissal, "WEEKDAY": "", "THURSDAY": "", "CHURCH": "", "THEOTOKOS": TheotokosDismissal};
@@ -154,14 +153,14 @@ export function dismissalMajor(dayOfWeek, seasonWeek, season, withPriest, isGrea
 	    "WEEKDAY": data.dismissalsWeekdays[6],
 	    "THURSDAY": data.dismissalsWeekdays[4] + data.dismissalsWeekdays[7],
 	    "CHURCH": data.dismissalChurch,
-	    "THEOTOKOS": TheotokosDismissal
+	    "THEOTOKOS": TheotokosDismissal + ";"
 	    };
-	else replacements = {"SUNDAY": "", "WEEKDAY": data.dismissalsWeekdays[dayOfWeek], "THURSDAY": "", "CHURCH": data.dismissalChurch, "THEOTOKOS": TheotokosDismissal};
+	else replacements = {"SUNDAY": "", "WEEKDAY": data.dismissalsWeekdays[dayOfWeek], "THURSDAY": "", "CHURCH": data.dismissalChurch, "THEOTOKOS": TheotokosDismissal + ";"};
 
 	if (!isGreatVespers) {
 	    if (saintNames.length === 1 && saintNames[0] === "") replacements["SAINT"] = "";
 	    else replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}`
-	} else if ((TheotokosDismissal!==";" || specialDismissal != "") && saintNames[0] ==="") {
+	} else if ((TheotokosDismissal!=="" || specialDismissal != "") && saintNames[0] ==="") {
 	    replacements["SAINT"] = "";
 	} else {
 	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}${data.dismissalSaintsSolemn}`
@@ -169,7 +168,7 @@ export function dismissalMajor(dayOfWeek, seasonWeek, season, withPriest, isGrea
 
     // TODO: adapt it so that one can insert the Cross dismissal. So far we can not because of a stray "of"
 	if (crossDismissal != "") {
-	    replacements["WEEKDAY"] = data.dismissalsWeekdays[5];
+	    replacements["WEEKDAY"] = ";" + data.dismissalsWeekdays[5] + crossDismissal;
 	    replacements["THURSDAY"] = "";
 	    replacements["CHURCH"] = "";
 	}
