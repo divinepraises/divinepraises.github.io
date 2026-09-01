@@ -166,7 +166,6 @@ export function dismissalMajor(dayOfWeek, seasonWeek, season, withPriest, isGrea
 	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}${data.dismissalSaintsSolemn}`
 	}
 
-    // TODO: adapt it so that one can insert the Cross dismissal. So far we can not because of a stray "of"
 	if (crossDismissal != "") {
 	    replacements["WEEKDAY"] = ";" + data.dismissalsWeekdays[5] + crossDismissal;
 	    replacements["THURSDAY"] = "";
