@@ -564,7 +564,7 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
     } else if ("postfeast" in dayData) {
         prePostFeast = "postfeast";
         prePostFeastTroparion = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["troparia"];
-    } else if (season === "PostPentecost" && "crossDismissal" in dayData) {
+    } else if (season === "PostPentecost" && "crossDismissal" in dayData && "class" in dayData && dayData["class"] < 12) {
         // July 31, Aug 1
         if (dayData["class"] === 7) {prePostFeast = "postfeast"; prePostFeastTroparion = dayData["troparia"][1]; dayData["troparia"].pop();}
         else {prePostFeast = "forefeast"; prePostFeastTroparion = dayData["troparia"][1];}
@@ -870,7 +870,7 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
     } else if ("postfeast" in dayData) {
         prePostFeast = "postfeast";
         prePostFeastKontakion = (await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`))["kontakia"];
-    } else if (season === "PostPentecost" && "crossDismissal" in dayData) {
+    } else if (season === "PostPentecost" && "crossDismissal" in dayData && "class" in dayData && dayData["class"] < 12) {
         // July 31, Aug 1
         if (dayData["class"] === 7) {prePostFeast = "postfeast"; prePostFeastKontakion = dayData["kontakia"][0];}
         else {prePostFeast = "forefeast"; prePostFeastKontakion = dayData["kontakia"][1]; dayData["kontakia"].pop();}
