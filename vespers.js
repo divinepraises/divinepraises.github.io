@@ -1040,6 +1040,10 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
             // Sep 1 on Sun
             dayTrop = [dayTrop[1], dayTrop[0]];
             dayTrop.splice(0, 0, (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][glas]);
+        } else if (prePostFeast === "forefeast" && dayData[prePostFeast] === "09//14") {
+            // sep 13
+            dayTrop.splice(1, 1); // remove the saint
+            dayTrop.splice(0, 0, (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][glas]);
         } else if (dayData["class"] < 10){
             // non vigil on Sunday
             dayTrop.splice(0, 0, (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][glas]);
@@ -2466,6 +2470,16 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
             for (let i=0; i < 6 % numStycheras; i++) stycheraScheme[i] += 1;
             numStycheras += 4
             stycheraScheme = Array(4).fill(1).concat(stycheraScheme);
+        } else if (prePostFeast === "forefeast" && dayData[prePostFeast] === "09//14") {
+            // Sep 13
+            stycheras = (
+                psalm140OctoechosStycheras.slice(0, 5)
+                .concat(psalm140menaionStycheras.slice(0, 4))
+                .concat(vespersMenaionData["aposticha"].slice(0, 4))
+                .concat(psalm140menaionStycheras.slice(8, 11))
+            )
+            numStycheras = 10;
+            stycheraScheme = Array(10).fill(1)
         } else if (dayData["class"] >= 8) {
             // polyeleos/vigil on Sunday
             // in the current data format, 0th stychera is tone

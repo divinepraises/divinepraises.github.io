@@ -860,6 +860,10 @@ async function selectTropar(season, seasonWeek, dayOfWeek, hourData, glas, dayDa
         // aug 16
         return `<div class="rubric">Festal kontakia:</div>
             ${kontakion}<br><br><i>${gloryAndNow}</i><br><br>${prePostFeastKontakion}`;
+    } else if (prePostFeast === "forefeast" && dayData[prePostFeast] === "09//14"){
+        // sep 13
+        return `<div class="rubric">Festal kontakia:</div>
+            ${dayData["kontakia"][0]}<br><br><i>${gloryAndNow}</i><br><br>${prePostFeastKontakion}`;
     } else if (kontakion != "" && prePostFeast != "" && dayOfWeek != 0){
         return `<div class="rubric">Festal kontakion:</div> ${prePostFeastKontakion}`;
     } else if (kontakion != "" && prePostFeast === "forefeast" && dayOfWeek != 0){

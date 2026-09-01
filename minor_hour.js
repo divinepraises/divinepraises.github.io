@@ -681,8 +681,11 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
 
         if (prePostFeast != ""){
-            if (prePostFeast === "postfeast" && dayData[prePostFeast] === "08//15" && "no_kathisma" in dayData) {
-                // aug 16
+            if (
+                prePostFeast === "postfeast" && dayData[prePostFeast] === "08//15" && "no_kathisma" in dayData
+                || prePostFeast === "forefeast" && dayData[prePostFeast] === "09//14"
+                ) {
+                // aug 16 or Sep 13
                 if (hour === "1hour" || hour === "6hour") {
                     return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTrop[0]}`;
                 }
@@ -800,6 +803,11 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
     if (prePostFeast != ""){
         if (prePostFeast === "postfeast" && dayData[prePostFeast] === "08//15" && "no_kathisma" in dayData) {
             return `${dayTrop[0]}<br><br>${glory}<br><br>${prePostFeastTroparion}`;
+        }
+
+        if (prePostFeast === "forefeast" && dayData[prePostFeast] === "09//14") {
+            if (hour === "1hour" || hour === "6hour") return `${dayTrop[0]}<br><br>${glory}<br><br>${dayTrop[2]}`;
+            else return `${dayTrop[0]}<br><br>${glory}<br><br>${dayTrop[1]}`;
         }
 
         if (hour === "1hour" || hour === "6hour"){
@@ -975,8 +983,11 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
     if (dayOfWeek === 0){
         const sundayKond = await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`);
 
-        if (prePostFeast === "postfeast" && dayData[prePostFeast] === "08//15" && "no_kathisma" in dayData) {
-            // aug 16
+        if (
+            prePostFeast === "postfeast" && dayData[prePostFeast] === "08//15" && "no_kathisma" in dayData
+            || prePostFeast === "forefeast" && dayData[prePostFeast] === "09//14"
+            ) {
+            // aug 16 or Sep 13
             if (hour === "1hour" || hour === "9hour") return sundayKond["kontakia"][glas];
             if (hour === "3hour") return dayData["kontakia"][0];
             return prePostFeastKontakion;
@@ -1036,9 +1047,18 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         return `${dayKond[0]}`;
     }
 
+    if ("kontakia" in dayData) dayKond = dayData["kontakia"];
+    else dayKond = await getCommonText("kontakia", dayData);
+    if (!Array.isArray(dayKond)) dayKond = [dayKond];
+
     if (prePostFeast === "postfeast" && dayData[prePostFeast] === "08//15" && "no_kathisma" in dayData) {
         if (hour === "3hour" || hour === "9hour") return prePostFeastKontakion;
-        return dayData["kontakia"][0];
+        return dayKond[0];
+    }
+    if (prePostFeast === "forefeast" && dayData[prePostFeast] === "09//14") {
+        if (hour === "1hour" || hour === "9hour") return dayKond[0];
+        else if (hour === "3hour") return dayKond[1];
+        return dayKond[2]
     }
 
     if (prePostFeast != ""){
@@ -1051,10 +1071,6 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         const data = await getData(`${address}\\horologion\\daily_troparia_kontakia.json`);
         return `${data["kontakia"][dayOfWeek][0]}`;
     }
-
-    if ("kontakia" in dayData) dayKond = dayData["kontakia"];
-    else dayKond = await getCommonText("kontakia", dayData);
-    if (!Array.isArray(dayKond)) dayKond = [dayKond];
 
     if (dayData["class"] >= 8) {
         if (dayKond.length === 1 || hour === "1hour" || hour === "6hour") return `${dayKond[0]}`;
