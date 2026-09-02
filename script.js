@@ -128,14 +128,14 @@ export async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWee
 
         if ("forefeast" in dayData) {
             let feast = await getData(`${address}\\menaion\\${dayData["forefeast"]}.json`);
-            if ("day name" in feast) feastName = `${forefeast} ${feast["day name"]}, `;
-            else feastName = `${forefeast} ${feast["name"]}, `;
+            if ("day name" in feast) feastName = `, <i>${forefeast} ${feast["day name"]}</i>`;
+            else feastName = `, <i>${forefeast} ${feast["name"]}</i>`;
         }
         if ("postfeast" in dayData) {
             if (!(mm === "02" && cancelPostfeastHypapante(dd, season, seasonWeek, dayOfWeek))) {
                 let feast = await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`);
-                if ("day name" in feast) feastName = `${postfeast} ${feast["day name"]}, `;
-                else feastName = `${postfeast} ${feast["name"]}, `;
+                if ("day name" in feast) feastName = `, <i>${postfeast} ${feast["day name"]}</i>`;
+                else feastName = `, <i>${postfeast} ${feast["name"]}</i>`;
             }
         }
         if ("note" in dayData) {
@@ -170,7 +170,7 @@ export async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWee
         } else dayName = constructDayName(dayData, false);
 
         dayClass = Math.max(dayClass, specialClass);
-        return `${symbolData[dayClass]} ${ddmm} ${feastName} ${specialName} ${dayName}${note}`;
+        return `${symbolData[dayClass]} ${ddmm} ${specialName} ${dayName}${feastName}${note}`;
     } catch (error) {
          console.info(error)
          return `No data for this day at ${address}\\menaion\\${dateAddress}.json`
