@@ -906,6 +906,7 @@ export async function makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek
     }
     if (specialDismissal === "" && prePostFeastData && "TheotokosDismissal" in prePostFeastData) TheotokosDismissal = prePostFeastData["TheotokosDismissal"];
     if (specialDismissal === "" && prePostFeastData && "specialDismissal" in prePostFeastData) specialDismissal = prePostFeastData["specialDismissal"];
+    if (crossDismissal === "" && prePostFeastData && "crossDismissal" in prePostFeastData) crossDismissal = prePostFeastData["crossDismissal"];
 
     var gloryOrAnesti = `${glory}* ${andNow}`;
     var finalTheotokion = moreHonorable;
