@@ -238,6 +238,7 @@ async function smallComplineBeginning(full, season, seasonWeek, dayOfWeek, pries
 
     loadSmallComplineBeginning(smallComplineData, full, season, seasonWeek, dayOfWeek, isAlleluiaDay, priest, glas, dayData, dateAddress);
 	document.getElementById("beginning").innerHTML =  `<h2>Small Compline</h2>
+	<div id="vigil_note"></div>
 	<div id="switch"></div><br>
 	<div id="usualBeginning"></div>
 	${comeLetUs}<br><br>
@@ -290,6 +291,10 @@ async function loadSmallComplineBeginning(smallComplineData, full, season, seaso
             complineEnding(full, season, seasonWeek, dayOfWeek, priest, glas, dayData, true, {}, undefined, dateAddress);
             }
         );
+    }
+
+    if (dayData["class"] >= 10 && dayData["class"] <= 12) {
+        document.getElementById("vigil_note").innerHTML = `<div class=rubric>${smallComplineData["vigil_note"]}</div>`;
     }
 }
 
