@@ -1,0 +1,41 @@
+{
+    "refrain": "Glory be to You, our God, glory be to You!",
+    "comment": "Three-ode in Tone 2.<br>It is modeled on the Holy Wednesday Three-ode and has the acrostic: \"To Wednesday I sing\".<br>(Shortening the canon will remove the repetitions while keeping all parts.)<br><br>",
+    "troparia_number": 6,
+    "repeat_hirmi": 2,
+    "matinslike": true,
+    "odes": [
+        {
+            "ode": "3",
+            "hirmos": "You have established me on the rock of faith,* and You have emboldened my mouth against my enemies.* For my spirit rejoices when I sing: there is none as holy as our God* and none more righteous than You, O Lord.",
+            "troparia": [
+                [
+                    "In vain does the council of Herod gather together with evil intent, to murder the Lord Christ Who is to be born, to whom we sing: You are our God, and there is none more holy than You, O Lord.",
+                    "The wicked assembly of Herod, with souls filled to overflowing with hatred for God, contemplates how to kill the Lord Christ among newborns. To Him we sing: You are our God, and there is none more holy than You, O Lord."
+                ]
+            ]
+        },
+        {
+            "ode": "8",
+            "hirmos": "Whereas the command of the tyrant prevailed, and the furnace of old was heated sevenfold,* the flames did not burn the children,* who having trampled underfoot the decree of the king, cried aloud:* “O all you works of the Lord, praise the Lord and supremely exalt Him throughout all ages.”",
+            "troparia": [
+                [
+                    "Pouring forth tears like myrrh in honor of Christ who is to be born, let us cleanse our iniquities with them, and, being purified, come to the All-pure, crying aloud: “O all you works of the Lord, praise the Lord and supremely exalt Him throughout all ages.”",
+                    "Let us flee the fearful torment to come by tears of compunction, touching the feet of Christ, who is being wrapped in swaddling clothes as a newborn, and crying aloud: “O all you works of the Lord, praise the Lord and supremely exalt Him throughout all ages.”",
+                    "Knowing of salvation coming through the holy action of grace, let us, in anticipation, wash ourselves clean in the fountain of our tears by confession to Christ, so that we may approach in the flesh the One Who is born in a manger, and cry aloud: “O all you works of the Lord, praise the Lord and supremely exalt Him throughout all ages.”"
+                ]
+            ]
+        },
+        {
+            "ode": "9",
+            "hirmos": " Come let us magnify the undefiled and most holy Mother of Emmanuel* with pure souls and undefiled lips.* and through her let us bring our prayer to the Child she has born:* spare our souls, O Christ God, and save us.<br><i><FONT COLOR=\"RED\">(inclination)</FONT></i>",
+            "troparia": [
+                [
+                    "Let no one be foolish or envious in wickedness among those who bring pleasing gifts to God: the fragrance of virtues instead of myrrh, gold and frankincense, with those who sing to Christ Who is to be born: “Spare our souls, O Christ God, and save us.“",
+                    "Speaking to the wise Magi, Herod said: “Go and search for the King who has now been born, and report to me!” He, the wicked one, learnt about murder in his murderous heart. Spare our souls, O Christ God, and save us.",
+                    "O the blindness of murder, O audacious one! Whence you obtained oblivion? No-one can kill God! You were burning with rage, you mercilessly slaughter the newborns, O Herod! Spare our souls, O Christ God, and save us."
+                ]
+            ]
+        }
+    ]
+}

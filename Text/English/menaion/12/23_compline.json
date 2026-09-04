@@ -1,0 +1,43 @@
+{
+    "refrain": "Glory be to You, our God, glory be to You!",
+    "comment": "Three-ode in Tone 6.<br>It is modeled on the Holy Friday Three-ode and has the acrostic: \"Before Sabbath\".<br>(Shortening the canon will remove the repetitions while keeping all parts.)<br><br>",
+    "troparia_number": 6,
+    "repeat_hirmi": 2,
+    "matinslike": true,
+    "odes": [
+        {
+            "ode": "5",
+            "hirmos": "Early I seek You, O Word of God,* Who without change did empty Yourself in Your compassion for fallen man,* Who without change bore the image of a servant from the Virgin.* Grant peace to me, the fallen one, O You Who loves mankind.",
+            "troparia": [
+                [
+                    "Having our minds purified, and, in preparation, cleansed through partaking of the divine Mystery of the awe-inspiring dispensation, let us ascend in body and soul to the city of Bethlehem, to see the Lord who is to be born.",
+                    "See and do not be troubled, O friends, for mad Herod, insolent in vain, seeks to slay the Creator who is born. But He, as the One who holds power over life and death, lives and saves the world, as the loves mankind.”"
+                ]
+            ]
+        },
+        {
+            "ode": "8",
+            "hirmos": "The godly youths exposed a monument of godless wickedness,* but Herod is enraged and takes vain counsel against Christ.* He plans to kill Him Who holds life in the palm of His hand,* Whom all creation blesses and glorifies throughout all ages.",
+            "troparia": [
+                [
+                    "Let us shake the sleep of laziness from our eyelids, O faithful. Let us watch in prayer, overcoming the  temptations of the evil one, so that we may behold the glory of the Christ who has manifested Himself, whom whole creation blesses and glorifies for all ages.”",
+                    "What man can fathom the depth of the wisdom and understanding of the Creator? Who is so wise as to grasp the abyss of the judgements of God? Because of them, having bowed the heavens down, He dwelt among men as a flesh-bearer: He, whom the whole creation blesses and glorifies for all ages.",
+                    "Let us, O faithful, forbid any foul word to leave our lips, and having formed ourselves, let us now bring to Christ divine words, as He freed us from dumbness as He lay in the manger of dumb beasts: He, whom the whole creation blesses and glorifies for all ages.",
+                    "Let us renounce carnal passions and the pleasures of the world, and hold fast to spiritual cares, as whose wise in God, proving ourselves by our deeds worthy of the Lord who is to be born, whom the whole creation blesses and glorifies for all ages."
+                ]
+            ]
+        },
+        {
+            "ode": "9",
+            "hirmos": "More honourable than the cherubim, and by far more glorious than the seraphim, ever a virgin, you gave birth to God the Word, O true Mother of God, we magnify you.<br><i><FONT COLOR=\"RED\">(inclination)</FONT></i>",
+            "troparia": [
+                [
+                    "The destructive command of the enemy, troubled by the birth of Jesus, caused slaughter of the innocent newborns. But we venerate the One who was born with faith.",
+                    "Ignorant of the natural Law, and rejecting the statutes of God, cruel Herod lawlessly deprived mothers of their children and mercilessly slaughtered newborns for the Life of all.",
+                    "The door of Eden was opened to the Gentiles as the Saviour was born in Bethlehem, and the Lord of glory gushes forth the source of life to those who thirst. Him do we magnify.",
+                    "Angels surrounded the manger as the cherubic throne; they saw the shed as heaven, as the Lord lay therein, and they sang “Glory in the highest“ to God."
+                ]
+            ]
+        }
+    ]
+}
