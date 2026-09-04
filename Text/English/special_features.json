@@ -1,11 +1,19 @@
 [
   {
     "date": "09-01",
-    "description": "Beginning of the Menaion cycle, 10 stychera at vespers even if it is a weekday."
+    "description": "Beginning of the Menaion cycle, 10 stychera at vespers even if it is a weekday"
+  },
+  {
+    "date": "09-14",
+    "description": "Day of fasting"
   },
   {
     "date": "09-14",
     "description": "Matins: Rite of the Exaltation of the Cross"
+  },
+  {
+    "date": "11-15",
+    "description": "Beginning of the Nativity fast"
   },
   {
     "date": "12-19",
@@ -33,11 +41,15 @@
   },
   {
     "date": "12-24",
-    "description": "Vespers with multiple prophecies. If not on a weekend, also with the Liturgy of St. Basil."
+    "description": "Vespers with multiple prophecies. If not on a weekend, also with the Liturgy of St. Basil"
   },
   {
     "date": "12-24",
-    "description": "Great Compline with Lytia."
+    "description": "Great Compline with Lytia"
+  },
+  {
+    "date": "12-25",
+    "description": "End of the Nativity fast"
   },
   {
     "date": "01-05",
@@ -45,10 +57,26 @@
   },
   {
     "date": "01-05",
-    "description": "Vespers with multiple prophecies, and with the great blessing of the water. If not on a weekend, also with the Liturgy of St. Basil."
+    "description": "Vespers with multiple prophecies, and with the great blessing of the water. If not on a weekend, also with the Liturgy of St. Basil"
   },
   {
     "date": "01-05",
-    "description": "Great Compline with Lytia."
+    "description": "Great Compline with Lytia"
+  },
+  {
+    "date": "06-29",
+    "description": "End of the Apostles' fast"
+  },
+  {
+    "date": "08-01",
+    "description": "Beginning of the Dormition fast"
+  },
+  {
+    "date": "08-15",
+    "description": "End of the Dormition fast"
+  },
+  {
+    "date": "08-29",
+    "description": "Day of fasting"
   }
 ]
