@@ -85,7 +85,7 @@ async function loadUpcomingEvents(today) {
 
         // 6. Render the grouped events
         container.innerHTML = Object.values(groupedEvents).map(event => `
-            <div class="event-card" style="padding: 10px; margin-bottom: 10px;">
+            <div class="event-card" style="padding: 2px;">
                 <p><strong>Date(s):</strong> ${event.dates.join(', ')}</p>
                 <p>${event.description}</p>
             </div>
