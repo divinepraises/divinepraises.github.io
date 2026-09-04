@@ -567,8 +567,8 @@ function constructMenaionCanon(canonData, full, dayOfWeek){
     if (full === "0") {
         tropNumOde = 0;
         hirmRep = 1;
-        if (canonData["odes"].length >= 8) {
-            // only shorten if it's a full canon
+        if (canonData["odes"].length >= 8 && !matinslike) {
+            // only shorten if it's a full octoechos canon
             if (dayOfWeek === 1) {var i = 1} else {i = dayOfWeek + 1}
             allowedOdes = new Set([i.toString(), "9"]);
         }
