@@ -238,6 +238,7 @@ async function smallComplineBeginning(full, season, seasonWeek, dayOfWeek, pries
 
     loadSmallComplineBeginning(smallComplineData, full, season, seasonWeek, dayOfWeek, isAlleluiaDay, priest, glas, dayData, dateAddress);
 	document.getElementById("beginning").innerHTML =  `<h2>Small Compline</h2>
+	<div id="vigil_note"></div>
 	<div id="switch"></div><br>
 	<div id="usualBeginning"></div>
 	${comeLetUs}<br><br>
@@ -290,6 +291,10 @@ async function loadSmallComplineBeginning(smallComplineData, full, season, seaso
             complineEnding(full, season, seasonWeek, dayOfWeek, priest, glas, dayData, true, {}, undefined, dateAddress);
             }
         );
+    }
+
+    if (dayData["class"] >= 10 && dayData["class"] <= 12) {
+        document.getElementById("vigil_note").innerHTML = `<div class=rubric>${smallComplineData["vigil_note"]}</div>`;
     }
 }
 
@@ -562,8 +567,8 @@ function constructMenaionCanon(canonData, full, dayOfWeek){
     if (full === "0") {
         tropNumOde = 0;
         hirmRep = 1;
-        if (canonData["odes"].length >= 8) {
-            // only shorten if it's a full canon
+        if (canonData["odes"].length >= 8 && !matinslike) {
+            // only shorten if it's a full octoechos canon
             if (dayOfWeek === 1) {var i = 1} else {i = dayOfWeek + 1}
             allowedOdes = new Set([i.toString(), "9"]);
         }
@@ -860,6 +865,10 @@ async function selectTropar(season, seasonWeek, dayOfWeek, hourData, glas, dayDa
         // aug 16
         return `<div class="rubric">Festal kontakia:</div>
             ${kontakion}<br><br><i>${gloryAndNow}</i><br><br>${prePostFeastKontakion}`;
+    } else if (prePostFeast === "forefeast" && dayData[prePostFeast] === "09//14"){
+        // sep 13
+        return `<div class="rubric">Festal kontakia:</div>
+            ${dayData["kontakia"][0]}<br><br><i>${gloryAndNow}</i><br><br>${prePostFeastKontakion}`;
     } else if (kontakion != "" && prePostFeast != "" && dayOfWeek != 0){
         return `<div class="rubric">Festal kontakion:</div> ${prePostFeastKontakion}`;
     } else if (kontakion != "" && prePostFeast === "forefeast" && dayOfWeek != 0){

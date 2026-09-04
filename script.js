@@ -12,7 +12,7 @@ export function dateToStr(currentDate){
     return `${yyyy}-${mm}-${dd}`;
 }
 
-export function setDefaultHour(currentDate) {
+export async function setDefaultHour(currentDate) {
 	var currentTime = currentDate.getHours();
 	var DefaultHour;
 	if (currentTime < 3){
@@ -34,6 +34,67 @@ export function setDefaultHour(currentDate) {
 	}
 	DefaultHour.checked = true;
 	displayCurrentDay(dateToStr(currentDate));
+
+	loadUpcomingEvents(currentDate);
+}
+
+
+async function loadUpcomingEvents(today) {
+    try {
+        // 1. Fetch the single JSON file
+        const response = await fetch(`${address}\\special_features.json`);
+        const events = await response.json();
+
+        // 2. Set up date boundaries (Today and 10 days from now)
+        today.setHours(0, 0, 0, 0); // Reset time to midnight for clean comparison
+        const startMonth = today.getMonth() + 1; // JS months are 0-11, adding 1 for 1-12
+        const startDay = today.getDate();
+
+        const someDaysLater = new Date();
+        someDaysLater.setDate(today.getDate() + 14);
+        const endMonth = someDaysLater.getMonth() + 1;
+        const endDay = someDaysLater.getDate();
+
+        // 3. Filter the events
+        const upcomingEvents = events.filter(event => {
+            const [month, day] = event.date.split('-').map(Number);
+            return isBetweenDates(month, day, startMonth, startDay, endMonth, endDay);
+        });
+
+        // 4. Render to the page
+        const container = document.getElementById('events-list');
+        if (upcomingEvents.length === 0) {
+            container.innerHTML = "<p>No special features.</p>";
+            return;
+        }
+
+        // 5. Group events by their description
+        const groupedEvents = {};
+
+        upcomingEvents.forEach(event => {
+            const key = event.description.trim();
+
+            if (!groupedEvents[key]) {
+                groupedEvents[key] = {
+                    description: event.description,
+                    dates: []
+                };
+            }
+            groupedEvents[key].dates.push(event.date);
+        });
+
+        // 6. Render the grouped events
+        container.innerHTML = Object.values(groupedEvents).map(event => `
+            <div class="event-card" style="padding: 2px;">
+                <p><strong>Date(s):</strong> ${event.dates.join(', ')}</p>
+                <p>${event.description}</p>
+            </div>
+        `).join('');
+
+    } catch (error) {
+        console.error("Error loading special features:", error);
+        document.getElementById('events-list').textContent = "Failed to load special features.";
+    }
 }
 
 export async function displayCurrentDay(currentDate){
@@ -128,14 +189,14 @@ export async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWee
 
         if ("forefeast" in dayData) {
             let feast = await getData(`${address}\\menaion\\${dayData["forefeast"]}.json`);
-            if ("day name" in feast) feastName = `${forefeast} ${feast["day name"]}, `;
-            else feastName = `${forefeast} ${feast["name"]}, `;
+            if ("day name" in feast) feastName = `, <i>${forefeast} ${feast["day name"]}</i>`;
+            else feastName = `, <i>${forefeast} ${feast["name"]}</i>`;
         }
         if ("postfeast" in dayData) {
             if (!(mm === "02" && cancelPostfeastHypapante(dd, season, seasonWeek, dayOfWeek))) {
                 let feast = await getData(`${address}\\menaion\\${dayData["postfeast"]}.json`);
-                if ("day name" in feast) feastName = `${postfeast} ${feast["day name"]}, `;
-                else feastName = `${postfeast} ${feast["name"]}, `;
+                if ("day name" in feast) feastName = `, <i>${postfeast} ${feast["day name"]}</i>`;
+                else feastName = `, <i>${postfeast} ${feast["name"]}</i>`;
             }
         }
         if ("note" in dayData) {
@@ -170,7 +231,7 @@ export async function showMenaionDate(yyyy, mm, dd, season, seasonWeek, dayOfWee
         } else dayName = constructDayName(dayData, false);
 
         dayClass = Math.max(dayClass, specialClass);
-        return `${symbolData[dayClass]} ${ddmm} ${feastName} ${specialName} ${dayName}${note}`;
+        return `${symbolData[dayClass]} ${ddmm} ${specialName} ${dayName}${feastName}${note}`;
     } catch (error) {
          console.info(error)
          return `No data for this day at ${address}\\menaion\\${dateAddress}.json`
