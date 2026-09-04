@@ -1,0 +1,54 @@
+[
+  {
+    "date": "09-01",
+    "description": "Beginning of the Menaion cycle, 10 stychera at vespers even if it is a weekday."
+  },
+  {
+    "date": "09-14",
+    "description": "Matins: Rite of the Exaltation of the Cross"
+  },
+  {
+    "date": "12-19",
+    "description": "Compline canon inspired by Holy Week canons"
+  },
+  {
+    "date": "12-20",
+    "description": "Compline canon inspired by Holy Week canons"
+  },
+  {
+    "date": "12-21",
+    "description": "Compline canon inspired by Holy Week canons"
+  },
+  {
+    "date": "12-22",
+    "description": "Compline canon inspired by Holy Week canons"
+  },
+  {
+    "date": "12-23",
+    "description": "Compline canon inspired by Holy Week canons"
+  },
+  {
+    "date": "12-24",
+    "description": "1-9 hours: Royal hours (if it falls on weekend, transferred to previous Friday)"
+  },
+  {
+    "date": "12-24",
+    "description": "Vespers with multiple prophecies. If not on a weekend, also with the Liturgy of St. Basil."
+  },
+  {
+    "date": "12-24",
+    "description": "Great Compline with Lytia."
+  },
+  {
+    "date": "01-05",
+    "description": "1-9 hours: Royal hours (if it falls on weekend, transferred to previous Friday)"
+  },
+  {
+    "date": "01-05",
+    "description": "Vespers with multiple prophecies, and with the great blessing of the water. If not on a weekend, also with the Liturgy of St. Basil."
+  },
+  {
+    "date": "01-05",
+    "description": "Great Compline with Lytia."
+  }
+]

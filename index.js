@@ -1,5 +1,7 @@
 import { setDefaultHour, displayCurrentDay, dateToStr } from './script.js';
 
+const address = `Text\\English`;
+
 // select the date
 const dateInput = document.getElementById("myDate");
 const today = new Date();
@@ -20,4 +22,5 @@ document.getElementById("goButton").addEventListener("click", function()  {
     // Redirect to main page
     window.location.href = `main.html?hour=${encodeURIComponent(hour)}&priest=${encodeURIComponent(priest)}&full=${encodeURIComponent(full)}&date=${encodeURIComponent(dateInput.value)}`;
 });
-window.onload = setDefaultHour(today);
+
+window.onload = await setDefaultHour(today);
