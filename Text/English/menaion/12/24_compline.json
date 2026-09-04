@@ -1,0 +1,98 @@
+{
+    "refrain": "Glory be to You, our God, glory be to You!",
+    "comment": "Canon in Tone 6.<br>It is modeled on the Holy Saturday canon and has the acrostic: \"Today I hymn the Great Sabbath\".<br>(For this canon, choosing to 'Shorten the canon' above will remove only the repetitions. All the constituent parts will remain.)<br><br>",
+    "troparia_number": 6,
+    "repeat_hirmi": 2,
+    "matinslike": true,
+    "odes": [
+        {
+            "ode": "1",
+            "hirmos": "He who in ancient times* hid the pursuing tyrant beneath the waves of the sea,* is now hidden in a manger* and sought by Herod to be slain.* But with the magi let us sing to the Lord,* for gloriously has He been glorified.",
+            "troparia": [
+                [
+                    "O Lord my God, I will sing to You a Nativity hymn, a forefeast chant: for by Your birth You grant me rebirth, and restore me to the original honour.",
+                    "All things above and all beneath the earth marveled at Your power, as they beheld You, O my Saviour, upon Your throne on high and in the manger below. For beyond our understanding You appeared before our eyes in two natures: God and Man.",
+                    "To fill all things with Your glory, You bowed down the heavens and descended to the earth: like rain upon wool, You entered the womb of the Virgin, and are to be born of her in two natures: God and Man."
+                ]
+            ]
+        },
+        {
+            "ode": "3",
+            "hirmos": "When the creation beheld You born in a manger,* who have hung the whole earth freely upon the waters,* it was seized with amazement and it cried:* ‘There is none holy save You, O Lord.’",
+            "troparia": [
+                [
+                    "Signs of Your incarnation You have disclosed in a multitude of visions and inspired prophecies. Now You fulfill them by Your coming, being born from a pure Maiden in the city of David.",
+                    "The earth has stretched out her arms to receive the Creator, who receives glory from angels, from the sky a star, from the shepherds praise, and from the whole world the knowledge of Him.",
+                    "Today the prophecies of the star-chasing magician Balaam, are fulfilled: a Star has shone forth from Jacob, and shows the way to the Sun of righteousness to the Magi, kings from Persia, who bring gifts."
+                ]
+            ]
+        },
+        {
+            "ode": "4",
+            "hirmos": "Foreseeing Your coming from the Virgin,* Habakkuk cried out marvelling:* You have come from the South and have taken flesh,* O Saviour, to call back exiled Adam.",
+            "troparia": [
+                [
+                    "The Lord draws near and comes, the Expectation of the Gentiles and the salvation of the world. Prepare the cave, O city of Bethlehem; shepherds, come and hasten with the Magi!",
+                    "By the power of Your divinity, You were united with humanity in a union without confusion. O Savior, in the likeness of Adam’s flesh, you regenerate Adam and save him by taking him upon Yourself.",
+                    "The Word becomes material through the Incarnation, and dwells with us through an ineffable dispensation. Come, O faithful, let us contemplate His glory, the glory of the Only-begotten Son from God the Father!"
+                ]
+            ]
+        },
+        {
+            "ode": "5",
+            "hirmos": "Isaiah, as he watched by night, beheld the light that knows no evening, the light of Your Theophany, O Christ, that came to pass from tender love for us; and he cried aloud: The Virgin shall conceive in her womb and shall bear the incarnate Word, and all those born on the earth shall rejoice exceedingly.",
+            "troparia": [
+                [
+                    "Becoming a creature formed from dust, O Creator, You make new those born on earth. The manger, the swaddling clothes, and the cave are signs of Your humility. And the betrothed of Your Mother, he who is thought by men to be your father, fulfills the counsel of the Father Who begot You.",
+                    "The myrrh symbolises Your death, gold Your royal power, frankincense the preeminence of Your divinity. Thus the Magi, the kings of the Gentiles, bring you first fruits at Your birth in a cave in Bethlehem, from a Mother who knew not man.",
+                    "Coming forth from a birth without man, O Word co-eternal with the Father, You make Your dwelling in a cave, and appoint the manger as Your throne. You amaze, through Your awe-inspiring dispensation, the Magi and the shepherds, and You fill the angels with trembling as they cry: glory to Your power."
+                ]
+            ]
+        },
+        {
+            "ode": "6",
+            "hirmos": "Jonah was enclosed but not held fast in the belly of the whale; for, serving as a figure of You, who were born and appeared in the flesh, he leapt forth from the monster as from a bridal chamber. For You who are born today will to enter the tomb and death, to rise again in three days.",
+            "troparia": [
+                [
+                    "Today the wall of ancient enmity is destroyed and shattered by Your coming, O Christ, and the flaming sword is turned away from all who approach. I now faithfully partake of the life-giving tree of Eden, becoming again a cultivator of the garden of immortality.",
+                    "Hell and sin reigned from Adam until You, but their shameless tyranny has perished, when You were born in the flesh, O Deliverer, from the tribe of David, and and were manifestly set upon the throne of his kingdom, reigning for all ages!",
+                    "Cruel Herod brought death to the children, but not to God. For though he bitterly reaped the infants like grass, yet he could neither seize nor kill the Grain of life. For as the giver of life, you hid Yourself from the persecutor by Your divine power."
+
+                ]
+            ]
+        },
+        {
+            "ode": "7",
+            "hirmos": "Wonder past speech! He who delivered the holy Children from the fiery furnace, is laid as a newborn in a poor manger, for our salvation who sing: O God our Deliverer, blessed are You.",
+            "troparia": [
+                [
+                    "The deceiver-enemy was wounded when he saw God laid in a poor manger, and is slain by the mighty divine hand, for our salvation who sing: O God our Deliverer, blessed are You.",
+                    "O happy manger! It received within itself the Creator as a newborn, and it was made a cherubic throne, for our salvation who sing: O God our Deliverer, blessed are You.",
+                    "As a newborn, You submit to be laid in swaddling clothes according to the law of men, and You use them to loosen the bonds of our transgressions, granting freedom to us who sing: O God our Deliverer, blessed are You."
+                ]
+            ]
+        },
+        {
+            "ode": "8",
+            "hirmos": "Be astonished, O you heavens, be horribly afraid, and let the foundations of the earth be shaken. For lo, He who holds all in His hand is wrapped in swaddling clothes, and lodges as a stranger in a small manger. Him do you children bless, you priests praise, and you people exalt above all forever.",
+            "troparia": [
+                [
+                    "Adam, once bound, has been set free, and freedom was given to all the faithful, when You, O Saviour, were wrapped in swaddling clothes and laid in a small cave and in the manger of dumb beasts. Therefore we rejoice in You, faithfully offering You a hymn at the fore-feast of Your Nativity.",
+                    "The Persian deceit has failed, for the astronomers, the kings of the East, bring gifts to Christ, the King of all: gold, myrrh and frankincense. Him do you children bless, you priests praise, and you people exalt above all forever.",
+                    "O strange wonders! O love and infinite forbearance! He who dwells on high becomes a newborn, and God willingly flees from Herod. Him do you children bless, you priests praise, and you people exalt above all forever."
+                ]
+            ]
+        },
+        {
+            "ode": "9",
+            "hirmos": "Be not amazed at Me, O Mother, beholding as a newborn the Son begotten from the bosom of the Father before the morning star. For I have come manifestly to rise up and to glorify with Me fallen human nature, which magnifies you with faith and love.",
+            "troparia": [
+                [
+                    "‘O Son without beginning, in ways surpassing nature was I blessed at Your strange birth, for I was spared all travail. But now, beholding You fleeing from Herod, I am pierced by the sword of bitter sorrow, crying out: save those who venerate You.’",
+                    "‘I flee to the land of Egypt, O Mother, but I will overthrow the man-made idols of the Egyptians with a tremor, and exile to Hell the enemies who in vain seek my soul, and as the only all-powerful One, I shall exalt and save those who magnify you.’",
+                    "Let the creation rejoice exceedingly, for the Creator creates Himself, and God who is before all things manifests Himself anew. Let the Magi come to meet Him with gifts; let the shepherds applaud the miracle with faith; and let men rejoice with the angels!"
+                ]
+            ]
+        }
+    ]
+}
