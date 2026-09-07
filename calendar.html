@@ -155,11 +155,14 @@ async function buildCalendar(year, month) {
         const full = document.querySelector(".full")?.value;
         const hour = row.querySelector(".hour").value;
 
+        var date_address = encodeURIComponent(`${year}-${month}-${day}`);
+
         if (hour === "vespers" || hour === "compline") {
-            [year, month, day] = getPreviousDay(year, month, day)
+            let [new_year, new_month, new_day] = getPreviousDay(year, month, day);
+            date_address = encodeURIComponent(`${year}-${month}-${day}`);
         }
 
-        window.location.href = `main.html?hour=${encodeURIComponent(hour)}&priest=${encodeURIComponent(priest)}&full=${encodeURIComponent(full)}&date=${encodeURIComponent(`${year}-${month}-${day}`)}`;
+        window.location.href = `main.html?hour=${encodeURIComponent(hour)}&priest=${encodeURIComponent(priest)}&full=${encodeURIComponent(full)}&date=${date_address}`;
     });
 
     tbody.appendChild(row);
