@@ -1,0 +1,14 @@
+[
+  {
+    "season": "Forelent",
+    "seasonWeek": 1,
+    "dayOfWeek": 0,
+    "description": "Sunday of the Publican and Pharisee: beginning of the Triodion in the Office"
+  },
+  {
+    "season": "Lent",
+    "seasonWeek": 1,
+    "dayOfWeek": 1,
+    "description": "Beginning of Lent"
+  }
+]

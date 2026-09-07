@@ -2884,7 +2884,7 @@ async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, seasonWeek, pri
       return
     }
 
-     if (mm === 3 && dd === 25 && dayOfWeek >= 2 || season === "HolyWeek" && dayOfWeek >= 5 || season === "EasterWeek") {
+    if (mm === 3 && dd === 25 && dayOfWeek >= 2 || season === "HolyWeek" && dayOfWeek >= 5 || season === "EasterWeek") {
       document.getElementById("kathisma").innerHTML = `<div class=\"rubric\">No kathisma today.</div><br>`;
       document.getElementById("kathismaSelector").innerHTML = "";
       return

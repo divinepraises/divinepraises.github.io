@@ -39,39 +39,64 @@ export async function setDefaultHour(currentDate) {
 }
 
 
-async function loadUpcomingEvents(today) {
+async function loadUpcomingEvents(today, rangeDays = 14) {
     try {
-        // 1. Fetch the single JSON file
-        const response = await fetch(`${address}\\special_features.json`);
-        const events = await response.json();
+        const [menaionEvents, triodionEvents] = await Promise.all([
+            fetch(`${address}/special_features_meanion.json`).then(r => r.json()),
+            fetch(`${address}/special_features_triodion.json`).then(r => r.json())
+        ]);
 
-        // 2. Set up date boundaries (Today and 10 days from now)
-        today.setHours(0, 0, 0, 0); // Reset time to midnight for clean comparison
-        const startMonth = today.getMonth() + 1; // JS months are 0-11, adding 1 for 1-12
-        const startDay = today.getDate();
+        const results = [];
 
-        const someDaysLater = new Date();
-        someDaysLater.setDate(today.getDate() + 14);
-        const endMonth = someDaysLater.getMonth() + 1;
-        const endDay = someDaysLater.getDate();
+        const baseDate = new Date(today);
+        baseDate.setHours(0, 0, 0, 0);
 
-        // 3. Filter the events
-        const upcomingEvents = events.filter(event => {
-            const [month, day] = event.date.split('-').map(Number);
-            return isBetweenDates(month, day, startMonth, startDay, endMonth, endDay);
-        });
+        for (let i = 0; i <= rangeDays; i++) {
+            const d = new Date(baseDate);
+            d.setDate(baseDate.getDate() + i);
 
-        // 4. Render to the page
-        const container = document.getElementById('events-list');
-        if (upcomingEvents.length === 0) {
-            container.innerHTML = "<p>No special features.</p>";
-            return;
+            const year = d.getFullYear();
+            const month = d.getMonth() + 1;
+            const day = d.getDate();
+
+            const dayOfWeek = d.getDay();
+            const [season, seasonWeek, _, __] = parseDate(year, month, day);
+
+            // Menaion check
+            for (const event of menaionEvents) {
+                const [em, ed] = event.date.split('-').map(Number);
+                if (em === month && ed === day) {
+                    results.push({
+                        dateObj: d,
+                        displayDate: event.date,
+                        description: event.description
+                    });
+                }
+            }
+
+            // Triodion check
+            for (const event of triodionEvents) {
+                if (
+                    event.season === season &&
+                    event.seasonWeek === seasonWeek &&
+                    event.dayOfWeek === dayOfWeek
+                ) {
+                    results.push({
+                        dateObj: d,
+                        displayDate: `${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
+                        description: event.description
+                    });
+                }
+            }
         }
 
-        // 5. Group events by their description
+        // sort
+        results.sort((a, b) => a.dateObj - b.dateObj);
+
+        // group (your existing logic)
         const groupedEvents = {};
 
-        upcomingEvents.forEach(event => {
+        results.forEach(event => {
             const key = event.description.trim();
 
             if (!groupedEvents[key]) {
@@ -80,12 +105,20 @@ async function loadUpcomingEvents(today) {
                     dates: []
                 };
             }
-            groupedEvents[key].dates.push(event.date);
+
+            groupedEvents[key].dates.push(event.displayDate);
         });
 
-        // 6. Render the grouped events
+        // render
+        const container = document.getElementById('events-list');
+
+        if (results.length === 0) {
+            container.innerHTML = "<p>No special features.</p>";
+            return;
+        }
+
         container.innerHTML = Object.values(groupedEvents).map(event => `
-            <div class="event-card" style="padding: 2px; font-size: 0.8rem">
+            <div class="event-card" style="padding: 2px; font-size: 0.9rem">
                 <p><strong>Date(s):</strong> ${event.dates.join(', ')}</p>
                 <p>${event.description}</p>
             </div>
