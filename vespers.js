@@ -880,7 +880,7 @@ async function makeLytiaPrayers(lytiaPrayers, vigilVespersData, vespersData, day
 
 export async function makeEndingBlockMajor(priest, season, seasonWeek, dayOfWeek, isGreatVespers, vespersData, dayData, priestlyExclamationsData, isLenten, isEasterWeek) {
     var res = `<div class="subhead">Dismissal</div><br>`;
-    var saintNames = [constructDayName(dayData)];
+    var saintNames = constructDayName(dayData);
 
     var TheotokosDismissal = "";
     if ("TheotokosDismissal" in dayData) TheotokosDismissal = dayData["TheotokosDismissal"];
@@ -1413,7 +1413,10 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
         if (dayOfWeek === 6 && season === "Forelent" && seasonWeek < 3) apostVerses = vespersData["aposticha_dead"];
         else if ("aposticha_verses" in vespersTriodionData) apostVerses = vespersTriodionData["aposticha_verses"];
         else apostVerses = vespersData["aposticha"];
-    } else if ("aposticha_verses" in vespersMenaionData && !("additional_aposticha" in vespersMenaionData)) apostVerses = vespersMenaionData["aposticha_verses"];
+    } else if ("aposticha_verses" in vespersMenaionData && !("additional_aposticha" in vespersMenaionData)) {
+        apostVerses = vespersMenaionData["aposticha_verses"];
+        if ("special_aposticha" in vespersMenaionData) isGreatVespers = true;
+    }
     else if (prePostFeast != "") {
         apostVerses = (await getData(`${address}\\menaion\\${dayData[prePostFeast]}_vespers.json`))["aposticha_verses"];
     } else if (dayOfWeek === 6) apostVerses = vespersData["aposticha_dead"];

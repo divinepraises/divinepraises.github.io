@@ -163,7 +163,8 @@ export function dismissalMajor(dayOfWeek, seasonWeek, season, withPriest, isGrea
 	} else if ((TheotokosDismissal!=="" || specialDismissal != "") && saintNames[0] ==="") {
 	    replacements["SAINT"] = "";
 	} else {
-	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}${data.dismissalSaintsSolemn}`
+	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames[0]}${data.dismissalSaintsSolemn}`
+	    if (saintNames.length > 1) replacements["SAINT"] += saintNames.slice(1, saintNames.length).join(",")
 	}
 
 	if (crossDismissal != "") {

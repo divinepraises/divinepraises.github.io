@@ -297,13 +297,13 @@ export function constructDayName(dayData, forDismissal=true){
         return `${saint} ${dayData["type"]} ${dayData["name"]}${title}`
     } else {
         // list of saints
-        var dateInfo = ``;
+        var dateInfo = [];
         if (!Array.isArray(saint)) {saint = Array(dayData["name"].length).fill(saint)}
         if (!Array.isArray(title)) {title = Array(dayData["name"].length).fill(title)}
         for (let [i, name] of dayData["name"].entries()){
-            dateInfo += ` ${saint[i]} ${dayData["type"][i]} ${name}${title[i]},`
+            dateInfo.push(` ${saint[i]} ${dayData["type"][i]} ${name}${title[i]}`)
         }
-        return dateInfo.slice(0, -1);
+        return dateInfo;
     }
 }
 
