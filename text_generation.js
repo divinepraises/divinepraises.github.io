@@ -157,6 +157,8 @@ export function dismissalMajor(dayOfWeek, seasonWeek, season, withPriest, isGrea
 	    };
 	else replacements = {"SUNDAY": "", "WEEKDAY": data.dismissalsWeekdays[dayOfWeek], "THURSDAY": "", "CHURCH": data.dismissalChurch, "THEOTOKOS": TheotokosDismissal + ";"};
 
+    if (!Array.isArray(saintNames)) saintNames = [saintNames];
+
 	if (!isGreatVespers) {
 	    if (saintNames.length === 1 && saintNames[0] === "") replacements["SAINT"] = "";
 	    else replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}`
