@@ -1,78 +1,78 @@
 [
   {
     "date": "09-01",
-    "description": "Beginning of the Menaion cycle, 10 stychera at vespers even if it is a weekday"
+    "description": "Beginning of the Menaion cycle, 10 stychera at Vespers even if it is a weekday."
   },
   {
     "date": "09-14",
-    "description": "Day of fasting<br>Matins: Rite of the Exaltation of the Cross"
+    "description": "Day of fasting.<br>Matins: Rite of the Exaltation of the Cross <i>(Not implemented here yet)</i>."
+  },
+  {
+    "date": "09-21",
+    "description": "Switch to the long scheme of Kathismas (3 at daily Matins, Polyeleos on all Sundays, Kathisma 18 at daily Vespers) starting on the Sunday following September 21."
   },
   {
     "date": "11-15",
-    "description": "Beginning of the Nativity fast"
+    "description": "Beginning of the Nativity fast."
+  },
+  {
+    "date": "12-10",
+    "description": "Switch to the short scheme of Kathismas for the festive season (2 at daily matins, no Polyeleos on Sundays, variable Kathisma at Vespers)."
   },
   {
     "date": "12-19",
-    "description": "Compline canon inspired by Holy Week canons"
-  },
-  {
-    "date": "12-20",
-    "description": "Compline canon inspired by Holy Week canons"
-  },
-  {
-    "date": "12-21",
-    "description": "Compline canon inspired by Holy Week canons"
-  },
-  {
-    "date": "12-22",
-    "description": "Compline canon inspired by Holy Week canons"
+    "description": "Compline: after this day canons are special canons inspired by the Holy Week."
   },
   {
     "date": "12-23",
-    "description": "Compline canon inspired by Holy Week canons"
+    "description": "Compline: special canons until this day inclusive. After it, no canons for a while."
   },
   {
     "date": "12-24",
-    "description": "1-9 hours: Royal hours (if it falls on weekend, transferred to previous Friday)"
+    "description": "1-9 hours: Royal hours (if it falls on weekend, transferred to previous Friday)."
   },
   {
     "date": "12-24",
-    "description": "Vespers with multiple prophecies. If not on a weekend, also with the Liturgy of St. Basil"
+    "description": "Vespers with multiple prophecies. If not on a weekend, also with the Liturgy of St. Basil."
   },
   {
     "date": "12-24",
-    "description": "Great Compline with Lytia"
+    "description": "Great Compline with Lytia."
   },
   {
     "date": "12-25",
-    "description": "End of the Nativity fast"
+    "description": "End of the Nativity fast."
   },
   {
     "date": "01-05",
-    "description": "1-9 hours: Royal hours (if it falls on weekend, transferred to previous Friday)"
+    "description": "1-9 hours: Royal hours (if it falls on weekend, transferred to previous Friday)."
   },
   {
     "date": "01-05",
-    "description": "Vespers with multiple prophecies, and with the great blessing of the water. If not on a weekend, also with the Liturgy of St. Basil"
+    "description": "Vespers with multiple prophecies, and with the great blessing of the water. If not on a weekend, also with the Liturgy of St. Basil."
   },
   {
     "date": "01-05",
-    "description": "Great Compline with Lytia"
+    "description": "Great Compline with Lytia."
+  },
+  {
+    "date": "01-15",
+    "description": "Switch to the long scheme of Kathismas (3 at daily matins, Polyeleos on all Sundays, Kathisma 18 at daily Vespers)."
   },
   {
     "date": "06-29",
-    "description": "End of the Apostles' fast"
+    "description": "End of the Apostles' fast."
   },
   {
     "date": "08-01",
-    "description": "Beginning of the Dormition fast"
+    "description": "Beginning of the Dormition fast."
   },
   {
     "date": "08-15",
-    "description": "End of the Dormition fast"
+    "description": "End of the Dormition fast."
   },
   {
     "date": "08-29",
-    "description": "Day of fasting"
+    "description": "Day of fasting."
   }
 ]
