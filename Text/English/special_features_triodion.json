@@ -3,12 +3,102 @@
     "season": "Forelent",
     "seasonWeek": 1,
     "dayOfWeek": 0,
-    "description": "Sunday of the Publican and Pharisee: beginning of the Triodion in the Office"
+    "description": "Sunday of the Publican and Pharisee: beginning of the Triodion in the Office."
+  },
+  {
+    "season": "Forelent",
+    "seasonWeek": 3,
+    "dayOfWeek": 1,
+    "description": "Cheesefare week. Triodion texts at weekday vespers. No canon at compline."
+  },
+  {
+    "season": "Forelent",
+    "seasonWeek": 3,
+    "dayOfWeek": 3,
+    "description": "Penitential order of offices: Compline is Great, prayer of st. Ephrem at offices, readings at 6th hour and vespers."
+  },
+  {
+    "season": "Forelent",
+    "seasonWeek": 3,
+    "dayOfWeek": 5,
+    "description": "Penitential order of offices: Compline is Great, prayer of st. Ephrem at offices, readings at 6th hour and vespers."
   },
   {
     "season": "Lent",
     "seasonWeek": 1,
     "dayOfWeek": 1,
-    "description": "Beginning of Lent"
+    "description": "Beginning of Lent. Compline is Great, prayer of st. Ephrem at offices, readings at 6th hour and vespers.<br>The first week only: parts of the Canon of st Andrew at Compline on the evenings of Monday through Thursday."
+  },
+  {
+    "season": "Lent",
+    "seasonWeek": 4,
+    "dayOfWeek": 0,
+    "description": "Sunday of the Cross: veneration of the Cross at Matins and, in minor form, at every hour of the following week."
+  },
+  {
+    "season": "Lent",
+    "seasonWeek": 4,
+    "dayOfWeek": 5,
+    "description": "End of the week of the Cross: at the 6th hour the Cross is transferred to its usual place."
+  },
+  {
+    "season": "Lent",
+    "seasonWeek": 5,
+    "dayOfWeek": 4,
+    "description": "Thursday of the Great Canon. Vespers on the eve has thrice the usual number of stichera. Canon of st. Andrew is read at Matins. Kontakion of the Great Canon at all minor hours."
+  },
+  {
+    "season": "Lent",
+    "seasonWeek": 6,
+    "dayOfWeek": 6,
+    "description": "Lazarus Saturday: end of Lent, beginning of the Holy Week. No major change in offices."
+  },
+  {
+    "season": "HolyWeek",
+    "seasonWeek": 1,
+    "dayOfWeek": 3,
+    "description": "Wednesday of the Holy Week: last day with the penitential form of the offices."
+  },
+  {
+    "season": "HolyWeek",
+    "seasonWeek": 1,
+    "dayOfWeek": 4,
+    "description": "Holy Thursday. Minor hour reading is moved from the 6th into the 1st hour. Vespers with Liturgy of St. Basil (usually around noon or in the morning). Matins (of Holy Friday) with Passion Gospels in the evening."
+  },
+  {
+    "season": "HolyWeek",
+    "seasonWeek": 1,
+    "dayOfWeek": 5,
+    "description": "Holy Friday. 1-9 hours: Royal hours. No Liturgy. Procession with the Shroud at Vespers (usually in early afternoon). Jerusalem Matins in the evening."
+  },
+  {
+    "season": "HolyWeek",
+    "seasonWeek": 1,
+    "dayOfWeek": 6,
+    "description": "Holy Saturday. Vespers with Liturgy of St. Basil on the eve of Easter."
+  },
+  {
+    "season": "EasterWeek",
+    "seasonWeek": 1,
+    "dayOfWeek": 0,
+    "description": "Easter. All the offices are in special form until next Friday."
+  },
+  {
+    "season": "EasterWeek",
+    "seasonWeek": 1,
+    "dayOfWeek": 6,
+    "description": "End of the Easter Week and the Easter form of the offices at the 9th hour."
+  },
+  {
+    "season": "Pentcost",
+    "seasonWeek": 5,
+    "dayOfWeek": 4,
+    "description": "After this day, \"Christ is risen\" and \"Shine, shine\" are no longer chanted until the following Pascha."
+  },
+  {
+    "season": "Pentcost",
+    "seasonWeek": 7,
+    "dayOfWeek": 0,
+    "description": "After this day, we start chanting \"Heavenly King\" at usual places."
   }
 ]
