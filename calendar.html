@@ -159,7 +159,7 @@ async function buildCalendar(year, month) {
 
         if (hour === "vespers" || hour === "compline") {
             let [new_year, new_month, new_day] = getPreviousDay(year, month, day);
-            date_address = encodeURIComponent(`${year}-${month}-${day}`);
+            date_address = encodeURIComponent(`${new_year}-${new_month}-${new_day}`);
         }
 
         window.location.href = `main.html?hour=${encodeURIComponent(hour)}&priest=${encodeURIComponent(priest)}&full=${encodeURIComponent(full)}&date=${date_address}`;
