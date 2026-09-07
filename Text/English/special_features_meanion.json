@@ -16,7 +16,7 @@
     "description": "Beginning of the Nativity fast."
   },
   {
-    "date": "12-10",
+    "date": "12-20",
     "description": "Switch to the short scheme of Kathismas for the festive season (2 at daily matins, no Polyeleos on Sundays, variable Kathisma at Vespers)."
   },
   {
@@ -57,7 +57,11 @@
   },
   {
     "date": "01-15",
-    "description": "Switch to the long scheme of Kathismas (3 at daily matins, Polyeleos on all Sundays, Kathisma 18 at daily Vespers)."
+    "description": "Switch to the long scheme of Kathismas (3 at daily matins, Polyeleos on all Sundays, Kathisma 18 at daily Vespers) if this date is before the Sunday of the Publican and Pharisee."
+  },
+  {
+    "date": "03-24",
+    "description": "Great Compline with Lytia."
   },
   {
     "date": "06-29",

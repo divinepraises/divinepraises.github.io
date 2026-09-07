@@ -3,7 +3,7 @@
     "season": "Forelent",
     "seasonWeek": 1,
     "dayOfWeek": 0,
-    "description": "Sunday of the Publican and Pharisee: beginning of the Triodion in the Office."
+    "description": "Sunday of the Publican and Pharisee: beginning of the Triodion in the Office. Switch to the short scheme of Kathismas."
   },
   {
     "season": "Forelent",
@@ -27,7 +27,7 @@
     "season": "Lent",
     "seasonWeek": 1,
     "dayOfWeek": 1,
-    "description": "Beginning of Lent. Compline is Great, prayer of st. Ephrem at offices, readings at 6th hour and vespers.<br>The first week only: parts of the Canon of st Andrew at Compline on the evenings of Monday through Thursday."
+    "description": "Beginning of Lent. Compline is Great, prayer of st. Ephrem at offices, readings at 6th hour and vespers, lenten scheme of Kathismas.<br>The first week only: parts of the Canon of st Andrew at Compline on the evenings of Monday through Thursday."
   },
   {
     "season": "Lent",

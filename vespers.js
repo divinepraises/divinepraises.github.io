@@ -2901,11 +2901,10 @@ async function makeKathisma(dayOfWeek, dayClass, mm, dd, season, seasonWeek, pri
     const long_scheme = (
         season === "HolyWeek"
         || season === "Lent"
-        || season === "Forelent"
         || (
             season === "PostPentecost" && (
-                isBetweenDates(mm, dd, 9, 28, 12, 10)  // after the week after leave taking of Exaltation
-                ||isBetweenDates(mm, dd, 1, 15, 3, 15)  // from jan 15 to a random date that is surely in Lent
+                isBetweenDates(mm, dd, 9, 28, 12, 20)  // after the week after leave taking of Exaltation
+                || isBetweenDates(mm, dd, 1, 15, 3, 15)  // from jan 15 to a random date that is surely in Lent
                 ||(isBetweenDates(mm, dd, 9, 22, 9, 27) && dd > dayOfWeek+21)  // after Sun after leave-taking of Exaltation
            )
         )
