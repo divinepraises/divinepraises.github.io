@@ -149,6 +149,11 @@ export async function enhanceMinorHour(hour, priest, full, date) {
         dayData["kontakia"] = (await getData(`${address}\\menaion\\02\\02.json`))["kontakia"];
     }
 
+    if ("use kontakion at compline" in dayData) {
+        // Sep 23, Dol. p 144
+        dayData["class"] = 8;
+    }
+
     if (additionalElements && "troparion" in additionalElements && dayTriodionData) dayTriodionData["troparia"] = additionalElements["troparion"];
     if (additionalElements && "note" in additionalElements) document.getElementById("note").innerHTML = additionalElements["note"];
     if (dayTriodionData && "hours note" in dayTriodionData && hour != "1hour") document.getElementById("note").innerHTML += `<div class="rubric"> ${dayTriodionData["hours note"]}</div><br>`;
