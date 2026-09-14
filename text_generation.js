@@ -162,7 +162,7 @@ export function dismissalMajor(dayOfWeek, seasonWeek, season, withPriest, isGrea
 	if (!isGreatVespers) {
 	    if (saintNames.length === 1 && saintNames[0] === "") replacements["SAINT"] = "";
 	    else replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(", ")}`
-	} else if ((TheotokosDismissal!=="" || specialDismissal != "") && saintNames[0] ==="") {
+	} else if ((TheotokosDismissal!=="" || specialDismissal != "" || crossDismissal != "") && saintNames[0] ==="") {
 	    replacements["SAINT"] = "";
 	} else {
 	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames[0]}${data.dismissalSaintsSolemn}`
