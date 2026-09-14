@@ -199,7 +199,9 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
     document.getElementById("prayers").innerHTML = smallComplineData["prayers"].join("<br><br>");
     var dayClass = dayData["class"]
     if (dayTriodionData && "class" in dayTriodionData && dayTriodionData["class"] > dayClass) dayClass = dayTriodionData["class"];
-    document.getElementById("after_prayers").innerHTML = postComplinePrayers(priest, smallComplineData, ekteniasData, dayOfWeek, isGreatCompline, dayClass);
+    // it is a small file, so better to move these prayers there
+    const nocturnData = await getData(`${address}\\horologion\\nocturn_general.json`);
+    document.getElementById("after_prayers").innerHTML = postComplinePrayers(priest, nocturnData, ekteniasData, dayOfWeek, isGreatCompline, dayClass);
 
     if (
         isGreatCompline
@@ -963,7 +965,7 @@ function penitentialTroparia(withPriest,  smallComplineData, ekteniasData){
     return trop + "<br><br>";
 }
 
-function  postComplinePrayers(withPriest, data, ekteniasData, dayOfWeek, isGreatCompline, dayClass) {
+export function postComplinePrayers(withPriest, data, ekteniasData, dayOfWeek, isGreatCompline, dayClass) {
     // if there is a priest, doing the pomynannia (mentions)
     // if no, the penitential prayer from Typica is used (Dolnytsky prescribes it)
     // in some horologions, it is also followed by a private list of petitions
