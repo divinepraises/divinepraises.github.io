@@ -1,6 +1,7 @@
 {
+  "note on sources": "todo: one lytia sticheron missing",
   "ps140": [
-    "2",
+    "1, Podoben “The joy of the heavenly ranks…”",
     "As witness of revelations beyond words* and interpreter of the sublime mysteries of God,* O son of Zebedee,* you have written the gospel of Christ for us.* You taught us to glorify the Father, Son, and Holy Spirit.",
     "Divinely moved lyre of heavenly canticles,* you are the mystical writer* and the God-inspired voice melodiously singing the divine hymns.* Pray for the salvation of our souls.",
     "O beloved of God, with your thundering voice* you declared the wisdom of God.* You constantly proclaimed aloud the hidden word by frequently saying:* In the beginning was the Word.* You have illumined all with the knowledge of God.",
@@ -8,9 +9,13 @@
     "2",
     "Let all the human race give the praise that is due to John, the son of thunder,* the virgin apostle and the bearer of God’s message,* the chief theologian and the first to proclaim the truths* which are contained in the teachings of divine Wisdom.* For always being filled with that which is divine, he said:* In the beginning was the Word, not separated from the Father* but equal to the Father according to His nature,* thereby showing us the right worship of the Holy Trinity.* He has also shown us that the Word was with the Father, the Creator of all,* and that He bears life and has shown us the true light.* O awesome marvel! O Wisdom!* John was filled with love for God;* he was also filled with glory, honour, and faith;* he was the preacher of our pure faith.* Because of this, we shall obtain eternal blessing on the day of judgment."
   ],
-  "readings": ["1 John 3:21-4:6", "1 John 4:11-16", "1 John 4:20-5:5"],
+  "readings": [
+    "1 John 3:21-4:6",
+    "1 John 4:11-16",
+    "1 John 4:20-5:5"
+  ],
   "lytia": [
-    "2",
+    "1",
     "O Apostle, rivers of theology poured out from your precious mouth.* The Church of God has drunk from them* and in true faith adores the consubstantial Trinity.* O John the Divine, pray to the Holy Trinity* to strengthen the Church and to save our souls.* The garden of purity, the fragrant myrrh,* has again come upon us in the present feast* so that we may cry aloud:* O John, the apostle who reclined on the bosom of the Master,* and made the word fall on the world like rain,* you have guarded the Virgin as the most cherished one.* Ask Christ to grant us his great mercy.",
     "As an eye-witness of the ineffable mysteries,* you cried out that the eternal Word was in God and that He is God.* O Apostle John, you reclined upon the breast of Christ.* O delight of the Trinity,* O unshakable fortitude of Ephesus and Patmos, help us!* O blessed Theologian, pray that those who honour you faithfully* will be delivered from the wicked enemies* of both body and spirit.",
     "O Disciple of the Saviour, O celibate and theologian,* Christ our God entrusted the Virgin Theotokos to you.* You protected her as the most cherished one.* Therefore, intercede that our souls may be saved.",
@@ -21,7 +26,7 @@
     "The Son, glorified on high with the Father and the Spirit by the Cherubim,* desired to restore Adam.* He completely and ineffably emptied himself in your womb, O ever-praised Theotokos;* and having shone forth from you,* He has enlightened the world with his divinity.* Christ the Lord and Saviour of our souls,* having divinized the human race,* led us back to heaven."
   ],
   "aposticha": [
-    "4",
+    "4, Podoben “Called from on high…”",
     "You are the theologian who spoke of the Son of the Most High.* He is co-eternal and consubstantial with the Father,* Light from unchangeable Light, and Image of the very person of the Father,* shining from Him eternally and without change,* the Creator and Lord of all.* O beloved, you have preached about Christ our God to the world,* who is the Light leading us out of darkness.",
     "Having received the light of the Comforter* and having been enlightened by Him,* O beloved, as theologian* you taught that the Holy Spirit proceeds from the Father* and was manifested to mankind by the Son.* He is equal in holiness, essence, and majesty* with the eternal Father and the Word of God.* We, therefore, venerate you in hymns as the blessed preacher of our faith.* Keep it firm by your prayers to the Lord, our God.",
     "Having ascended to the height of theology,* you have learned the ineffable mysteries of God:* that the essence of the Godhead is one;* one glory, one kingdom, and one dominion,* ever-divided into three Persons,* yet undivided in essence,* united in a divine union without confusion.* Thus you gloriously proclaimed the undivided Trinity.* O Theologian, entreat God to save and enlighten our souls.",
@@ -32,7 +37,7 @@
     "Christ the Lord, our Creator and Redeemer,* came forth from your womb, O most pure Virgin.* He clothed himself in our human flesh* to set us free from the original curse of Adam.* Therefore, O Mary, we praise you, without ceasing,* as the true Virgin Mother of God,* and we sing with the angels:* Rejoice, O Lady, advocate, protector, and salvation of our souls."
   ],
   "aposticha_verses": [
-    "Through all the world their voice resounds;* their message reaches to the ends of the earth.",
-    "The heavens proclaim your wonders, O Lord;* the assembly of your holy ones proclaims your truth."
+    "Their utterance has gone forth into all the earth,* and their word unto the ends of the world.",
+    "The heavens tell the glory of God,* and the firmament declares the work of His hand."
   ]
 }

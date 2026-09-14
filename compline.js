@@ -830,7 +830,7 @@ async function selectTropar(season, seasonWeek, dayOfWeek, hourData, glas, dayDa
         prePostFeastKontakion = prePostFeastKontakion[prePostFeastKontakion.length-1]
     }
 
-    if (dayClass >= 8 && !isImpotrantTriodionDay(season, seasonWeek, dayOfWeek, dayClass)) {
+    if (dayClass >= 8 && !isImpotrantTriodionDay(season, seasonWeek, dayOfWeek, dayClass) || "use kontakion at compline" in dayData) {
         if ("kontakia" in dayData) kontakion = dayData["kontakia"];
         else kontakion = (await getCommonText("kontakia", dayData));
         if (Array.isArray(kontakion)) {

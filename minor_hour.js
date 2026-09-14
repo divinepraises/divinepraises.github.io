@@ -149,6 +149,11 @@ export async function enhanceMinorHour(hour, priest, full, date) {
         dayData["kontakia"] = (await getData(`${address}\\menaion\\02\\02.json`))["kontakia"];
     }
 
+    if ("use kontakion at compline" in dayData) {
+        // Sep 23, Dol. p 144
+        dayData["class"] = 8;
+    }
+
     if (additionalElements && "troparion" in additionalElements && dayTriodionData) dayTriodionData["troparia"] = additionalElements["troparion"];
     if (additionalElements && "note" in additionalElements) document.getElementById("note").innerHTML = additionalElements["note"];
     if (dayTriodionData && "hours note" in dayTriodionData && hour != "1hour") document.getElementById("note").innerHTML += `<div class="rubric"> ${dayTriodionData["hours note"]}</div><br>`;
@@ -156,7 +161,10 @@ export async function enhanceMinorHour(hour, priest, full, date) {
     document.getElementById("beginning").innerHTML = await usualBeginning(priest, season, seasonWeek, dayOfWeek);
 
     if (full === "1") {
-        document.getElementById("psalms").innerHTML = (await readPsalmsFromNumbers(psalmNums)).join("");
+        var last_psalm_note = ""
+        if ("last_psalm_note" in hourData && (!additionalElements || additionalElements && !( "psalms" in additionalElements))) last_psalm_note = `
+            <br><div class="rubric">${hourData["last_psalm_note"]}</div>`;
+        document.getElementById("psalms").innerHTML = (await readPsalmsFromNumbers(psalmNums)).join("") + last_psalm_note;
     } else if (full === "0") {
         var i = dayOfWeek%4 - (dayOfWeek < 4)
         if (dayOfWeek === 0){
