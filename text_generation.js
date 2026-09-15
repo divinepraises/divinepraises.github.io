@@ -167,8 +167,7 @@ export function dismissalMajor(dayOfWeek, seasonWeek, season, withPriest, isGrea
 	    replacements["SAINT"] = "";
 	} else if ((TheotokosDismissal!=="" || specialDismissal != "" || crossDismissal != "") && !prePostFeast) {
 	    // feast of the Lord or our Lady, where one can mention saints (Pokrov, Circumscision)
-	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames[0]}${data.dismissalSaintsSolemn}`
-	    if (saintNames.length > 1) replacements["SAINT"] += saintNames.slice(1, saintNames.length).join(",")
+	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames.join(",")}`;
 	} else {
 	    // feast of a saint, can be within post-feast
 	    replacements["SAINT"] = `${data.dismissalSaints} ${saintNames[0]}${data.dismissalSaintsSolemn}`
