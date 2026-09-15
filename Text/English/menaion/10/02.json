@@ -1,5 +1,13 @@
 {
   "class": 6,
-  "name": "Cyprian",
-  "type": "hieromartyr"
+  "name": [
+    "Cyprian",
+    "martyr Justina",
+    "Andrew, Fool for the Sake of Christ"
+  ],
+  "type": [
+    "hieromartyr",
+    "",
+    ""
+  ]
 }
