@@ -18,6 +18,16 @@ import { postComplinePrayers, penitentialTroparia } from './compline.js';
 
 const address = `Text\\English`
 
+// TODO:
+// add a choice full/not before kathisma/canon
+// add a canon
+// allow choice of penitential troparia on Sun
+// add optional prayers
+// rubrics: omit prayer for the dead
+// rubrics: different troparia
+// Easter Sunday nocturn
+// add all canons
+
 export function renderMidnightSkeleton() {
     return `
         <div id="beginning"></div>
