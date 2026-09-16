@@ -180,11 +180,12 @@ async function complineEnding(full, season, seasonWeek, dayOfWeek, priest, glas,
 }
 
 async function loadComplineEnding(smallComplineData, full, season, seasonWeek, dayOfWeek, priest, glas, dayData, isGreatCompline, specialDayData, dayTriodionData, dateAddress){
-	var ekteniasData = await getData(`${address}\\horologion\\night_ektenias.json`);
+	const ekteniasData = await getData(`${address}\\horologion\\night_ektenias.json`);
+	const endingData = await getData(`${address}\\horologion\\night_ending.json`);
 
     if (full === "1") {
         document.getElementById("full_canon").checked = true;
-        document.getElementById("penitential_troparia").innerHTML = penitentialTroparia(priest,  smallComplineData, ekteniasData);
+        document.getElementById("penitential_troparia").innerHTML = penitentialTroparia(priest, endingData, ekteniasData);
     } else if (full === "0") {
         document.getElementById("shorten_canon").checked = true;
         document.getElementById("penitential_troparia").innerHTML = "";
@@ -199,9 +200,7 @@ async function loadComplineEnding(smallComplineData, full, season, seasonWeek, d
     document.getElementById("prayers").innerHTML = smallComplineData["prayers"].join("<br><br>");
     var dayClass = dayData["class"]
     if (dayTriodionData && "class" in dayTriodionData && dayTriodionData["class"] > dayClass) dayClass = dayTriodionData["class"];
-    // it is a small file, so better to move these prayers there
-    const nocturnData = await getData(`${address}\\horologion\\nocturn_general.json`);
-    document.getElementById("after_prayers").innerHTML = postComplinePrayers(priest, nocturnData, ekteniasData, dayOfWeek, isGreatCompline, dayClass);
+    document.getElementById("after_prayers").innerHTML = postComplinePrayers(true, priest, endingData, ekteniasData, dayOfWeek, isGreatCompline, dayClass);
 
     if (
         isGreatCompline
@@ -952,8 +951,8 @@ async function selectTropar(season, seasonWeek, dayOfWeek, hourData, glas, dayDa
     return `${thisDayTropars.join("")}${complineTroparia.join("<br><br>")}`
 }
 
-function penitentialTroparia(withPriest,  smallComplineData, ekteniasData){
-    var tropList =  smallComplineData["penitential_troparia"]
+export function penitentialTroparia(withPriest, endingData, ekteniasData){
+    var tropList =  endingData["penitential_troparia"]
     tropList.splice(2,0, `${andNow}`);
     tropList.splice(1,0, `${glory}`);
     const trop = `
@@ -965,7 +964,7 @@ function penitentialTroparia(withPriest,  smallComplineData, ekteniasData){
     return trop + "<br><br>";
 }
 
-export function postComplinePrayers(withPriest, data, ekteniasData, dayOfWeek, isGreatCompline, dayClass) {
+export function postComplinePrayers(isCompline, withPriest, data, ekteniasData, dayOfWeek, isGreatCompline, dayClass) {
     // if there is a priest, doing the pomynannia (mentions)
     // if no, the penitential prayer from Typica is used (Dolnytsky prescribes it)
     // in some horologions, it is also followed by a private list of petitions
@@ -986,7 +985,13 @@ export function postComplinePrayers(withPriest, data, ekteniasData, dayOfWeek, i
 	            ${data["after_prayers"]["without_priest"][3]}<br>
 	            ${replaceCapsWords(data["after_prayers"]["without_priest"][4], {"DEPARTED": departed})}`
 	    }
-		return data["after_prayers"]["with_priest"].join("") + rub + ektenia;
+	    var time;
+	    if (!isCompline) time = data["after_prayers"]["times"][1];
+	    else time = data["after_prayers"]["times"][0];
+		return replaceCapsWords(
+		    data["after_prayers"]["with_priest"].join(""),
+		     {"TIME": time}
+		) + rub + ektenia;
 	} else {
 	    var departed;
 	    if (dayOfWeek > 0 && dayClass < 8) departed = data["after_prayers"]["without_priest"][5]

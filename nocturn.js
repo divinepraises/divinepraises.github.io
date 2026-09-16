@@ -13,7 +13,7 @@ import {
 } from './text_generation.js';
 import { getDayInfo, getData, readPsalmsFromNumbers, kathismaToText, isTriodionFeastAfterPentecost } from './script.js';
 import { EasterHour } from './minor_hour.js';
-import { postComplinePrayers } from './compline.js';
+import { postComplinePrayers, penitentialTroparia } from './compline.js';
 
 const address = `Text\\English`
 
@@ -30,7 +30,7 @@ export function renderMidnightSkeleton() {
         <div id="psalms_2"></div>
         <div id="troparia_2"></div>
         <div id="prayer_dead"></div>
-        <div id="penitential_troparia"></div> // TODO this
+        <div id="penitential_troparia"></div>
         <div id="endingBlock"></div>
         <div id="after_prayers"></div>
     `;
@@ -211,7 +211,13 @@ export async function enhanceMidnight(priest, full, date){
 
 	var dayClass = dayData["class"]
     if (dayTriodionData && "class" in dayTriodionData && dayTriodionData["class"] > dayClass) dayClass = dayTriodionData["class"];
-    var ekteniasData = await getData(`${address}\\horologion\\night_ektenias.json`);
-    document.getElementById("after_prayers").innerHTML = postComplinePrayers(priest, nocturnData, ekteniasData, dayOfWeek, false, dayClass);
+    const ekteniasData = await getData(`${address}\\horologion\\night_ektenias.json`);
+    const endingData = await getData(`${address}\\horologion\\night_ending.json`);
+    if (full === "1") {
+        document.getElementById("penitential_troparia").innerHTML = penitentialTroparia(priest, endingData, ekteniasData);
+    } else if (full === "0") {
+        document.getElementById("penitential_troparia").innerHTML = "";
+    }
+    document.getElementById("after_prayers").innerHTML = postComplinePrayers(false, priest, endingData, ekteniasData, dayOfWeek, false, dayClass);
 
 }
