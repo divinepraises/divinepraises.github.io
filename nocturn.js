@@ -9,9 +9,10 @@ import {
     prayerBlessingMayGodBeGracious,
     inTheName,
     amen,
-    endingBlockMinor
+    endingBlockMinor,
+    tripleAlleluia
 } from './text_generation.js';
-import { getDayInfo, getData, readPsalmsFromNumbers, kathismaToText, isTriodionFeastAfterPentecost } from './script.js';
+import { getDayInfo, getData, readPsalmsFromNumbers, isTriodionFeastAfterPentecost } from './script.js';
 import { EasterHour } from './minor_hour.js';
 import { postComplinePrayers, penitentialTroparia } from './compline.js';
 
@@ -120,13 +121,12 @@ export async function enhanceMidnight(priest, full, date){
         // kathisma
         const k = dayOfWeekData["kathisma"];
         document.getElementById("kathisma_or_canon").innerHTML = `
-            <div class="subhead">${nocturnData["kathisma"]} ${k}</div><br>
-            ${await kathismaToText(k, false, dayOfWeek, true)}<br><br>`
+            ${await kathismaToText(k, dayOfWeek, seasonWeek, full)}<br><br>`
 
         // creed
         document.getElementById("creed_or_gregory").innerHTML = `
             <div class=subhead>${nocturnData["creed"]}</div><br>
-            ${(await getData(`${address}\\horologion\\creed.json`))["0"]}`;
+            ${(await getData(`${address}\\horologion\\creed.json`))["0"]}<br><br>`;
 
         var tropar;
         if (isSpecialDate) {
@@ -177,7 +177,9 @@ export async function enhanceMidnight(priest, full, date){
         }
         document.getElementById("prayer_of_this_hour").innerHTML = prayer;
 
-        const psalms_2 = (await readPsalmsFromNumbers(nocturnData["psalms_2"])).join("")
+        var tmp = (await readPsalmsFromNumbers(nocturnData["psalms_2"]))
+        tmp[1] += "<br>";
+        const psalms_2 = tmp.join("<br>");
         document.getElementById("psalms_2").innerHTML = `
             ${comeLetUs}<br><br>
             ${psalms_2}<br><br>
@@ -219,5 +221,26 @@ export async function enhanceMidnight(priest, full, date){
         document.getElementById("penitential_troparia").innerHTML = "";
     }
     document.getElementById("after_prayers").innerHTML = postComplinePrayers(false, priest, endingData, ekteniasData, dayOfWeek, false, dayClass);
+}
 
+async function kathismaToText(k, dayOfWeek, seasonWeek, full) {
+    var kathPsalms = (await getData(`${address}\\psalms\\kathismas.json`))[k];
+    var kathPsalmsToText = "";
+
+    if (full === "0") {
+        if (dayOfWeek === 6) kathPsalms = [kathPsalms[(seasonWeek-1)%3]];
+        else kathPsalms = [kathPsalms[Math.floor((dayOfWeek-1)%3)]]
+    }
+    var tmp;
+    for (const [i, stasis] of kathPsalms.entries()){
+        // tmp block to add break to psalms but not headers
+        tmp = (await readPsalmsFromNumbers(stasis));
+        for (var [j, el] of tmp.entries()) {if (j%2 === 1 && j < tmp.length-2) tmp[j] += "<br>"};
+
+        kathPsalmsToText += tmp.join("<br>");
+        if (i < kathPsalms.length - 1) kathPsalmsToText += "<br><br>" + tripleAlleluia
+        else kathPsalmsToText += "<br><br>" + tripleAlleluia.split("<br>")[0];
+        if (i < kathPsalms.length - 1) kathPsalmsToText += `${LHM} <FONT COLOR="RED">(3)</FONT><br>${gloryAndNow}<br><br>`
+    }
+    return kathPsalmsToText;
 }
