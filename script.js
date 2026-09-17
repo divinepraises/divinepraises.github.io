@@ -533,6 +533,10 @@ export function dayTransfer(season, seasonWeek, dayOfWeek, dd, mm) {
         // There is no rubric what to do, this is my hunch
         return [String(Number(dd)-1).padStart(2, "0"), "07"]
     }
+    if (dd == 10 && mm == 10 && dayOfWeek == 1) {
+        // Transfer polyeleos feasts that can happen on the Sun of the 7th council to Mon
+        return ["09", "10"]
+    }
     return false
 }
 
