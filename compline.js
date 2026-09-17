@@ -555,7 +555,7 @@ function makeNethimon(verses, troparia){
         ${troparia[4]}<br><br>`;
 }
 
-function constructMenaionCanon(canonData, full, dayOfWeek){
+export function constructMenaionCanon(canonData, full, dayOfWeek){
     // TODO
     // this should be the default function, but it requires re-formatting octoechos canons
     var refrains = canonData["refrain"];
@@ -568,7 +568,11 @@ function constructMenaionCanon(canonData, full, dayOfWeek){
     if (full === "0") {
         tropNumOde = 0;
         hirmRep = 1;
-        if (canonData["odes"].length >= 8 && !matinslike) {
+        if ("nocturn" in canonData) {
+            // in this case dayOfWeek actually means tone of the week and is responsible for what ode to keep
+            if (dayOfWeek === 1) {var i = 1} else {i = dayOfWeek + 1}
+            allowedOdes = new Set([i.toString()]);
+        } else if (canonData["odes"].length >= 8 && !matinslike) {
             // only shorten if it's a full octoechos canon
             if (dayOfWeek === 1) {var i = 1} else {i = dayOfWeek + 1}
             allowedOdes = new Set([i.toString(), "9"]);

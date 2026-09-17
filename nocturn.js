@@ -15,7 +15,7 @@ import {
 } from './text_generation.js';
 import { getDayInfo, getData, readPsalmsFromNumbers, isTriodionFeastAfterPentecost } from './script.js';
 import { EasterHour } from './minor_hour.js';
-import { postComplinePrayers, penitentialTroparia } from './compline.js';
+import { postComplinePrayers, penitentialTroparia, constructMenaionCanon } from './compline.js';
 
 const address = `Text\\English`
 
@@ -100,11 +100,13 @@ export async function enhanceMidnight(priest, full, date){
     const isSpecialDate = false;
 
     if (variant === "e" || variant === "sun") {
-        // TODO: add canons
-        document.getElementById("kathisma_or_canon").innerHTML = `<div class="rubric">Appropriate canon is said here</div><br>`;
         var tropar;
         if (variant === "sun") {
             const dayOfWeekData = await getData(`${address}\\horologion\\nocturn_sun.json`);
+
+            // TODO: when adding canons, remove "1" here
+            let [canon, matinslike] = constructMenaionCanon(dayOfWeekData["canon"], "1", glas);
+            document.getElementById("kathisma_or_canon").innerHTML = canon;
             // verses after canon
             var gregory = `<div class="subhead">${dayOfWeekData["gregory title"]}</div><br>`;
             for (let [i, verse] of dayOfWeekData["gregory"].entries()){

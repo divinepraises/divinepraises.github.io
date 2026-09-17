@@ -1,7 +1,29 @@
 {
+  "canon": {
+    "refrain": "Most holy Trinity, our God, glory be to You!",
+    "comment": "This is a shortened version of the canon. It will eventually be completed.<br><br>",
+    "troparia_number": 0,
+    "repeat_hirmi": 1,
+    "matinslike": false,
+    "nocturn": true,
+    "odes": [
+      {
+        "ode": "9",
+        "hirmos": "<i>(Tone 8)</i> Heaven was astonished and the ends of the earth were amazed* that God appeared to man in bodily form.* Your womb became vaster than the heavens.* And so, choirs of angels and men extol you as Godbearer.",
+        "troparia": [
+          [
+            "As we now praise You, the Nature Which rules all things, effects all things, is beyond all beginning, a Single Trinity, above time, life-giving, merciful, loving and good, we beg for forgiveness of sins, peace to the world and harmony to the churches.",
+            "Lordship with Three Radiances, Deity, One with Three Rays, graciously receive those who sing Your praises. Rescue them from sin and from difficult temptations. In Your love quickly grant peace and unity to Your churches",
+            "By dwelling in a Virgin’s womb, Christ my Savior, You appeared to Your world as God-man, truly unchanged and unconfused. You clearly promised to be always with Your servants. And so, through the intercession of her who bore You, grant peace to all Your flock. "
+          ]
+        ]
+      }
+    ]
+  },
   "gregory title": "Verses of Gregory of Sinai",
   "gregory": [
-    "It is proper to give You divine glory, Holy Trinity* indivisible and beyond all being, our all-good God,* Whom all earth sings and powers of heaven praise.* You are worshipped in faith by all,* in essence the Oneness of ThreePersons.* Dominion beyond the cherubim* and Divinity without compare beyond the seraphim,* indivisible Trinity in Oneness,* Godhead indeed, we exalt You.",
+    "It is proper to give You divine glory, Holy Trinity* indivisible and beyond all being, our all-good God,* Whom all earth sings and powers of heaven praise.* You are worshipped in faith by all,* in essence the Oneness of Three Persons.",
+    "Dominion beyond the cherubim* and Divinity without compare beyond the seraphim,* indivisible Trinity in Oneness,* Godhead indeed, we exalt You.",
     "I adore the Father without beginning and God,* together with the Son, without beginning,* and the Spirit,* the indivisible One uniting Being.* In song, let us worship the Oneness, Three in number.",
     "Piously in song and with sacred refrains,* let us all sing the praises of the Father, and of the Son, and of the divine Spirit,* Power in three Persons, the one kingdom and dominion.",
     "Illuminate me by Your lightning flashes, my God,* Cause of all, in Three Persons;* show me the bright, luminous,* unchanging abode of Your inaccessible glory.",
