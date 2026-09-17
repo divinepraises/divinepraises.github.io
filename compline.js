@@ -953,8 +953,8 @@ async function selectTropar(season, seasonWeek, dayOfWeek, hourData, glas, dayDa
 
 export function penitentialTroparia(withPriest, endingData, ekteniasData){
     var tropList =  endingData["penitential_troparia"]
-    tropList.splice(2,0, `${andNow}`);
-    tropList.splice(1,0, `${glory}`);
+    tropList.splice(2,0, `<i>${andNow}</i>`);
+    tropList.splice(1,0, `<i>${glory}</i>`);
     const trop = `
         <div class=subhead>Penitential troparia</div><br>` + tropList.join("<br><br>");
 

@@ -10,7 +10,8 @@ import {
     inTheName,
     amen,
     endingBlockMinor,
-    tripleAlleluia
+    tripleAlleluiaOnly,
+    functionNames
 } from './text_generation.js';
 import { getDayInfo, getData, readPsalmsFromNumbers, isTriodionFeastAfterPentecost } from './script.js';
 import { EasterHour } from './minor_hour.js';
@@ -212,10 +213,10 @@ export async function enhanceMidnight(priest, full, date){
         document.getElementById("prayer_dead").innerHTML = `${LHM} <FONT COLOR="RED">(12)</FONT><br><br>${prayerForTheDead}`;
     }
 
-    var beforeGlory = ""
+    var beforeGlory = `<div class=subhead>${nocturnData["dismissal"]}</div><br>`;
     if (priest === "1" && dayOfWeek > 0) {
         // this is required on weekdays only
-        beforeGlory = (await getData(`${address}\\horologion\\priestly_exclamations.json`))["Christ"] + "<br><br>";
+        beforeGlory += (await getData(`${address}\\horologion\\priestly_exclamations.json`))["Christ"] + "<br><br>";
     }
 	document.getElementById("endingBlock").innerHTML = `
 	    ${beforeGlory}
@@ -225,9 +226,9 @@ export async function enhanceMidnight(priest, full, date){
     if (dayTriodionData && "class" in dayTriodionData && dayTriodionData["class"] > dayClass) dayClass = dayTriodionData["class"];
     const ekteniasData = await getData(`${address}\\horologion\\night_ektenias.json`);
     const endingData = await getData(`${address}\\horologion\\night_ending.json`);
-    if (full === "1") {
+    if (full === "1" && dayOfWeek != 0) {
         document.getElementById("penitential_troparia").innerHTML = penitentialTroparia(priest, endingData, ekteniasData);
-    } else if (full === "0") {
+    } else {
         document.getElementById("penitential_troparia").innerHTML = "";
     }
     document.getElementById("after_prayers").innerHTML = postComplinePrayers(false, priest, endingData, ekteniasData, dayOfWeek, false, dayClass);
@@ -248,9 +249,13 @@ async function kathismaToText(k, dayOfWeek, seasonWeek, full) {
         for (var [j, el] of tmp.entries()) {if (j%2 === 1 && j < tmp.length-2) tmp[j] += "<br>"};
 
         kathPsalmsToText += tmp.join("<br>");
-        if (i < kathPsalms.length - 1) kathPsalmsToText += "<br><br>" + tripleAlleluia
-        else kathPsalmsToText += "<br><br>" + tripleAlleluia.split("<br>")[0];
-        if (i < kathPsalms.length - 1) kathPsalmsToText += `${LHM} <FONT COLOR="RED">(3)</FONT><br>${gloryAndNow}<br><br>`
+        if (i < kathPsalms.length - 1) kathPsalmsToText += `<br><br>
+         ${glory}<br>
+         <FONT COLOR="RED">${functionNames["choir"]}</FONT> ${andNow}<br>
+         ${tripleAlleluiaOnly}<br>`
+        else kathPsalmsToText += `<br><br>${gloryAndNow}`
+        if (i < kathPsalms.length - 1) kathPsalmsToText += `${LHM} <FONT COLOR="RED">(3)</FONT><br>${glory}<br>
+         <FONT COLOR="RED">${functionNames["reader"]}</FONT> ${andNow}<br><br>`
     }
     return kathPsalmsToText;
 }

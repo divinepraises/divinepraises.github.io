@@ -23,6 +23,8 @@ export const st = data.saint;
 
 export const theotokionRefrain = data.theotokionRefrain;
 
+export const functionNames = data.functionNames;
+
 export function StEphremPrayer(priest, short=false, replaced=false){
     var res = "";
 
@@ -58,8 +60,10 @@ export function trisagionToPater(priest){
 		<FONT COLOR="RED">Choir:</FONT> ${data.amen}<br><br>`;
 }
 
+export const tripleAlleluiaOnly = `${cross} ${data.tripleAlleluia} <FONT COLOR="RED">(3)</FONT>`;
+
 export const tripleAlleluia = `${glory} ${andNow}<br>
-	${cross} ${data.tripleAlleluia} <FONT COLOR="RED">(3)</FONT><br>`;
+	${tripleAlleluiaOnly}<br>`;
 
 export async function usualBeginning(priest, season, seasonWeek, dayOfWeek, vespers=false) {
  var HK;
@@ -88,35 +92,35 @@ export const comeLetUs = `${cross} ${data.clw1}<br><br>
 
 export function getBeginning(withPriest) {
 	if (withPriest == "1") {
-		return `<FONT COLOR="RED">Priest:</FONT> <b>${data.blessedBeOurGod}</b> `;
+		return `<FONT COLOR="RED">${functionNames["priest"]}</FONT> <b>${data.blessedBeOurGod}</b> `;
 	} else {
-		return `<FONT COLOR="RED">Chariman:</FONT> ${data.zamolytv} `;
+		return `<FONT COLOR="RED">${functionNames["leader"]}</FONT> ${data.zamolytv} `;
 	};
 }
 
 export function HeWhoIs(withPriest) {
 	if (withPriest == "1") {
-		return `<FONT COLOR="RED">Priest:</FONT> <b>${data.HeWhoIs}</b> `;
+		return `<FONT COLOR="RED">${functionNames["priest"]}</FONT> <b>${data.HeWhoIs}</b> `;
 	} else {
-		return `<FONT COLOR="RED">Chariman:</FONT> ${data.zamolytv} `;
+		return `<FONT COLOR="RED">${functionNames["leader"]}</FONT> ${data.zamolytv} `;
 	};
 }
 
 function getOurFatherEnding(withPriest) {
 	if (withPriest == "1") {
-		return `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.forTheKingdom}</b> `;
+		return `<FONT COLOR="RED">${functionNames["priest"]}</FONT> ${cross} <b>${data.forTheKingdom}</b> `;
 	} else {
-		return `<FONT COLOR="RED">Chariman:</FONT> ${data.JesusPrayer}`;
+		return `<FONT COLOR="RED">${functionNames["leader"]}</FONT> ${data.JesusPrayer}`;
 	};
 }
 
 export function prayerBlessingMayGodBeGracious(withPriest, hour="") {
 	if (withPriest === "0") {
-		return `<FONT COLOR="RED">Chariman:</FONT> ${data.zamolytv} `;
+		return `<FONT COLOR="RED">${functionNames["leader"]}</FONT> ${data.zamolytv} `;
 	} else if (hour === "1hour" || hour === "9hour" || hour === "nocturn") {
-		return `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.mayGodBeGracious}</b> `;
+		return `<FONT COLOR="RED">${functionNames["priest"]}</FONT> ${cross} <b>${data.mayGodBeGracious}</b> `;
 	} else {
-		return `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.zamolytv}</b> `;
+		return `<FONT COLOR="RED">${functionNames["priest"]}</FONT> ${cross} <b>${data.zamolytv}</b> `;
 	};
 }
 
@@ -133,13 +137,13 @@ export function dismissalMajor(dayOfWeek, seasonWeek, season, withPriest, isGrea
     var replacements = {};
     const dismissalDeceased = (season === "Forelent" && seasonWeek === 2 || season === "Pentecost" && seasonWeek === 6) && dayOfWeek === 6
 	if (withPriest === "1" && !dismissalDeceased) {
-		text = `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.priestDismissalMajor}</b> `;
+		text = `<FONT COLOR="RED">${functionNames["priest"]}</FONT> ${cross} <b>${data.priestDismissalMajor}</b> `;
 	} else if (withPriest === "0" && !dismissalDeceased) {
-		text = `<FONT COLOR="RED">Chariman:</FONT> ${data.layDismissalMajor}`;
+		text = `<FONT COLOR="RED">${functionNames["leader"]}</FONT> ${data.layDismissalMajor}`;
 	} else if (withPriest === "1" && dismissalDeceased) {
-	    text = `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.priestDismissalDeceased}</b> `;
+	    text = `<FONT COLOR="RED">${functionNames["priest"]}</FONT> ${cross} <b>${data.priestDismissalDeceased}</b> `;
 	} else {
-	    text = `<FONT COLOR="RED">Chariman:</FONT> ${data.layDismissalDeceased}`;
+	    text = `<FONT COLOR="RED">${functionNames["leader"]}</FONT> ${data.layDismissalDeceased}`;
 	};
 	if (TheotokosDismissal != "") TheotokosDismissal = replaceCapsWords(data.dismissalTheotokos, {"SAINT":TheotokosDismissal});
 
@@ -187,9 +191,9 @@ export function dismissalMajor(dayOfWeek, seasonWeek, season, withPriest, isGrea
 function dismissalMinor(withPriest, dayOfWeek, specialDismissal) {
     var text, replacementDict;
 	if (withPriest == "1") {
-		text = `<FONT COLOR="RED">Priest:</FONT> ${cross} <b>${data.priestDismissalMinor}</b> `;
+		text = `<FONT COLOR="RED">${functionNames["priest"]}</FONT> ${cross} <b>${data.priestDismissalMinor}</b> `;
 	} else {
-		text = `<FONT COLOR="RED">Chariman:</FONT> ${data.layDismissalMinor}`;
+		text = `<FONT COLOR="RED">${functionNames["leader"]}</FONT> ${data.layDismissalMinor}`;
 	}
 	if (specialDismissal) replacementDict = {"SUNDAY": specialDismissal}
 	else if (dayOfWeek === 0) replacementDict = {"SUNDAY": data.dismissalsWeekdays[0]}
