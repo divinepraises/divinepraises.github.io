@@ -21,7 +21,7 @@ const address = `Text\\English`
 
 // TODO:
 // add a choice full/not before kathisma/canon
-// add a canon
+// add fuller canon
 // allow choice of penitential troparia on Sun
 // add optional prayers
 // rubrics: omit prayer for the dead
