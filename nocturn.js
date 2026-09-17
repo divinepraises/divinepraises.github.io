@@ -143,7 +143,8 @@ export async function enhanceMidnight(priest, full, date){
         if (isSpecialDate) {
             // todo: fill in
         } else {
-            tropar = `<div class=subhead>${nocturnData["troparia"][0]} ${dayOfWeekData["troparia"][0]}</div><br>
+            tropar = `<div class=subhead>${nocturnData["troparia"][0]}</div><br>
+            <div class="rubric">${dayOfWeekData["troparia"][0]}</div>
             ${dayOfWeekData["troparia"][1]}<br><br>
             <i>${glory}</i><br><br>
             ${dayOfWeekData["troparia"][2]}<br><br>
