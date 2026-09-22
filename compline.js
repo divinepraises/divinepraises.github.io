@@ -586,7 +586,27 @@ export function constructMenaionCanon(canonData, full, dayOfWeek){
     for (const ode of canonData["odes"]) {
         var ode_n = ode["ode"]
         if ((ode_n === "3a" && allowedOdes.has("3")) || (ode_n === "6a" && allowedOdes.has("6"))){
-            canon += `${LHM} <FONT COLOR="RED">(3)</FONT><br><br>${gloryAndNow}<br><br>${ode["troparia"][0]}<br><br>`;
+            canon += `${LHM} <FONT COLOR="RED">(3)</FONT><br><br>${gloryAndNow}<br><br>`;
+            if (ode["troparia"].length === 1) {
+                canon += `${ode["troparia"][0]}<br><br>`;
+            } else if (ode["troparia"].length === 2) {
+                canon += `${ode["troparia"][0]}<br><br>
+                    <i>${gloryAndNow}</i><br><br>
+                    ${ode["troparia"][1]}<br><br>`;
+            } else if (ode["troparia"].length === 3) {
+                canon += `${ode["troparia"][0]}<br><br>
+                    <i>${glory}</i><br><br>
+                    ${ode["troparia"][1]}<br><br>
+                    <i>${andNow}</i><br><br>
+                    ${ode["troparia"][2]}<br><br>`;
+            } else {
+                canon += `${ode["troparia"].slice(0, ode["troparia"].length-2).join("<br><br>")}<br><br>
+                    <i>${glory}</i><br><br>
+                    ${ode["troparia"][ode["troparia"].length-2]}<br><br>
+                    <i>${andNow}</i><br><br>
+                    ${ode["troparia"][ode["troparia"].length-1]}<br><br>`;
+            }
+
             continue;
         }
         if (ode_n === "9a" && allowedOdes.has("9")) {
