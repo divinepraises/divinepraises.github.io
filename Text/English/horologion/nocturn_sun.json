@@ -1,12 +1,84 @@
 {
   "canon": {
     "refrain": "Most holy Trinity, our God, glory be to You!",
-    "comment": "This is a shortened version of the canon. It will eventually be completed.<br><br>",
-    "troparia_number": 0,
+    "comment": "The proper canon for today is not yet added, using the default canon from the horologion, where every ode is taken from a different tone.<br><br>",
+    "troparia_number": 4,
     "repeat_hirmi": 1,
     "matinslike": false,
     "nocturn": true,
     "odes": [
+      {
+        "ode": "1",
+        "hirmos": "<i>(Tone 1)</i> Your victorious right hand, magnificent in power,* is covered with glory, O Immortal One.* Since it is all-powerful, it has crushed the enemies,* opening a new path for the Israelites in the depths of the sea.",
+        "troparia": [
+          [
+            "The Seraphim un-silently glorify the only Beginning in three hypostases: the beginning-less, ever-being, all-creating, un-understandable One, and glorified by every tongue in songs.",
+            "In order to manifest Your only and three-luminous Divinity to men, You, Who created man of old, made him in Your image: You granted him mind, word and spirit, as the Lover of Mankind.",
+            "Showing from on high the only Power in three divinely creating hypostases, You, O Father, said to You Son and Spirit, equals to You in action: \"Come, let us confuse their tongues!\"",
+            "As was foretold by the most wise people: the un-begotten Father is the Mind; the Son, one in being with the Father, is the co-beginning-less Word; and Holy Spirit is the One who wrought the incarnation of the Word in the Virgin."
+          ]
+        ]
+      },
+      {
+        "ode": "3",
+        "hirmos": "<i>(Tone 2)</i> Having established me upon the rock of faith,* You opened my mouth wide against my enemies.* For my spirit rejoices when I chant:* \"None is holy as our God, and none is more just than You, O Lord!\"",
+        "troparia": [
+          [
+            "I glorify You, O Godhead, one in honor and equal in essence as to Your Persons. For You, Life, without corruption came forth from Life, and are our only God, and there is no holier than You, O Lord.",
+            "You organized the immaterial heavenly ranks as reflections of Your beauty, O Trinity, indivisible and only Beginning, as to hymn You without ceasing. But now accept also our praise, from our lips of dust.",
+            "Establish the hearts and mind of Your servants upon the rock of faith and widen them with the depth of Your love, O three-Sunned Unity. For You are our God, hoping in Whom let us not be confounded."
+          ]
+        ]
+      },
+      {
+        "ode": "3a",
+        "troparia": [
+          "<i>(Tone 2, Podoben “Of goodness…”)</i> When in the beginning You created Adam, O Lord,* then You cried out to Your hypostatic Word, O good One:* \"Let Us create him in Our image!\"* And the Holy Spirit was present as a co-Creator.* Therefore we cry out to You:* \"O God, our Creator, glory to You!\"",
+          "When God willed to come to us,* He made His dwelling in your most pure womb, O most pure [Virgin],* and He Who granted the Kingdom of Heaven to all,* saved mankind through you.* Therefore we cry out to you, O pure God-bearer:* \"Rejoice, O Mistress!\""
+        ]
+      },
+      {
+        "ode": "4",
+        "hirmos": "<i>(Tone 3)</i> You have gave us Your steadfast love, O Lord,* for You delivered Your only-begotten Son to death for us.* Therefore, we cry out to You in thanksgiving:* Glory to Your power, O Lord!",
+        "troparia": [
+          [
+            "A double branch sprung from the Father as from a root: the Son and the right Spirit, the divinely planted offshoots of the same nature, equally beginning-less blossoms, for the Three are the lights of the Divinity.",
+            "Multitudes of noetic essences ceaselessly hymn You, O God that can not be understood in full. We glorify You with them, saying: \"O Trinity that is above all, save Your servants as a Lover of Mankind!\"",
+            "You kindled in us the flame of Your love, O word of God, rich in mercy, Who for us was incarnate without change, and mystically taught us of the one thrice luminous Divinity. Therefore we glorify you."
+          ]
+        ]
+      },
+      {
+        "ode": "5",
+        "hirmos": "<i>(Tone 4)</i> All creation was in awe* at your divine glory,* for you, O Virgin, that knew no man,* took into your womb the God, Who is above all,* and you gave birth to the eternal Son,* Who grants peace to those who hymn you.",
+        "troparia": [
+          [
+            "Understanding through faith both the one unapproachable nature, and the three life-giving indivisible hypostases of the Divinity that created all, we honour the Father, and the Son, and the Holy Spirit, the equally eternal Being.",
+            "O three-Sunned Light, enlighten me with the one Divinity of Your essential Light, O uncreated Essence, O active Source of light, of every light-giving dawn. Let me contemplate Your ineffable beauty!",
+            "We faithfully cry out to You, as You are the One who created and maintains everything, Who guides all in full wisdom and are truly the giver of life: O three-Sunned Lord, preserve those who hymn You!",
+            "Willing to deify man that has become corrupt from of old, He who both created and manifested the divine image from His goodness, O Virgin, became Man from you, and preached the one triple Godhead."
+          ]
+        ]
+      },
+      {
+        "ode": "6",
+        "hirmos": "<i>(Tone 5)</i> Still the sea of passions* raging with soul-corrupting tempest, O Master Christ,* and lead me up from corruption,* as You are merciful.",
+        "troparia": [
+          [
+            "You are One and Only, being the Godhead in three radiant Hypostases, sharing in form and equal as to action in nature and will.",
+            "The prophet [David] clearly manifested the one Three-Sunned God, hymning Your Father the Light: in Spirit we shall see Son the Light",
+            "Indivisible Being in three Persons has one might and power. By Him the creation is made and renewed.",
+            "O God, Master, the only One and the thrice radiant One, grant deliverance from sins and misfortunes to those that hymn You, through the prayers of the Mother of God."
+          ]
+        ]
+      },
+      {
+        "ode": "6a",
+        "troparia": [
+          "<i>(Tone 5, Podoben “Let us the faithful acclaim…”)</i> We glorify the Three-Sunned Light and worship the simple Trinity,* Who enlightened us and had mercy on us,* and saved from corruption all the human race,* thus delivering the whole world from the deceit of the idols,* and granted us the Kingdom.",
+          "Overwhelmed by all things, I ran to you,* O hope of everyone and harbour for the sinners and the humbled ones.* I cry: \"I sinned and I remain in evil, wretched and senseless!\"* Have mercy on me before the end,* convert me, and deliver me from the eternal punishment,* unworthy as I am."
+        ]
+      },
       {
         "ode": "9",
         "hirmos": "<i>(Tone 8)</i> Heaven was astonished and the ends of the earth were amazed* that God appeared to man in bodily form.* Your womb became vaster than the heavens.* And so, choirs of angels and men extol you as Godbearer.",
