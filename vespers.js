@@ -2604,16 +2604,21 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
         else if (numStycheras === 2) stycheraScheme =  Array(2).fill(3);
     } else if (!isGreatVespers) {
         // one 4-saint
-        numStycheras = 6;
-        psalm140OctoechosStycheras = vespersOctoechosData["ps140"];
-        while (psalm140OctoechosStycheras.length < 4) {
-            // there are sometimes less octoechos stychera (one is tone indication, so compare to 3)
-            psalm140OctoechosStycheras.splice(1, 0, psalm140OctoechosStycheras[1])
-        };
-        if (dayOfWeek === 6) {
-            stycheras = psalm140menaionStycheras.slice(0, 4).concat(psalm140OctoechosStycheras).concat(psalm140menaionStycheras.slice(4))
-        } else stycheras = psalm140OctoechosStycheras.concat(psalm140menaionStycheras);
-        stycheraScheme =  Array(6).fill(1);
+        if (numStycheras === 6) {
+            // sometimes they have 6 sticheras (oct 14)
+            stycheras = psalm140menaionStycheras;
+        } else {
+            psalm140OctoechosStycheras = vespersOctoechosData["ps140"];
+            while (psalm140OctoechosStycheras.length < 4) {
+                // there are sometimes less octoechos stychera (one is tone indication, so compare to 3)
+                psalm140OctoechosStycheras.splice(1, 0, psalm140OctoechosStycheras[1])
+            };
+            if (dayOfWeek === 6) {
+                stycheras = psalm140menaionStycheras.slice(0, 4).concat(psalm140OctoechosStycheras).concat(psalm140menaionStycheras.slice(4))
+            } else stycheras = psalm140OctoechosStycheras.concat(psalm140menaionStycheras);
+            numStycheras = 6;
+        }
+        stycheraScheme =  Array(numStycheras).fill(1);
     } else if (vespersTriodionData != undefined && "ps140" in vespersTriodionData) {
         // great vespers in triodion
 
