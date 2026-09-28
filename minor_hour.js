@@ -327,9 +327,9 @@ async function arrangeRoyalHours(additionalElements, hour, priest) {
         if (priest === "1") {
             priestlyExclamationsData = await getData(`${address}\\horologion\\priestly_exclamations.json`);
             res += `
-            ${priestlyExclamationsData["attentive"]}<br><br>
-            ${priestlyExclamationsData["peace"]}<br><br>
-            ${priestlyExclamationsData["wisdomAttentive"]}<br><br>`
+                ${priestlyExclamationsData["deacon"]} ${priestlyExclamationsData["attentive"]}<br><br>
+                ${priestlyExclamationsData["peace"]}<br><br>
+                ${priestlyExclamationsData["wisdomAttentive"]}<br><br>`
             }
 
         const prokData = additionalElements["prokimenon"];
@@ -349,9 +349,9 @@ async function arrangeRoyalHours(additionalElements, hour, priest) {
         for (let i of [0, 2]){
             if (priest === "1") {
                 res += `
-                ${priestlyExclamationsData["wisdom"]}<br><br>
+                ${priestlyExclamationsData["deacon"]} ${priestlyExclamationsData["wisdom"]}<br><br>
                  <FONT COLOR="RED">Reader:</FONT> ${readingsData[i]}<br><br>
-                ${ priestlyExclamationsData["attentive"]}<br><br>`
+                ${priestlyExclamationsData["deacon"]} ${priestlyExclamationsData["attentive"]}<br><br>`
             } else {
                 res += `<i>${readingsData[i]}</i><br><br>`;
             }
