@@ -21,7 +21,6 @@ import { postComplinePrayers, penitentialTroparia, constructMenaionCanon } from 
 const address = `Text\\English`
 
 // TODO:
-// allow choice of penitential troparia on Sun
 // add optional prayers
 // rubrics: omit prayer for the dead
 // rubrics: different troparia
@@ -35,6 +34,7 @@ export function renderMidnightSkeleton() {
         <div id="kathisma_or_canon"></div>
         <div id="creed_or_gregory"></div>
         <div id="trisagionToPater"></div>
+        <div id="troparia_selector"></div>
         <div id="troparia_1"></div>
         <div id="all_hours_prayer"></div>
         <div id="st_ephrem"></div>
@@ -77,6 +77,7 @@ export async function enhanceMidnight(priest, full, date){
     }
 
 	const nocturnData = await getData(`${address}\\horologion\\nocturn_general.json`);
+    const endingData = await getData(`${address}\\horologion\\night_ending.json`);
 
 	let variant = "w";
 	if (season === "EasterWeek" && dayOfWeek === 0) variant = "e"
@@ -107,7 +108,7 @@ export async function enhanceMidnight(priest, full, date){
             var instruction = document.querySelector('input[name="fullnessChoice"]:checked')?.value;
             await constructCanonNocturn(dayOfWeekData, variant, glas, instruction);
         });
-        await constructCanonNocturn(dayOfWeekData, variant, glas, full);
+        await constructCanonNocturn(dayOfWeekData, endingData, variant, glas, full);
 
     } else {
         const dayOfWeekData = await getData(`${address}\\horologion\\nocturn_${variant}.json`);
@@ -133,7 +134,6 @@ export async function enhanceMidnight(priest, full, date){
 	var dayClass = dayData["class"]
     if (dayTriodionData && "class" in dayTriodionData && dayTriodionData["class"] > dayClass) dayClass = dayTriodionData["class"];
     const ekteniasData = await getData(`${address}\\horologion\\night_ektenias.json`);
-    const endingData = await getData(`${address}\\horologion\\night_ending.json`);
     if (full === "1" && dayOfWeek != 0) {
         document.getElementById("penitential_troparia").innerHTML = penitentialTroparia(priest, endingData, ekteniasData);
     } else {
@@ -255,8 +255,11 @@ async function constructKathismaNocturn(nocturnData, dayOfWeekData, variant, sea
 
 }
 
-async function constructCanonNocturn(dayOfWeekData, variant, glas, full) {
-    var tropar;
+function makeSundayTroparion(header, text) {
+    return `<div class=subhead>${header}</div><br>${text}<br><br>`;
+}
+
+async function constructCanonNocturn(dayOfWeekData, endingData, variant, glas, full) {
     if (variant === "sun") {
         let [canon, matinslike] = constructMenaionCanon(dayOfWeekData["canon"], full, glas);
         document.getElementById("kathisma_or_canon").innerHTML = canon;
@@ -270,15 +273,36 @@ async function constructCanonNocturn(dayOfWeekData, variant, glas, full) {
         gregory += `${itIsTrulyRight}<br><br>`
 
         document.getElementById("creed_or_gregory").innerHTML = gregory;
-        tropar = `
-            <div class=subhead>${dayOfWeekData["troparia"]}</div><br>
-            ${(await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["hypakoe"][glas]}<br><br>`;
+
+        var penitentialTroparia = endingData["penitential_troparia"];
+        penitentialTroparia.splice(2,0, `<i>${andNow}</i>`);
+        penitentialTroparia.splice(1,0, `<i>${glory}</i>`);
+        penitentialTroparia = penitentialTroparia.join("<br><br>");
+        document.getElementById("troparia_1").innerHTML = makeSundayTroparion(dayOfWeekData["troparia"][0], penitentialTroparia);
+
+        document.getElementById("troparia_selector").innerHTML = `<div class="rubric">${dayOfWeekData["troparia_selector"]}</div><br>
+        <div id="SundayTropariaSelector">
+          <label><input type="radio" name="troparChoice" value="penitential" id="penitential" checked>${dayOfWeekData["troparia"][0]}</label><br>
+          <label><input type="radio" name="troparChoice" value="hypakoe" id="hypakoe">${dayOfWeekData["troparia"][1]}</label>
+        </div><br>`
+
+        document.getElementById("SundayTropariaSelector").addEventListener("change", async function () {
+            var tropInstruction = document.querySelector('input[name="troparChoice"]:checked')?.value;
+            if (tropInstruction === "penitential") {
+                document.getElementById("troparia_1").innerHTML = makeSundayTroparion(dayOfWeekData["troparia"][0], penitentialTroparia);
+            } else {
+                const hypakoe = (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["hypakoe"][glas];
+                document.getElementById("troparia_1").innerHTML = makeSundayTroparion(dayOfWeekData["troparia"][1], hypakoe);
+            }
+        });
+
         // TODO: add optional Sunday prayer
 
     } else {
         // TODO: add stuff
     }
-    document.getElementById("troparia_1").innerHTML = tropar;
+
+
 
     document.getElementById("all_hours_prayer").innerHTML = `${LHM} <FONT COLOR="RED">(40)</FONT><br><br>`;
 

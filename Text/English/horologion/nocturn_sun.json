@@ -133,6 +133,10 @@
     "All-sovereign Father, Word of God, all-holy Spirit,* one power-and image, one kingship, divinity and authority,* have mercy on those who worship You and save them.",
     "On beholding Your Son divine and risen from the dead,* most pure Virgin, all creation was filled with ineffable joy.* In glorifying Him we extol you"
   ],
-  "troparia": "Hypakoe",
+  "troparia_selector": "There is a choice between the following troparia and the Resurrectional hypakoe:",
+  "troparia": [
+    "Troparia",
+    "Hypakoe of the tone of the week"
+  ],
   "prayer": "TODO: ADD SUNDAY PRAYER"
 }
