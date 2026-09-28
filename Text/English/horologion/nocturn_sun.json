@@ -1,4 +1,8 @@
 {
+  "canon_choices": [
+    "Shorten the canon to one ode, according to the tone of the week",
+    "Full canon"
+  ],
   "canon": {
     "refrain": "Most holy Trinity, our God, glory be to You!",
     "comment": "The proper canon for today is not yet added, using the default canon from the horologion, where every ode is taken from a different tone.<br><br>",

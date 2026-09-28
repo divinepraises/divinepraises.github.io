@@ -1,4 +1,8 @@
 {
+  "kathisma_choices": [
+    "Shorten the kathisma to one stasis, according to the day of the week",
+    "Full kathisma"
+  ],
   "kathisma": 17,
   "troparia": [
     "Tone 8",

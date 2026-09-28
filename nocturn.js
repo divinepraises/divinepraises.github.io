@@ -33,6 +33,7 @@ const address = `Text\\English`
 export function renderMidnightSkeleton() {
     return `
         <div id="beginning"></div>
+        <div id="choice"></div>
         <div id="kathisma_or_canon"></div>
         <div id="creed_or_gregory"></div>
         <div id="trisagionToPater"></div>
@@ -101,9 +102,25 @@ export async function enhanceMidnight(priest, full, date){
     const isSpecialDate = false;
 
     if (variant === "e" || variant === "sun") {
-        await constructCanonNocturn(variant, glas, full);
+        const dayOfWeekData = await getData(`${address}\\horologion\\nocturn_sun.json`);
+        makeFullnessSelector(dayOfWeekData["canon_choices"], full)
+
+        document.getElementById("fullnessSelector").addEventListener("change", async function () {
+            var instruction = document.querySelector('input[name="fullnessChoice"]:checked')?.value;
+            await constructCanonNocturn(dayOfWeekData, variant, glas, instruction);
+        });
+        await constructCanonNocturn(dayOfWeekData, variant, glas, full);
+
     } else {
-        await constructKathismaNocturn(nocturnData, variant, season, seasonWeek, dayOfWeek, dayData, isSpecialDate, priest, full);
+        const dayOfWeekData = await getData(`${address}\\horologion\\nocturn_${variant}.json`);
+        makeFullnessSelector(dayOfWeekData["kathisma_choices"], full);
+
+        document.getElementById("fullnessSelector").addEventListener("change", async function () {
+            var instruction = document.querySelector('input[name="fullnessChoice"]:checked')?.value;
+            await constructKathismaNocturn(nocturnData, dayOfWeekData, variant, season, seasonWeek, dayOfWeek, dayData, isSpecialDate, priest, instruction);
+        });
+
+        await constructKathismaNocturn(nocturnData, dayOfWeekData, variant, season, seasonWeek, dayOfWeek, dayData, isSpecialDate, priest, full);
     }
 
     var beforeGlory = `<div class=subhead>${nocturnData["dismissal"]}</div><br>`;
@@ -153,9 +170,7 @@ async function kathismaToText(k, dayOfWeek, seasonWeek, full) {
     return kathPsalmsToText;
 }
 
-async function constructKathismaNocturn(nocturnData, variant, season, seasonWeek, dayOfWeek, dayData, isSpecialDate, priest, full) {
-    const dayOfWeekData = await getData(`${address}\\horologion\\nocturn_${variant}.json`);
-
+async function constructKathismaNocturn(nocturnData, dayOfWeekData, variant, season, seasonWeek, dayOfWeek, dayData, isSpecialDate, priest, full) {
     // kathisma
     const k = dayOfWeekData["kathisma"];
     document.getElementById("kathisma_or_canon").innerHTML = `
@@ -242,13 +257,10 @@ async function constructKathismaNocturn(nocturnData, variant, season, seasonWeek
 
 }
 
-async function constructCanonNocturn(variant, glas, full) {
+async function constructCanonNocturn(dayOfWeekData, variant, glas, full) {
     var tropar;
     if (variant === "sun") {
-        const dayOfWeekData = await getData(`${address}\\horologion\\nocturn_sun.json`);
-
-        // TODO: when adding canons, remove "1" here
-        let [canon, matinslike] = constructMenaionCanon(dayOfWeekData["canon"], "1", glas);
+        let [canon, matinslike] = constructMenaionCanon(dayOfWeekData["canon"], full, glas);
         document.getElementById("kathisma_or_canon").innerHTML = canon;
         // verses after canon
         var gregory = `<div class="subhead">${dayOfWeekData["gregory title"]}</div><br>`;
@@ -272,4 +284,13 @@ async function constructCanonNocturn(variant, glas, full) {
 
     document.getElementById("all_hours_prayer").innerHTML = `${LHM} <FONT COLOR="RED">(40)</FONT><br><br>`;
 
+}
+
+function makeFullnessSelector(fullnessOptions, full) {
+    document.getElementById("choice").innerHTML =  `<div id="fullnessSelector">
+      <label><input type="radio" name="fullnessChoice" value="0" id="shorten">${fullnessOptions[0]}</label><br>
+      <label><input type="radio" name="fullnessChoice" value="1" id="full_version">${fullnessOptions[1]}</label>
+    </div><br>`
+    if (full === "0") document.getElementById("shorten").checked = true;
+    else document.getElementById("full_version").checked = true;
 }
