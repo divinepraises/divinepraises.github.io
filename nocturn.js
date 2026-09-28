@@ -21,6 +21,7 @@ import { postComplinePrayers, penitentialTroparia, constructMenaionCanon } from 
 const address = `Text\\English`
 
 // TODO:
+// debug: the fullness selector should not relaunch the whole builder, only the kathisma or canon builder
 // rubrics: omit prayer for the dead
 // rubrics: different troparia
 // Easter Sunday nocturn
