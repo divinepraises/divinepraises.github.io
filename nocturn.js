@@ -11,7 +11,8 @@ import {
     amen,
     endingBlockMinor,
     tripleAlleluiaOnly,
-    functionNames
+    functionNames,
+    StEphremPrayer
 } from './text_generation.js';
 import { getDayInfo, getData, readPsalmsFromNumbers, isTriodionFeastAfterPentecost } from './script.js';
 import { EasterHour } from './minor_hour.js';
@@ -100,120 +101,9 @@ export async function enhanceMidnight(priest, full, date){
     const isSpecialDate = false;
 
     if (variant === "e" || variant === "sun") {
-        var tropar;
-        if (variant === "sun") {
-            const dayOfWeekData = await getData(`${address}\\horologion\\nocturn_sun.json`);
-
-            // TODO: when adding canons, remove "1" here
-            let [canon, matinslike] = constructMenaionCanon(dayOfWeekData["canon"], "1", glas);
-            document.getElementById("kathisma_or_canon").innerHTML = canon;
-            // verses after canon
-            var gregory = `<div class="subhead">${dayOfWeekData["gregory title"]}</div><br>`;
-            for (let [i, verse] of dayOfWeekData["gregory"].entries()){
-                if (i === dayOfWeekData["gregory"].length - 2) gregory += `<i>${glory}<br><br></i>`;
-                else if (i === dayOfWeekData["gregory"].length - 1) gregory += `<i>${andNow}<br><br></i>`;
-                gregory += `${verse}<br><br>`;
-            }
-            gregory += `${itIsTrulyRight}<br><br>`
-
-            document.getElementById("creed_or_gregory").innerHTML = gregory;
-            tropar = `
-                <div class=subhead>${dayOfWeekData["troparia"]}</div><br>
-                ${(await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["hypakoe"][glas]}<br><br>`;
-            // TODO: add optional Sunday prayer
-
-        } else {
-            // TODO: add stuff
-        }
-        document.getElementById("troparia_1").innerHTML = tropar;
-
-        document.getElementById("all_hours_prayer").innerHTML = `${LHM} <FONT COLOR="RED">(40)</FONT><br><br>`;
+        await constructCanonNocturn(variant, glas, full);
     } else {
-        const dayOfWeekData = await getData(`${address}\\horologion\\nocturn_${variant}.json`);
-
-        // kathisma
-        const k = dayOfWeekData["kathisma"];
-        document.getElementById("kathisma_or_canon").innerHTML = `
-            ${await kathismaToText(k, dayOfWeek, seasonWeek, full)}<br><br>`
-
-        // creed
-        document.getElementById("creed_or_gregory").innerHTML = `
-            <div class=subhead>${nocturnData["creed"]}</div><br>
-            ${(await getData(`${address}\\horologion\\creed.json`))["0"]}<br><br>`;
-
-        var tropar;
-        if (isSpecialDate) {
-            // todo: fill in
-        } else {
-            tropar = `<div class=subhead>${nocturnData["troparia"][0]}</div><br>
-            <div class="rubric">${dayOfWeekData["troparia"][0]}</div>
-            ${dayOfWeekData["troparia"][1]}<br><br>
-            <i>${glory}</i><br><br>
-            ${dayOfWeekData["troparia"][2]}<br><br>
-            <i>${andNow}</i><br><br>
-            ${dayOfWeekData["troparia"][3]}<br><br>
-            `
-        }
-
-        document.getElementById("troparia_1").innerHTML = tropar;
-
-        document.getElementById("all_hours_prayer").innerHTML = `${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
-            <div class="subhead">Prayer of the hours</div><br>
-            ${prayerOfTheHours}<br><br>
-            ${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
-            ${gloryAndNow}<br><br>
-            ${moreHonorable}<br><br>
-            ${inTheName}<br><br>
-            ${prayerBlessingMayGodBeGracious(priest, "nocturn")}<br><br>
-            ${amen}<br><br>`;
-
-        var prayer = `<div class=subhead>${nocturnData["prayer"]}</div><br>
-            ${(await getData(`${address}\\horologion\\3hour.json`))["prayer"]}<br><br>`;
-
-        if (variant === "w") {
-            // TODO: re-check lenten things
-            const isLenten = (
-                season === "Lent" && dayOfWeek > 0 && dayOfWeek < 6
-                || season === "Forelent" && seasonWeek === 3 && (dayOfWeek === 3 || dayOfWeek === 5)
-                || season === "HolyWeek" && dayOfWeek > 0 && dayOfWeek <= 3
-            );
-            const isLessPenitential = (
-                season === "Forelent" && ("forefeast" in dayData || "postfeast" in dayData)
-                || dayData["class"] >= 8
-            );
-            if (isLenten) {
-                document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest, false, isLessPenitential);
-            }
-        } else {
-            prayer += `
-                <div class=subhead>${dayOfWeekData["prayer"][0]}</div><br>
-                ${dayOfWeekData["prayer"][1]}<br><br>`
-        }
-        document.getElementById("prayer_of_this_hour").innerHTML = prayer;
-
-        var tmp = (await readPsalmsFromNumbers(nocturnData["psalms_2"]))
-        tmp[1] += "<br>";
-        const psalms_2 = tmp.join("<br>");
-        document.getElementById("psalms_2").innerHTML = `
-            ${comeLetUs}<br><br>
-            ${psalms_2}<br><br>
-            ${gloryAndNow}<br><br>
-            ${trisagionToPater(priest)}`;
-
-        document.getElementById("troparia_2").innerHTML = `
-            <div class=subhead>${nocturnData["troparia_2_headers"][0]}</div><br>
-            ${nocturnData["troparia_2"][0]}<br><br>
-            ${nocturnData["troparia_2"][1]}<br><br>
-            <i>${glory}</i><br><br>
-            ${nocturnData["troparia_2"][2]}<br><br>
-            <i>${andNow}</i><br><br>
-            ${nocturnData["troparia_2"][3]}<br><br>
-            `;
-
-        // TODO: when do we omit it?
-        var prayerForTheDead = `${nocturnData["prayer_dead"]}<br><br>`;
-        if (dayData["class"] >= 11) prayerForTheDead = `${nocturnData["prayer_dead_omitted"]}<br>`;
-        document.getElementById("prayer_dead").innerHTML = `${LHM} <FONT COLOR="RED">(12)</FONT><br><br>${prayerForTheDead}`;
+        await constructKathismaNocturn(nocturnData, variant, season, seasonWeek, dayOfWeek, dayData, isSpecialDate, priest, full);
     }
 
     var beforeGlory = `<div class=subhead>${nocturnData["dismissal"]}</div><br>`;
@@ -261,4 +151,125 @@ async function kathismaToText(k, dayOfWeek, seasonWeek, full) {
          <FONT COLOR="RED">${functionNames["reader"]}</FONT> ${andNow}<br><br>`
     }
     return kathPsalmsToText;
+}
+
+async function constructKathismaNocturn(nocturnData, variant, season, seasonWeek, dayOfWeek, dayData, isSpecialDate, priest, full) {
+    const dayOfWeekData = await getData(`${address}\\horologion\\nocturn_${variant}.json`);
+
+    // kathisma
+    const k = dayOfWeekData["kathisma"];
+    document.getElementById("kathisma_or_canon").innerHTML = `
+        ${await kathismaToText(k, dayOfWeek, seasonWeek, full)}<br><br>`
+
+    // creed
+    document.getElementById("creed_or_gregory").innerHTML = `
+        <div class=subhead>${nocturnData["creed"]}</div><br>
+        ${(await getData(`${address}\\horologion\\creed.json`))["0"]}<br><br>`;
+
+    var tropar;
+    if (isSpecialDate) {
+        // todo: fill in
+    } else {
+        tropar = `<div class=subhead>${nocturnData["troparia"][0]}</div><br>
+        <div class="rubric">${dayOfWeekData["troparia"][0]}</div>
+        ${dayOfWeekData["troparia"][1]}<br><br>
+        <i>${glory}</i><br><br>
+        ${dayOfWeekData["troparia"][2]}<br><br>
+        <i>${andNow}</i><br><br>
+        ${dayOfWeekData["troparia"][3]}<br><br>
+        `
+    }
+
+    document.getElementById("troparia_1").innerHTML = tropar;
+
+    document.getElementById("all_hours_prayer").innerHTML = `${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
+        <div class="subhead">Prayer of the hours</div><br>
+        ${prayerOfTheHours}<br><br>
+        ${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
+        ${gloryAndNow}<br><br>
+        ${moreHonorable}<br><br>
+        ${inTheName}<br><br>
+        ${prayerBlessingMayGodBeGracious(priest, "nocturn")}<br><br>
+        ${amen}<br><br>`;
+
+    var prayer = `<div class=subhead>${nocturnData["prayer"]}</div><br>
+        ${(await getData(`${address}\\horologion\\3hour.json`))["prayer"]}<br><br>`;
+
+    if (variant === "w") {
+        // TODO: re-check lenten things
+        const isLenten = (
+            season === "Lent" && dayOfWeek > 0 && dayOfWeek < 6
+            || season === "Forelent" && seasonWeek === 3 && (dayOfWeek === 3 || dayOfWeek === 5)
+            || season === "HolyWeek" && dayOfWeek > 0 && dayOfWeek <= 3
+        );
+        const isLessPenitential = (
+            season === "Forelent" && ("forefeast" in dayData || "postfeast" in dayData)
+            || dayData["class"] >= 8
+        );
+        if (isLenten) {
+            document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest, false, isLessPenitential);
+        }
+    } else {
+        prayer += `
+            <div class=subhead>${dayOfWeekData["prayer"][0]}</div><br>
+            ${dayOfWeekData["prayer"][1]}<br><br>`
+    }
+    document.getElementById("prayer_of_this_hour").innerHTML = prayer;
+
+    var tmp = (await readPsalmsFromNumbers(nocturnData["psalms_2"]))
+    tmp[1] += "<br>";
+    const psalms_2 = tmp.join("<br>");
+    document.getElementById("psalms_2").innerHTML = `
+        ${comeLetUs}<br><br>
+        ${psalms_2}<br><br>
+        ${gloryAndNow}<br><br>
+        ${trisagionToPater(priest)}`;
+
+    document.getElementById("troparia_2").innerHTML = `
+        <div class=subhead>${nocturnData["troparia_2_headers"][0]}</div><br>
+        ${nocturnData["troparia_2"][0]}<br><br>
+        ${nocturnData["troparia_2"][1]}<br><br>
+        <i>${glory}</i><br><br>
+        ${nocturnData["troparia_2"][2]}<br><br>
+        <i>${andNow}</i><br><br>
+        ${nocturnData["troparia_2"][3]}<br><br>
+        `;
+
+    // TODO: when do we omit it?
+    var prayerForTheDead = `${nocturnData["prayer_dead"]}<br><br>`;
+    if (dayData["class"] >= 11) prayerForTheDead = `${nocturnData["prayer_dead_omitted"]}<br>`;
+    document.getElementById("prayer_dead").innerHTML = `${LHM} <FONT COLOR="RED">(12)</FONT><br><br>${prayerForTheDead}`;
+
+}
+
+async function constructCanonNocturn(variant, glas, full) {
+    var tropar;
+    if (variant === "sun") {
+        const dayOfWeekData = await getData(`${address}\\horologion\\nocturn_sun.json`);
+
+        // TODO: when adding canons, remove "1" here
+        let [canon, matinslike] = constructMenaionCanon(dayOfWeekData["canon"], "1", glas);
+        document.getElementById("kathisma_or_canon").innerHTML = canon;
+        // verses after canon
+        var gregory = `<div class="subhead">${dayOfWeekData["gregory title"]}</div><br>`;
+        for (let [i, verse] of dayOfWeekData["gregory"].entries()){
+            if (i === dayOfWeekData["gregory"].length - 2) gregory += `<i>${glory}<br><br></i>`;
+            else if (i === dayOfWeekData["gregory"].length - 1) gregory += `<i>${andNow}<br><br></i>`;
+            gregory += `${verse}<br><br>`;
+        }
+        gregory += `${itIsTrulyRight}<br><br>`
+
+        document.getElementById("creed_or_gregory").innerHTML = gregory;
+        tropar = `
+            <div class=subhead>${dayOfWeekData["troparia"]}</div><br>
+            ${(await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["hypakoe"][glas]}<br><br>`;
+        // TODO: add optional Sunday prayer
+
+    } else {
+        // TODO: add stuff
+    }
+    document.getElementById("troparia_1").innerHTML = tropar;
+
+    document.getElementById("all_hours_prayer").innerHTML = `${LHM} <FONT COLOR="RED">(40)</FONT><br><br>`;
+
 }
