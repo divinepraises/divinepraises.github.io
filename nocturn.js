@@ -21,7 +21,6 @@ import { postComplinePrayers, penitentialTroparia, constructMenaionCanon } from 
 const address = `Text\\English`
 
 // TODO:
-// debug: the fullness selector should not relaunch the whole builder, only the kathisma or canon builder
 // rubrics: omit prayer for the dead
 // rubrics: different troparia
 // Easter Sunday nocturn
@@ -104,25 +103,12 @@ export async function enhanceMidnight(priest, full, date){
     var afterPrayers = postComplinePrayers(false, priest, endingData, ekteniasData, dayOfWeek, false, dayClass);
     if (variant === "e" || variant === "sun") {
         const dayOfWeekData = await getData(`${address}\\horologion\\nocturn_sun.json`);
-        makeFullnessSelector(dayOfWeekData["canon_choices"], full)
 
-        document.getElementById("fullnessSelector").addEventListener("change", async function () {
-            var instruction = document.querySelector('input[name="fullnessChoice"]:checked')?.value;
-            await constructCanonNocturn(dayOfWeekData, endingData, variant, glas, instruction);
-        });
         await constructCanonNocturn(dayOfWeekData, endingData, variant, glas, full);
 
         afterPrayers += `<div class="rubric">${dayOfWeekData["prayer_rubric"]}</div><br>${dayOfWeekData["prayer"]}<br><br>`
     } else {
-        const dayOfWeekData = await getData(`${address}\\horologion\\nocturn_${variant}.json`);
-        makeFullnessSelector(dayOfWeekData["kathisma_choices"], full);
-
-        document.getElementById("fullnessSelector").addEventListener("change", async function () {
-            var instruction = document.querySelector('input[name="fullnessChoice"]:checked')?.value;
-            await constructKathismaNocturn(nocturnData, dayOfWeekData, variant, season, seasonWeek, dayOfWeek, dayData, isSpecialDate, priest, instruction);
-        });
-
-        await constructKathismaNocturn(nocturnData, dayOfWeekData, variant, season, seasonWeek, dayOfWeek, dayData, isSpecialDate, priest, full);
+        await constructKathismaNocturn(nocturnData, variant, season, seasonWeek, dayOfWeek, dayData, isSpecialDate, priest, full);
     }
 
     var beforeGlory = `<div class=subhead>${nocturnData["dismissal"]}</div><br>`;
@@ -171,11 +157,18 @@ async function kathismaToText(k, dayOfWeek, seasonWeek, full) {
     return kathPsalmsToText;
 }
 
-async function constructKathismaNocturn(nocturnData, dayOfWeekData, variant, season, seasonWeek, dayOfWeek, dayData, isSpecialDate, priest, full) {
+async function constructKathismaNocturn(nocturnData, variant, season, seasonWeek, dayOfWeek, dayData, isSpecialDate, priest, full) {
+    const dayOfWeekData = await getData(`${address}\\horologion\\nocturn_${variant}.json`);
     // kathisma
     const k = dayOfWeekData["kathisma"];
-    document.getElementById("kathisma_or_canon").innerHTML = `
-        ${await kathismaToText(k, dayOfWeek, seasonWeek, full)}<br><br>`
+    document.getElementById("kathisma_or_canon").innerHTML = `${await kathismaToText(k, dayOfWeek, seasonWeek, full)}<br><br>`
+
+    makeFullnessSelector(dayOfWeekData["kathisma_choices"], full);
+
+    document.getElementById("fullnessSelector").addEventListener("change", async function () {
+        var instruction = document.querySelector('input[name="fullnessChoice"]:checked')?.value;
+        document.getElementById("kathisma_or_canon").innerHTML = `${await kathismaToText(k, dayOfWeek, seasonWeek, instruction)}<br><br>`
+    });
 
     // creed
     document.getElementById("creed_or_gregory").innerHTML = `
@@ -266,6 +259,15 @@ async function constructCanonNocturn(dayOfWeekData, endingData, variant, glas, f
     if (variant === "sun") {
         let [canon, matinslike] = constructMenaionCanon(dayOfWeekData["canon"], full, glas);
         document.getElementById("kathisma_or_canon").innerHTML = canon;
+
+        makeFullnessSelector(dayOfWeekData["canon_choices"], full)
+
+        document.getElementById("fullnessSelector").addEventListener("change", async function () {
+            var instruction = document.querySelector('input[name="fullnessChoice"]:checked')?.value;
+            [canon, matinslike] = constructMenaionCanon(dayOfWeekData["canon"], instruction, glas);
+            document.getElementById("kathisma_or_canon").innerHTML = canon;
+        });
+
         // verses after canon
         var gregory = `<div class="subhead">${dayOfWeekData["gregory title"]}</div><br>`;
         for (let [i, verse] of dayOfWeekData["gregory"].entries()){
