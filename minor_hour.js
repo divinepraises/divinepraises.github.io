@@ -1,4 +1,4 @@
-import { getBeginning, cross, StEphremPrayer, gloryGospel, usualBeginning, tripleAlleluia, glory, andNow, trisagionToPater, prayerOfTheHours, LHM, comeLetUs, gloryAndNow, moreHonorable, inTheName, prayerBlessingMayGodBeGracious, endingBlockMinor, amen, getCommonText } from './text_generation.js';
+import { getBeginning, cross, StEphremPrayer, gloryGospel, usualBeginning, tripleAlleluia, glory, andNow, trisagionToPater, prayerOfTheHours, LHM, comeLetUs, gloryAndNow, moreHonorable, inTheName, prayerBlessingMayGodBeGracious, endingBlockMinor, amen, getCommonTextArray } from './text_generation.js';
 import { readFromAddress, kathismaToText, getDayInfo, getData, readPsalmsFromNumbers, replaceCapsWords, specialSunday, cancelPostfeastHypapante, isImpotrantTriodionDay, dayTransfer, isTriodionFeastAfterPentecost } from './script.js';
 import { arrangeProkimenon, frameReadings } from './vespers.js';
 
@@ -684,9 +684,7 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
             return `${dayTriodionData["troparia"][0]}<br><br>${glory}<br><br>${dayTriodionData["troparia"][1]}`
         }
 
-        if ("troparia" in dayData) dayTrop = dayData["troparia"];
-        else dayTrop = await getCommonText("troparia", dayData);
-        if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
+        dayTrop = await getCommonTextArray("troparia", dayData);
 
         if (prePostFeast != ""){
             if (
@@ -753,9 +751,7 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
             return `${sundayTrop["troparia"][glas]}<br><br>${glory}<br><br>${dayTriodionData["troparia"]}`;
         }
 
-        if ("troparia" in dayData) dayTrop = dayData["troparia"];
-        else dayTrop = await getCommonText("troparia", dayData);
-        if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
+        dayTrop = await getCommonTextArray("troparia", dayData);
 
         if ("invert kontakia at compline" in dayData) dayTrop = [dayTrop[1], dayTrop[0]]; // sep 1
 
@@ -790,9 +786,7 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
 
     // polyeleos or higher: at any hour return day troparion
     // in pre/post: feast-Glory-saint
-    if ("troparia" in dayData) dayTrop = dayData["troparia"];
-    else dayTrop = await getCommonText("troparia", dayData);
-    if (!Array.isArray(dayTrop)) dayTrop = [dayTrop];
+    dayTrop = await getCommonTextArray("troparia", dayData);
     if (dayData["class"] >= 8) {
         if (prePostFeast === ""){
             if (dayTrop.length === 1) return `${glory}<br><br>${dayTrop[0]}`;
@@ -1039,9 +1033,7 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
             return `<div class="rubric">In a church: the kontakion of the titular feast. Otherwise:</div>${sundayKond["kontakia"][glas]}`;
         }
 
-        if ("kontakia" in dayData) dayKond = dayData["kontakia"];
-        else dayKond = await getCommonText("kontakia", dayData);
-        if (!Array.isArray(dayKond)) dayKond = [dayKond];
+        dayKond = await getCommonTextArray("kontakia", dayData);
 
         if (prePostFeast != "" && dayData["class"] >= 8 && hour === "6hour") {
             return dayKond[0];
@@ -1055,9 +1047,7 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         return `${dayKond[0]}`;
     }
 
-    if ("kontakia" in dayData) dayKond = dayData["kontakia"];
-    else dayKond = await getCommonText("kontakia", dayData);
-    if (!Array.isArray(dayKond)) dayKond = [dayKond];
+    dayKond = await getCommonTextArray("kontakia", dayData);
 
     if (prePostFeast === "postfeast" && dayData[prePostFeast] === "08//15" && "no_kathisma" in dayData) {
         if (hour === "3hour" || hour === "9hour") return prePostFeastKontakion;

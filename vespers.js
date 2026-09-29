@@ -1,4 +1,4 @@
-import { StEphremPrayer, itIsTrulyRight, prayerBlessingMayGodBeGracious, inTheName, HeWhoIs, getBeginning, usualBeginning, comeLetUs ,tripleAlleluia, lesserDoxology, trisagionToPater, glory, andNow, LHM, GTL, TYL, gloryAndNow, getCommonText, moreHonorable, amen, giveTheBlessing, dismissalMajor, cross } from './text_generation.js';
+import { StEphremPrayer, itIsTrulyRight, prayerBlessingMayGodBeGracious, inTheName, HeWhoIs, getBeginning, usualBeginning, comeLetUs ,tripleAlleluia, lesserDoxology, trisagionToPater, glory, andNow, LHM, GTL, TYL, gloryAndNow, getCommonText, getCommonTextArray, moreHonorable, amen, giveTheBlessing, dismissalMajor, cross } from './text_generation.js';
 import { kathismaToText, cancelPostfeastHypapante, getDayInfo, getData, isBetweenDates, readPsalmsFromNumbers, constructDayName, replaceCapsWords, specialSunday, dayTransfer, isTriodionFeastAfterPentecost } from './script.js';
 var address = `Text\\English`
 
@@ -1041,10 +1041,7 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
             ${lentenTrop[2]}<br>
             ${lentenTrop[3]}`, {"CROSS": cross});
     }
-    var dayTrop;
-    if ("troparia" in dayData) dayTrop = dayData["troparia"];
-    else dayTrop = await getCommonText("troparia", dayData);
-    if (!Array.isArray(dayTrop)) {dayTrop = [dayTrop]}
+    var dayTrop = await getCommonTextArray("troparia", dayData);
 
     var prePostFeast = "";
     if ("forefeast" in dayData) prePostFeast = "forefeast";
