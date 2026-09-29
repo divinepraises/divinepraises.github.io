@@ -22,8 +22,6 @@ import { postComplinePrayers, penitentialTroparia, constructMenaionCanon } from 
 const address = `Text\\English`
 
 // TODO:
-// rubrics: omit prayer for the dead
-// rubrics: different troparia
 // Easter Sunday nocturn
 // add all canons
 
@@ -211,8 +209,10 @@ async function constructKathismaNocturn(nocturnData, variant, season, seasonWeek
         // Dol does not say anything about it except that it is only 3 prostrations on the 1st day of Lent,
         // and full version for the meatfare week.
         // In Peremyshl Typicon at st John feast they apply same standard as for other offices, so I replicate it here.
+
         const isLenten = (
             season === "Lent" && dayOfWeek > 0 && dayOfWeek < 6
+            && !(seasonWeek === 5 && dayOfWeek === 4)  // no prostrations before Great Canon
             || season === "Forelent" && seasonWeek === 3 && (dayOfWeek === 3 || dayOfWeek === 5)
             || season === "HolyWeek" && dayOfWeek > 0 && dayOfWeek <= 3
         );
@@ -334,11 +334,12 @@ function makeFullnessSelector(fullnessOptions, full) {
 async function getFestalForm(mm, dd, season, seasonWeek, dayOfWeek, dayData, dayTriodionData) {
     var festalInfo = {};
     if (season === "Lent" && seasonWeek === 5 && dayOfWeek === 4) {
+        // great canon
         festalInfo["kontakion"] = dayTriodionData["kontakia"];
     } else if (
-        season === "Lent" && seasonWeek === 6 && dayOfWeek === 6
-        || season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3
-        || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 1
+        season === "Lent" && seasonWeek === 6 && dayOfWeek === 6  // Lazarus
+        || season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3  // mid-50
+        || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 1  // Holy Spirit Monday
     ) {
         festalInfo["troparion"] = dayTriodionData["troparia"];
         festalInfo["kontakion"] = dayTriodionData["kontakia"];
