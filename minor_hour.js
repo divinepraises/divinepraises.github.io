@@ -1117,7 +1117,7 @@ export async function EasterHour(hour, priest, full, date) {
 	    <div class="rubric">Tone ${properTexts["hypakoe"][0]}</div>
 		${properTexts["hypakoe"][1]}<br><br>
 	    <div class="subhead">Easter kontakion</div><br>
-	    <div class="rubric">Tone ${properTexts["kontakion"][0]}</div>
+	    <div class="rubric">${properTexts["kontakion"][0]}</div>
 		${properTexts["kontakion"][1]}<br><br>
 	    <div class="subhead">Troparia</div><br>
 	    <div class="rubric">Tone ${properTexts["troparia"][0]}</div>

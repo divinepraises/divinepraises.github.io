@@ -12,7 +12,8 @@ import {
     endingBlockMinor,
     tripleAlleluiaOnly,
     functionNames,
-    StEphremPrayer
+    StEphremPrayer,
+    getCommonTextArray
 } from './text_generation.js';
 import { getDayInfo, getData, readPsalmsFromNumbers, isTriodionFeastAfterPentecost } from './script.js';
 import { EasterHour } from './minor_hour.js';
@@ -75,6 +76,8 @@ export async function enhanceMidnight(priest, full, date){
         } catch {}
     }
 
+    const festalInfo = await getFestalForm(mm, dd, season, seasonWeek, dayOfWeek, dayData, dayTriodionData);
+
 	const nocturnData = await getData(`${address}\\horologion\\nocturn_general.json`);
     const endingData = await getData(`${address}\\horologion\\night_ending.json`);
     const ekteniasData = await getData(`${address}\\horologion\\night_ektenias.json`);
@@ -84,8 +87,11 @@ export async function enhanceMidnight(priest, full, date){
 	else if (dayOfWeek === 0) variant = "sun"
 	else if (dayOfWeek === 6) variant = "sat"
 
+    var dayClass = dayData["class"]
+    if (dayTriodionData && "class" in dayTriodionData && dayTriodionData["class"] > dayClass) dayClass = dayTriodionData["class"];
+
 	var intro = nocturnData["intro"];
-	if (dayData["class"] >= 10) intro = nocturnData["vigil_note"];
+	if (dayClass >= 10) intro = nocturnData["vigil_note"];
 
 	document.getElementById("beginning").innerHTML = `
         <h2>${nocturnData["header"][variant]}</h2>
@@ -97,9 +103,6 @@ export async function enhanceMidnight(priest, full, date){
 
     document.getElementById("trisagionToPater").innerHTML = trisagionToPater(priest);
 
-    // TODO: fix this
-    const isSpecialDate = false;
-
     var afterPrayers = postComplinePrayers(false, priest, endingData, ekteniasData, dayOfWeek, false, dayClass);
     if (variant === "e" || variant === "sun") {
         const dayOfWeekData = await getData(`${address}\\horologion\\nocturn_sun.json`);
@@ -108,7 +111,7 @@ export async function enhanceMidnight(priest, full, date){
 
         afterPrayers += `<div class="rubric">${dayOfWeekData["prayer_rubric"]}</div><br>${dayOfWeekData["prayer"]}<br><br>`
     } else {
-        await constructKathismaNocturn(nocturnData, variant, season, seasonWeek, dayOfWeek, dayData, isSpecialDate, priest, full);
+        await constructKathismaNocturn(nocturnData, variant, season, seasonWeek, dayOfWeek, dayData, festalInfo, priest, full);
     }
 
     var beforeGlory = `<div class=subhead>${nocturnData["dismissal"]}</div><br>`;
@@ -120,8 +123,6 @@ export async function enhanceMidnight(priest, full, date){
 	    ${beforeGlory}
 	    ${await endingBlockMinor(priest, dayOfWeek, "", season === "Pentecost" && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4))}<br>`;
 
-	var dayClass = dayData["class"]
-    if (dayTriodionData && "class" in dayTriodionData && dayTriodionData["class"] > dayClass) dayClass = dayTriodionData["class"];
     if (full === "1" && dayOfWeek != 0) {
         document.getElementById("penitential_troparia").innerHTML = penitentialTroparia(priest, endingData, ekteniasData);
     } else {
@@ -157,7 +158,7 @@ async function kathismaToText(k, dayOfWeek, seasonWeek, full) {
     return kathPsalmsToText;
 }
 
-async function constructKathismaNocturn(nocturnData, variant, season, seasonWeek, dayOfWeek, dayData, isSpecialDate, priest, full) {
+async function constructKathismaNocturn(nocturnData, variant, season, seasonWeek, dayOfWeek, dayData, festalInfo, priest, full) {
     const dayOfWeekData = await getData(`${address}\\horologion\\nocturn_${variant}.json`);
     // kathisma
     const k = dayOfWeekData["kathisma"];
@@ -176,8 +177,9 @@ async function constructKathismaNocturn(nocturnData, variant, season, seasonWeek
         ${(await getData(`${address}\\horologion\\creed.json`))["0"]}<br><br>`;
 
     var tropar;
-    if (isSpecialDate) {
-        // todo: fill in
+    if (festalInfo && "troparion" in festalInfo) {
+        tropar = `<div class=subhead>${nocturnData["troparia"][2]}</div><br>
+        ${festalInfo["troparion"]}<br><br>`
     } else {
         tropar = `<div class=subhead>${nocturnData["troparia"][0]}</div><br>
         <div class="rubric">${dayOfWeekData["troparia"][0]}</div>
@@ -238,19 +240,23 @@ async function constructKathismaNocturn(nocturnData, variant, season, seasonWeek
         ${gloryAndNow}<br><br>
         ${trisagionToPater(priest)}`;
 
-    document.getElementById("troparia_2").innerHTML = `
-        <div class=subhead>${nocturnData["troparia_2_headers"][0]}</div><br>
-        ${nocturnData["troparia_2"][0]}<br><br>
-        ${nocturnData["troparia_2"][1]}<br><br>
-        <i>${glory}</i><br><br>
-        ${nocturnData["troparia_2"][2]}<br><br>
-        <i>${andNow}</i><br><br>
-        ${nocturnData["troparia_2"][3]}<br><br>
-        `;
+    if (festalInfo && "kontakion" in festalInfo) {
+        document.getElementById("troparia_2").innerHTML = `<div class=subhead>${nocturnData["troparia"][3]}</div><br>
+            ${festalInfo["kontakion"]}<br><br>`
+    } else {
+        document.getElementById("troparia_2").innerHTML = `
+            <div class=subhead>${nocturnData["troparia_2_header"]}</div><br>
+            ${nocturnData["troparia_2"][0]}<br><br>
+            ${nocturnData["troparia_2"][1]}<br><br>
+            <i>${glory}</i><br><br>
+            ${nocturnData["troparia_2"][2]}<br><br>
+            <i>${andNow}</i><br><br>
+            ${nocturnData["troparia_2"][3]}<br><br>
+            `;
+    }
 
-    // TODO: when do we omit it?
     var prayerForTheDead = `${nocturnData["prayer_dead"]}<br><br>`;
-    if (dayData["class"] >= 11) prayerForTheDead = `${nocturnData["prayer_dead_omitted"]}<br>`;
+    if (festalInfo["no_prayer"]) prayerForTheDead = `${nocturnData["prayer_dead_omitted"]}<br>`;
     document.getElementById("prayer_dead").innerHTML = `${LHM} <FONT COLOR="RED">(12)</FONT><br><br>${prayerForTheDead}`;
 
 }
@@ -322,4 +328,64 @@ function makeFullnessSelector(fullnessOptions, full) {
     </div><br>`
     if (full === "0") document.getElementById("shorten").checked = true;
     else document.getElementById("full_version").checked = true;
+}
+
+
+async function getFestalForm(mm, dd, season, seasonWeek, dayOfWeek, dayData, dayTriodionData) {
+    var festalInfo = {};
+    if (season === "Lent" && seasonWeek === 5 && dayOfWeek === 4) {
+        festalInfo["kontakion"] = dayTriodionData["kontakia"];
+    } else if (
+        season === "Lent" && seasonWeek === 6 && dayOfWeek === 6
+        || season === "Pentecost" && seasonWeek === 3 && dayOfWeek === 3
+        || season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 1
+    ) {
+        festalInfo["troparion"] = dayTriodionData["troparia"];
+        festalInfo["kontakion"] = dayTriodionData["kontakia"];
+        festalInfo["no_prayer"] = true;
+    } else if (
+        season === "Pentecost" && seasonWeek === 4 && dayOfWeek === 3
+    ) {
+        // leave-taking of mid-Pentecost
+        dayTriodionData = await getData(`${address}\\triodion\\${season}\\23.json`);
+        festalInfo["troparion"] = dayTriodionData["troparia"];
+        festalInfo["kontakion"] = dayTriodionData["kontakia"];
+        festalInfo["no_prayer"] = true;
+    } else if (
+        season === "Pentecost" && seasonWeek === 5 && dayOfWeek === 3
+    ) {
+        // leave-taking of Easter
+        festalInfo["troparion"] = (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][5];
+        const paschalKontakion = (await getData(`${address}\\triodion\\EasterWeek\\00_hour.json`))["kontakion"];
+        festalInfo["kontakion"] = `<i>(${paschalKontakion[0]})</i> ${paschalKontakion[1]}`;
+        festalInfo["no_prayer"] = true;
+    } else if (mm === 1 && dd === 1) {
+        festalInfo["troparion"] = dayData["troparia"][1];
+        festalInfo["kontakion"] = dayData["kontakia"][1];
+        festalInfo["no_prayer"] = true;
+    } else if (mm === 2 && dd === 2) {
+        festalInfo["troparion"] = dayData["troparia"][0];
+        festalInfo["kontakion"] = dayData["kontakia"][0];
+        festalInfo["no_prayer"] = true;
+    } else if (mm === 1 && dd === 7) {
+        festalInfo["troparion"] = (await getData(`${address}\\menaion\\01\\06.json`))["troparia"];
+        festalInfo["kontakion"] = dayData["kontakia"][0];
+        festalInfo["no_prayer"] = true;
+    } else if (mm === 12 && dd === 26) {
+        festalInfo["troparion"] = (await getData(`${address}\\menaion\\12\\25.json`))["troparia"];
+        festalInfo["kontakion"] = dayData["kontakia"][0];
+        festalInfo["no_prayer"] = true;
+    } else if (dayData["class"] === 10) {
+        // Peremyshl Typicon and 1728 Lviv horologion say that on vigils of saints - if there is no vigil -
+        // we say troparion and kontakion.
+        // Dol. explicitly forbids using festal troparion/kontakion at Lord's/Lady's feasts with 2 exceptions.
+        // So, we use festal layout only for vigils of saints.
+        festalInfo["troparion"] = (await getCommonTextArray("troparia", dayData))[0];
+        festalInfo["kontakion"] = (await getCommonTextArray("kontakia", dayData))[0];
+        festalInfo["no_prayer"] = true;
+    } else if (dayData["class"] >= 12) {
+        // I feel like it makes sense to omit it on the feasts of the Lord
+        festalInfo["no_prayer"] = true;
+    }
+    return festalInfo;
 }
