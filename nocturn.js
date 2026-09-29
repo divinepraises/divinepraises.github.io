@@ -13,7 +13,9 @@ import {
     tripleAlleluiaOnly,
     functionNames,
     StEphremPrayer,
-    getCommonTextArray
+    getCommonTextArray,
+    giveTheBlessing,
+    dismissalMajor
 } from './text_generation.js';
 import { getDayInfo, getData, readPsalmsFromNumbers, isTriodionFeastAfterPentecost } from './script.js';
 import { EasterHour } from './minor_hour.js';
@@ -21,9 +23,7 @@ import { postComplinePrayers, penitentialTroparia, constructMenaionCanon } from 
 
 const address = `Text\\English`
 
-// TODO:
-// Easter Sunday nocturn
-// add all canons
+// TODO: add all canons
 
 export function renderMidnightSkeleton() {
     return `
@@ -89,7 +89,9 @@ export async function enhanceMidnight(priest, full, date){
     if (dayTriodionData && "class" in dayTriodionData && dayTriodionData["class"] > dayClass) dayClass = dayTriodionData["class"];
 
 	var intro = nocturnData["intro"];
-	if (dayClass >= 10) intro = nocturnData["vigil_note"];
+	if (variant === "e") {
+	    intro = (await getData(`${address}\\triodion\\HolyWeek\\06_nocturn.json`))["initial note"];
+	} else if (dayClass >= 10) intro = nocturnData["vigil_note"];
 
 	document.getElementById("beginning").innerHTML = `
         <h2>${nocturnData["header"][variant]}</h2>
@@ -105,7 +107,7 @@ export async function enhanceMidnight(priest, full, date){
     if (variant === "e" || variant === "sun") {
         const dayOfWeekData = await getData(`${address}\\horologion\\nocturn_sun.json`);
 
-        await constructCanonNocturn(dayOfWeekData, endingData, variant, glas, full);
+        await constructCanonNocturn(dayOfWeekData, endingData, variant, glas, full, priest);
 
         afterPrayers += `<div class="rubric">${dayOfWeekData["prayer_rubric"]}</div><br>${dayOfWeekData["prayer"]}<br><br>`
     } else {
@@ -117,17 +119,19 @@ export async function enhanceMidnight(priest, full, date){
         // this is required on weekdays only
         beforeGlory += (await getData(`${address}\\horologion\\priestly_exclamations.json`))["Christ"] + "<br><br>";
     }
-	document.getElementById("endingBlock").innerHTML = `
-	    ${beforeGlory}
-	    ${await endingBlockMinor(priest, dayOfWeek, "", season === "Pentecost" && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4))}<br>`;
+    if (variant != "e") {
+        document.getElementById("endingBlock").innerHTML = `
+            ${beforeGlory}
+            ${await endingBlockMinor(priest, dayOfWeek, "", season === "Pentecost" && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4))}<br>`;
 
+        document.getElementById("after_prayers").innerHTML = afterPrayers;
+    }
     if (full === "1" && dayOfWeek != 0) {
         document.getElementById("penitential_troparia").innerHTML = penitentialTroparia(priest, endingData, ekteniasData);
     } else {
         document.getElementById("penitential_troparia").innerHTML = "";
     }
 
-    document.getElementById("after_prayers").innerHTML = afterPrayers;
 }
 
 async function kathismaToText(k, dayOfWeek, seasonWeek, full) {
@@ -265,7 +269,7 @@ function makeSundayTroparion(header, text) {
     return `<div class=subhead>${header}</div><br>${text}<br><br>`;
 }
 
-async function constructCanonNocturn(dayOfWeekData, endingData, variant, glas, full) {
+async function constructCanonNocturn(dayOfWeekData, endingData, variant, glas, full, priest) {
     if (variant === "sun") {
         let [canon, matinslike] = constructMenaionCanon(dayOfWeekData["canon"], full, glas);
         document.getElementById("kathisma_or_canon").innerHTML = canon;
@@ -310,14 +314,52 @@ async function constructCanonNocturn(dayOfWeekData, endingData, variant, glas, f
                 document.getElementById("troparia_1").innerHTML = makeSundayTroparion(dayOfWeekData["troparia"][1], hypakoe);
             }
         });
-
+        document.getElementById("all_hours_prayer").innerHTML = `${LHM} <FONT COLOR="RED">(40)</FONT><br><br>`;
     } else {
-        // TODO: add stuff
+        let SaturdayData = (await getData(`${address}\\triodion\\HolyWeek\\06.json`));
+        let SaturdayNocturnData = (await getData(`${address}\\triodion\\HolyWeek\\06_nocturn.json`));
+        let SaturdayCanon = (await getData(`${address}\\triodion\\HolyWeek\\06_matins.json`))["canon"];
+        SaturdayCanon["nocturn"] = true;
+        SaturdayCanon["troparia_number"] = 0;
+        SaturdayCanon["repeat_hirmi"] = 1;
+        let tropar = (await getData(`${address}\\triodion\\EasterWeek\\00.json`))["troparia"][1];
+
+        let [canon, matinslike] = constructMenaionCanon(SaturdayCanon, full, 8);
+        document.getElementById("kathisma_or_canon").innerHTML = canon;
+
+        makeFullnessSelector(dayOfWeekData["canon_choices"], full)
+
+        document.getElementById("fullnessSelector").addEventListener("change", async function () {
+            var instruction = document.querySelector('input[name="fullnessChoice"]:checked')?.value;
+            [canon, matinslike] = constructMenaionCanon(SaturdayCanon, instruction, 8);
+            document.getElementById("kathisma_or_canon").innerHTML = canon;
+        });
+
+        document.getElementById("troparia_1").innerHTML = makeSundayTroparion(dayOfWeekData["troparia"][0], tropar);
+
+        if (priest === "1") {
+            const ekteniasData = await getData(`${address}\\horologion\\night_ektenias.json`);
+            document.getElementById("all_hours_prayer").innerHTML = ekteniasData["at_compline"].join("<br><br>") + "<br>";
+            let priestlyExclamationsData = await getData(`${address}\\horologion\\priestly_exclamations.json`)
+            document.getElementById("endingBlock").innerHTML = `${priestlyExclamationsData["Christ"]}<br><br>
+            ${glory}* ${andNow}* ${LHM} ${LHM} ${LHM}* ${giveTheBlessing(priest)}<br><br>
+            ${dismissalMajor(0, 0, "", priest, true, "", [], "", SaturdayData["specialDismissal"], "")}<br><br>`
+        } else {
+            document.getElementById("all_hours_prayer").innerHTML = `${LHM} <FONT COLOR="RED">(40)</FONT><br><br>`;
+
+            document.getElementById("endingBlock").innerHTML = `${glory}* ${andNow}* ${LHM} ${LHM} ${LHM}* ${giveTheBlessing(priest)}<br><br>
+            ${dismissalMajor(0, 0, "", priest, true, "", [], "", SaturdayData["specialDismissal"], "")}<br><br>`
+        }
+
+        document.getElementById("after_prayers").innerHTML = `
+            <div class="rubric">${SaturdayNocturnData["final note"][priest]}</div><br>
+            ${SaturdayData["troparia"]} <FONT COLOR="RED">(3)</FONT><br><br>`
+
     }
 
 
 
-    document.getElementById("all_hours_prayer").innerHTML = `${LHM} <FONT COLOR="RED">(40)</FONT><br><br>`;
+
 
 }
 

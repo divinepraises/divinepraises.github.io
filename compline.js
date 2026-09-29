@@ -983,7 +983,7 @@ export function penitentialTroparia(withPriest, endingData, ekteniasData){
         <div class=subhead>Penitential troparia</div><br>` + tropList.join("<br><br>");
 
     if (withPriest == 1){
-        return trop + "<br><br>" + ekteniasData["at_compline"].join("<br>");
+        return trop + "<br><br>" + ekteniasData["at_compline"].join("<br><br>");
     }
     return trop + "<br><br>";
 }
