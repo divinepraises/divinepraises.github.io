@@ -55,7 +55,7 @@ export async function enhanceMidnight(priest, full, date){
 	}
 
 	var dayData;
-	try{
+	try {
         var err = ""
         dayData = await getData(`${address}\\menaion\\${dateAddress}.json`);
     } catch (error) {
@@ -63,7 +63,7 @@ export async function enhanceMidnight(priest, full, date){
         dayData = {"class": 0}
     }
 
-    var dayTriodionData
+    var dayTriodionData;
     if (
         season === "PostPentecost" && await isTriodionFeastAfterPentecost(seasonWeek, dayOfWeek)
         || season === "Pentecost" || season === "EasterWeek" || season === "HolyWeek" || season === "Lent" || season === "Forelent"
@@ -205,7 +205,10 @@ async function constructKathismaNocturn(nocturnData, variant, season, seasonWeek
         ${(await getData(`${address}\\horologion\\3hour.json`))["prayer"]}<br><br>`;
 
     if (variant === "w") {
-        // TODO: re-check lenten things
+        // st Ephrem prayer section
+        // Dol does not say anything about it except that it is only 3 prostrations on the 1st day of Lent,
+        // and full version for the meatfare week.
+        // In Peremyshl Typicon at st John feast they apply same standard as for other offices, so I replicate it here.
         const isLenten = (
             season === "Lent" && dayOfWeek > 0 && dayOfWeek < 6
             || season === "Forelent" && seasonWeek === 3 && (dayOfWeek === 3 || dayOfWeek === 5)
@@ -215,8 +218,9 @@ async function constructKathismaNocturn(nocturnData, variant, season, seasonWeek
             season === "Forelent" && ("forefeast" in dayData || "postfeast" in dayData)
             || dayData["class"] >= 8
         );
+        const isFirstDayOfLent = (season === "Lent" && seasonWeek === 1 && dayOfWeek === 1);
         if (isLenten) {
-            document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest, false, isLessPenitential);
+            document.getElementById("st_ephrem").innerHTML = StEphremPrayer(priest, isFirstDayOfLent, isLessPenitential);
         }
     } else {
         prayer += `
