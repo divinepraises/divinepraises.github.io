@@ -92,6 +92,7 @@ export async function enhanceMidnight(priest, full, date){
 	if (variant === "e") {
 	    intro = (await getData(`${address}\\triodion\\HolyWeek\\06_nocturn.json`))["initial note"];
 	} else if (dayClass >= 10) intro = nocturnData["vigil_note"];
+	if (variant === "sun") intro = `<div class="rubric">This is a preliminary version. Please submit your suggestions/corrections if any.</div><br>` + intro
 
 	document.getElementById("beginning").innerHTML = `
         <h2>${nocturnData["header"][variant]}</h2>

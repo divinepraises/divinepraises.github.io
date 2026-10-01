@@ -15,10 +15,10 @@ export function dateToStr(currentDate){
 export async function setDefaultHour(currentDate) {
 	var currentTime = currentDate.getHours();
 	var DefaultHour;
-	if (currentTime < 3){
+	if (currentTime < 5){
 		DefaultHour = document.getElementById('nocturn');
-	} else if (currentTime < 6) {
-		DefaultHour = document.getElementById('matins');
+//	} else if (currentTime < 6) {
+//		DefaultHour = document.getElementById('matins');
 	} else if (currentTime < 8) {
 		DefaultHour = document.getElementById('1hour');
 	} else if (currentTime < 11) {
