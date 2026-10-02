@@ -89,7 +89,7 @@ async function loadTextBasil(season, seasonWeek, dayOfWeek, dayData, priest, ves
     if (priest === "1") {
         return `<div class="rubric">The Liturgy of st. Basil is celebrated with Holy Saturday parts.<br><br>`;
     }
-    return await makeEndingBlockMajor(priest, priestOrDeacon, season, seasonWeek, dayOfWeek, dayData["class"]>=8, vespersData, dayData, priestlyExclamationsData, false, false);
+    return await makeEndingBlockMajor(priest, priestOrDeacon, season, seasonWeek, dayOfWeek, dayData["class"]>=8, true, vespersData, dayData, priestlyExclamationsData, false, false);
 }
 
 async function liturgyEnding(season, seasonWeek, dayOfWeek, dayData, priest, vespersData) {
@@ -755,7 +755,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
         }
     }
 
-    document.getElementById("ending_block").innerHTML = await makeEndingBlockMajor(priest, priestOrDeacon, season, seasonWeek, dayOfWeek, dayData["class"]>=8 || isPentecostMonday, vespersData, dayData, priestlyExclamationsData, isLenten || isSemiLenten, isEasterWeek);
+    document.getElementById("ending_block").innerHTML = await makeEndingBlockMajor(priest, priestOrDeacon, season, seasonWeek, dayOfWeek, dayData["class"]>=8 || isPentecostMonday, isEntrance, vespersData, dayData, priestlyExclamationsData, isLenten || isSemiLenten, isEasterWeek);
 
     // after ending
     if (season === "Lent" && seasonWeek === 4 && dayOfWeek > 0 && dayOfWeek <= 5) {
@@ -903,7 +903,7 @@ async function makeLytiaPrayers(lytiaPrayers, vigilVespersData, vespersData, day
         document.getElementById("lytia_prayers").innerHTML = lytia;
 }
 
-export async function makeEndingBlockMajor(priest, priestOrDeacon, season, seasonWeek, dayOfWeek, isGreatVespers, vespersData, dayData, priestlyExclamationsData, isLenten, isEasterWeek) {
+export async function makeEndingBlockMajor(priest, priestOrDeacon, season, seasonWeek, dayOfWeek, isGreatVespers, isEntrance, vespersData, dayData, priestlyExclamationsData, isLenten, isEasterWeek) {
     var res = `<div class="subhead">Dismissal</div><br>`;
     var saintNames = constructDayName(dayData);
 
@@ -944,7 +944,7 @@ export async function makeEndingBlockMajor(priest, priestOrDeacon, season, seaso
         gloryOrAnesti = EasterData["troparion"].join("* ");
     }
 
-    const greatDismissal = (dayOfWeek === 0 || dayOfWeek === 6 || "no_kathisma" in dayData || isGreatVespers || dayData["class"] > 6 || isEasterWeek && (!isLenten || dayOfWeek === 1 || dayData["class"] >= 11));
+    const greatDismissal = (dayOfWeek === 0 || dayOfWeek === 6 || isEntrance || isGreatVespers || dayData["class"] > 6 || isEasterWeek && (!isLenten || dayOfWeek === 1 || dayData["class"] >= 11));
     const addFinalTheotokion = !isLenten || (dayOfWeek === 1 && isGreatVespers) || dayOfWeek === 6 || dayData["class"] >= 11 || "no_kathisma" in dayData;
     if (priest === "1"){
         if (greatDismissal) res += `
