@@ -1072,7 +1072,7 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
         } else if (dayData["class"] < 10){
             // non vigil on Sunday
             dayTrop.splice(0, 0, (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][glas]);
-        } else if (dayData["class"] < 12 && !("specialDismissal" in dayData)) {
+        } else if (dayData["class"] < 12 && !("specialDismissal" in dayData) && !("special_rubric" in dayData && dayData["special_rubric"] === "earthquake")) {
             // vigil on Sunday that does not replace it
             dayTrop.splice(0, 0, `${haire}<FONT COLOR="RED"> (${3 - dayTrop.length})</FONT>`);
             return dayTrop.join("<br><br>")
@@ -1082,7 +1082,12 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
         }
     } else if (dayData["class"] === 10){
         // vigil of a saint not on Sunday
-        if (dayTrop.length === 1) return dayTrop[0] + `<FONT COLOR="RED"> (2)</FONT><br><br>${haire}`
+        if (
+            dayTrop.length === 1
+            || "special_rubric" in dayData && dayData["special_rubric"] === "earthquake") {
+                // if one troparion or a rubric says to use only the first one
+                return dayTrop[0] + `<FONT COLOR="RED"> (2)</FONT><br><br>${haire}`
+            }
         else if ("specialDismissal" in dayData) return dayTrop[0] + `<FONT COLOR="RED"> (2)</FONT><br><br>${dayTrop[1]}`;
         dayTrop.push(haire);
         return dayTrop.join("<br><br>")
@@ -2507,6 +2512,16 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
             )
             numStycheras = 10;
             stycheraScheme = Array(10).fill(1)
+        } else if ("special_rubric" in dayData && dayData["special_rubric"] === "earthquake") {
+            // st Demetrius
+            stycheras = (
+                psalm140OctoechosStycheras.slice(0, 4)
+                .concat(vespersMenaionData["aposticha"].slice(0, 5))
+                .concat(psalm140menaionStycheras.slice(0, 4))
+                .concat(psalm140menaionStycheras.slice(8, 11))
+            )
+            numStycheras = 9;
+            stycheraScheme = Array(6).fill(1).concat([2, 1, 1])
         } else if (dayData["class"] >= 8) {
             // polyeleos/vigil on Sunday
             // in the current data format, 0th stychera is tone
