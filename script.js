@@ -284,7 +284,7 @@ export function constructDayName(dayData, forDismissal=true){
             if (!Array.isArray(saint)) {saint = Array(dayNames.length).fill(saint)}
             for (let [i, name] of dayNames.entries()){
                 if (name != "") {dateInfo += `${name}`; continue;}
-                dateInfo += `${saint[i]} ${dayData["type"][i]} ${dayData["name"][i]} ${title[i]}`
+                dateInfo += `${saint[i]} ${dayData["type"][i]} ${dayData["name"][i]}${title[i]}`
                 if (i != dayNames.length-1) dateInfo += `, `
             }
             return dateInfo;
