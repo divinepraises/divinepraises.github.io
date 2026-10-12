@@ -512,9 +512,20 @@ export function dayTransfer(season, seasonWeek, dayOfWeek, dd, mm) {
         // Chrysostom on Sat for Dead -> Fri before
         return ["27", "01"]
     }
-    if (dd == 29 && mm == 1 && season === "Forelent" && seasonWeek === 2 && dayOfWeek === 5) {
-        // 3 hierarchs on Sat for Dead -> Fri before
+    if (dd == 29 && mm == 1 && season === "Forelent" && (
+        seasonWeek === 2 && dayOfWeek === 5
+        || seasonWeek === 3 && dayOfWeek === 2
+        || seasonWeek === 3 && dayOfWeek === 4
+    )) {
+        // 3 hierarchs on Sat for Dead/wed or fri of meatfare -> day before
         return ["30", "01"]
+    }
+    if (dd == 30 && mm == 1 && season === "Forelent" && (
+        seasonWeek === 3 && dayOfWeek === 3
+        || seasonWeek === 3 && dayOfWeek === 5
+    )) {
+        // 3 hierarchs on Sat for Dead/wed or fri of meatfare -> day before (reverse)
+        return ["29", "01"]
     }
     if (dd == 26 && mm == 5 && season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 2) {
         // Finding of the Head on Pentecost Mon -> Tue

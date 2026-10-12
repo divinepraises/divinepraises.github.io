@@ -407,7 +407,8 @@ async function loadGreatComplineBeginning(priest, smallComplineData, full, seaso
 
     // section 2
     document.getElementById("prayer_manasses").innerHTML = greatComplineData["manasses"]
-    makeSecondSectionTroparia(smallComplineData["penitential_troparia"], isIncarnationFeast, dayData);
+	const endingData = await getData(`${address}\\horologion\\night_ending.json`);
+    makeSecondSectionTroparia(endingData["penitential_troparia"], isIncarnationFeast, dayData);
 
     getData(`${address}\\horologion\\3hour.json`).then(data => {
         document.getElementById("prayer_2").innerHTML = data["prayer"];
