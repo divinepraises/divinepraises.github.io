@@ -1435,6 +1435,8 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
                 `<div class="rubric">Tone ${vespersTriodionData["aposticha"][4]}</div>${gloryAndNow}`
             );
          }
+    } else if (season === "Forelent" && dayData["class"] >= 8 && "aposticha_verses" in vespersMenaionData) {
+        apostVerses = vespersMenaionData["aposticha_verses"];
     } else if (vespersTriodionData != undefined) {
         // use weekday if triodion day
         if (dayOfWeek === 6 && season === "Forelent" && seasonWeek < 3) apostVerses = vespersData["aposticha_dead"];
@@ -1672,6 +1674,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
     } else if (
             vespersTriodionData != undefined
             && season != "PostPentecost"
+            && !(season === "Forelent" && dayData["class"] >= 8)
         ) {
         // triodion weekday
         apostMain = vespersTriodionData["aposticha"];

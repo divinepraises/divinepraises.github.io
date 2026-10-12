@@ -951,7 +951,7 @@ async function selectKondak(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         // Sun of Triod + pre/post-feast
         if (hour === "1hour" || hour === "6hour") return prePostFeastKontakion
         return dayTriodionData["kontakia"];
-    } else if (dayTriodionData != undefined && season === "Forelent" && seasonWeek === 3 && dayData["class"] >= 8) {
+    } else if (dayTriodionData != undefined && season === "Forelent" && seasonWeek === 3 && dayData["class"] >= 8 && "kontakia" in dayTriodionData) {
         // sat of fathers + feast
         if (hour === "1hour" || hour === "6hour") return dayData["kontakia"];
         else return dayTriodionData["kontakia"];
