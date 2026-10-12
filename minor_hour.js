@@ -741,7 +741,7 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         else if (season === "Pentecost") return `${glory}<br><br>${sundayTrop["troparia"][glas]}`;
 
         if (hour === "1hour" && dayData["class"] < 8 && dayTriodionData === undefined
-            || dayTriodionData != undefined && season === "Forelent"
+            || dayTriodionData != undefined && season === "Forelent" && dayData["class"] < 8
             || hour === "1hour" && dayData["class"] < 8 && season === "Lent" && seasonWeek === 2
         ){
             // 1st hour on a Sunday outside Triodion or unclaimed lenten Sunday
