@@ -508,6 +508,14 @@ export function dayTransfer(season, seasonWeek, dayOfWeek, dd, mm) {
         // st Theodosius on Publican Sun -> Mon: reverse (to get stichera of the post-feast)
         return ["12", "01"]
     }
+    if (dd == 26 && mm == 1 && season === "Forelent" && seasonWeek === 2 && dayOfWeek === 5) {
+        // Chrysostom on Sat for Dead -> Fri before
+        return ["27", "01"]
+    }
+    if (dd == 29 && mm == 1 && season === "Forelent" && seasonWeek === 2 && dayOfWeek === 5) {
+        // 3 hierarchs on Sat for Dead -> Fri before
+        return ["30", "01"]
+    }
     if (dd == 26 && mm == 5 && season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 2) {
         // Finding of the Head on Pentecost Mon -> Tue
         return ["25", "05"]
