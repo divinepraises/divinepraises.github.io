@@ -500,6 +500,14 @@ export async function isTriodionFeastAfterPentecost(seasonWeek, dayOfWeek) {
 
 export function dayTransfer(season, seasonWeek, dayOfWeek, dd, mm) {
     // TODO: refactor: if (today a possible transfer day in triodion) { look if menaion day to transfer from has class>=8 }
+    if (dd == 12 && mm == 1 && season === "Forelent" && seasonWeek === 1 && dayOfWeek === 1) {
+        // st Theodosius on Publican Sun -> Mon
+        return ["11", "01"]
+    }
+    if (dd == 11 && mm == 1 && season === "Forelent" && seasonWeek === 1 && dayOfWeek === 0) {
+        // st Theodosius on Publican Sun -> Mon: reverse (to get stichera of the post-feast)
+        return ["12", "01"]
+    }
     if (dd == 26 && mm == 5 && season === "Pentecost" && seasonWeek === 7 && dayOfWeek === 2) {
         // Finding of the Head on Pentecost Mon -> Tue
         return ["25", "05"]

@@ -622,7 +622,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
                 Object.assign(dayData, dayTriodionData);
             } else if (season === "Forelent" && seasonWeek === 3 && dayOfWeek === 6 && dayData["class"] >= 8) {
                 dayData["troparia"] = dayData["troparia"].concat(dayTriodionData["troparia"]);
-            } else if (season === "Forelent" && dayOfWeek === 0 && dayData["class"] <= 6 && !("forefeast" in dayData) && !("postfeast" in dayData)) {
+            } else if (season === "Forelent" && dayOfWeek === 0 && dayData["class"] <= 6 && !("forefeast" in dayData)) {
                 dayData["troparia"] = [];
             } else if (season === "Forelent" && dayOfWeek === 0 && "forefeast" in dayData) {
                 dayData["troparia"] = dayData["troparia"][dayData["troparia"].length-1];
