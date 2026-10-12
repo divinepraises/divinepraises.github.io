@@ -872,6 +872,9 @@ async function selectTropar(season, seasonWeek, dayOfWeek, hourData, glas, dayDa
         if (kontakion != "") {
             return `<div class="rubric">Kontakia:</div>
                 ${kontakion}<br><br><i>${gloryAndNow}</i><br><br>${dayTriodionData["kontakia"]}`
+        } else if (prePostFeastKontakion != "") {
+            return `<div class="rubric">Kontakia:</div>
+                ${prePostFeastKontakion}<br><br><i>${gloryAndNow}</i><br><br>${dayTriodionData["kontakia"]}`
         } else if (!Array.isArray(dayTriodionData["kontakia"]) || dayTriodionData["kontakia"].length === 1) {
             return `<div class="rubric">Triodion kontakion:</div>
                 ${dayTriodionData["kontakia"]}`

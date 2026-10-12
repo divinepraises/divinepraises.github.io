@@ -2419,8 +2419,22 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
                 }
             }
         } else if (prePostFeast != "") {
-            // Feb 1 on Sun of Triodion
-            if (numTriodionStycheras === 2) {
+            // Feb 1/post-feast of Theophany on Sun of Triodion
+            if (numTriodionStycheras === 2
+                && dayData["troparia"].length === 0
+                && "postfeast" in dayData && dayData["postfeast"] === "01//06"
+                && dayData["name"] === ""
+                && "day name" in dayData
+            ) {
+                stycheraScheme = Array(10).fill(1);
+                stycheras = (
+                    psalm140OctoechosStycheras.slice(0, 4)
+                    .concat(vespersTriodionData["ps140"].slice(0, 4))
+                    .concat(vespersTriodionData["ps140"].slice(5, 6))
+                    .concat(psalm140menaionStycheras)
+                    );
+                numStycheras = 10;
+            } else if (numTriodionStycheras === 2) {
                 stycheraScheme = Array(4).fill(1).concat([2, 1]).concat(Array(3).fill(1))
                 numStycheras = 4 + numTriodionStycheras + 3;
                 stycheras = (
