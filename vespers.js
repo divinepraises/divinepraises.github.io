@@ -1544,6 +1544,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
                 if (stychera in gloriaDict) {
                     foundGloria = true;
                     if (stychera === "gn" || stychera === "n") {
+                        if ("special_rubric" in dayData && dayData["special_rubric"] === "3 hierarchs") break;
                         foundNow = true;
                     }
                     aposticha += `<div class="rubric">Tone ${tone}</div>`;
