@@ -12,7 +12,6 @@ dateInput.addEventListener("change", () => {
 });
 
 document.getElementById("matins").disabled = true;
-document.getElementById("nocturn").disabled = true;
 
 // read choices and use button
 document.getElementById("goButton").addEventListener("click", function()  {
