@@ -89,7 +89,7 @@ async function loadTextBasil(season, seasonWeek, dayOfWeek, dayData, priest, ves
     if (priest === "1") {
         return `<div class="rubric">The Liturgy of st. Basil is celebrated with Holy Saturday parts.<br><br>`;
     }
-    return await makeEndingBlockMajor(priest, priestOrDeacon, season, seasonWeek, dayOfWeek, dayData["class"]>=8, true, vespersData, dayData, priestlyExclamationsData, false, false);
+    return await makeEndingBlockMajor(priest, "", season, seasonWeek, dayOfWeek, dayData["class"]>=8, true, vespersData, dayData, priestlyExclamationsData, false, false);
 }
 
 async function liturgyEnding(season, seasonWeek, dayOfWeek, dayData, priest, vespersData) {
@@ -533,9 +533,9 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
           <label><input type="radio" name="readingsChoice" value="show"> Show the insert with full readings.</label><br>
           <label><input type="radio" name="readingsChoice" value="hide" checked> Hide the insert with full readings.</label>
           <br><br>`
-        document.getElementById("readings_selector").addEventListener("change",() => document.getElementById("readings").innerHTML =makeReadings(vespersTriodionData, priest, dayOfWeek, ekteniaData) + makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData));
+        document.getElementById("readings_selector").addEventListener("change",() => document.getElementById("readings").innerHTML =makeReadings(vespersTriodionData, priest, dayOfWeek, ekteniaData, priestOrDeacon) + makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData, priestOrDeacon));
 
-        document.getElementById("readings").innerHTML = makeReadings(vespersTriodionData, priest, dayOfWeek, ekteniaData) + makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData);
+        document.getElementById("readings").innerHTML = makeReadings(vespersTriodionData, priest, dayOfWeek, ekteniaData, priestOrDeacon) + makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData, priestOrDeacon);
     }
 
     if (isStBasil && priest === "1" && (isWeekday || season === "EasterWeek")) {
@@ -1847,7 +1847,7 @@ export function frameReadings(readings) {
     return text;
 }
 
-function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData) {
+function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData, priestOrDeacon) {
     var text = "";
     if (!vespersMenaionData) return text;
     if (vespersMenaionData && ("readings" in vespersMenaionData)) text += frameReadings(vespersMenaionData["readings"]);
