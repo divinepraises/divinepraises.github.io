@@ -118,7 +118,7 @@ async function loadUpcomingEvents(today, rangeDays = 14) {
         }
 
         container.innerHTML = Object.values(groupedEvents).map(event => `
-            <div class="event-card" style="padding: 2px; font-size: 0.9rem">
+            <div class="event-card" style="padding: 2px; font-size: 0.9rem; border: 1px solid red; margin-right: 1rem; margin-bottom: 1rem">
                 <p><strong>Date(s):</strong> ${event.dates.join(', ')}</p>
                 <p>${event.description}</p>
             </div>
