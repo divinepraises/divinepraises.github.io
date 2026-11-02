@@ -68,7 +68,7 @@ async function loadUpcomingEvents(today, rangeDays = 14) {
                 if (em === month && ed === day) {
                     results.push({
                         dateObj: d,
-                        displayDate: event.date,
+                        displayDate: `${ed}/${em}`,
                         description: event.description
                     });
                 }
@@ -83,7 +83,7 @@ async function loadUpcomingEvents(today, rangeDays = 14) {
                 ) {
                     results.push({
                         dateObj: d,
-                        displayDate: `${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
+                        displayDate: `${String(day).padStart(2, "0")}/${String(month).padStart(2, "0")}`,
                         description: event.description
                     });
                 }
