@@ -1,6 +1,6 @@
 @font-face {
-    font-family: "MyUstavFont";
-    src: url("fonts/my-ustav-font.woff2") format("woff2");
+    font-family: "Eagle Lake";
+    src: url("fonts/EagleLake-Regular.ttf") format("truetype");
     font-weight: normal;
     font-style: normal;
 }
@@ -19,7 +19,7 @@
     }
 }
 body {
-    font-family: Source Serif 4;
+    font-family: Arial;
     background-color: var(--background);
     color: var(--text);
 }
@@ -29,7 +29,6 @@ body {
     padding: 0.8rem;
 }
 .subhead {
-    font-family: Source Sans 3;
     font-size: 1.2rem;
     font-weight: bold;
     color: var(--redtext);
