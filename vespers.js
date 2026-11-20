@@ -425,7 +425,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
           <hr>
           ${await usualBeginning(priest, season, seasonWeek, dayOfWeek, true)}
           <hr>
-          `<span id="come_let_us">${comeLetUs}<br><br></span>``
+          <span id="come_let_us">${comeLetUs}<br><br></span>`
     }
      if (priest === "1" && season === "Lent" && (dayOfWeek === 4 || dayOfWeek === 6)) {
         dayName += `

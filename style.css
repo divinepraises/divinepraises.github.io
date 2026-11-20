@@ -12,7 +12,7 @@
 }
 @media (prefers-color-scheme: dark) {
     :root {
-        --background: #EEE5C9;
+        --background: #E9E0BE;
         --text: rgb(26, 26, 26);
         --redtext: #A13C32;
         --link: #496779;
