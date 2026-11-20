@@ -1,18 +1,18 @@
 {
   "at_compline": [
-    "<FONT COLOR=\"RED\">Priest:</FONT> <b>Have mercy on us, O God, in the greatness of Your compassion, we pray You, hear us and have mercy.</b>",
-    "<FONT COLOR=\"RED\">Choir:</FONT> Lord have mercy. <FONT COLOR=\"RED\">(3)</FONT>",
+    "<span class=\"redtext\">Priest:</span> <b>Have mercy on us, O God, in the greatness of Your compassion, we pray You, hear us and have mercy.</b>",
+    "<span class=\"redtext\">Choir:</span> Lord have mercy. <span class=\"redtext\">(3)</span>",
     "<b>Again, let us pray that He may preserve this city and this holy church and every city, town, and country from famine, plague, earthquake, flood, hail, fire, civil war, riot, and foreign invasion; and that our God Who is kind and the Lover of mankind may forgive our sins and hold back His just wrath, and that He may have mercy on us.</b>",
-    "<FONT COLOR=\"RED\">Choir:</FONT> Lord have mercy. <FONT COLOR=\"RED\">(12)</FONT>",
+    "<span class=\"redtext\">Choir:</span> Lord have mercy. <span class=\"redtext\">(12)</span>",
     "<b>Hear us, O God our Savior, Hope of all those who live at the far ends of the earth, and of those traveling by sea, air or land; be kind to us, O Master, forgive us our sins and have mercy on us, for You are a gracious Lord Who loves mankind, and we glorify You, Father, Son, and Holy Spirit, now and for ever and ever.</b>",
-    "<FONT COLOR=\"RED\">Choir:</FONT> Amen.<br>"
+    "<span class=\"redtext\">Choir:</span> Amen.<br>"
   ],
   "after_compline": [
-    "<b>Let us pray for our most holy universal Pontiff <FONT COLOR=\"RED\">N.</FONT>, Pope of Rome.</b>",
-    "<FONT COLOR=\"RED\">Choir:</FONT> May God save him and give him mercy.",
+    "<b>Let us pray for our most holy universal Pontiff <span class=\"redtext\">N.</span>, Pope of Rome.</b>",
+    "<span class=\"redtext\">Choir:</span> May God save him and give him mercy.",
     "<b>For our civil authorities.</b>",
     "May God save them and give them mercy.",
-    "<b>For our most blessed Patriarch <FONT COLOR=\"RED\">N.</FONT>, for our most reverend Metropolitan <FONT COLOR=\"RED\">N.</FONT>; for our God-loving Bishop <FONT COLOR=\"RED\">N.</FONT>.</b>",
+    "<b>For our most blessed Patriarch <span class=\"redtext\">N.</span>, for our most reverend Metropolitan <span class=\"redtext\">N.</span>; for our God-loving Bishop <span class=\"redtext\">N.</span>.</b>",
     "May God save them and give them mercy.",
     "<b>For all Catholic bishops.</b>",
     "May God save them and give them mercy.",

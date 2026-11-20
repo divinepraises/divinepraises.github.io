@@ -115,7 +115,7 @@ export async function enhanceCompline(priest, full, date){
                     const paschalKontakion = (await getData(`${address}\\triodion\\EasterWeek\\00_hour.json`))["kontakion"];
                     dayTriodionData["kontakia"] = [
                         `${(await getData(`${address}\\triodion\\${season}\\40.json`))["kontakia"]}<br><br>
-                        <i><FONT COLOR="RED">According to Pentecostarion, one may add:</FONT></i>`,
+                        <i><span class="redtext">According to Pentecostarion, one may add:</span></i>`,
                         `<i>(${paschalKontakion[0]})</i> ${paschalKontakion[1]}`
                     ];
                 } else {
@@ -160,9 +160,9 @@ async function complineEnding(full, season, seasonWeek, dayOfWeek, priest, glas,
     ${trisagionToPater(priest)}
 	<div class=subhead>Troparia</div><br>
     <div id="troparia"></div><br>
-    ${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
+    ${LHM} <span class="redtext">(40)</span><br><br>
 	${prayerOfTheHours}<br><br>
-	${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
+	${LHM} <span class="redtext">(3)</span><br><br>
 	${gloryAndNow}<br><br>
 	${moreHonorable}<br><br>
 	${inTheName}<br><br>
@@ -319,7 +319,7 @@ async function greatComplineBeginning(full, season, seasonWeek, priest, dayOfWee
 	${trisagionToPater(priest)}
 	<div class=subhead>Troparia</div><br>
 	<div id="troparia_1"></div><br>
-	${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
+	${LHM} <span class="redtext">(40)</span><br><br>
 	${gloryAndNow}<br><br>
 	${moreHonorable}<br><br>
 	${inTheName}<br><br>
@@ -335,7 +335,7 @@ async function greatComplineBeginning(full, season, seasonWeek, priest, dayOfWee
 	${trisagionToPater(priest)}
 	<div class=subhead>Troparia</div><br>
 	<div id="troparia_2"></div><br>
-	${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
+	${LHM} <span class="redtext">(40)</span><br><br>
 	${gloryAndNow}<br><br>
 	${moreHonorable}<br><br>
 	${inTheName}<br><br>
@@ -355,7 +355,7 @@ async function loadGreatComplineBeginning(priest, smallComplineData, full, seaso
 
 	document.getElementById("usualBeginning").innerHTML = `${await usualBeginning(priest, season, seasonWeek, dayOfWeek)}<br><br>`
 
-    const alleluiaUnit = `<br><br>${tripleAlleluia} ${LHM} <FONT COLOR="RED">(3)</FONT><br>${gloryAndNow}`
+    const alleluiaUnit = `<br><br>${tripleAlleluia} ${LHM} <span class="redtext">(3)</span><br>${gloryAndNow}`
     if (season === "Lent" && seasonWeek === 1 && dayOfWeek >= 2 && dayOfWeek <= 5) {
         const psalm_69 = await readPsalmsFromNumbers([69]);
         var weekToLookAt = seasonWeek - 1;
@@ -435,13 +435,13 @@ async function makeThirdSectionTroparia(troparia, dayTriodionData) {
         res = "";
     }
     res += `<div class="rubric">Two choirs take turns in chanting<br>Tone 6</div>
-        <FONT COLOR="RED">1.</FONT> ${troparia[0]}<br>
-        <FONT COLOR="RED">2.</FONT> ${troparia[0]}<br>
+        <span class="redtext">1.</span> ${troparia[0]}<br>
+        <span class="redtext">2.</span> ${troparia[0]}<br>
         `;
     for (let [i, verse] of verses.slice(0, verses.length-1).entries()){
-        res += `<FONT COLOR="RED">${i%2+1}.</FONT> ${verse}* ${troparia[0]}<br>`
+        res += `<span class="redtext">${i%2+1}.</span> ${verse}* ${troparia[0]}<br>`
     }
-    res += `<FONT COLOR="RED">1.+2.</FONT> ${verses[0]}* ${troparia[0]}<br><br>
+    res += `<span class="redtext">1.+2.</span> ${verses[0]}* ${troparia[0]}<br><br>
         <i>${glory}</i><br><br>
         ${troparia[1]}<br><br>
         <i>${andNow}</i><br><br>
@@ -523,12 +523,12 @@ function makePetitions(petitions, full, isIncarnationFeast){
     }
     var res = ``;
     for (let [i, petition] of petitions.slice(0, petitions.length-2).entries()){
-        res += `${cross} ${petition} <FONT COLOR="RED">(2)</FONT><br>`
+        res += `${cross} ${petition} <span class="redtext">(2)</span><br>`
     }
     if (!isIncarnationFeast) {
         res += `<div class="rubric">If there are two choirs, they chant together, and bow every time:</div>`
     }
-    res += `${cross} ${petitions[petitions.length-1]} <FONT COLOR="RED">(3)</FONT> <br>`
+    res += `${cross} ${petitions[petitions.length-1]} <span class="redtext">(3)</span> <br>`
     if (!isIncarnationFeast) {
         res = `<div class="rubric">One choir chants a petition, while the other one bows.</div>` + res;
     } else {
@@ -540,11 +540,11 @@ function makePetitions(petitions, full, isIncarnationFeast){
 function makeNethimon(verses, troparia){
     const refrain = verses[0];
     var res = `<div class="rubric">Two choirs take turns in chanting, or one reader reads:</div>
-        <FONT COLOR="RED">1.</FONT> ${verses[1]} ${refrain}<br>`;
+        <span class="redtext">1.</span> ${verses[1]} ${refrain}<br>`;
     for (let [i, verse] of verses.slice(1, verses.length).entries()){
-        res += `<FONT COLOR="RED">${(i+1)%2+1}.</FONT> ${verse} ${refrain}<br>`
+        res += `<span class="redtext">${(i+1)%2+1}.</span> ${verse} ${refrain}<br>`
     }
-    document.getElementById("god_is_with_us").innerHTML = res + `<FONT COLOR="RED">1.+2.</FONT> ${verses[1]} ${refrain}`;
+    document.getElementById("god_is_with_us").innerHTML = res + `<span class="redtext">1.+2.</span> ${verses[1]} ${refrain}`;
 
     document.getElementById("troparia_0").innerHTML = `
         ${troparia[0]}<br><br>
@@ -587,7 +587,7 @@ export function constructMenaionCanon(canonData, full, dayOfWeek){
     for (const ode of canonData["odes"]) {
         var ode_n = ode["ode"]
         if ((ode_n === "3a" && allowedOdes.has("3")) || (ode_n === "6a" && allowedOdes.has("6"))){
-            canon += `${LHM} <FONT COLOR="RED">(3)</FONT><br><br>${gloryAndNow}<br><br>`;
+            canon += `${LHM} <span class="redtext">(3)</span><br><br>${gloryAndNow}<br><br>`;
             if (ode["troparia"].length === 1) {
                 canon += `${ode["troparia"][0]}<br><br>`;
             } else if (ode["troparia"].length === 2) {
@@ -729,11 +729,11 @@ async function constructCanon(dayOfWeek, glas, full, refrain, dateAddress){
         if (ode_n === "3a" && allowedOdes.has("3") || ode_n === "6a" && allowedOdes.has("6")){
             if (ode_n === "3a" && octoechosCanon && !defaultCanon) continue;
             if (ode_n === "6a" && octoechosCanon && defaultCanon) {
-                canon += `${LHM} <FONT COLOR="RED">(3)</FONT><br><br>${gloryAndNow}<br><br>${ode.slice(2).join("")}<br><br>`;
+                canon += `${LHM} <span class="redtext">(3)</span><br><br>${gloryAndNow}<br><br>${ode.slice(2).join("")}<br><br>`;
             } else if (ode_n === "6a" && octoechosCanon && glas === 8 && dayOfWeek === 3) {
-                canon += `${LHM} <FONT COLOR="RED">(3)</FONT><br><br>${gloryAndNow}<br><br>${ode[1]}<br><br>`;
+                canon += `${LHM} <span class="redtext">(3)</span><br><br>${gloryAndNow}<br><br>${ode[1]}<br><br>`;
             } else {
-                canon += `${LHM} <FONT COLOR="RED">(3)</FONT><br><br>${gloryAndNow}<br><br>${ode.slice(1).join("")}<br><br>`;
+                canon += `${LHM} <span class="redtext">(3)</span><br><br>${gloryAndNow}<br><br>${ode.slice(1).join("")}<br><br>`;
             }
             continue;
         }

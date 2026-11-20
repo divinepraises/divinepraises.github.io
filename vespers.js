@@ -403,15 +403,15 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
             text += `${getBeginning(0)}<br><br>${amen}<br><br>`
         }
         if (season === "Pentecost" && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4)) {
-            const paschalTroparion = (await getData(`${address}\\triodion\\EasterWeek\\00_hour.json`))["troparion"] + ` <FONT COLOR="RED">(3)</FONT>`;
+            const paschalTroparion = (await getData(`${address}\\triodion\\EasterWeek\\00_hour.json`))["troparion"] + ` <span class="redtext">(3)</span>`;
             text += `<a id="#come_let_us">${paschalTroparion}<br><br></a>`
         } else if ("after_hour_elements" in vespersMenaionData && "crossDismissal" in dayData) {
             // mini-procession with the Cross
             const troparia = `<br>${dayData["troparia"][0]}<br><br><i>${gloryAndNow}</i><br><br>${dayData["kontakia"][0]}<br>`
             text = replaceCapsWords(vespersMenaionData["after_hour_elements"], {"TROPARIA": troparia}) + text;
-            text += `<a id="#come_let_us">${comeLetUs}<br><br></a>`
+            text += `<span id="come_let_us">${comeLetUs}<br><br></span>`
         } else {
-            text += `<a id="#come_let_us">${comeLetUs}<br><br></a>`
+            text += `<span id="come_let_us">${comeLetUs}<br><br></span>`
         }
         document.getElementById("beginning").innerHTML = text;
     } else {
@@ -484,7 +484,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
     } else {
         document.getElementById("priestly_prayers_selector").innerHTML = "";
         document.getElementById("priestly_prayers").innerHTML = "";
-        document.getElementById("ektenia_peace").innerHTML = `${LHM} <FONT COLOR="RED">(12)</FONT><br>${gloryAndNow}`;
+        document.getElementById("ektenia_peace").innerHTML = `${LHM} <span class="redtext">(12)</span><br>${gloryAndNow}`;
     }
 
     var omit_kathisma = false;
@@ -521,7 +521,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
         ektenia_small[3] = vespersTriodionData["kneeling_prayers"][4];
         prokimenon += `
             <br>${vespersTriodionData["kneeling_prayers"][0]}<br><br>
-            <span style="color:red;">Choir:</span> ${LHM} <span style="color:red;">(3)</span><br><br>
+            <span class="redtext">Choir:</span> ${LHM} <span class="redtext">(3)</span><br><br>
             ${vespersTriodionData["kneeling_prayers"][1]}<br><br>
             ${makeEktenia(ektenia_small, priestOrDeacon)}
             `
@@ -547,7 +547,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
             ektenia_small[3] = vespersTriodionData["kneeling_prayers"][6];
             doxology += `
                 <br><br>${vespersTriodionData["kneeling_prayers"][0]}<br><br>
-                <span style="color:red;">Choir:</span> ${LHM} <span style="color:red;">(3)</span><br><br>
+                <span class="redtext">Choir:</span> ${LHM} <span class="redtext">(3)</span><br><br>
                 ${vespersTriodionData["kneeling_prayers"][3]}<br><br>
                 ${makeEktenia(ektenia_small, priestOrDeacon)}
                 `
@@ -567,14 +567,14 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
                 ektenia_small[3] = vespersTriodionData["kneeling_prayers"][5];
                 augmented += `
                     ${vespersTriodionData["kneeling_prayers"][0]}<br><br>
-                    <span style="color:red;">Choir:</span> ${LHM} <span style="color:red;">(3)</span><br><br>
+                    <span class="redtext">Choir:</span> ${LHM} <span class="redtext">(3)</span><br><br>
                     ${vespersTriodionData["kneeling_prayers"][2]}<br><br>
                     ${makeEktenia(ektenia_small, priestOrDeacon)}<br><br>
                 `
             }
             document.getElementById("ektenia_augmented_great").innerHTML = augmented;
         } else {
-            document.getElementById("ektenia_augmented_great").innerHTML = `${LHM} <FONT COLOR="RED">(40)</FONT><br>${gloryAndNow}<br><br>`
+            document.getElementById("ektenia_augmented_great").innerHTML = `${LHM} <span class="redtext">(40)</span><br>${gloryAndNow}<br><br>`
         }
     }
 
@@ -591,7 +591,7 @@ async function loadTextBeginning(vespersData, vespersMenaionData, full, dayOfWee
          ${priestPrayers["supplication"]}<br>
          ${amen}<br>`;
     } else {
-        document.getElementById("ektenia_supplication").innerHTML = `${LHM} <FONT COLOR="RED">(12)</FONT><br>${gloryAndNow}<br>`;
+        document.getElementById("ektenia_supplication").innerHTML = `${LHM} <span class="redtext">(12)</span><br>${gloryAndNow}<br>`;
     }
 }
 
@@ -751,7 +751,7 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
         if (priest == "1"){
             document.getElementById("ektenia_augmented_or_ps33").innerHTML = makeEktenia(ekteniaData["augmented"], priestOrDeacon, "augmented") + "<br><br>";
         } else {
-            document.getElementById("ektenia_augmented_or_ps33").innerHTML = `${LHM} <FONT COLOR="RED">(40)</FONT><br>${gloryAndNow}<br><br>`;
+            document.getElementById("ektenia_augmented_or_ps33").innerHTML = `${LHM} <span class="redtext">(40)</span><br>${gloryAndNow}<br><br>`;
         }
     }
 
@@ -778,8 +778,8 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
             </div><br>`;
     } else if (isEasterWeek) {
         var roles;
-        if (priest === "1") roles = [`<FONT COLOR="RED">Priest:</FONT>`, `<FONT COLOR="RED">Choir:</FONT>`]
-        else roles = [`<FONT COLOR="RED">Chairman:</FONT>`, `<FONT COLOR="RED">Choir:</FONT>`]
+        if (priest === "1") roles = [`<span class="redtext">Priest:</span>`, `<span class="redtext">Choir:</span>`]
+        else roles = [`<span class="redtext">Chairman:</span>`, `<span class="redtext">Choir:</span>`]
         const EasterData = await getData(`${address}\\triodion\\EasterWeek\\00_major.json`);
         document.getElementById("after_hour_elements").innerHTML = `
             ${roles[0]} ${EasterData["final"][0]}<br>
@@ -788,17 +788,17 @@ async function loadTextEnding(vespersData, dayOfWeek, mm, dd, season, seasonWeek
             ${roles[1]} ${EasterData["final"][1]}<br><br>
             ${roles[0]} ${EasterData["final"][0]}<br>
             ${roles[1]} ${EasterData["final"][1]}<br><br>
-            ${roles[1]} ${EasterData["troparion"].join(" ")} <FONT COLOR="RED">(3)</FONT><br><br>
+            ${roles[1]} ${EasterData["troparion"].join(" ")} <span class="redtext">(3)</span><br><br>
             ${roles[0]} ${EasterData["final"][2]}<br>
             ${roles[1]} ${EasterData["final"][3]}<br><br>
         `;
     } else if (season === "Pentecost" && (seasonWeek < 5 || seasonWeek === 5 && dayOfWeek < 4)) {
         var roles;
-        if (priest === "1") roles = [`<FONT COLOR="RED">Priest:</FONT>`, `<FONT COLOR="RED">Choir:</FONT>`]
-        else roles = [`<FONT COLOR="RED">Chairman:</FONT>`, `<FONT COLOR="RED">Choir:</FONT>`]
+        if (priest === "1") roles = [`<span class="redtext">Priest:</span>`, `<span class="redtext">Choir:</span>`]
+        else roles = [`<span class="redtext">Chairman:</span>`, `<span class="redtext">Choir:</span>`]
         const EasterData = await getData(`${address}\\triodion\\EasterWeek\\00_major.json`);
         document.getElementById("after_hour_elements").innerHTML = `
-            ${roles[1]} ${EasterData["troparion"].join(" ")} <FONT COLOR="RED">(3)</FONT><br>
+            ${roles[1]} ${EasterData["troparion"].join(" ")} <span class="redtext">(3)</span><br>
             ${roles[0]} ${EasterData["final"][2]}<br>
             ${roles[1]} ${EasterData["final"][3]}<br><br>
         `;
@@ -812,13 +812,13 @@ export async function makePs33(priest, vigilVespersData){
     if (priest === "1"){
         text += vigilVespersData["blessing_of_food"].join("<br><br>") + "<br><br>"
     }
-    text += `${cross} ${vigilVespersData["blessed_be"]} <FONT COLOR="RED"> (3)</FONT><br><br>`
+    text += `${cross} ${vigilVespersData["blessed_be"]} <span class="redtext"> (3)</span><br><br>`
     var ps33 = (await readPsalmsFromNumbers(["33vespers"], ["Psalm 33"])).join("")
 
     text += ps33;
     text += "<br><br>"
     if (priest === "1"){
-        text += `<FONT COLOR="RED">Priest:</FONT> ${vigilVespersData["blessing"]}<br><br><FONT COLOR="RED">Choir:</FONT> ${amen}<br><br>`
+        text += `<span class="redtext">Priest:</span> ${vigilVespersData["blessing"]}<br><br><span class="redtext">Choir:</span> ${amen}<br><br>`
     }
     text += `<div class="rubric">${vigilVespersData["vigil_note"]}</div><br>`
     document.getElementById("ektenia_augmented_or_ps33").innerHTML = text;
@@ -849,8 +849,8 @@ export async function makeLytia(lytiaData, priest, vespersData, vigilVespersData
 
     if (priest === "0"){
         document.getElementById("lytia_selector").innerHTML = "";
-        document.getElementById("lytia_prayers").innerHTML = `${LHM} <FONT COLOR="RED">(12)</FONT><br>${gloryAndNow}<br><br>
-        ${vigilVespersData["greek_kyrie"]} <FONT COLOR="RED">(12)</FONT><br>${gloryAndNow}<br><br>`
+        document.getElementById("lytia_prayers").innerHTML = `${LHM} <span class="redtext">(12)</span><br>${gloryAndNow}<br><br>
+        ${vigilVespersData["greek_kyrie"]} <span class="redtext">(12)</span><br>${gloryAndNow}<br><br>`
     } else {
         const lytiaPrayers = vigilVespersData["lytia_prayers"];
 
@@ -873,17 +873,17 @@ async function makeLytiaPrayers(lytiaPrayers, vigilVespersData, vespersData, day
     else saintNames = constructDayName(dayData, false);
     var lytia = `
         ${lytiaPrayers[0]}<br><br>
-        <FONT COLOR="RED">Choir:</FONT> ${LHM} <FONT COLOR="RED">(12)</FONT><br><br>
+        <span class="redtext">Choir:</span> ${LHM} <span class="redtext">(12)</span><br><br>
         ${lytiaPrayers[1]}<br><br>
-        <FONT COLOR="RED">Choir:</FONT> ${vigilVespersData["greek_kyrie"]} <FONT COLOR="RED">(12)</FONT><br><br>
+        <span class="redtext">Choir:</span> ${vigilVespersData["greek_kyrie"]} <span class="redtext">(12)</span><br><br>
         ${lytiaPrayers[2]}<br><br>
-        <FONT COLOR="RED">Choir:</FONT> ${amen}<br><br>
+        <span class="redtext">Choir:</span> ${amen}<br><br>
         ${priestlyExclamationsData["peace"]}<br><br>
-        <FONT COLOR="RED">Choir:</FONT> ${priestlyExclamationsData["andWith"]}<br><br>
+        <span class="redtext">Choir:</span> ${priestlyExclamationsData["andWith"]}<br><br>
         ${priestlyExclamationsData["deacon"]} ${priestlyExclamationsData["bow"]}<br><br>
-        <FONT COLOR="RED">Choir:</FONT> ${TYL}<br><br>
+        <span class="redtext">Choir:</span> ${TYL}<br><br>
         ${lytiaPrayers[3]}<br><br>
-        <FONT COLOR="RED">Choir:</FONT> ${amen}<br><br>
+        <span class="redtext">Choir:</span> ${amen}<br><br>
         `
         if (saintNames === "") lytia = replaceCapsWords(lytia, {"SAINT": ""});
         else {
@@ -1004,29 +1004,29 @@ async function makeLentenEnding(priest, season, seasonWeek, dayOfWeek, dayData, 
     if (!noEphrem && !smallEphrem || dayOfWeek === 1 && dayClass < 8) {
         text += `
             <div class="subhead">Lenten conclusion</div><br>
-            ${LHM} <FONT COLOR="RED">(40)</FONT> ${giveTheBlessing(false)}<br><br>
+            ${LHM} <span class="redtext">(40)</span> ${giveTheBlessing(false)}<br><br>
             ${HeWhoIs(priest)}<br><br>
-            <FONT COLOR="RED">Choir:</FONT> ${amen}<br><br>
+            <span class="redtext">Choir:</span> ${amen}<br><br>
             ${lentenPrayer}<br><br>
-            <FONT COLOR="RED">Choir:</FONT> ${amen}<br><br>
-            ${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
+            <span class="redtext">Choir:</span> ${amen}<br><br>
+            ${LHM} <span class="redtext">(3)</span><br><br>
             ${gloryAndNow}<br><br>
             ${moreHonorable}<br><br>
             ${inTheName}<br><br>
             ${prayerBlessingMayGodBeGracious(priest, "vespers")}<br><br>
-            <FONT COLOR="RED">Choir:</FONT> ${amen}<br><br>`;
+            <span class="redtext">Choir:</span> ${amen}<br><br>`;
     } else {
         if (priest == "1"){
             text = makeEktenia(ekteniaData["augmented"], priestOrDeacon, "augmented") + "<br><br>" + text;
         } else {
-            text = `${LHM} <FONT COLOR="RED">(40)</FONT><br>${gloryAndNow}<br><br>${text}`;
+            text = `${LHM} <span class="redtext">(40)</span><br>${gloryAndNow}<br><br>${text}`;
         }
     }
     text += StEphremPrayer(priest, smallEphrem, noEphrem);
     if (noConclusion) return text;
     return text +
             `${vesperalPrayer}<br><br>
-            ${blessedBe} <FONT COLOR="RED">(3)</FONT><br><br>
+            ${blessedBe} <span class="redtext">(3)</span><br><br>
             ${ps33}<br><br>
             ${itIsTrulyRight}<br><br>`
 }
@@ -1055,11 +1055,11 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
                 ${dayTrop[2]}`;
     } else if (dayData["class"] === 12 && dayTrop.length === 2){
         // sunday of the branches
-        return `${dayTrop[0]} <FONT COLOR="RED"> (2)</FONT><br><br> ${dayTrop[1]}`;
+        return `${dayTrop[0]} <span class="redtext"> (2)</span><br><br> ${dayTrop[1]}`;
     } else if (season === "HolyWeek" && dayOfWeek >= 5) {
         return dayTrop[0];
     } else if (dayData["class"] > 10){
-        return dayTrop[0] + `<FONT COLOR="RED"> (3)</FONT>`;
+        return dayTrop[0] + `<span class="redtext"> (3)</span>`;
     } else if (dayOfWeek === 0){
         if ("invert kontakia at compline" in dayData) {
             // Sep 1 on Sun
@@ -1074,11 +1074,11 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
             dayTrop.splice(0, 0, (await getData(`${address}\\octoechos\\sunday_troparia_kontakia.json`))["troparia"][glas]);
         } else if (dayData["class"] < 12 && !("specialDismissal" in dayData) && !("special_rubric" in dayData && dayData["special_rubric"] === "earthquake")) {
             // vigil on Sunday that does not replace it
-            dayTrop.splice(0, 0, `${haire}<FONT COLOR="RED"> (${3 - dayTrop.length})</FONT>`);
+            dayTrop.splice(0, 0, `${haire}<span class="redtext"> (${3 - dayTrop.length})</span>`);
             return dayTrop.join("<br><br>")
         } else {
             // st Basil. Dol. prescribes replacing festal troparion with Haire here because that's what menaion says
-            return dayTrop[0] + `<FONT COLOR="RED"> (2)</FONT><br><br>${haire}`;
+            return dayTrop[0] + `<span class="redtext"> (2)</span><br><br>${haire}`;
         }
     } else if (dayData["class"] === 10){
         // vigil of a saint not on Sunday
@@ -1086,14 +1086,14 @@ export async function makeTroparia(glas, season, seasonWeek, dayOfWeek, isGreatV
             dayTrop.length === 1
             || "special_rubric" in dayData && dayData["special_rubric"] === "earthquake") {
                 // if one troparion or a rubric says to use only the first one
-                return dayTrop[0] + `<FONT COLOR="RED"> (2)</FONT><br><br>${haire}`
+                return dayTrop[0] + `<span class="redtext"> (2)</span><br><br>${haire}`
             }
-        else if ("specialDismissal" in dayData) return dayTrop[0] + `<FONT COLOR="RED"> (2)</FONT><br><br>${dayTrop[1]}`;
+        else if ("specialDismissal" in dayData) return dayTrop[0] + `<span class="redtext"> (2)</span><br><br>${dayTrop[1]}`;
         dayTrop.push(haire);
         return dayTrop.join("<br><br>")
     } else if (dayData["class"] > 10) {
         // higher vigil
-        return dayTrop[0] + `<FONT COLOR="RED"> (3)</FONT><br><br>`
+        return dayTrop[0] + `<span class="redtext"> (3)</span><br><br>`
     }
 
     var theotokion;
@@ -1266,7 +1266,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
                 .concat(apostTriod[2])
                 .concat(apostMain["aposticha"][5])
             )
-            apostMain[apostMain.length - 1] += `<FONT COLOR="RED"> (1)</FONT>`
+            apostMain[apostMain.length - 1] += `<span class="redtext"> (1)</span>`
         } else {
             const apostMen = vespersMenaionData["aposticha"];
             apostVerses = apostMain["aposticha_verses"].concat(
@@ -1337,7 +1337,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
         apostVerses = apostMain["aposticha_verses"].concat(gloryAndNow);
         apostVerses[0] = `<div class="rubric">Tone ${apostMain["aposticha"][0]}</div>${apostVerses[0]}`;
         apostMain = [glas, apostOcto].concat(apostMain["aposticha"].slice(1, 6));
-        apostMain[apostMain.length - 1] += `<FONT COLOR="RED"> (1)</FONT>`;
+        apostMain[apostMain.length - 1] += `<span class="redtext"> (1)</span>`;
     } else if (season === "Pentecost" && seasonWeek === 6 && dayOfWeek === 5) {
         // Leave-taking of Ascension
         vespersTriodionData = (await getData(`${address}\\triodion\\Pentecost\\44_vespers.json`));
@@ -1480,7 +1480,7 @@ export async function makeAposticha(glas, season, seasonWeek, dayOfWeek, isGreat
             aposticha += `<i>${apostVerses[i]}</i> <br><br>${stychera}`
             if (i < apostMain.length-2) aposticha += "<br><br>"
         }
-        aposticha += ` <FONT COLOR="RED">(3)</FONT><br><br>`
+        aposticha += ` <span class="redtext">(3)</span><br><br>`
         if (vespersTriodionData && "aposticha_rubric" in vespersTriodionData) aposticha += `<div class="rubric">${vespersTriodionData["aposticha_rubric"]}</div>`
     } else if (season === "Pentecost" && !(seasonWeek===1 && dayOfWeek===0)) {
         aposticha += `
@@ -1871,12 +1871,12 @@ function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData, priest
         const gospelData = vespersMenaionData["gospel"];
         if (gospelData.length === 2) {
             text += `<div class="subhead">Alleluia</div><br>`;
-            const alleluia = `Alleluia <FONT COLOR="RED">(3 or more, according ot the chosen melody)</FONT>`;
+            const alleluia = `Alleluia <span class="redtext">(3 or more, according ot the chosen melody)</span>`;
             text += `<div class="rubric">Tone ${gospelData[0][0]}</div>`;
             text += `${alleluia}<br>`;
             for (let verse of gospelData[0].slice(1, gospelData[0].length)) {
-                text += `<FONT COLOR="RED">v.</FONT> ${verse} <br>
-                    <FONT COLOR="RED">Choir:</FONT> ${alleluia}<br>`;
+                text += `<span class="redtext">v.</span> ${verse} <br>
+                    <span class="redtext">Choir:</span> ${alleluia}<br>`;
             }
             text += "<br>"
         }
@@ -1898,23 +1898,23 @@ function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData, priest
             text += `<div class="rubric">Tone ${trops[0]}</div>`;
             text += `<div class="rubric">The troparion and verses are proclaimed by a reader or a priest.</div>`;
             text += `${trops[1]} ${trops[2]}<br><br>`
-            text += `<FONT COLOR="RED">Choir:</FONT> ${trops[2]}<br><br>`
+            text += `<span class="redtext">Choir:</span> ${trops[2]}<br><br>`
             for (let verse of trops.slice(3, trops.length)) {
-                text += `<FONT COLOR="RED">v.</FONT> ${verse} <br><br><FONT COLOR="RED">Choir:</FONT> ${trops[2]}<br><br>`;
+                text += `<span class="redtext">v.</span> ${verse} <br><br><span class="redtext">Choir:</span> ${trops[2]}<br><br>`;
             }
             if (trops[1] != "") {
-                text += `<FONT COLOR="RED">v.</FONT> ${gloryAndNow} <br><br><FONT COLOR="RED">Choir:</FONT> ${trops[2]}<br><br>`;
-                text += `<FONT COLOR="RED">v.</FONT> ${trops[1]} <br><br><FONT COLOR="RED">Choir:</FONT> ${trops[2]}<br><br>`
+                text += `<span class="redtext">v.</span> ${gloryAndNow} <br><br><span class="redtext">Choir:</span> ${trops[2]}<br><br>`;
+                text += `<span class="redtext">v.</span> ${trops[1]} <br><br><span class="redtext">Choir:</span> ${trops[2]}<br><br>`
             }
         }
         if (priest === "1") {
             text += `${makeEktenia(ekteniaData["small"], priestOrDeacon)}<br><br>`;
             if (isWeekday) text += `<br><div class="rubric">Trisagion is sung here.</div><br>`;
         } else {
-            text += `${LHM} <FONT COLOR="RED">(3)</FONT><br>${gloryAndNow}<br><br>`
+            text += `${LHM} <span class="redtext">(3)</span><br>${gloryAndNow}<br><br>`
         }
         if (isHolySaturday) {
-            text += `${moreReadings[i]} <FONT COLOR="RED">(3)</FONT><br><br>`;
+            text += `${moreReadings[i]} <span class="redtext">(3)</span><br><br>`;
             i += 1;
         }
 
@@ -1923,9 +1923,9 @@ function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData, priest
         text += `<div class="rubric">Tone ${trops[0]}</div>`;
         text += `${trops[1]}* ${trops[2]}<br><br>`;
         for (let verse of trops.slice(3, trops.length)) {
-            text += `<FONT COLOR="RED">v.</FONT> ${verse} <br><br><FONT COLOR="RED">Choir:</FONT> ${trops[1]}* ${trops[2]}<br><br>`;
+            text += `<span class="redtext">v.</span> ${verse} <br><br><span class="redtext">Choir:</span> ${trops[1]}* ${trops[2]}<br><br>`;
         }
-        text += `<FONT COLOR="RED">v.</FONT> ${trops[1]} <br><br><FONT COLOR="RED">Choir:</FONT> ${trops[2]}<br><br>`
+        text += `<span class="redtext">v.</span> ${trops[1]} <br><br><span class="redtext">Choir:</span> ${trops[2]}<br><br>`
 
         text += `<div class="subhead">Epistle</div><br>`;
         i += 1;
@@ -1937,7 +1937,7 @@ function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData, priest
 
         i += 1;
         trops = moreReadings[i];
-        var alleluia = `Alleluia <FONT COLOR="RED">(3 or more, according ot the chosen melody)</FONT>`;
+        var alleluia = `Alleluia <span class="redtext">(3 or more, according ot the chosen melody)</span>`;
 
         if (isHolySaturday) {
             text += `<div class="subhead">Gospel Prokimenon</div><br>`;
@@ -1951,7 +1951,7 @@ function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData, priest
         text += `<div class="rubric">Tone ${trops[0]}</div>`;
         text += `${alleluia}<br><br>`;
         for (let verse of trops.slice(1, trops.length)) {
-            text += `<FONT COLOR="RED">v.</FONT> ${verse} <br><br><FONT COLOR="RED">Choir:</FONT> ${alleluia}<br><br>`;
+            text += `<span class="redtext">v.</span> ${verse} <br><br><span class="redtext">Choir:</span> ${alleluia}<br><br>`;
         }
 
         text += `<div class="subhead">Gospel</div><br>`;
@@ -1970,13 +1970,13 @@ export function arrangeProkimenon(prokData) {
     if (prokData[2] === "") asterisk = "";
     var prokimenon = `
         <div class="rubric">Tone ${prokData[0]}</div>
-        <FONT COLOR="RED">Choir:</FONT> ${prokData[1]}${asterisk} ${prokData[2]}<br>`
+        <span class="redtext">Choir:</span> ${prokData[1]}${asterisk} ${prokData[2]}<br>`
     for (let verse of prokData.slice(3)){
-        prokimenon += `<FONT COLOR="RED">v.</FONT> ${verse}<br><FONT COLOR="RED">Choir:</FONT> ${prokData[1]}${asterisk} ${prokData[2]}<br>`
+        prokimenon += `<span class="redtext">v.</span> ${verse}<br><span class="redtext">Choir:</span> ${prokData[1]}${asterisk} ${prokData[2]}<br>`
     }
     if (prokData[2] != "") {
         prokimenon += `
-            <FONT COLOR="RED">v.</FONT> ${prokData[1]} <br><FONT COLOR="RED">Choir:</FONT> ${prokData[2]}<br>`
+            <span class="redtext">v.</span> ${prokData[1]} <br><span class="redtext">Choir:</span> ${prokData[2]}<br>`
     }
     return prokimenon
 }
@@ -2905,7 +2905,7 @@ function makeSmallEktenia(priest, priestOrDeacon, ekteniaData){
     if (priest == "1"){
         document.getElementById("ektenia_small").innerHTML = makeEktenia(ekteniaData["small"], priestOrDeacon);
     } else {
-        document.getElementById("ektenia_small").innerHTML = `${LHM} <FONT COLOR="RED">(3)</FONT><br>${gloryAndNow}`;
+        document.getElementById("ektenia_small").innerHTML = `${LHM} <span class="redtext">(3)</span><br>${gloryAndNow}`;
     }
     document.getElementById("ektenia_small").innerHTML += "<br><br>"
 }
@@ -3012,10 +3012,10 @@ export function makeEktenia(ekteniaData, priestOrDeacon, key=false){
     for (const [index, petition] of ekteniaData.entries()){
         if (!(key==="supplication" || key==="augmented") && index < num_petitions) ektenia += `<b>${petition}</b><br>${LHM}<br><br>`;
         else if (key==="short") ektenia += `<b>${petition}</b><br>${LHM}<br><br>`;
-        else if (key==="augmented" && index < num_petitions) ektenia += `<b>${petition}</b><br>${LHM} <FONT COLOR="RED">(3)</FONT><br><br>`;
+        else if (key==="augmented" && index < num_petitions) ektenia += `<b>${petition}</b><br>${LHM} <span class="redtext">(3)</span><br><br>`;
         else if (key==="supplication" && index < 2) ektenia += `<b>${petition}</b><br>${LHM}<br><br>`;
         else if (index === num_petitions) ektenia += `<b>${petition}</b><br>${TYL}<br><br>`;
-        else if (index === num_petitions + 1) ektenia += `<FONT COLOR="RED">Priest: </FONT><b>${petition}</b><br>${amen}`;
+        else if (index === num_petitions + 1) ektenia += `<span class="redtext">Priest: </span><b>${petition}</b><br>${amen}`;
         else if (key==="supplication") ektenia += `<b>${petition}</b><br>${GTL}<br><br>`;
     }
     return ektenia;
@@ -3027,8 +3027,8 @@ async function makePs103(great, isEasterWeek, priest) {
     if (isEasterWeek) {
         const EasterData = await getData(`${address}\\triodion\\EasterWeek\\00_major.json`);
         var roles;
-        if (priest === "1") roles = [`<FONT COLOR="RED">Priest:</FONT>`, `<FONT COLOR="RED">Choir:</FONT>`]
-        else roles = [`<FONT COLOR="RED">1:</FONT>`, `<FONT COLOR="RED">2:</FONT>`]
+        if (priest === "1") roles = [`<span class="redtext">Priest:</span>`, `<span class="redtext">Choir:</span>`]
+        else roles = [`<span class="redtext">1:</span>`, `<span class="redtext">2:</span>`]
         const troparion = EasterData["troparion"];
         var res = `
              <div class="rubric">${EasterData["rubric_troparion"][priest]}</div>
@@ -3037,11 +3037,11 @@ async function makePs103(great, isEasterWeek, priest) {
             ${roles[0]} ${troparion[0]}<br>
             ${roles[1]} ${troparion[1]}<br><br>`;
 
-        if (priest === "0") roles = [`<FONT COLOR="RED">v.</FONT>`, `<FONT COLOR="RED">Choir:</FONT>`]
+        if (priest === "0") roles = [`<span class="redtext">v.</span>`, `<span class="redtext">Choir:</span>`]
         var verses = EasterData["verses"];
         verses = verses.concat([glory, andNow]);
         for (let [i, verse] of verses.entries()) {
-            res += `${roles[0]} ${verse}<br><br> ${roles[1]} ${troparion.join(" ")} <FONT COLOR="RED">(1 or 3)</FONT> <br><br>`
+            res += `${roles[0]} ${verse}<br><br> ${roles[1]} ${troparion.join(" ")} <span class="redtext">(1 or 3)</span> <br><br>`
         }
         res += `${roles[0]} ${troparion[0]}<br><br>
                 ${roles[1]} ${troparion[1]}<br>`

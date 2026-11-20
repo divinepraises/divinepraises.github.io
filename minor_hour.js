@@ -32,10 +32,10 @@ export function renderHourSkeleton(hour, priest, full, date) {
 	<hr>
 	<div id="beginning"></div>
 	<hr>
-	<a id="come_let_us">${comeLetUs}<br><br></a>
+	<span id="come_let_us">${comeLetUs}<br><br></span>
 	<div id="psalms"></div><br>
 	${tripleAlleluia}<br>
-	${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
+	${LHM} <span class="redtext">(3)</span><br><br>
 	<div class="subhead">Troparia</div><br>
 	<div id="troparia"></div><br>
 	${andNow}<br><br>
@@ -47,10 +47,10 @@ export function renderHourSkeleton(hour, priest, full, date) {
 	${trisagionToPater(priest)}
 	<div id="kontakia_header"></div><br>
 	<div id="kontakia"></div><br>
-	${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
+	${LHM} <span class="redtext">(40)</span><br><br>
 	<div class="subhead">Prayer of the hours</div><br>
 	${prayerOfTheHours}<br><br>
-	${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
+	${LHM} <span class="redtext">(3)</span><br><br>
 	${gloryAndNow}<br><br>
 	${moreHonorable}<br><br>
 	${inTheName}<br><br>
@@ -203,7 +203,7 @@ export async function enhanceMinorHour(hour, priest, full, date) {
     if (hour === "1hour" && isLenten && dayData["class"] < 8) {
         document.getElementById("chapter").innerHTML = replaceCapsWords(
             hourData["chapter"],
-            {"TWICE":` <FONT COLOR="RED">(2)</FONT> `, "THRICE":` <FONT COLOR="RED">(3)</FONT> `}
+            {"TWICE":` <span class="redtext">(2)</span> `, "THRICE":` <span class="redtext">(3)</span> `}
         )
     } else {
         document.getElementById("chapter").innerHTML = replaceCapsWords(hourData["chapter"], {"TWICE":"", "THRICE":""})
@@ -257,11 +257,11 @@ export async function enhanceMinorHour(hour, priest, full, date) {
         document.getElementById("after_hour_elements").innerHTML = afterRubric;
     } else if (isPentecost) {
         var roles;
-        if (priest === "1") roles = [`<FONT COLOR="RED">Priest:</FONT>`, `<FONT COLOR="RED">Choir:</FONT>`]
-        else roles = [`<FONT COLOR="RED">Chairman:</FONT>`, `<FONT COLOR="RED">Choir:</FONT>`]
+        if (priest === "1") roles = [`<span class="redtext">Priest:</span>`, `<span class="redtext">Choir:</span>`]
+        else roles = [`<span class="redtext">Chairman:</span>`, `<span class="redtext">Choir:</span>`]
         const EasterData = await getData(`${address}\\triodion\\EasterWeek\\00_major.json`);
         document.getElementById("after_hour_elements").innerHTML = `
-            <br>${roles[1]} ${EasterData["troparion"].join(" ")} <FONT COLOR="RED">(3)</FONT><br>
+            <br>${roles[1]} ${EasterData["troparion"].join(" ")} <span class="redtext">(3)</span><br>
             ${roles[0]} ${EasterData["final"][2]}<br>
             ${roles[1]} ${EasterData["final"][3]}<br><br>
         `;
@@ -286,7 +286,7 @@ async function arrangeRoyalHours(additionalElements, hour, priest) {
             if (i === 1) {
                 // first troparion
                 res += stichera;
-                if (full === "1") res += `<FONT COLOR="RED"> (twice)</FONT>`;
+                if (full === "1") res += `<span class="redtext"> (twice)</span>`;
                 res += `<br><br>`;
                 continue
             } else if (!(hour === "9hour" && i === 5 && full === "1")) {
@@ -336,12 +336,12 @@ async function arrangeRoyalHours(additionalElements, hour, priest) {
 
         res += `
             <div class="rubric">Tone ${prokData[0]}</div>
-            <FONT COLOR="RED">Choir:</FONT> ${prokData[1]}* ${prokData[2]}<br>`;
+            <span class="redtext">Choir:</span> ${prokData[1]}* ${prokData[2]}<br>`;
         for (let verse of prokData.slice(3)){
-            res += `<FONT COLOR="RED">v.</FONT> ${verse}<br><FONT COLOR="RED">Choir:</FONT> ${prokData[1]}* ${prokData[2]}<br>`
+            res += `<span class="redtext">v.</span> ${verse}<br><span class="redtext">Choir:</span> ${prokData[1]}* ${prokData[2]}<br>`
         }
         res += `
-            <FONT COLOR="RED">v.</FONT> ${prokData[1]} <br><FONT COLOR="RED">Choir:</FONT> ${prokData[2]}<br><br>`
+            <span class="redtext">v.</span> ${prokData[1]} <br><span class="redtext">Choir:</span> ${prokData[2]}<br><br>`
 
         // readings
         res += `<div class="subhead">Readings</div><br>`;
@@ -350,7 +350,7 @@ async function arrangeRoyalHours(additionalElements, hour, priest) {
             if (priest === "1") {
                 res += `
                 ${priestlyExclamationsData["deacon"]} ${priestlyExclamationsData["wisdom"]}<br><br>
-                 <FONT COLOR="RED">Reader:</FONT> ${readingsData[i]}<br><br>
+                 <span class="redtext">Reader:</span> ${readingsData[i]}<br><br>
                 ${priestlyExclamationsData["deacon"]} ${priestlyExclamationsData["attentive"]}<br><br>`
             } else {
                 res += `<i>${readingsData[i]}</i><br><br>`;
@@ -647,9 +647,9 @@ async function selectTropar(hour, season, seasonWeek, dayOfWeek, hourData, glas,
         dayTrop = hourData["lenten_troparia"];
         return `<div class="rubric">Tone ${dayTrop[0]}</div>
         ${dayTrop[1]} <div class="rubric">${cross} Prostration.</div>
-         <FONT COLOR="RED">v.</FONT> ${dayTrop[2]}<br><br>
+         <span class="redtext">v.</span> ${dayTrop[2]}<br><br>
         ${dayTrop[1]} <div class="rubric">${cross} Prostration.</div>
-         <FONT COLOR="RED">v.</FONT> ${dayTrop[3]}<br><br>
+         <span class="redtext">v.</span> ${dayTrop[3]}<br><br>
         ${dayTrop[1]} <div class="rubric">${cross} Prostration.</div><br>
         ${glory}
         `
@@ -1091,7 +1091,7 @@ export async function EasterHour(hour, priest, full, date) {
     const properTexts = await getData(`${address}\\triodion\\EasterWeek\\00_hour.json`);
     const specialDismissal = (await getData(`${address}\\triodion\\EasterWeek\\00.json`))["specialDismissal"];
     var n = "";
-    if (full === "1") n = `<FONT COLOR="RED">(3)</FONT>`
+    if (full === "1") n = `<span class="redtext">(3)</span>`
 
     const linkToNext = `https:\/\/divinepraises.github.io/main.html?hour=${nextHour[hour]}&priest=${priest}&full=${full}&date=${date}#come_let_us`;
     var next = ""
@@ -1104,12 +1104,12 @@ export async function EasterHour(hour, priest, full, date) {
     }
 
     return `
-        <FONT COLOR="RED"><h2>The Paschal hour</h2></FONT>
+        <span class="redtext"><h2>The Paschal hour</h2></span>
         <div class="rubric">${properTexts["chant note"]}</div><br>
         ${getBeginning(priest)}<br><br>
-		<FONT COLOR="RED">Choir:</FONT> ${amen}<br><br>
-	    <a id="come_let_us"><div class="subhead">Easter troparion</div></a><br>
-		${properTexts["troparion"]} <FONT COLOR="RED">(3)</FONT><br><br>
+		<span class="redtext">Choir:</span> ${amen}<br><br>
+	    <span id="come_let_us"><div class="subhead">Easter troparion</div></span><br>
+		${properTexts["troparion"]} <span class="redtext">(3)</span><br><br>
 	    <div class="subhead">Stichera of resurrection</div><br>
 	    <div class="rubric">Tone ${properTexts["having_beheld"][0]}</div>
 		${properTexts["having_beheld"][1]} ${n}<br><br>
@@ -1127,15 +1127,15 @@ export async function EasterHour(hour, priest, full, date) {
 		<i>${andNow}</i><br><br>
 		${properTexts["troparia"][3]}<br><br>
 	    <div class="subhead">Ending</div><br>
-        ${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
+        ${LHM} <span class="redtext">(40)</span><br><br>
         ${gloryAndNow}<br><br>
         ${moreHonorable}<br><br>
         ${inTheName}<br><br>
         ${prayerBlessingMayGodBeGracious(priest, "3hour")}<br><br>
-		<FONT COLOR="RED">Choir:</FONT> ${amen}<br><br>
+		<span class="redtext">Choir:</span> ${amen}<br><br>
         <div class="rubric">${next}</div>
         <div class="rubric">${properTexts["ending_note"]}</div>
-		${properTexts["troparion"]} <FONT COLOR="RED">(3)</FONT><br><br>
+		${properTexts["troparion"]} <span class="redtext">(3)</span><br><br>
         ${await endingBlockMinor(priest, 1, specialDismissal, false)}<br><br>
 		`
 }

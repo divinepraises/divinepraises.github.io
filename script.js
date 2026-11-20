@@ -118,7 +118,7 @@ async function loadUpcomingEvents(today, rangeDays = 14) {
         }
 
         container.innerHTML = Object.values(groupedEvents).map(event => `
-            <div class="event-card" style="padding: 2px; font-size: 0.9rem; border: 1px solid red; margin-right: 1rem; margin-bottom: 1rem">
+            <div class="event-card" style="padding: 2px; font-size: 0.9rem; border: 1px solid var(--redtext); margin-right: 1rem; margin-bottom: 1rem">
                 <p><strong>Date(s):</strong> ${event.dates.join(', ')}</p>
                 <p>${event.description}</p>
             </div>
@@ -582,7 +582,7 @@ export async function kathismaToText(k, isGreatVespers, dayOfWeek) {
         if (i < 2) kathPsalmsToText += tripleAlleluia
         else kathPsalmsToText += tripleAlleluia.split("<br>")[0];
         if (fistStasisOnly) break;
-        if (i < 2) kathPsalmsToText += `${LHM} <FONT COLOR="RED">(3)</FONT><br>${gloryAndNow}`
+        if (i < 2) kathPsalmsToText += `${LHM} <span class="redtext">(3)</span><br>${gloryAndNow}`
     }
     return kathPsalmsToText;
 }

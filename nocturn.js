@@ -152,11 +152,11 @@ async function kathismaToText(k, dayOfWeek, seasonWeek, full) {
         kathPsalmsToText += tmp.join("<br>");
         if (i < kathPsalms.length - 1) kathPsalmsToText += `<br><br>
          ${glory}<br>
-         <FONT COLOR="RED">${functionNames["choir"]}</FONT> ${andNow}<br>
+         <span class="redtext">${functionNames["choir"]}</span> ${andNow}<br>
          ${tripleAlleluiaOnly}<br>`
         else kathPsalmsToText += `<br><br>${gloryAndNow}`
-        if (i < kathPsalms.length - 1) kathPsalmsToText += `${LHM} <FONT COLOR="RED">(3)</FONT><br>${glory}<br>
-         <FONT COLOR="RED">${functionNames["reader"]}</FONT> ${andNow}<br><br>`
+        if (i < kathPsalms.length - 1) kathPsalmsToText += `${LHM} <span class="redtext">(3)</span><br>${glory}<br>
+         <span class="redtext">${functionNames["reader"]}</span> ${andNow}<br><br>`
     }
     return kathPsalmsToText;
 }
@@ -196,10 +196,10 @@ async function constructKathismaNocturn(nocturnData, variant, season, seasonWeek
 
     document.getElementById("troparia_1").innerHTML = tropar;
 
-    document.getElementById("all_hours_prayer").innerHTML = `${LHM} <FONT COLOR="RED">(40)</FONT><br><br>
+    document.getElementById("all_hours_prayer").innerHTML = `${LHM} <span class="redtext">(40)</span><br><br>
         <div class="subhead">Prayer of the hours</div><br>
         ${prayerOfTheHours}<br><br>
-        ${LHM} <FONT COLOR="RED">(3)</FONT><br><br>
+        ${LHM} <span class="redtext">(3)</span><br><br>
         ${gloryAndNow}<br><br>
         ${moreHonorable}<br><br>
         ${inTheName}<br><br>
@@ -262,7 +262,7 @@ async function constructKathismaNocturn(nocturnData, variant, season, seasonWeek
 
     var prayerForTheDead = `${nocturnData["prayer_dead"]}<br><br>`;
     if (festalInfo["no_prayer"]) prayerForTheDead = `${nocturnData["prayer_dead_omitted"]}<br>`;
-    document.getElementById("prayer_dead").innerHTML = `${LHM} <FONT COLOR="RED">(12)</FONT><br><br>${prayerForTheDead}`;
+    document.getElementById("prayer_dead").innerHTML = `${LHM} <span class="redtext">(12)</span><br><br>${prayerForTheDead}`;
 
 }
 
@@ -315,7 +315,7 @@ async function constructCanonNocturn(dayOfWeekData, endingData, variant, glas, f
                 document.getElementById("troparia_1").innerHTML = makeSundayTroparion(dayOfWeekData["troparia"][1], hypakoe);
             }
         });
-        document.getElementById("all_hours_prayer").innerHTML = `${LHM} <FONT COLOR="RED">(40)</FONT><br><br>`;
+        document.getElementById("all_hours_prayer").innerHTML = `${LHM} <span class="redtext">(40)</span><br><br>`;
     } else {
         let SaturdayData = (await getData(`${address}\\triodion\\HolyWeek\\06.json`));
         let SaturdayNocturnData = (await getData(`${address}\\triodion\\HolyWeek\\06_nocturn.json`));
@@ -346,7 +346,7 @@ async function constructCanonNocturn(dayOfWeekData, endingData, variant, glas, f
             ${glory}* ${andNow}* ${LHM} ${LHM} ${LHM}* ${giveTheBlessing(priest)}<br><br>
             ${dismissalMajor(0, 0, "", priest, true, "", [], "", SaturdayData["specialDismissal"], "")}<br><br>`
         } else {
-            document.getElementById("all_hours_prayer").innerHTML = `${LHM} <FONT COLOR="RED">(40)</FONT><br><br>`;
+            document.getElementById("all_hours_prayer").innerHTML = `${LHM} <span class="redtext">(40)</span><br><br>`;
 
             document.getElementById("endingBlock").innerHTML = `${glory}* ${andNow}* ${LHM} ${LHM} ${LHM}* ${giveTheBlessing(priest)}<br><br>
             ${dismissalMajor(0, 0, "", priest, true, "", [], "", SaturdayData["specialDismissal"], "")}<br><br>`
@@ -354,7 +354,7 @@ async function constructCanonNocturn(dayOfWeekData, endingData, variant, glas, f
 
         document.getElementById("after_prayers").innerHTML = `
             <div class="rubric">${SaturdayNocturnData["final note"][priest]}</div><br>
-            ${SaturdayData["troparia"]} <FONT COLOR="RED">(3)</FONT><br><br>`
+            ${SaturdayData["troparia"]} <span class="redtext">(3)</span><br><br>`
 
     }
 
