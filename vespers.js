@@ -2575,7 +2575,7 @@ async function makePsalm140(dayOfWeek, season, seasonWeek, glas, isGreatVespers,
                 stycheras.splice(4+5, 2);
                 numStycheras = 6;
                 stycheraScheme = Array(10).fill(1)
-            } else if (numStycheras === 7) {
+            } else if (numStycheras === 7 && !specialSundayName) {
                 // Dec 6 has 7 stichera. let's omit one from the first set
                 stycheras.splice(4+5, 1);
                 numStycheras = 6;
