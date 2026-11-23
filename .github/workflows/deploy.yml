@@ -1,0 +1,56 @@
+
+name: Deploy production and staging
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout production
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          path: production
+
+      - name: Checkout staging
+        uses: actions/checkout@v6
+        with:
+          ref: staging
+          path: staging
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Combine websites
+        run: |
+          mkdir -p _site/staging
+
+          rsync -a --exclude='.git' --exclude='.github' \
+            production/ _site/
+
+          rsync -a --exclude='.git' --exclude='.github' \
+            staging/ _site/staging/
+
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - name: Deploy website
+        uses: actions/deploy-pages@v4
