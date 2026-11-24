@@ -1871,7 +1871,7 @@ function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData, priest
         const gospelData = vespersMenaionData["gospel"];
         if (gospelData.length === 2) {
             text += `<div class="subhead">Alleluia</div><br>`;
-            const alleluia = `Alleluia <FONT COLOR="RED">(3 or more, according ot the chosen melody)</FONT>`;
+            const alleluia = `Alleluia <FONT COLOR="RED">(3 or more, according to the chosen melody)</FONT>`;
             text += `<div class="rubric">Tone ${gospelData[0][0]}</div>`;
             text += `${alleluia}<br>`;
             for (let verse of gospelData[0].slice(1, gospelData[0].length)) {
@@ -1937,7 +1937,7 @@ function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData, priest
 
         i += 1;
         trops = moreReadings[i];
-        var alleluia = `Alleluia <FONT COLOR="RED">(3 or more, according ot the chosen melody)</FONT>`;
+        var alleluia = `Alleluia <FONT COLOR="RED">(3 or more, according to the chosen melody)</FONT>`;
 
         if (isHolySaturday) {
             text += `<div class="subhead">Gospel Prokimenon</div><br>`;
