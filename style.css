@@ -4,6 +4,12 @@
     font-weight: normal;
     font-style: normal;
 }
+@font-face {
+    font-family: "EB Garamond";
+    src: url("fonts/EBGaramond-VariableFont_wght.ttf") format("truetype");
+    font-weight: 400 800;
+    font-style: normal;
+}
 :root {
     --background: #E9DFC9;
     --text: #29251F;
@@ -19,9 +25,13 @@
     }
 }
 body {
-    font-family: Eagle Lake;
+    font-family: EB Garamond, serif;
+    font-weight: 400;
     background-color: var(--background);
     color: var(--text);
+}
+h1, h2, h3, h4, button {
+    font-family: "Eagle Lake", serif;
 }
 .container {
     max-width: 100%;
@@ -57,7 +67,15 @@ body {
 button {
     font-size: 1.5rem;
     font-weight: bold;
+    background-color: var(--link);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
     width:100%;
+}
+button:hover {
+    background-color: #3B5666;
 }
 html {
   font-size: 150%;
