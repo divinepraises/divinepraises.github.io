@@ -1937,11 +1937,7 @@ function makeReadings(vespersMenaionData, priest, dayOfWeek, ekteniaData, priest
 
         i += 1;
         trops = moreReadings[i];
-<<<<<<< HEAD
-        var alleluia = `Alleluia <span class="redtext">(3 or more, according ot the chosen melody)</span>`;
-=======
-        var alleluia = `Alleluia <FONT COLOR="RED">(3 or more, according to the chosen melody)</FONT>`;
->>>>>>> main
+        var alleluia = `Alleluia <span class="redtext">(3 or more, according to the chosen melody)</span>`;
 
         if (isHolySaturday) {
             text += `<div class="subhead">Gospel Prokimenon</div><br>`;
