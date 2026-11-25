@@ -76,6 +76,39 @@ button {
 button:hover {
     background-color: #3B5666;
 }
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th, td {
+  border: 1px solid var(--text);
+  padding: 6px 10px;
+  text-align: left;
+}
+th {
+  background-color: #f0f0f0;
+}
+.controls {
+  margin-bottom: 15px;
+}
+.controls input,
+.controls select {
+  font-family: var(--font-family)
+  font-size: 1.2rem;
+  padding: 6px 6px;
+}
+.office {
+  margin-bottom: 15px;
+  font-size: .7rem;
+}
+.office select,
+.office button {
+  font-size: .7rem;
+  padding: 6px 3px;
+}
+.office select {
+  font-family: var(--font-family)
+}
 html {
   font-size: 150%;
 }
