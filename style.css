@@ -65,8 +65,7 @@ h1, h2, h3, h4, button {
     clear: both;
 }
 button {
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 1.1rem;
     background-color: var(--link);
     color: #FFFFFF;
     border: none;
