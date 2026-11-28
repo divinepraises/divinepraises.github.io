@@ -378,7 +378,8 @@ async function loadGreatComplineBeginning(priest, smallComplineData, full, seaso
         if (season === "Lent" && seasonWeek === 1 && dayOfWeek >= 2 && dayOfWeek <= 5) psalms_3 = psalms_3.slice(2, 4);
         document.getElementById("psalms_3").innerHTML = psalms_3.join("");
     } else if (full === "0") {
-        const dayToPsalm_1 = {1: [0, 3], 2: [1, 4], 3: [2, 5], 4:[2, 5]}[dayOfWeek];
+        // the days 6-1 are for festive Great Compline around weekend. There are no rubrics, I'm just selecting the most hopeful ones
+        const dayToPsalm_1 = {2: [0, 3], 3: [1, 4], 4: [2, 5], 5:[2, 5], 6:[0, 5], 0:[0, 5], 1:[0, 5]}[dayOfWeek];
         const dayToPsalm_2_3 = (dayOfWeek + 1)  % 2;
 
         const psalmNums_1 = dayToPsalm_1.map(i => greatComplineData["psalms_1"][i]);
